@@ -19,6 +19,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//session
+var session = require('express-session');
+app.use(session({
+secret: 'wenzi', // 建議使用 128 個字元的隨機字串
+cookie: { maxAge: 60*60*1000 }, // 設定時間
+resave : false,
+saveUninitialized : true
+}));
+
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
