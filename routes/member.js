@@ -1,10 +1,35 @@
 var express = require('express');
 var router = express.Router();
+var member = require('../models/member');
 
 
 /* GET login page. */
 router.get('/login', function(req, res, next) {
     res.render('login', { title: '登入畫面',errmsg:'' });
+});
+
+router.post('/login', function(req, res,next) {
+
+});
+
+/* GET register page. */
+router.get('/register', function(req, res, next) {
+    res.render('register', { title: '註冊畫面',errmsg:'' });
+});
+
+router.post('/register', function(req, res,next) {
+
+    var member_name = req.body.member_name || '',
+    member_city = req.body.member_city || '',
+    member_school = req.body.member_school || '',
+    member_account = req.body.member_account || '',
+    member_password = req.body.member_password || '';
+
+    var hash_password = member.hash(member_password);
+
+    member.register(member_name,member_city,member_school,member_account,hash_password,function(results){
+        res.redirect('/login');
+    })
 });
 
 module.exports = router;
