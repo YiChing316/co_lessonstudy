@@ -46,7 +46,7 @@ function loginMap(){
     })
 }
 
-function registerPost(){
+function postData(){
     var member_name = $("#member_name").val();
     var member_city = $(".city option:selected").val();
     var member_school = $("#member_school").val();
@@ -57,30 +57,59 @@ function registerPost(){
         alert('每格皆為必填');
     }
     else{
-        //與routes /member/register 的post連結
-        $.ajax({
-            url: "/member/register",
-            type: "POST",
-            data:{
-                member_name: member_name,
-                member_city: member_city,
-                member_school: member_school,
-                member_account: member_account,
-                member_password:member_password
-            },
-            success: function(data){
-               if(data.msg == 'no'){
-                   $("#errmsg").html('使用者已存在');
-               }
-               else{
-                   alert('註冊成功');
-                   window.location.href = '/member/login';
-               }     
-            },
-            error: function(){
-                alert('失敗');
-            }
-        })
+        var action = $('.postbt').val();
+
+        if(action == '登入'){
+            //與routes /member/login 的post連結
+
+            $.ajax({
+                url: "/member/login",
+                type: "POST",
+                data:{
+                    member_account: member_account,
+                    member_password:member_password
+                },
+                success: function(data){
+                if(data.msg == 'no'){
+                    $("#errmsg").html('密碼錯誤');
+                }
+                else{
+                    alert('成功');
+                    window.location.href = '/dashboard';
+                }     
+                },
+                error: function(){
+                    alert('失敗');
+                }
+            })
+        }
+        else{
+            //與routes /member/register 的post連結
+            $.ajax({
+                url: "/member/register",
+                type: "POST",
+                data:{
+                    member_name: member_name,
+                    member_city: member_city,
+                    member_school: member_school,
+                    member_account: member_account,
+                    member_password:member_password
+                },
+                success: function(data){
+                if(data.msg == 'no'){
+                    $("#errmsg").html('使用者已存在');
+                }
+                else{
+                    alert('註冊成功');
+                    window.location.href = '/member/login';
+                }     
+                },
+                error: function(){
+                    alert('失敗');
+                }
+            })
+        }
+        
     }
 };
 
