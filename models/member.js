@@ -9,8 +9,17 @@ module.exports = {
     },
 
     //登入
-    login: function(){
-        
+    login: function(member_account,cb){
+        pool.getConnection(function(err,connection){
+            if (err) throw err;
+
+            connection.query('SELECT * FROM `member` WHERE `member_account`= ?',[member_account],function(err,results){
+                if(err) throw err;
+
+                cb(results);
+                connection.release();
+            })
+        });
     },
 
     //註冊post

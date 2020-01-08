@@ -9,6 +9,38 @@ router.get('/login', function(req, res, next) {
 });
 
 router.post('/login', function(req, res,next) {
+    var member_account = req.body.member_account|| '',
+    member_password = req.body.member_password|| '';
+    
+    //將使用者輸入的密碼加密
+    var hash_password = member.hash(member_password);
+
+    member.login(member_account,function(results){
+        //如果有此帳號
+        if(results.length){
+            var correctPassword = results[0].member_password;
+
+            //判斷使用者輸入的密碼是否與資料庫中的相符
+            if( hash_password !== correctPassword){
+                res.json({msg:'no'});
+                return
+            }
+            else{
+                //相符
+                req.session.member_id = results[0].member_id;
+                req.session.member_name = results[0].member_name;
+                req.session.member_account = member_account;
+
+                console.log(req.session.member_id);
+                res.json({
+                            msg:'yes',
+                            member_id:req.session.member_id,
+                            member_name:req.session.member_name,
+                            member_account:req.session.member_account
+                        });
+            }
+        }
+    })
 
 });
 
@@ -37,6 +69,12 @@ router.post('/register', function(req, res,next) {
             res.json({msg:'yes'});
         }
     })
+});
+
+//logout
+router.get('/logout',function(req, res){
+    req.session.destroy();
+    res.redirect('/member/login');
 });
 
 module.exports = router;
