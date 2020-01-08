@@ -28,7 +28,14 @@ router.post('/register', function(req, res,next) {
     var hash_password = member.hash(member_password);
 
     member.register(member_name,member_city,member_school,member_account,hash_password,function(results){
-        res.redirect('/login');
+        if(results.isExisted){
+            console.log("註冊失敗");
+            res.json({msg:'no'});
+        }
+        else{
+            console.log("註冊成功");
+            res.json({msg:'yes'});
+        }
     })
 });
 

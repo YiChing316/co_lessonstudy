@@ -6,8 +6,10 @@
     <title><%= title %></title>
   </head>
   <body>
-    <div id="registerRoot" name="registerRoot" class="Root"></div>
-    <input type="button" id="test" value="test" onclick="postData()">
+    <div id="registerRoot" name="registerRoot" class="Root">
+      <p id='errmsg'></p>
+    </div>
+    <input type="button" id="test" value="送出" onclick="registerPost()">
     <input type="button" value="重新登入" onclick="javascript:location.href='/member/login'">
   </body>
 </html>

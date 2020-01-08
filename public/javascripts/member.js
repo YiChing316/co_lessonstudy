@@ -68,8 +68,14 @@ function registerPost(){
                 member_account: member_account,
                 member_password:member_password
             },
-            success: function(){
-                alert('註冊成功');
+            success: function(data){
+               if(data.msg == 'no'){
+                   $("#errmsg").html('使用者已存在');
+               }
+               else{
+                   alert('註冊成功');
+                   window.location.href = '/member/login';
+               }     
             },
             error: function(){
                 alert('失敗');
