@@ -31,7 +31,6 @@ router.post('/login', function(req, res,next) {
                 req.session.member_name = results[0].member_name;
                 req.session.member_account = member_account;
 
-                console.log(req.session.member_id);
                 res.json({
                             msg:'yes',
                             member_id:req.session.member_id,

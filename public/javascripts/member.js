@@ -74,7 +74,7 @@ function postData(){
                     $("#errmsg").html('密碼錯誤');
                 }
                 else{
-                    alert('成功');
+                    alert('登入成功');
                     window.location.href = '/dashboard';
                 }     
                 },
