@@ -2,11 +2,47 @@
 <html>
   <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/javascripts/dashboard.js"></script>
     <title><%= title %></title>
   </head>
   <body>
-    <p><%= member_id %></p>
-    <p><%= member_name %></p>
-    <input type="button" value="登出" onclick="javascript:location.href='/member/logout'">
+    <% if (member_id) { %>
+      <div class="nav">
+        <p id="member_id"><%= member_id %></p>
+        <p id="member_name"><%= member_name %></p>
+        <input type="button" value="登出" onclick="javascript:location.href='/member/logout'">
+      </div>
+      <div>
+        <h1>加入共備社群</h1>
+        <input type="text">
+        <input type="button" value="搜尋">
+        <div>
+          <h3>想要創立新的共備社群嗎？</h3>
+          <a href="">前往創立</a>
+        </div>
+      </div>
+      <div>
+        <span>建立新社群</span>
+        <p>社群名稱</p>
+        <input type="text" id="community_name" name="community_name">
+        <p>社群密碼</p>
+        <input type="text" id="community_key" name="community_key">
+        <input type="button" value="建立" onclick="createCommunity()">
+      </div>
+      <div>
+        <p>現有的社群</p>
+        <div id="allCommunity"></div>
+      </div>
+      <div>
+        <p>您已加入的社群</p>
+        <div id="memberCommunity"></div>
+      </div>
+      <div>
+        <p>您正在申請的社群</p>
+      </div>
+    <% }else{%>
+      <input type="button" value="登入" onclick="javascript:location.href='/member/login'">
+      <input type="button" value="註冊" onclick="javascript:location.href='/member/register'">
+    <%}%>
   </body>
 </html>
