@@ -45,4 +45,32 @@ router.post('/create', function(req, res,next) {
 
 });
 
+router.post('/join', function(req, res,next) {
+  var member_id = req.session.member_id || '',
+    member_name =  req.session.member_name || '', 
+    community_id = req.body.community_id || '',
+    community_key = req.body.community_key || '';
+    
+    dashboard.joinCommunity(community_id,member_id,function(joinResults){
+      if(joinResults.isExisted){
+        res.json({msg:'existed'});
+      }
+      else{
+        var currectKey = joinResults[0].community_key;
+        if( community_key !== currectKey){
+          res.json({msg:'no'});
+          return
+        }
+        else{
+          dashboard.addCommunityMember(community_id,member_id,member_name,function(addResults){
+            if(addResults){
+              res.json({msg:'yes'});
+            }
+          });
+        }
+      }
+    });
+
+});
+
 module.exports = router;

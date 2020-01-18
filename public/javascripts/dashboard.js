@@ -28,6 +28,7 @@ function createCommunity(){
     
 };
 
+//顯示現有社群
 function showAllCommunity(){
     for(var i = 0; i<allCommunityData.length;i++){
         var community = allCommunityData[i];
@@ -46,8 +47,9 @@ function showAllCommunity(){
                                 "</tr>"+
                                 "<tr id='entertr"+community_id+"' style='display:none'>"+
                                     "<td>密碼:<input type='text' id='community_key_"+community_id+"'></td>"+
-                                    "<td><input type='button' value='送出'><input type='button' value='取消加入' onclick='hideEntertr("+community_id+")'></td>"+
-                                    "<td><p>沒有密碼嗎?</p><a href=''>提出申請</a></td>"+
+                                    "<td><input type='button' value='送出' onclick='joinCommunity("+community_id+")'>"+
+                                    "<input type='button' value='取消加入' onclick='hideEntertr("+community_id+")'></td>"+
+                                    "<td><p>沒有密碼嗎?</p><a>提出申請</a></td>"+
                                 "</tr>"
                                 ];
 
@@ -68,6 +70,7 @@ function hideEntertr(id){
     $("#enterCommunity"+id).show();
 }
 
+//顯示會員已加入的社群
 function showMemberCommunity(){
     for(var i = 0; i<memberCommunityData.length;i++){
         var memberCommunity = memberCommunityData[i];
@@ -88,6 +91,34 @@ function showMemberCommunity(){
         $("#memberCommunityTable tbody").append(memberCommunity_div);
                                 
     }
+}
+
+function joinCommunity(id){
+    var community_key =  $("#community_key_"+id).val();
+
+    $.ajax({
+        url: "/dashboard/join",
+        type: "POST",
+        data:{
+            community_id: id,
+            community_key: community_key
+        },
+        success: function(data){
+            if(data.msg == 'no'){
+                $("#errmsgAll").html('密碼錯誤');
+            }
+            else if(data.msg == 'existed'){
+                $("#errmsgAll").html('您已加入此社群');
+            }
+            else{
+                alert('加入成功');
+            }     
+        },
+        error: function(){
+            alert('失敗');
+        }
+    })
+
 }
 
 
