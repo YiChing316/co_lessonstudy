@@ -60,11 +60,9 @@ router.post('/register', function(req, res,next) {
 
     member.register(member_name,member_city,member_school,member_account,hash_password,function(results){
         if(results.isExisted){
-            console.log("註冊失敗");
             res.json({msg:'no'});
         }
         else{
-            console.log("註冊成功");
             res.json({msg:'yes'});
         }
     })
