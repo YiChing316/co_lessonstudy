@@ -7,6 +7,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var memberRouter = require('./routes/member');
 var dashboardRouter = require('./routes/dashboard');
+var lessonplanRouter = require('./routes/lessonplan');
 
 var app = express();
 
@@ -33,6 +34,7 @@ saveUninitialized : true
 app.use('/', indexRouter);
 app.use('/member', memberRouter);
 app.use('/dashboard', dashboardRouter);
+app.use('/lessonplan', lessonplanRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

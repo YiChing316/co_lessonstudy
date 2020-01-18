@@ -84,13 +84,17 @@ function showMemberCommunity(){
         var memberCommunity_div = ["<tr>"+
                                     "<td>"+ community_name +"</td>"+
                                     "<td>"+ year+"/"+month+"/"+date +"</td>"+
-                                    "<td><input type='button' id='enterCommunity"+community_id+"' value='進入''></td>"+
+                                    "<td><input type='button' id='enterCommunity"+community_id+"' value='進入' onclick='enterCommunity("+community_id+")'></td>"+
                                 "</tr>"
                                 ];
         
         $("#memberCommunityTable tbody").append(memberCommunity_div);
                                 
     }
+}
+
+function enterCommunity(id){
+    window.location.href = '/lessonplan/edit/'+id;
 }
 
 function joinCommunity(id){
@@ -112,6 +116,7 @@ function joinCommunity(id){
             }
             else{
                 alert('加入成功');
+                window.location.href = '/lessonplan/edit/'+data.community_id;
             }     
         },
         error: function(){

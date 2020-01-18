@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <title><%= title %></title>
+  </head>
+  <body>
+    <% if (member_id) { %>
+        <h1>教案製作頁面</h1>
+        <div class="nav">
+            <p><%= member_id %></p>
+            <p><%= member_name %></p>
+            社群編號<p><%= community_id %></p>
+            <input type="button" value="登出" onclick="javascript:location.href='/member/logout'">
+        </div>
+        
+    <% }else{%>
+    <input type="button" value="登入" onclick="javascript:location.href='/member/login'">
+    <input type="button" value="註冊" onclick="javascript:location.href='/member/register'">
+    <%}%>
+  </body>
+</html>
