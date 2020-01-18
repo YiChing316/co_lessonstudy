@@ -1,4 +1,5 @@
 var allCommunityData;
+var memberCommunityData;
 
 function createCommunity(){
     var community_name = $("#community_name").val();
@@ -17,6 +18,7 @@ function createCommunity(){
             }
             else{
                 alert('新增成功');
+                window.location.reload();
             } 
         },
         error: function(){
@@ -66,11 +68,36 @@ function hideEntertr(id){
     $("#enterCommunity"+id).show();
 }
 
+function showMemberCommunity(){
+    for(var i = 0; i<memberCommunityData.length;i++){
+        var memberCommunity = memberCommunityData[i];
+        var community_id = memberCommunity.community_id;
+        var community_name = memberCommunity.community_name;
+        var community_createtime = new Date(memberCommunity.community_createtime);
+        var year = community_createtime.getFullYear();
+        var month = community_createtime.getMonth()+1;//月份是由(0-11)故要+1
+        var date = community_createtime.getDate();
+
+        var memberCommunity_div = ["<tr>"+
+                                    "<td>"+ community_name +"</td>"+
+                                    "<td>"+ year+"/"+month+"/"+date +"</td>"+
+                                    "<td><input type='button' id='enterCommunity"+community_id+"' value='進入''></td>"+
+                                "</tr>"
+                                ];
+        
+        $("#memberCommunityTable tbody").append(memberCommunity_div);
+                                
+    }
+}
+
 
 $(function(){
     allCommunityData = JSON.parse($("#allCommunityData").text());
+    memberCommunityData = JSON.parse($("#memberCommunityData").text());
     $("#allCommunityData").remove();
+    $("#memberCommunityData").remove();
 
     showAllCommunity();
+    showMemberCommunity();
 
 });
