@@ -41,7 +41,7 @@ module.exports = {
     showAllCommunity: function(cb){
         pool.getConnection(function(err,connection){
             if(err) throw err;
-            connection.query('SELECT * FROM `community`',function(err,results){
+            connection.query('SELECT `community_id`,`community_name`,`community_createtime` FROM `community`',function(err,results){
                 if(err) throw err;
                 cb(results);
                 connection.release;
