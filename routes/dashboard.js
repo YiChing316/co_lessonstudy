@@ -51,20 +51,23 @@ router.post('/join', function(req, res,next) {
     community_id = req.body.community_id || '',
     community_key = req.body.community_key || '';
     
-    dashboard.joinCommunity(community_id,member_id,function(joinResults){
-      if(joinResults.isExisted){
+    dashboard.checkCommunityMember(community_id,member_id,function(checkResults){
+      //此人已加入該社群
+      if(checkResults.isExisted){
         res.json({msg:'existed'});
       }
+      //此人尚未加入該社群，判斷密碼是否正確
       else{
-        var currectKey = joinResults[0].community_key;
+        var currectKey = checkResults[0].community_key;
         if( community_key !== currectKey){
           res.json({msg:'no'});
           return
         }
+        //密碼正確則加入社群
         else{
           dashboard.addCommunityMember(community_id,member_id,member_name,function(addResults){
             if(addResults){
-              res.json({msg:'yes'});
+              res.json({msg:'yes',community_id:community_id});
             }
           });
         }

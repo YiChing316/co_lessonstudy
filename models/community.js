@@ -38,7 +38,7 @@ module.exports = {
         })
     },
 
-    joinCommunity: function(community_id,member_id,cb){
+    checkCommunityMember: function(community_id,member_id,cb){
         pool.getConnection(function(err,connection){
             if(err) throw err;
             //select看社群成員表內是否此會員已在此社群中
