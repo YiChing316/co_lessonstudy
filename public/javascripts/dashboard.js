@@ -44,17 +44,21 @@ function showAllCommunity(){
         var year = community_createtime.getFullYear();
         var month = community_createtime.getMonth()+1;//月份是由(0-11)故要+1
         var date = community_createtime.getDate();
+        var hour = community_createtime.getHours();
+        var minute = community_createtime.getMinutes();
+        var second = community_createtime.getSeconds();
 
-        var allCommunity_div = ["<tr>"+
+        var allCommunity_div = ["<tr class='shadow-sm'>"+
                                     "<td>"+ community_name +"</td>"+
-                                    "<td>"+ year+"/"+month+"/"+date +"</td>"+
-                                    "<td><input type='button' id='enterCommunity"+community_id+"' value='加入社群' onclick='showEntertr("+community_id+")'></td>"+
+                                    "<td>"+ year+"/"+month+"/"+date+" "+hour+":"+minute+":"+second+"</td>"+
+                                    "<td><input type='button' class='btn btn-primary' id='enterCommunity"+community_id+"' value='加入社群' onclick='showEntertr("+community_id+")'></td>"+
                                 "</tr>"+
-                                "<tr id='entertr"+community_id+"' style='display:none'>"+
-                                    "<td>密碼:<input type='text' id='community_key_"+community_id+"'></td>"+
-                                    "<td><input type='button' value='送出' onclick='joinCommunity("+community_id+")'>"+
-                                    "<input type='button' value='取消加入' onclick='hideEntertr("+community_id+")'></td>"+
-                                    "<td><p>沒有密碼嗎?</p><a>提出申請</a></td>"+
+                                "<tr class='table-borderless' id='entertr"+community_id+"' style='display:none'>"+
+                                    "<td><input type='text' class='form-control' placeholder='請輸入社群密碼' id='community_key_"+community_id+"'></td>"+
+                                    "<td>"+
+                                        "<input type='button' class='btn btn-primary' value='送出' onclick='joinCommunity("+community_id+")'>"+
+                                    "</td>"+
+                                    "<td><p>沒有密碼嗎?</p><a style='color: #ED557E;'>提出申請</a></td>"+
                                 "</tr>"
                                 ];
 
@@ -65,14 +69,17 @@ function showAllCommunity(){
 //根據點選'加入社群'按鈕所對應的id去顯示該id的'entertr'
 function showEntertr(id){
     $("#entertr"+id).show();//這邊tr的style會移除dispaly:none的屬性
-    //同時此按鈕消失
-    $("#enterCommunity"+id).hide();
+    $("#enterCommunity"+id).val('取消加入');
+    $("#enterCommunity"+id).removeClass( "btn-primary" ).addClass( "btn-secondary" );
+    $("#enterCommunity"+id).attr("onclick","hideEntertr("+id+")");
 }
 //上方程式變成隱藏
 function hideEntertr(id){
     $("#entertr"+id).hide();
-    //'加入社群'的按鈕會顯示
-    $("#enterCommunity"+id).show();
+    $("#enterCommunity"+id).val('加入社群');
+    $("#enterCommunity"+id).removeClass( "btn-secondary" ).addClass( "btn-primary" );
+    $("#enterCommunity"+id).attr("onclick","showEntertr("+id+")");
+    
 }
 
 //顯示會員已加入的社群
@@ -85,11 +92,14 @@ function showMemberCommunity(){
         var year = community_createtime.getFullYear();
         var month = community_createtime.getMonth()+1;//月份是由(0-11)故要+1
         var date = community_createtime.getDate();
+        var hour = community_createtime.getHours();
+        var minute = community_createtime.getMinutes();
+        var second = community_createtime.getSeconds();
 
         var memberCommunity_div = ["<tr>"+
                                     "<td>"+ community_name +"</td>"+
-                                    "<td>"+ year+"/"+month+"/"+date +"</td>"+
-                                    "<td><input type='button' id='enterCommunity"+community_id+"' value='進入' onclick='enterCommunity("+community_id+")'></td>"+
+                                    "<td>"+ year+"/"+month+"/"+date+" "+hour+":"+minute+":"+second+"</td>"+
+                                    "<td><input type='button' class='btn btn-primary' id='enterCommunity"+community_id+"' value='進入' onclick='enterCommunity("+community_id+")'></td>"+
                                 "</tr>"
                                 ];
         
