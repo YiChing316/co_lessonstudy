@@ -1,16 +1,17 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
-a {
-  color: #00B7FF;
-}
-
 .wrapper {
   align-items: center;
   justify-content: center;
   width: 100%;
   min-height: 100%;
   padding: 5%;
+}
+
+.title-bar{
+  align-items: center;
+  width: 100%;
+  height: 60px;
+}
+
+.bg-selfgreen{
+  background-color: #71C1B4;
 }

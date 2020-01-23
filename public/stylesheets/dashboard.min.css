@@ -1,0 +1,54 @@
+/*!
+ * Start Bootstrap - Landing Page v5.0.7 (https://startbootstrap.com/template-overviews/landing-page)
+ * Copyright 2013-2019 Start Bootstrap
+ * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-landing-page/blob/master/LICENSE)
+ */
+ header.masthead{
+     position:relative;
+     background-color:#343a40;
+     background:url(../images/dashboardbg.jpg) no-repeat center center;
+     background-size:cover;
+     padding-top:5rem;
+     padding-bottom:5rem;
+}
+header.masthead .overlay{
+     position:absolute;
+     background-color:#BDBDBE;
+     height:100%;
+     width:100%;
+     top:0;
+     left:0;
+     opacity:.35
+}
+header.masthead h1{font-size:2rem}
+@media (min-width:768px){
+    header.masthead{
+        padding-top:12rem;
+        padding-bottom:12rem;
+    }
+    header.masthead h1{
+        font-size:3rem
+    }
+}
+
+header.masthead .btn-search{
+    color: #000000;
+    background-color: #71C1B4;
+    border-color: #71C1B4;
+}
+
+header.masthead .btn-search:hover {
+    color: #000000;
+    background-color: #B5DDC2;
+    border-color: #117a8b;
+}
+
+header.masthead a{
+    color: #ED557E;
+    font-weight: bolder;
+}
+
+header.masthead label{
+    color: #065B80;
+    font-weight: bolder;
+}
