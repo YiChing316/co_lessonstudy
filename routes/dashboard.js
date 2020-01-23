@@ -9,10 +9,11 @@ router.get('/', function(req, res, next) {
   dashboard.showAllCommunity(function(results){
     if(results.length){
       var allCommunityData = JSON.stringify(results);
+      var communityNumber = results.length;
 
       dashboard.showMemberCommunity(member_id,function(memberResults){
         var memberCommunityData = JSON.stringify(memberResults);
-        res.render('dashboard', { title: 'dashboard',member_id:member_id,member_name:member_name,allCommunityData:allCommunityData,memberCommunityData:memberCommunityData});
+        res.render('dashboard', { title: 'dashboard',member_id:member_id,member_name:member_name,allCommunityData:allCommunityData,memberCommunityData:memberCommunityData,communityNumber:communityNumber});
       });
     }
   })
