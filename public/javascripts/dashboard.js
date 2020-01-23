@@ -5,27 +5,32 @@ function createCommunity(){
     var community_name = $("#community_name").val();
     var community_key = $("#community_key").val();
 
-    $.ajax({
-        url: "/dashboard/create",
-        type: "POST",
-        data:{
-            community_name: community_name,
-            community_key:community_key
-        },
-        success: function(data){
-            if(data.msg == 'no'){
-                alert('新增失敗');
+    if(community_name == "" || community_key ==""){
+        $("#errmsg").show();
+        $("#errmsg").html('每隔皆為必填');
+    }
+    else{
+        $.ajax({
+            url: "/dashboard/create",
+            type: "POST",
+            data:{
+                community_name: community_name,
+                community_key:community_key
+            },
+            success: function(data){
+                if(data.msg == 'no'){
+                    alert('新增失敗');
+                }
+                else{
+                    alert('新增成功');
+                    window.location.reload();
+                } 
+            },
+            error: function(){
+                alert('失敗');
             }
-            else{
-                alert('新增成功');
-                window.location.reload();
-            } 
-        },
-        error: function(){
-            alert('失敗');
-        }
-    })
-    
+        })
+    }    
 };
 
 //顯示現有社群
