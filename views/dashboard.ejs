@@ -11,106 +11,105 @@
   <body>
     <% if (member_id) { %>
       <%- include('navbar.ejs'); -%>
-        <!-- Masthead -->
-        <header class="masthead text-white text-center">
-          <div class="overlay"></div>
-          <div class="container">
-            <div class="row">
-              <div class="col-xl-9 mx-auto">
-                <h1 class="mb-5">加入共備社群</h1>
-              </div>
-              <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
-                  <div class="form-row">
-                    <div class="col-12 col-md-9 mb-2 mb-md-0">
-                      <input type="text" class="form-control form-control-lg" placeholder="搜尋您想找的社群...">
+      <!-- Masthead -->
+      <header class="masthead text-white text-center">
+        <div class="overlay"></div>
+        <div class="container">
+          <div class="row">
+            <div class="col-xl-9 mx-auto">
+              <h1 class="mb-5">加入共備社群</h1>
+            </div>
+            <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
+                <div class="form-row">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fas fa-search"></i></span>
                     </div>
-                    <div class="col-12 col-md-3">
-                      <input type="button" class="btn btn-block btn-lg btn-search" value="搜尋">
-                    </div>
+                    <input type="text" class="form-control form-control-lg" placeholder="搜尋您想找的社群...">
                   </div>
-                  <hr>
-                  <div class="form-group">
-                    <label>想要創立新的共備社群嗎？<a href="" data-toggle="modal" data-target="#creatCommunityModal">前往創立</a></label>
-                  </div> 
-              </div>
+                </div>
+                <hr>
+                <div class="form-group">
+                  <label>想要創立新的共備社群嗎？<a href="" data-toggle="modal" data-target="#creatCommunityModal">前往創立</a></label>
+                </div> 
             </div>
           </div>
-        </header>
+        </div>
+      </header>
         
-        <!-- Modal -->
-        <div class="modal fade" id="creatCommunityModal" tabindex="-1" role="dialog" aria-labelledby="creatCommunityModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="creatCommunityModalLabel">創立新社群</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <div class="alert alert-danger" role="alert" id="errmsg" style="display: none;"></div>
-                <div class="form-group">
-                  <div class="input-group">
-                    <input type="text" id="community_name" name="community_name" class='form-control' placeholder="請輸入社群名稱" required autofocus>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="input-group">
-                    <input type="text" id="community_key" name="community_key" class='form-control' placeholder="請輸入社群密碼" required autofocus>
-                  </div>
+      <!-- Modal -->
+      <div class="modal fade" id="creatCommunityModal" tabindex="-1" role="dialog" aria-labelledby="creatCommunityModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="creatCommunityModalLabel">創立新社群</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="alert alert-danger" role="alert" id="errmsg" style="display: none;"></div>
+              <div class="form-group">
+                <div class="input-group">
+                  <input type="text" id="community_name" name="community_name" class='form-control' placeholder="請輸入社群名稱" required autofocus>
                 </div>
               </div>
-              <div class="modal-footer">
-                <input type="button" value="建立" class="btn btn-primary" onclick="createCommunity()">
+              <div class="form-group">
+                <div class="input-group">
+                  <input type="text" id="community_key" name="community_key" class='form-control' placeholder="請輸入社群密碼" required autofocus>
+                </div>
               </div>
+            </div>
+            <div class="modal-footer">
+              <input type="button" value="建立" class="btn btn-primary" onclick="createCommunity()">
             </div>
           </div>
         </div>
-        <main role="main" class="container">
-          <div class="col-md-8 col-lg-10 mx-auto">
-            <div class="form-group mt-5">
-              <div class="title-bar bg-selfgreen row">
-                <h4 class="text-white font-weight-bold pl-3">現有的社群</h4>
-                <span class="text-white font-weight-bold pl-3">目前共有個<%= communityNumber %>共備社群</span>
-              </div>
-            </div>
-          </div>
-        </main>
+      </div>
 
-      <div>
-        <p>現有的社群</p>
-        <div>
-          <p id="allCommunityData"><%= allCommunityData %></p>
-          <p id='errmsgAll'></p>
-          <table id="allCommunityTable">
-            <thead>
-              <tr>
-                <td>社群名稱</td>
-                <td>創立時間</td>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+      <!--Main-->
+      <main role="main" class="container">
+        <div class="mx-auto">
+          <div class="form-group mt-5">
+            <div class="title-bar bg-selfgreen align-items-center">
+              <h4 class="text-white font-weight-bold pl-3">現有的社群<small class="pl-3">目前共有個<%= communityNumber %>共備社群</small></h4>
+            </div>
+            <p id="allCommunityData"><%= allCommunityData %></p>
+            <p id='errmsgAll'></p>
+            <table class="table table-bordered" id="allCommunityTable">
+              <thead class="thead-light">
+                <tr>
+                  <th>社群名稱</th>
+                  <th>創立時間</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="form-group mt-5">
+            <div class="title-bar bg-selfblue mb-3">
+              <h4 class="text-white font-weight-bold pl-3">您已加入的社群</h4>
+            </div>
+            <p id="memberCommunityData"><%= memberCommunityData %></p>
+            <table class="table table-bordered" id="memberCommunityTable">
+              <thead class="thead-light">
+                <tr>
+                  <th>社群名稱</th>
+                  <th>創立時間</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="form-group mt-5">
+            <div class="title-bar bg-selfpink">
+              <h4 class="text-white font-weight-bold pl-3">您正在申請的社群</h4>
+            </div>
+          </div>
         </div>
-      </div>
-      <div>
-        <p>您已加入的社群</p>
-        <div id="memberCommunity">
-          <p id="memberCommunityData"><%= memberCommunityData %></p>
-          <table id="memberCommunityTable">
-            <thead>
-              <tr>
-                <td>社群名稱</td>
-                <td>創立時間</td>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-      <div>
-        <p>您正在申請的社群</p>
-      </div>
+      </main>
     <% }else{%>
       <input type="button" value="登入" onclick="javascript:location.href='/member/login'">
       <input type="button" value="註冊" onclick="javascript:location.href='/member/register'">
