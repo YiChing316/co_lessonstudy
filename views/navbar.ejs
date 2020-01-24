@@ -1,13 +1,11 @@
-<nav class="navbar navbar-light" style="background-color: #F5FFBE;">
-  <div class="container">
-    <a class="navbar-brand font-weight-bolder" href="/dashboard">教師共同備課系統</a>
-    <div class="nav-item dropdown">
+<nav class="navbar navbar-light shadow" style="background-color: #F5FFBE;">
+  <a class="navbar-brand font-weight-bolder" href="/dashboard">教師共同備課系統</a>
+  <div class="nav-item dropdown">
       <div class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <%= member_id %><%= member_name %>
+      <%= member_id %><%= member_name %>
       </div>
       <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-        <a class="dropdown-item" href="/member/logout">登出</a>
+      <a class="dropdown-item" href="/member/logout">登出</a>
       </div>
-    </div>
   </div>
 </nav>

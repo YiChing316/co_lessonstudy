@@ -2,15 +2,19 @@
 <html>
   <head>
     <%- include('bootstrap.ejs'); -%>
+    <link href="/stylesheets/style.css" rel="stylesheet">
     <title><%= title %></title>
   </head>
   <body>
-    <% if (member_id) { %>
-      <%- include('navbar.ejs'); -%>
-        <div class="nav">
-          社群編號<p><%= community_id %></p>
-        </div>
-        
+    <% if (member_id) { %>  
+    <%- include('navbar.ejs'); -%>
+    <div class="page-wrapper toggled">
+      <%- include('sidebar.ejs'); -%> 
+      <main class="page-content">
+        <h2>123123</h2>
+      </main>
+    </div>
+             
     <% }else{%>
     <input type="button" value="登入" onclick="javascript:location.href='/member/login'">
     <input type="button" value="註冊" onclick="javascript:location.href='/member/register'">
