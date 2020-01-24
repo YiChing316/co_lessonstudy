@@ -48,7 +48,7 @@ function showAllCommunity(){
         var minute = community_createtime.getMinutes();
         var second = community_createtime.getSeconds();
 
-        var allCommunity_div = ["<tr class='shadow-sm'>"+
+        var allCommunity_div = ["<tr class='searchTr shadow-sm'>"+
                                     "<td>"+ community_name +"</td>"+
                                     "<td>"+ year+"/"+month+"/"+date+" "+hour+":"+minute+":"+second+"</td>"+
                                     "<td><input type='button' class='btn btn-primary' id='enterCommunity"+community_id+"' value='加入社群' onclick='showEntertr("+community_id+")'></td>"+
@@ -80,6 +80,15 @@ function hideEntertr(id){
     $("#enterCommunity"+id).removeClass( "btn-secondary" ).addClass( "btn-primary" );
     $("#enterCommunity"+id).attr("onclick","showEntertr("+id+")");
     
+}
+
+function searchCommunity(){
+    $("#searchInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $(".searchTr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
 }
 
 //顯示會員已加入的社群
@@ -150,5 +159,6 @@ $(function(){
 
     showAllCommunity();
     showMemberCommunity();
+    searchCommunity();
 
 });
