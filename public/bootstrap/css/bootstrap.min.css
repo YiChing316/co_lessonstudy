@@ -4687,16 +4687,17 @@ input[type="submit"].btn-block {
   padding: 0.5rem 0.75rem;
   margin-left: -1px;
   line-height: 1.25;
-  color: #065B80;
+  color: #71C1B4;
+  font-weight: bolder;
   background-color: #fff;
-  border: 1px solid #dee2e6;
+  border: 2px solid #71C1B4;
 }
 .page-link:hover {
   z-index: 2;
-  color: #0056b3;
+  color: #ffffff;
   text-decoration: none;
-  background-color: #e9ecef;
-  border-color: #dee2e6;
+  background-color: #B5DDC2;
+  border-color: #B5DDC2;
 }
 .page-link:focus {
   z-index: 3;
@@ -4715,8 +4716,8 @@ input[type="submit"].btn-block {
 .page-item.active .page-link {
   z-index: 3;
   color: #fff;
-  background-color: #065B80;
-  border-color: #065B80;
+  background-color: #71C1B4;
+  border-color: #71C1B4;
 }
 .page-item.disabled .page-link {
   color: #BDBDBE;

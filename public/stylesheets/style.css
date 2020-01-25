@@ -26,8 +26,8 @@
 
 /*側邊欄*/
 #sidebar-wrapper {
-  top: 56px;
-  left: -200px;
+  position: absolute;
+  left: 0px;
   width: 250px;
   background-color: #065B80;
   color: white;
@@ -82,43 +82,32 @@
   }
 }
 
-
-
-/*lessonplanEdit*/
-/*----------------page-wrapper----------------*/
-
 .page-wrapper {
+  top: 56px;
   height: 100vh;
-}
-/*----------------toggeled sidebar----------------*/
-
-.page-wrapper.toggled .sidebar-wrapper {
-  left: 0px;
+  position: relative;
 }
 
-@media screen and (min-width: 768px) {
-  .page-wrapper.toggled .page-content {
-    padding-left: 300px;
-  }
-}
-/*----------------show sidebar button----------------*/
-.page-wrapper.toggled #show-sidebar {
-  left: -40px;
+.page-content{
+  margin-left: 250px;
 }
 
-/*--------------------------page-content-----------------------------*/
-
-.page-wrapper .page-content {
-  display: inline-block;
-  width: 100%;
-  padding-left: 0px;
-  padding-top: 20px;
+.page-content #change-page{
+  /* position:fixed;
+  left:50%;  */
+  padding-top: 45px;
 }
 
-.page-wrapper .page-content > div {
-  padding: 20px 40px;
+.content{
+  margin-left: 15px;
+  margin-right: 15px;
+  padding-top: 5px;
 }
 
-.page-wrapper .page-content {
-  overflow-x: hidden;
+.page-content .content .card-header{
+  font-weight: bolder;
+  font-size: 18px;
 }
+
+
+

@@ -6,7 +6,21 @@ var TextComponents = [ {title:'請輸入姓名',id:"member_name",name:"member_na
                         {title:'請輸入密碼',id:"member_password",name:"member_password",type:"password",show:"login"}
                     ];
 //設定縣市
-var cityName = [{value:'台北市',name: '台北市'}, {value:'新北市',name: '新北市'}];
+var cityName = [{value:'台北市',name: '台北市'}, 
+                {value:'新北市',name: '新北市'},
+                {value:'桃園市',name: '桃園市'},
+                {value:'新竹縣',name: '新竹縣'},
+                {value:'苗栗縣',name: '苗栗縣'},
+                {value:'台中市',name: '台中市'},
+                {value:'雲林縣',name: '雲林縣'},
+                {value:'彰化縣',name: '彰化縣'},
+                {value:'嘉義縣',name: '嘉義縣'},
+                {value:'台南市',name: '台南市'},
+                {value:'高雄市',name: '高雄市'},
+                {value:'台東縣',name: '台東縣'},
+                {value:'花蓮縣',name: '花蓮縣'},
+                {value:'宜蘭縣',name: '宜蘭縣'}
+            ];
 
 //將TextComponents放進registerRoot，不會用到show的判斷
 function registerMap(){

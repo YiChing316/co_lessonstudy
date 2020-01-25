@@ -2,19 +2,46 @@
 <html>
   <head>
     <%- include('bootstrap.ejs'); -%>
+    <script src="/javascripts/lessonplanEdit.js"></script>
     <link href="/stylesheets/style.css" rel="stylesheet">
     <title><%= title %></title>
   </head>
   <body>
     <% if (member_id) { %>  
-    <%- include('navbar.ejs'); -%>
-    <div class="page-wrapper toggled">
-      <%- include('sidebar.ejs'); -%> 
-      <main class="page-content">
-        <h2>123123</h2>
-      </main>
+    <%- include('navbar2.ejs'); -%>
+    <div class="page-wrapper">
+      <%- include('sidebar.ejs'); -%>
+      <div class="page-content">
+        
+        <div class="content">
+          <nav id="change-page" aria-label="...">
+            <ul class="pagination justify-content-center">
+              <li class="page-item active" aria-current="page">
+                <span class="page-link">
+                  教案撰寫<span class="sr-only">(current)</span>
+                </span>
+              </li>
+              <li class="page-item"><a class="page-link" href="">想法討論</a></li>
+            </ul>
+          </nav>
+          <div class="card">
+            <div class="card-header text-white bg-selfblue">
+              訂定課程目標
+            </div>
+            <div id="setlesson" class="card-body"></div><!--setlesson end-->
+          </div>
+          <div class="card">
+            <div class="card-header text-white bg-selfblue">
+              活動與評量設計
+            </div>
+            <div class="card-body">
+            </div>
+          </div>
+        </div>
+          
+        </div>
+      </div>
     </div>
-             
     <% }else{%>
     <input type="button" value="登入" onclick="javascript:location.href='/member/login'">
     <input type="button" value="註冊" onclick="javascript:location.href='/member/register'">
