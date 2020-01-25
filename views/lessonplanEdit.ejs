@@ -28,7 +28,68 @@
             <div class="card-header text-white bg-selfblue">
               訂定課程目標
             </div>
-            <div id="setlesson" class="card-body"></div><!--setlesson end-->
+            <div id="setlesson" class="card-body">
+              <div class='card' id='cardid"+data.id+"'>
+                <div class='card-header bg-white' id='header"+data.id+"'>title
+                    <span class='float-right' data-toggle='collapse' data-target='#"+data.id+"'>
+                        <i id='"+data.id+"icon' aria-hidden='true'></i>
+                    </span>
+                </div>
+                <div class='card-body collapse show' id='"+data.id+"'>
+                  <div class="form-group row">
+                    <label class="control-label col-sm-2">教案簡介</label>
+                    <div class="col-sm-10">
+                      <textarea class="form-control" rows="5"></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="control-label col-sm-2">課程領域</label>
+                    <div class="col-sm-10">
+                      <select class="form-control">
+                        <option>國語</option>
+                        <option>英語</option>
+                        <option>自然</option>
+                        <option>數學</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="control-label col-sm-2">使用版本</label>
+                    <div class="col-sm-10">
+                      <select class="form-control">
+                        <option>康軒</option>
+                        <option>南一</option>
+                        <option>翰林</option>
+                        <option>自編</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="control-label col-sm-2">學習階段</label>
+                    <div class="col-sm-10">
+                      <select class="form-control">
+                        <option>第一學習階段(國小低年級-1.2年級)</option>
+                        <option>第二學習階段(國小中年級-3.4年級)</option>
+                        <option>第三學習階段(國小高年級-5.6年級)</option>
+                        <option>第四學習階段(國中)</option>
+                        <option>第五學習階段(高中)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="control-label col-sm-2">授課時間</label>
+                    <div class="col-sm"><input type="text" class="form-control"></div>
+                    <div class="col-sm-1"><label>節課，共</label></div>
+                    <div class="col-sm"><input type="text" class="form-control"></div>
+                    <div class="col-sm-1"><label>分鐘</label></div>  
+                  </div>
+                  <div class="bt-group float-right">
+                    <input type="button" class="btn btn-secondary" value="清除">
+                    <input type="button" class="btn btn-primary" value="儲存">
+                  </div>
+                </div><!--card-body end-->
+              </div><!--card end-->
+            </div><!--setlesson end-->
           </div>
           <div class="card">
             <div class="card-header text-white bg-selfblue">
