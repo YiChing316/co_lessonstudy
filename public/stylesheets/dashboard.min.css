@@ -23,8 +23,8 @@ header.masthead .overlay{
 header.masthead h1{font-size:2rem}
 @media (min-width:768px){
     header.masthead{
-        padding-top:5rem;
-        padding-bottom:5rem;
+        padding-top:8rem;
+        padding-bottom:8rem;
     }
     header.masthead h1{
         font-size:3rem
