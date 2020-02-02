@@ -1,4 +1,4 @@
-var lessonplanComponents = [
+var pagecontent_Components = [
     {title:'教案基本資料',id:'lessonplan',collapse:'show'},
     {title:'安排課程單元/活動',id:'lessonplan_unit',collapse:'show'},
     {title:'課程學習目標',id:'lessonplan_target',collapse:'none'},
@@ -10,8 +10,8 @@ var lessonplanComponents = [
     {title:'因材網知識節點',id:'lessonplan_adl',collapse:'none'}
 ];
 
-function lessonplanMap(){
-    lessonplanComponents.map(function(data){
+function pagecontent_Map(){
+    pagecontent_Components.map(function(data){
         var root ="<div class='card' id='cardid"+data.id+"'>"+
                         "<div class='card-header bg-white' id='header"+data.id+"'>"+data.title+
                             "<span class='float-right' data-toggle='collapse' data-target='#"+data.id+"'>"+
@@ -35,7 +35,7 @@ function lessonplanMap(){
 }
 
 $(function(){
-    lessonplanMap();
+    pagecontent_Map();
 
     //class摺疊執行完後更改圖形
     $(".collapse").on('show.bs.collapse', function(){
