@@ -10,27 +10,13 @@ var pagecontent_Components = [
     {title:'因材網知識節點',id:'lessonplan_adl',collapse:'none'}
 ];
 
-function pagecontent_Map(){
-    pagecontent_Components.map(function(data){
-        var root ="<div class='card' id='cardid"+data.id+"'>"+
-                        "<div class='card-header bg-white' id='header"+data.id+"'>"+data.title+
-                            "<span class='float-right' data-toggle='collapse' data-target='#"+data.id+"'>"+
-                                "<i id='"+data.id+"icon' aria-hidden='true'></i>"+
-                            "</span>"+
-                        "</div>"+
-                        "<div class='card-body collapse' id='"+data.id+"'></div>"+
-                    "</div>";
-        if(data.collapse == "show"){
-            $("#setlesson").append(root);
-            $("#"+data.id+"icon").addClass("fa fa-angle-up");
-            $("#"+data.id).addClass("show");
-        }
-        else{
-            $("#setlesson").append(root);
-            $("#"+data.id+"icon").addClass("fa fa-angle-down");
-        }
-    })
-};
+var lessonplan_Component = [
+    {name:'教案簡介',id:'lessonplan_intro',type:'textarea',parentDiv:'lessonplan'},
+    {name:'課程領域',id:'lessonplan_field',type:'select',parentDiv:'lessonplan'},
+    {name:'使用版本',id:'lessonplan_version',type:'select',parentDiv:'lessonplan'},
+    {name:'學習階段',id:'lessonplan_grade',type:'select',parentDiv:'lessonplan'},
+    {name:'授課時間',id:'lessonplan_time',type:'other',parentDiv:'lessonplan'}
+];
 
 function textareaDiv(componentname,componentid,parentDiv){
     $('#'+parentDiv).append('<div class="form-group row">'+
@@ -57,13 +43,27 @@ function buttonDiv(parentDiv){
                             '</div>');
 };
 
-var lessonplan_Component = [
-    {name:'教案簡介',id:'lessonplan_intro',type:'textarea',parentDiv:'lessonplan'},
-    {name:'課程領域',id:'lessonplan_field',type:'select',parentDiv:'lessonplan'},
-    {name:'使用版本',id:'lessonplan_version',type:'select',parentDiv:'lessonplan'},
-    {name:'學習階段',id:'lessonplan_grade',type:'select',parentDiv:'lessonplan'},
-    {name:'授課時間',id:'lessonplan_time',type:'other',parentDiv:'lessonplan'}
-];
+function pagecontent_Map(){
+    pagecontent_Components.map(function(data){
+        var root ="<div class='card' id='cardid"+data.id+"'>"+
+                        "<div class='card-header bg-white' id='header"+data.id+"'>"+data.title+
+                            "<span class='float-right' data-toggle='collapse' data-target='#"+data.id+"'>"+
+                                "<i id='"+data.id+"icon' aria-hidden='true'></i>"+
+                            "</span>"+
+                        "</div>"+
+                        "<div class='card-body collapse' id='"+data.id+"'></div>"+
+                    "</div>";
+        if(data.collapse == "show"){
+            $("#setlesson").append(root);
+            $("#"+data.id+"icon").addClass("fa fa-angle-up");
+            $("#"+data.id).addClass("show");
+        }
+        else{
+            $("#setlesson").append(root);
+            $("#"+data.id+"icon").addClass("fa fa-angle-down");
+        }
+    })
+};
 
 function lessonplan_Map(){
     lessonplan_Component.map(function(data){
@@ -107,9 +107,31 @@ function lessonplan_Map(){
     buttonDiv('lessonplan');
 };
 
+function lessonplan_unit_Set(){
+    $("#lessonplan_unit").append('<div class="row">'+
+                                    '<div class="card col">'+
+                                    '<div class="card-header bg-selfgreen">單元</div>'+
+                                    '<div class="card-body">'+
+                                        '<select class="form-control col" id="sel" size="10">'+
+                                        '<option value="1">國家</option>'+
+                                        '<option value="2">地區</option>'+
+                                        '</select>'+
+                                    '</div>'+
+                                    '</div>'+
+                                    '<div class="card col">'+
+                                    '<div class="card-header bg-selfgreen">活動</div>'+
+                                    '<div class="card-body">'+
+                                        '<select class="form-control col" id="sel2" size="10"></select>'+
+                                    '</div>'+
+                                    '</div>'+
+                                '</div>');
+    buttonDiv('lessonplan_unit');
+}
+
 $(function(){
     pagecontent_Map();
     lessonplan_Map();
+    lessonplan_unit_Set();
 
     //class摺疊執行完後更改圖形
     $(".collapse").on('show.bs.collapse', function(){
@@ -125,5 +147,30 @@ $(function(){
         $('#'+id).removeClass('fa fa-angle-up');
         $('#'+id).addClass("fa fa-angle-down");
     });
+
+    $("#sel").change(function(){
+        switch (parseInt($(this).val())){
+      
+              case 0: 
+            $("#sel2 option").remove();
+            break;
+              case 1: 
+            $("#sel2 option").remove();
+            var array = [ "美國", "台灣", "中國", "英國", "法國" ];
+            //利用each遍歷array中的值並將每個值新增到Select中
+            $.each(array, function(i, val) {
+              $("#sel2").append($("<option value='" + array[i] + "'>" + array[i] + "</option>"));
+            });      
+            break;
+              case 2: 
+            $("#sel2 option").remove();
+            var array = [ "歐洲", "亞洲", "非洲", "大洋洲", "南美洲", "北美洲", "南極洲" ];
+            //利用each遍歷array中的值並將每個值新增到Select中
+            $.each(array, function(i, val) {
+              $("#sel2").append($("<option value='" + array[i] + "'>" + array[i] + "</option>"));
+            });      
+            break;
+          }
+      });
 
 });
