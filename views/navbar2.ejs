@@ -1,19 +1,32 @@
 <header class="fixed-top">
-    <nav class="navbar navbar-light shadow" style="background-color: #F5FFBE;">
-        <a class="navbar-brand font-weight-bolder" href="/dashboard">教師共同備課系統</a>
-        <div class="nav-item dropdown">
-            <div class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <%= member_id %><%= member_name %>
-            </div>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" href="/member/logout">登出</a>
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #F5FFBE;">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+            <a class="navbar-brand font-weight-bolder" href="/dashboard">教師共同備課系統</a>
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0 pl-5">
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="">進入教案製作</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="">社群成員管理</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="">檔案管理</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="">個人空間</a>
+                </li>
+            </ul>
+            <div class="nav-item dropdown">
+                <div class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <%= member_id %><%= member_name %>
+                </div>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="/member/logout">登出</a>
+                </div>
             </div>
         </div>
-    </nav>
-    <nav class="nav" style="margin-left: 18%;">
-        <a class="nav-link disabled" href="">進入教案製作</a>
-        <a class="nav-link" href="">社群成員管理</a>
-        <a class="nav-link" href="">檔案管理</a>
-        <a class="nav-link" href="">個人空間</a>
     </nav>
 </header>
