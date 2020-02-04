@@ -27,20 +27,17 @@ function registerMap(){
     //將內容放入class為Root的div
     TextComponents.map(function(data){
         if(data.type == "select"){
-            $("#registerRoot").append(  "<div class='form-group'>"+
-                                            "<div class='input-group'>"+
-                                                "<"+data.type+" id='"+data.id+"' name='"+data.name+"' class='city form-control'>"+
-                                                    "<option selected='true' disabled='disabled' value=''>請選擇所在縣市</option>"+
-                                                "</"+data.type+">"+
-                                            "</div>"+
-                                        "</div>");
+            $("#registerRoot").append(  "<div class='wrap-input100 validate-input m-b-16'>"+
+                                            "<"+data.type+" id='"+data.id+"' name='"+data.name+"' class='city input100'>"+
+                                                "<option selected='true' disabled='disabled' value=''>請選擇所在縣市</option>"+
+                                            "</"+data.type+">"+
+                                            "</div>");
         }
         else{
-            $("#registerRoot").append(  "<div class='form-group'>"+
-                                            "<div class='input-group'>"+
-                                                "<input type='"+data.type+"' id='"+data.id+"' name='"+data.name+"' placeholder='"+data.title+"' class='form-control' required autofocus>"+
-                                            "</div>"+
-                                        "</div>");
+            $("#registerRoot").append('<div class="wrap-input100 validate-input m-b-16">'+
+                                        '<input class="input100" type="'+data.type+'" id="'+data.id+'" name="'+data.name+'" placeholder="'+data.title+'">'+
+                                        '<span class="focus-input100"></span>'+
+                                    '</div>');
         }
     })
 
@@ -54,11 +51,10 @@ function registerMap(){
 function loginMap(){
     TextComponents.map(function(data){
         if(data.show == "login"){
-            $("#loginRoot").append( "<div class='form-group'>"+
-                                        "<div class='input-group'>"+
-                                            "<input type='"+data.type+"' id='"+data.id+"' name='"+data.name+"' placeholder='"+data.title+"' class='form-control' required autofocus>"+
-                                        "</div>"+
-                                    "</div>");
+            $("#loginRoot").append('<div class="wrap-input100 validate-input m-b-16">'+
+                                        '<input class="input100" type="'+data.type+'" id="'+data.id+'" name="'+data.name+'" placeholder="'+data.title+'">'+
+                                        '<span class="focus-input100"></span>'+
+                                    '</div>');
         }
     })
 }
@@ -76,6 +72,7 @@ function postData(){
     }
     else{
         var action = $('.postbt').val();
+        console.log(action);
 
         if(action == '登入'){
             //與routes /member/login 的post連結
