@@ -72,7 +72,6 @@ function postData(){
     }
     else{
         var action = $('.postbt').val();
-        console.log(action);
 
         if(action == '登入'){
             //與routes /member/login 的post連結

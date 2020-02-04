@@ -12,8 +12,14 @@ router.get('/', function(req, res, next) {
       var communityNumber = results.length;
 
       dashboard.showMemberCommunity(member_id,function(memberResults){
-        var memberCommunityData = JSON.stringify(memberResults);
-        res.render('dashboard', { title: 'dashboard',member_id:member_id,member_name:member_name,allCommunityData:allCommunityData,memberCommunityData:memberCommunityData,communityNumber:communityNumber});
+        if(results.length){
+          var memberCommunityData = JSON.stringify(memberResults);
+          res.render('dashboard', { title: 'dashboard',member_id:member_id,member_name:member_name,allCommunityData:allCommunityData,memberCommunityData:memberCommunityData,communityNumber:communityNumber});
+        }
+        else{
+          var memberCommunityData = 0;
+          res.render('dashboard', { title: 'dashboard',member_id:member_id,member_name:member_name,allCommunityData:allCommunityData,memberCommunityData:memberCommunityData,communityNumber:communityNumber});
+        }
       });
     }
   })

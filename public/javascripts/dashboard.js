@@ -93,27 +93,33 @@ function searchCommunity(){
 
 //顯示會員已加入的社群
 function showMemberCommunity(){
-    for(var i = 0; i<memberCommunityData.length;i++){
-        var memberCommunity = memberCommunityData[i];
-        var community_id = memberCommunity.community_id;
-        var community_name = memberCommunity.community_name;
-        var community_createtime = new Date(memberCommunity.community_createtime);
-        var year = community_createtime.getFullYear();
-        var month = community_createtime.getMonth()+1;//月份是由(0-11)故要+1
-        var date = community_createtime.getDate();
-        var hour = community_createtime.getHours();
-        var minute = community_createtime.getMinutes();
-        var second = community_createtime.getSeconds();
-
-        var memberCommunity_div = ["<tr>"+
-                                    "<td>"+ community_name +"</td>"+
-                                    "<td>"+ year+"/"+month+"/"+date+" "+hour+":"+minute+":"+second+"</td>"+
-                                    "<td><input type='button' class='btn btn-primary' id='enterCommunity"+community_id+"' value='進入' onclick='enterCommunity("+community_id+")'></td>"+
-                                "</tr>"
-                                ];
-        
-        $("#memberCommunityTable tbody").append(memberCommunity_div);
-                                
+    if(memberCommunityData == 0){
+        $("#memberCommunityTable").hide();
+        $("#memberCommunityEmptyMsg").html("您目前尚未加入社群");
+    }
+    else{
+        for(var i = 0; i<memberCommunityData.length;i++){
+            var memberCommunity = memberCommunityData[i];
+            var community_id = memberCommunity.community_id;
+            var community_name = memberCommunity.community_name;
+            var community_createtime = new Date(memberCommunity.community_createtime);
+            var year = community_createtime.getFullYear();
+            var month = community_createtime.getMonth()+1;//月份是由(0-11)故要+1
+            var date = community_createtime.getDate();
+            var hour = community_createtime.getHours();
+            var minute = community_createtime.getMinutes();
+            var second = community_createtime.getSeconds();
+    
+            var memberCommunity_div = ["<tr>"+
+                                        "<td>"+ community_name +"</td>"+
+                                        "<td>"+ year+"/"+month+"/"+date+" "+hour+":"+minute+":"+second+"</td>"+
+                                        "<td><input type='button' class='btn btn-primary' id='enterCommunity"+community_id+"' value='進入' onclick='enterCommunity("+community_id+")'></td>"+
+                                    "</tr>"
+                                    ];
+            
+            $("#memberCommunityTable tbody").append(memberCommunity_div);
+                                    
+        }
     }
 }
 
