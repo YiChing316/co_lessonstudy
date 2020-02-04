@@ -139,9 +139,11 @@ function joinCommunity(id){
         },
         success: function(data){
             if(data.msg == 'no'){
+                $("#errmsgAll").show();
                 $("#errmsgAll").html('密碼錯誤');
             }
             else if(data.msg == 'existed'){
+                $("#errmsgAll").show();
                 $("#errmsgAll").html('您已加入此社群');
             }
             else{
