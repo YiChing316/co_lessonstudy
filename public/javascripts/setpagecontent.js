@@ -36,7 +36,7 @@ function pagecontent_Map(){
 
 function sidebar_Map(){
     pagecontent_Components.map(function(data){
-        $("#sidebarul").append('<li><a href="">'+data.title+'</a></li>');
+        $("#sidebarul").append('<li><a href="#cardid'+data.id+'" class="sidebarlink">'+data.title+'</a></li>');
     })
 };
 
@@ -59,4 +59,15 @@ $(function(){
         $('#'+id).addClass("fa fa-angle-down");
     });
 
+    $(".sidebarlink").on('click', function(event) {
+        //若未*2會只滑到card-header的一半
+        var cardheaderHeight = $(".card-header").height()*2
+        if (this.hash !== "") {
+          event.preventDefault();
+          var hash = this.hash;
+          $('html, body').animate({
+            scrollTop: $(hash).offset().top - cardheaderHeight
+          }, 1000);
+        }
+    });
 });
