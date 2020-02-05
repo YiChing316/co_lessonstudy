@@ -124,7 +124,7 @@ function unit_Map(){
 
 }
 
-//根據course_unit_name形成array
+//根據領域版本年級的單元名稱形成array
 function activity_Map(course_field,course_version,course_grade,course_unit_name){
     activityData = sortByKey(activityData,'course_id');
     var activity_array = [];
