@@ -8,7 +8,6 @@
     <title><%= title %></title>
   </head>
   <body>
-    <% if (member_id) { %>  
     <%- include('navbar2.ejs'); -%>
     <div class="page-wrapper">
       <%- include('sidebar.ejs'); -%>
@@ -101,9 +100,5 @@
         </div><!--content end-->
       </div><!--pagecontent end-->
     </div>
-    <% }else{%>
-    <input type="button" value="登入" onclick="javascript:location.href='/member/login'">
-    <input type="button" value="註冊" onclick="javascript:location.href='/member/register'">
-    <%}%>
   </body>
 </html>
