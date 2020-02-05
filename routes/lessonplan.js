@@ -11,8 +11,7 @@ router.get('/edit/:community_id', function(req, res, next) {
     var community_id = req.params.community_id;
 
     var unitData,activityData;
-
-    
+  
     dashboard.checkCommunityMember(community_id,member_id,function(results){
 
         if(results.isExisted){
@@ -53,9 +52,7 @@ router.get('/edit/:community_id', function(req, res, next) {
             res.redirect('/dashboard');
         }
     })
-
-    
-    
+   
 });
 
 module.exports = router;

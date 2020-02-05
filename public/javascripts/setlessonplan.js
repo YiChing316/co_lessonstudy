@@ -88,10 +88,7 @@ function lessonplan_unit_Set(){
                                     '<div class="card col">'+
                                     '<div class="card-header bg-selfgreen">單元</div>'+
                                     '<div class="card-body">'+
-                                        '<select class="form-control col" id="sel" size="10">'+
-                                            '<option value="1">國家</option>'+
-                                            '<option value="2">地區</option>'+
-                                        '</select>'+
+                                        '<select class="form-control col" id="sel" size="10"></select>'+
                                     '</div>'+
                                     '</div>'+
                                     '<div class="card col">'+
@@ -102,18 +99,37 @@ function lessonplan_unit_Set(){
                                     '</div>'+
                                 '</div>');
     buttonDiv('lessonplan_unit');
+    unit_Map();
 }
 
-// var unitnameArray =[];
+function unit_Map(){
+    unitData = sortByKey(unitData,'course_id');
 
-// function unit_Map(){
-//     for(var i; i<unitData.length;i++){
-//         var course = unitData[i];
-//         var course_unit_name = course.course_unit_name;
-//         unitnameArray.push(course_unit_name);
-//     }
-//     console.log(unitnameArray);
-// }
+    for(var i=0; i<unitData.length;i++){
+        var course = unitData[i];
+        var course_id = course.course_id;
+        var course_unit_name = course.course_unit_name;
+        var course_semester = course.course_semester;
+        if(course_semester=='上學期'){
+            $('#sel').append('<option value="1">'+course_id+' '+course_semester+' '+course_unit_name+'</option>');
+        }
+        else{
+            $('#sel').append('<option value="2">'+course_id+' '+course_semester+' '+course_unit_name+'</option>');
+        }
+    }
+}
+
+function activity_Map(){
+    activityData = sortByKey(activityData,'course_id');
+}
+
+//array排序
+function sortByKey(array, key) {
+    return array.sort(function(a, b) {
+        var x = a[key]; var y = b[key];
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    });
+}
 
 
 
@@ -132,24 +148,24 @@ $(function(){
     $("#sel").change(function(){
         switch (parseInt($(this).val())){
       
-              case 0: 
-            $("#sel2 option").remove();
+            case 0: 
+                $("#sel2 option").remove();
             break;
-              case 1: 
-            $("#sel2 option").remove();
-            var array = [ "美國", "台灣", "中國", "英國", "法國" ];
-            //利用each遍歷array中的值並將每個值新增到Select中
-            $.each(array, function(i, val) {
-              $("#sel2").append($("<option value='" + array[i] + "'>" + array[i] + "</option>"));
-            });      
+            case 1: 
+                $("#sel2 option").remove();
+                var array = [ "美國", "台灣", "中國", "英國", "法國" ];
+                //利用each遍歷array中的值並將每個值新增到Select中
+                $.each(array, function(i, val) {
+                    $("#sel2").append($("<option value='" + array[i] + "'>" + array[i] + "</option>"));
+                });      
             break;
-              case 2: 
-            $("#sel2 option").remove();
-            var array = [ "歐洲", "亞洲", "非洲", "大洋洲", "南美洲", "北美洲", "南極洲" ];
-            //利用each遍歷array中的值並將每個值新增到Select中
-            $.each(array, function(i, val) {
-              $("#sel2").append($("<option value='" + array[i] + "'>" + array[i] + "</option>"));
-            });      
+            case 2: 
+                $("#sel2 option").remove();
+                var array = [ "歐洲", "亞洲", "非洲", "大洋洲", "南美洲", "北美洲", "南極洲" ];
+                //利用each遍歷array中的值並將每個值新增到Select中
+                $.each(array, function(i, val) {
+                    $("#sel2").append($("<option value='" + array[i] + "'>" + array[i] + "</option>"));
+                });      
             break;
           }
       });
