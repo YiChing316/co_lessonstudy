@@ -21,12 +21,12 @@ module.exports = {
         })
     },
 
-    //選取有條件的學期+單元
+    //選取有條件單元
     getcourseunitwhere: function(course_field,course_version,course_grade,cb){
 
         resourcepool.getConnection(function(err,connection){
             if(err) throw err;
-            connection.query('SELECT `course_semester`,`course_unit_name` FROM `course` WHERE `course_field` =? AND `course_version`=? AND `course_grade`=? GROUP BY `course_unit_name`',[course_field,course_version,course_grade],function(err,results){
+            connection.query('SELECT * FROM `course` WHERE `course_field` =? AND `course_version`=? AND `course_grade`=? GROUP BY `course_unit_name`',[course_field,course_version,course_grade],function(err,results){
                 if(err) throw err;
                 cb(results);
                 connection.release();
@@ -39,7 +39,7 @@ module.exports = {
     getcourseactivitywhere: function(course_field,course_version,course_grade,cb){
         resourcepool.getConnection(function(err,connection){
             if(err) throw err;
-            connection.query('SELECT * FROM `course` WHERE `course_field` =? AND `course_version`=? AND `course_grade`=? GROUP BY `course_unit_name`',[course_field,course_version,course_grade],function(err,results){
+            connection.query('SELECT * FROM `course` WHERE `course_field` =? AND `course_version`=? AND `course_grade`=?',[course_field,course_version,course_grade],function(err,results){
                 if(err) throw err;
                 cb(results);
                 connection.release();
