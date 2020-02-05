@@ -9,6 +9,14 @@ var lessonplan_Component = [
     {name:'授課時間',id:'lessonplan_time',type:'other',parentDiv:'lessonplan'}
 ];
 
+//會使用到ckeditor的位置
+var lessonplanstage_Component = [
+    {id:'lessonplan_target',createDiv:'targetTextarea'},
+    {id:'lessonplan_studentknowledge',createDiv:'studentknowledgeTextarea'},
+    {id:'lessonplan_resource',createDiv:'resourceTextarea'},
+    {id:'lessonplan_design',createDiv:'designTextarea'}
+]
+
 
 /*****************內容元件 *****************************************************************************/
 function textareaDiv(componentname,componentid,parentDiv){
@@ -30,11 +38,19 @@ function selectDiv(componentname,componentid,parentDiv){
 };
 
 function buttonDiv(parentDiv){
-    $('#'+parentDiv).append('<div class="bt-group float-right">'+
+    $('#'+parentDiv).append('<div class="bt-group float-right pt-2">'+
                                 '<input type="button" class="btn btn-secondary" value="清除">'+
-                                '<input type="button" class="btn btn-primary" value="儲存">'+
+                                '<input type="button" class="btn btn-primary ml-1" value="儲存">'+
                             '</div>');
 };
+
+function ckeditorDiv(parentDiv){
+    ClassicEditor
+        .create( document.querySelector( '#'+parentDiv ) )
+        .catch( error => {
+            console.error( error );
+    });
+}
 
 
 
@@ -163,13 +179,16 @@ function activity_Map(course_field,course_version,course_grade,course_unit_name)
     });
 }
 
-//array排序
-function sortByKey(array, key) {
-    return array.sort(function(a, b) {
-        var x = a[key]; var y = b[key];
-        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-    });
+//將需要ckeditor的stage放入
+function lessonplanstage_Map(){
+    lessonplanstage_Component.map(function(data){
+        $('#'+data.id).append('<div id="'+data.createDiv+'"></div>');
+        ckeditorDiv(data.createDiv);
+        buttonDiv(data.id);
+    })
 }
+
+
 
 
 
@@ -183,5 +202,15 @@ $(function(){
 
     lessonplan_Map();
     lessonplan_unit_Set();
+    lessonplanstage_Map();
+    ckeditorDiv('editor');
 
 })
+
+//array排序
+function sortByKey(array, key) {
+    return array.sort(function(a, b) {
+        var x = a[key]; var y = b[key];
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    });
+}

@@ -7,7 +7,7 @@ var pagecontent_Components = [
     {title:'學生先備概念',id:'lessonplan_studentknowledge',collapse:'none'},
     {title:'核心素養',id:'lessonplan_cirn',collapse:'none'},
     {title:'議題融入',id:'lessonplan_issue',collapse:'none'},
-    {title:'教學資源及器材',id:'lessonplan_resourse',collapse:'none'},
+    {title:'教學資源及器材',id:'lessonplan_resource',collapse:'none'},
     {title:'教學設計理念',id:'lessonplan_design',collapse:'none'},
     {title:'因材網知識節點',id:'lessonplan_adl',collapse:'none'}
 ];

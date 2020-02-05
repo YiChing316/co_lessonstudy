@@ -4,6 +4,7 @@
     <%- include('bootstrap.ejs'); -%>
     <script src="/javascripts/setpagecontent.js"></script>
     <script src="/javascripts/setlessonplan.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/16.0.0/classic/ckeditor.js"></script>
     <link href="/stylesheets/style.css" rel="stylesheet">
     <title><%= title %></title>
   </head>
@@ -30,7 +31,7 @@
             <div id="setlesson" class="card-body">
               <p id="unitData"><%= unitData %></p>
               <p id="activityData"><%= activityData %></p>
-              <!--<div class='card' id='cardid"+data.id+"'>
+              <div class='card' id='cardid"+data.id+"'>
                 <div class='card-header bg-white' id='header"+data.id+"'>title
                     <span class='float-right' data-toggle='collapse' data-target='#"+data.id+"'>
                         <i id='"+data.id+"icon' aria-hidden='true'></i>
@@ -61,34 +62,16 @@
                     <div class="col-sm"><input type="text" id="lessonplan_time_minutes" class="form-control"></div>
                     <div class="col-sm-1"><label>分鐘</label></div>  
                   </div>
-                  <div class="row">
-                    <div class="col">
-                      <div class="list-group" id="list-tab" role="tablist">
-                        <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab">Home</a>
-                        <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab">Profile</a>
-                      </div>
-                    </div>
-                    <div class="col">
-                      <div class="tab-content" id="nav-tabContent">
-                        <div class="tab-pane show active list-group" id="list-home" role="tabpanel">
-                          <a class="list-group-item list-group-item-action">1-1</a>
-                          <a class="list-group-item list-group-item-action">1-2</a>
-                        </div>
-                        <div class="tab-pane list-group" id="list-profile" role="tabpanel">
-                          <a class="list-group-item list-group-item-action">2-1</a>
-                          <a class="list-group-item list-group-item-action">2-2</a>
-                          <a class="list-group-item list-group-item-action">2-3</a>
-                        </div>
-                      </div>
-                    </div>
+                  <div id="editor">
+                      <p>Here goes the initial content of the editor.</p>
                   </div>
                   <div class="bt-group float-right">
                     <input type="button" class="btn btn-secondary" value="清除">
                     <input type="button" class="btn btn-primary" value="儲存">
                   </div>
-                </div>card-body end -->
-              <!-- </div>card end-->
-            <!--</div>setlesson end-->
+                </div><!--card-body end -->
+              </div><!-- card end-->
+            </div><!--setlesson end-->
           </div>
           <div class="card">
             <div class="card-header text-white bg-selfblue">
