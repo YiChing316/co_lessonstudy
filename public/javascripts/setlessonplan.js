@@ -63,25 +63,26 @@ function lessonplan_Map(){
         else if(data.type == 'select'){
             if(data.id == 'lessonplan_field'){
                 selectDiv(data.name,data.id,data.parentDiv);
-                $('#'+data.id).append('<option>國語</option>'+
-                                        '<option>英語</option>'+
-                                        '<option>自然</option>'+
-                                        '<option>數學</option>');
+                $('#'+data.id).append('<option value="國">國語</option>'+
+                                        '<option value="英">英語</option>'+
+                                        '<option value="自">自然</option>'+
+                                        '<option value="數">數學</option>');
             }
             else if(data.id == 'lessonplan_version'){
                 selectDiv(data.name,data.id,data.parentDiv);
-                $('#'+data.id).append('<option>康軒</option>'+
-                                        '<option>南一</option>'+
-                                        '<option>翰林</option>'+
-                                        '<option>自編</option>');
+                $('#'+data.id).append('<option value="康軒">康軒</option>'+
+                                        '<option value="南一">南一</option>'+
+                                        '<option value="翰林">翰林</option>'+
+                                        '<option value="自編">自編</option>');
             }
             else if(data.id == 'lessonplan_grade'){
                 selectDiv(data.name,data.id,data.parentDiv);
-                $('#'+data.id).append('<option>第一學習階段(國小低年級-1.2年級)</option>'+
-                                        '<option>第二學習階段(國小中年級-3.4年級)</option>'+
-                                        '<option>第三學習階段(國小高年級-5.6年級)</option>'+
-                                        '<option>第四學習階段(國中)</option>'+
-                                        '<option>第五學習階段(高中)</option>');
+                $('#'+data.id).append('<option value="3年級">3年級</option>'+
+                                        '<option value="4年級">4年級</option>'+
+                                        '<option value="5年級">5年級</option>'+
+                                        '<option value="6年級">6年級</option>'+
+                                        '<option value="國中">第四學習階段(國中)</option>'+
+                                        '<option value="高中">第五學習階段(高中)</option>');
             }
         }
         else{
@@ -203,7 +204,6 @@ $(function(){
     lessonplan_Map();
     lessonplan_unit_Set();
     lessonplanstage_Map();
-    ckeditorDiv('editor');
 
 })
 

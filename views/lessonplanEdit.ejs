@@ -29,8 +29,10 @@
               訂定課程目標
             </div>
             <div id="setlesson" class="card-body">
-              <p id="unitData"><%= unitData %></p>
-              <p id="activityData"><%= activityData %></p>
+              <p id="unitData" style="display: none;"><%= unitData %></p>
+              <p id="activityData" style="display: none;"><%= activityData %></p>
+              <p id="course_field_info"><%= course_field %></p>
+              <p id="course_grade_info"><%= course_grade %></p>
               <div class='card' id='cardid"+data.id+"'>
                 <div class='card-header bg-white' id='header"+data.id+"'>title
                     <span class='float-right' data-toggle='collapse' data-target='#"+data.id+"'>
@@ -44,26 +46,24 @@
                       <textarea id="lessonplan_intro" class="form-control" rows="5"></textarea>
                     </div>
                   </div>
-                  <div class="form-group row">
-                    <label class="control-label col-sm-2">課程領域</label>
-                    <div class="col-sm-10">
-                      <select id="lessonplan_field" class="form-control">
-                        <option>國語</option>
-                        <option>英語</option>
-                        <option>自然</option>
-                        <option>數學</option>
-                      </select>
+                  <div class="form-group">
+                    <label class="control-label font-weight-bolder">核心素養</label>
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <select class="form-control"></select>
+                      </div>
+                      <div class="col-sm-7">
+                        <select class="form-control"></select>
+                      </div>
+                      <div class="col">
+                        <input type="button" class="btn btn-outline-info" value="加入">
+                      </div>
                     </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="control-label col-sm-2">授課時間</label>
-                    <div class="col-sm"><input type="text" id="lessonplan_time_class" class="form-control"></div>
-                    <div class="col-sm-1"><label>節課，共</label></div>
-                    <div class="col-sm"><input type="text" id="lessonplan_time_minutes" class="form-control"></div>
-                    <div class="col-sm-1"><label>分鐘</label></div>  
-                  </div>
-                  <div id="editor">
-                      <p>Here goes the initial content of the editor.</p>
+                    <hr>
+                    <div class="card">
+                      <div class="card-header">A2 系統思考與解決問題：具備問題理解、思辨分析、推理批判的系統思考與後設思考素養，並能行動與反思，以有效處理及解決生活、生命問題。</div>
+                    </div>
+                    
                   </div>
                   <div class="bt-group float-right">
                     <input type="button" class="btn btn-secondary" value="清除">

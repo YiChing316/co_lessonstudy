@@ -15,11 +15,11 @@ var pagecontent_Components = [
 function pagecontent_Map(){
     pagecontent_Components.map(function(data){
         var root ="<div class='card' id='cardid"+data.id+"'>"+
-                        "<div class='card-header bg-white' id='header"+data.id+"'>"+data.title+
+                        "<h5 class='card-header bg-white font-weight-bolder' id='header"+data.id+"'>"+data.title+
                             "<span class='float-right' data-toggle='collapse' data-target='#"+data.id+"'>"+
                                 "<i id='"+data.id+"icon' aria-hidden='true'></i>"+
                             "</span>"+
-                        "</div>"+
+                        "</h5>"+
                         "<div class='card-body collapse' id='"+data.id+"'></div>"+
                     "</div>";
         if(data.collapse == "show"){

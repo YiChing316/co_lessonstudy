@@ -41,7 +41,7 @@ router.get('/edit/:community_id', function(req, res, next) {
 
                         lessonplan.getcourseactivitywhere(course_field,course_version,course_grade,function(actResults){
                             activityData = JSON.stringify(actResults);
-                            res.render('lessonplanEdit', { title: '教案製作',member_id:member_id,member_name:member_name,community_id:community_id,unitData:unitData,activityData:activityData});
+                            res.render('lessonplanEdit', { title: '教案製作',member_id:member_id,member_name:member_name,community_id:community_id,unitData:unitData,activityData:activityData,course_field:course_field,course_grade:course_grade});
                         })
                     })
                 }
