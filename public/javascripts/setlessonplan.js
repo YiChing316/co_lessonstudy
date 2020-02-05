@@ -15,7 +15,18 @@ var lessonplanstage_Component = [
     {id:'lessonplan_studentknowledge',createDiv:'studentknowledgeTextarea'},
     {id:'lessonplan_resource',createDiv:'resourceTextarea'},
     {id:'lessonplan_design',createDiv:'designTextarea'}
-]
+];
+
+var twoselect_Component = [
+    {labelname:'核心素養',firstselid:'core_competency_dimesion_sel',secondselid:'core_competency_item_sel',bodyname:'core_competency_body',parentDiv:'lessonplan_cirn'},
+    {labelname:'選擇所對應的因材網知識節點',firstselid:'adl_knowledgenode_unit_sel',secondselid:'adl_knowledgenode_node_sel',bodyname:'adl_body',parentDiv:'lessonplan_adl'}
+];
+
+var threeselect_Component = [
+    {labelname:'學習表現',firstselid:'performancefocus_item',secondselid:'performancefocus_childitem',threeselid:'performancefocus_content',bodyname:'performancefocus_body',parentDiv:'cirn-form2'},
+    {labelname:'學習內容',firstselid:'contentfocus_item',secondselid:'contentfocus_childitem',threeselid:'contentfocus_content',bodyname:'contentfocus_body',parentDiv:'cirn-form2'},
+    {labelname:'議題融入',firstselid:'issue_name',secondselid:'issue_learning_theme',threeselid:'issue_content',bodyname:'issue_body',parentDiv:'lessonplan_issue'}
+];
 
 
 /*****************內容元件 *****************************************************************************/
@@ -50,6 +61,49 @@ function ckeditorDiv(parentDiv){
         .catch( error => {
             console.error( error );
     });
+}
+
+function twoselectDiv(labelname,firstselid,secondselid,bodyname,parentDiv){
+    $('#'+parentDiv).append('<div class="form-group">'+
+                                '<label class="control-label font-weight-bolder">'+labelname+'</label>'+
+                                '<div class="row">'+
+                                '<div class="col-sm-4">'+
+                                    '<select class="form-control" id="'+firstselid+'"></select>'+
+                                '</div>'+
+                                '<div class="col-sm-7">'+
+                                    '<select class="form-control" id="'+secondselid+'"></select>'+
+                                ' </div>'+
+                                '<div class="col">'+
+                                    '<input type="button" class="btn btn-outline-info" value="加入">'+
+                                '</div>'+
+                                '</div>'+
+                                '<hr>'+
+                                '<div id="'+bodyname+'"></div>'+
+                            '</div>');
+}
+
+function threeselecDiv(labelname,firstselid,secondselid,threeselid,bodyname,parentDiv){
+    $('#'+parentDiv).append('<div class="form-group">'+
+                                '<label class="control-label">'+labelname+'</label>'+
+                                '<div class="row">'+
+                                    '<div class="col-sm-4">'+
+                                    '<select class="form-control" id="'+firstselid+'"></select>'+
+                                    '</div>'+
+                                    '<div class="col-sm-7">'+
+                                    '<select class="form-control" id="'+secondselid+'"></select>'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="row mt-2">'+
+                                    '<div class="col-sm-11">'+
+                                    '<select class="form-control" id="'+threeselid+'"></select>'+
+                                    '</div>'+
+                                    '<div class="col">'+
+                                    '<input type="button" class="btn btn-outline-info" value="加入">'+
+                                    '</div>'+
+                                '</div>'+
+                                '<hr>'+
+                                '<div id="'+bodyname+'"></div>'+
+                            '</div>');
 }
 
 
@@ -189,6 +243,25 @@ function lessonplanstage_Map(){
     })
 }
 
+function twoselect_Map(){
+    twoselect_Component.map(function(data){
+        twoselectDiv(data.labelname,data.firstselid,data.secondselid,data.bodyname,data.parentDiv);
+    })
+}
+
+function cirn_Set(){
+    $('#lessonplan_cirn').append('<div class="form-group" id="cirn-form2">'+
+                                    '<label class="control-label font-weight-bolder">學習重點</label>'+
+                                '</div>');
+}
+
+function threeselect_Map(){
+    threeselect_Component.map(function(data){
+        threeselecDiv(data.labelname,data.firstselid,data.secondselid,data.threeselid,data.bodyname,data.parentDiv);
+    })
+}
+
+
 
 
 
@@ -204,6 +277,9 @@ $(function(){
     lessonplan_Map();
     lessonplan_unit_Set();
     lessonplanstage_Map();
+    twoselect_Map();
+    cirn_Set();
+    threeselect_Map();
 
 })
 
