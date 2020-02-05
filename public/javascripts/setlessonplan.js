@@ -1,3 +1,4 @@
+
 /*將教案實作的內容以模組方式append出來 */
 
 var lessonplan_Component = [
@@ -80,14 +81,16 @@ function lessonplan_Map(){
     buttonDiv('lessonplan');
 };
 
+var unitData,activityData;
+
 function lessonplan_unit_Set(){
     $("#lessonplan_unit").append('<div class="row">'+
                                     '<div class="card col">'+
                                     '<div class="card-header bg-selfgreen">單元</div>'+
                                     '<div class="card-body">'+
                                         '<select class="form-control col" id="sel" size="10">'+
-                                        '<option value="1">國家</option>'+
-                                        '<option value="2">地區</option>'+
+                                            '<option value="1">國家</option>'+
+                                            '<option value="2">地區</option>'+
                                         '</select>'+
                                     '</div>'+
                                     '</div>'+
@@ -101,16 +104,30 @@ function lessonplan_unit_Set(){
     buttonDiv('lessonplan_unit');
 }
 
+// var unitnameArray =[];
 
-
+// function unit_Map(){
+//     for(var i; i<unitData.length;i++){
+//         var course = unitData[i];
+//         var course_unit_name = course.course_unit_name;
+//         unitnameArray.push(course_unit_name);
+//     }
+//     console.log(unitnameArray);
+// }
 
 
 
 /******************************************************************************** */
 
 $(function(){
+    unitData = JSON.parse($("#unitData").text());
+    activityData = JSON.parse($("#activityData").text());
+    // $("#unitData").remove();
+    // $("#activityData").remove();
+
     lessonplan_Map();
     lessonplan_unit_Set();
+    
 
     $("#sel").change(function(){
         switch (parseInt($(this).val())){
