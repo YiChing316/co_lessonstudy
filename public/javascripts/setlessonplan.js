@@ -88,13 +88,13 @@ function lessonplan_unit_Set(){
                                     '<div class="card col">'+
                                     '<div class="card-header bg-selfgreen">單元</div>'+
                                     '<div class="card-body">'+
-                                        '<select class="form-control col" id="sel" size="10"></select>'+
+                                        '<select class="form-control col" id="unit_sel" size="10"></select>'+
                                     '</div>'+
                                     '</div>'+
                                     '<div class="card col">'+
                                     '<div class="card-header bg-selfgreen">活動</div>'+
                                     '<div class="card-body">'+
-                                        '<select class="form-control col" id="sel2" size="10"></select>'+
+                                        '<select class="form-control col" id="activity_sel" size="10"></select>'+
                                     '</div>'+
                                     '</div>'+
                                 '</div>');
@@ -108,19 +108,59 @@ function unit_Map(){
     for(var i=0; i<unitData.length;i++){
         var course = unitData[i];
         var course_id = course.course_id;
+        var course_field = course.course_field;
+        var course_version = course.course_version;
+        var course_grade = course.course_grade;
         var course_unit_name = course.course_unit_name;
         var course_semester = course.course_semester;
+        activity_Map(course_field,course_version,course_grade,course_unit_name);
         if(course_semester=='上學期'){
-            $('#sel').append('<option value="1">'+course_id+' '+course_semester+' '+course_unit_name+'</option>');
+            $('#unit_sel').append('<option value="'+course_unit_name+'">'+course_id+' '+course_field+' '+course_version+' '+course_grade+' '+course_semester+' '+course_unit_name+'</option>');
         }
         else{
-            $('#sel').append('<option value="2">'+course_id+' '+course_semester+' '+course_unit_name+'</option>');
+            $('#unit_sel').append('<option value="'+course_unit_name+'">'+course_id+' '+course_field+' '+course_version+' '+course_grade+' '+course_semester+' '+course_unit_name+'</option>');
         }
     }
+
 }
 
-function activity_Map(){
+//根據course_unit_name形成array
+function activity_Map(course_field,course_version,course_grade,course_unit_name){
     activityData = sortByKey(activityData,'course_id');
+    var activity_array = [];
+
+    for(var i=0;i<activityData.length;i++){
+        var course_activity = activityData[i];
+        var course_id = course_activity.course_id;
+        var course_activity_field = course_activity.course_field;
+        var course_activity_version = course_activity.course_version;
+        var course_activity_grade = course_activity.course_grade;
+        var course_activity_unit = course_activity.course_unit_name;
+        var course_activity_name = course_activity.course_activity_name;
+        if(course_activity_field == course_field && 
+            course_activity_version == course_version && 
+            course_activity_grade == course_grade && 
+            course_activity_unit == course_unit_name){
+            activity_array.push(course_id+' '+course_activity_name);
+        }
+    }
+
+    $("#unit_sel").change(function(){
+        switch ($(this).val()){
+      
+            case 0: 
+                $("#activity_sel option").remove();
+            break;
+            case course_unit_name: 
+                $("#activity_sel option").remove();
+                var array = activity_array;
+                //利用each遍歷array中的值並將每個值新增到Select中
+                $.each(array, function(i, val) {
+                    $("#activity_sel").append($("<option value='" + array[i] + "'>" + array[i] + "</option>"));
+                });      
+            break;
+        }
+    });
 }
 
 //array排序
@@ -138,35 +178,10 @@ function sortByKey(array, key) {
 $(function(){
     unitData = JSON.parse($("#unitData").text());
     activityData = JSON.parse($("#activityData").text());
-    // $("#unitData").remove();
-    // $("#activityData").remove();
+    $("#unitData").remove();
+    $("#activityData").remove();
 
     lessonplan_Map();
     lessonplan_unit_Set();
-    
 
-    $("#sel").change(function(){
-        switch (parseInt($(this).val())){
-      
-            case 0: 
-                $("#sel2 option").remove();
-            break;
-            case 1: 
-                $("#sel2 option").remove();
-                var array = [ "美國", "台灣", "中國", "英國", "法國" ];
-                //利用each遍歷array中的值並將每個值新增到Select中
-                $.each(array, function(i, val) {
-                    $("#sel2").append($("<option value='" + array[i] + "'>" + array[i] + "</option>"));
-                });      
-            break;
-            case 2: 
-                $("#sel2 option").remove();
-                var array = [ "歐洲", "亞洲", "非洲", "大洋洲", "南美洲", "北美洲", "南極洲" ];
-                //利用each遍歷array中的值並將每個值新增到Select中
-                $.each(array, function(i, val) {
-                    $("#sel2").append($("<option value='" + array[i] + "'>" + array[i] + "</option>"));
-                });      
-            break;
-          }
-      });
 })
