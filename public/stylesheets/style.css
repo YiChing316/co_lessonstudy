@@ -1,3 +1,5 @@
+body{font-family: '微軟正黑體';}
+
 .wrapper {
   align-items: center;
   justify-content: center;
@@ -107,4 +109,11 @@
 .ck-editor__editable_inline {
   min-height: 200px;
 }
+
+/*讓card在col的情況下無左右padding*/
+.nopadding{
+  padding-left: 0;
+  padding-right: 0;
+}
+
 

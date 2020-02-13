@@ -1,6 +1,6 @@
 /*---------------------------------------------*/
 a {
-	font-family: Ubuntu-Regular;
+	font-family: '微軟正黑體';
 	font-size: 14px;
 	line-height: 1.7;
 	color: #666666;
@@ -26,7 +26,7 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 p {
-	font-family: Ubuntu-Regular;
+	font-family: '微軟正黑體';
 	font-size: 14px;
 	line-height: 1.7;
 	color: #666666;
@@ -98,21 +98,21 @@ select{
 /*//////////////////////////////////////////////////////////////////
 [ Utility ]*/
 .txt1 {
-  font-family: Ubuntu-Regular;
+  font-family: '微軟正黑體';
   font-size: 15px;
   color: #999999;
   line-height: 1.4;
 }
 
 .txt2 {
-  font-family: Ubuntu-Regular;
+  font-family: '微軟正黑體';
   font-size: 15px;
   color: #57b846;
   line-height: 1.4;
 }
 
 .txt3 {
-  font-family: Ubuntu-Bold;
+  font-family: '微軟正黑體';
   font-size: 15px;
   color: #065B80;
   line-height: 1.4;
@@ -166,7 +166,7 @@ select{
 }
 
 .login100-form-title {
-  font-family: JosefinSans-Bold;
+  font-family: '微軟正黑體';
   font-size: 30px;
   color: #fff;
   line-height: 1.2;
@@ -194,7 +194,7 @@ select{
 }
 
 .input100 {
-  font-family: Ubuntu-Bold;
+  font-family: '微軟正黑體';
   font-size: 15px;
   color: #1b3815;
   line-height: 1.2;
@@ -266,7 +266,7 @@ select{
   background-color: #065B80;
   border-radius: 25px;
 
-  font-family: Ubuntu-Bold;
+  font-family: '微軟正黑體';
   font-size: 15px;
   color: #fff;
   line-height: 1.2;
