@@ -14,13 +14,19 @@ var pagecontent_Components = [
 
 function pagecontent_Map(){
     pagecontent_Components.map(function(data){
-        var root ="<div class='card' id='cardid"+data.id+"'>"+
-                        "<h5 class='card-header bg-white font-weight-bolder' id='header"+data.id+"'>"+data.title+
-                            "<span class='float-right' data-toggle='collapse' data-target='#"+data.id+"'>"+
-                                "<i id='"+data.id+"icon' aria-hidden='true'></i>"+
-                            "</span>"+
-                        "</h5>"+
-                        "<div class='card-body collapse' id='"+data.id+"'></div>"+
+        var root = "<div class='row'>"+
+                        "<div class='card col-9 nopadding' id='cardid"+data.id+"'>"+
+                            "<h5 class='card-header bg-white font-weight-bolder' id='header"+data.id+"'>"+data.title+
+                                "<span class='float-right' data-toggle='collapse' data-target='#"+data.id+"'>"+
+                                    "<i id='"+data.id+"icon' aria-hidden='true'></i>"+
+                                "</span>"+
+                            "</h5>"+
+                            "<div class='card-body collapse' id='"+data.id+"'></div>"+
+                        "</div>"+
+                        "<div class='card col nopadding'>"+
+                            "<h5 class='card-header bg-selfgreen font-weight-bolder'>團隊想法</h5>"+
+                            "<div class='card-body collapse'></div>"+
+                        "</div>"+
                     "</div>";
         if(data.collapse == "show"){
             $("#setlesson").append(root);
