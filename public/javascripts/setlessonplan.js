@@ -156,16 +156,16 @@ var unitData,activityData;
 
 function lessonplan_unit_Set(){
     $("#lessonplan_unit").append('<div class="row">'+
-                                    '<div class="card col">'+
+                                    '<div class="card col nopadding">'+
                                     '<div class="card-header bg-selfgreen">單元</div>'+
                                     '<div class="card-body">'+
                                         '<select class="form-control col" id="unit_sel" size="10"></select>'+
                                     '</div>'+
                                     '</div>'+
-                                    '<div class="card col">'+
+                                    '<div class="card col nopadding ml-1">'+
                                     '<div class="card-header bg-selfgreen">活動</div>'+
                                     '<div class="card-body">'+
-                                        '<select class="form-control col" id="activity_sel" size="10"></select>'+
+                                        '<div class="col" id="activity_sel"></div>'+
                                     '</div>'+
                                     '</div>'+
                                 '</div>');
@@ -220,14 +220,22 @@ function activity_Map(course_field,course_version,course_grade,course_unit_name)
         switch ($(this).val()){
       
             case 0: 
-                $("#activity_sel option").remove();
+                $("#activity_sel .mycheckbox").remove();
             break;
             case course_unit_name: 
-                $("#activity_sel option").remove();
+                $("#activity_sel .mycheckbox").remove();
+                $('#activity_sel').append('<div class="custom-control custom-checkbox mycheckbox">'+
+                                                '<input type="checkbox" class="custom-control-input" id="allchecked" onclick="allchecked()">'+
+                                                '<label class="custom-control-label font-weight-bolder" for="allchecked">全選</label>'+
+                                            '</div>');
                 var array = activity_array;
-                //利用each遍歷array中的值並將每個值新增到Select中
+                //利用each遍歷array中的值並將每個值新增到div中
                 $.each(array, function(i, val) {
-                    $("#activity_sel").append($("<option value='" + array[i] + "'>" + array[i] + "</option>"));
+                    $('#activity_sel').append($('<div class="custom-control custom-checkbox mycheckbox ml-4">'+
+                                                    '<input type="checkbox" class="custom-control-input" id="'+ array[i] +'" name="box">'+
+                                                    '<label class="custom-control-label" for="'+ array[i] +'">'+ array[i] +'</label>'+
+                                                '</div>'
+                                                ));
                 });      
             break;
         }
@@ -289,4 +297,18 @@ function sortByKey(array, key) {
         var x = a[key]; var y = b[key];
         return ((x < y) ? -1 : ((x > y) ? 1 : 0));
     });
+}
+
+//活動選擇全選以及取消全選
+function allchecked(){
+    if($("#allchecked").prop("checked")) {
+        $("input[name='box']").each(function() {
+            $(this).prop("checked", true);
+        });
+    } 
+    else {
+        $("input[name='box']").each(function() {
+            $(this).prop("checked", false);
+        });           
+    }
 }
