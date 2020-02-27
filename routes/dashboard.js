@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var dashboard = require('../models/community');
+var community = require('../models/community');
 
 router.get('/', function(req, res, next) {
   var member_id = req.session.member_id;
@@ -10,12 +10,12 @@ router.get('/', function(req, res, next) {
     res.redirect('/member/login');
   }
   else{
-    dashboard.showAllCommunity(function(results){
+    community.showAllCommunity(function(results){
       if(results.length){
         var allCommunityData = JSON.stringify(results);
         var communityNumber = results.length;
 
-        dashboard.showMemberCommunity(member_id,function(memberResults){
+        community.showMemberCommunity(member_id,function(memberResults){
           if(results.length){
             var memberCommunityData = JSON.stringify(memberResults);
             res.render('dashboard', { title: 'dashboard',member_id:member_id,member_name:member_name,allCommunityData:allCommunityData,memberCommunityData:memberCommunityData,communityNumber:communityNumber});
@@ -36,13 +36,13 @@ router.post('/create', function(req, res,next) {
     community_name = req.body.community_name || '',
     community_key = req.body.community_key || '';
 
-  dashboard.create(community_name,community_key,member_id,member_name,function(results){
+    community.create(community_name,community_key,member_id,member_name,function(results){
     if(results){
       
       //得到剛新增的社群id
       var community_id = results.insertId;
       //將創建人新增進社群成員資料表內
-      dashboard.addCommunityMember(community_id,member_id,member_name,function(results){
+      community.addCommunityMember(community_id,member_id,member_name,function(results){
         if(results){
           res.json({msg:'yes'});
         }
@@ -61,7 +61,7 @@ router.post('/join', function(req, res,next) {
     community_id = req.body.community_id || '',
     community_key = req.body.community_key || '';
     
-    dashboard.checkCommunityMember(community_id,member_id,function(checkResults){
+    community.checkCommunityMember(community_id,member_id,function(checkResults){
       //此人已加入該社群
       if(checkResults.isExisted){
         res.json({msg:'existed'});
@@ -75,7 +75,7 @@ router.post('/join', function(req, res,next) {
         }
         //密碼正確則加入社群
         else{
-          dashboard.addCommunityMember(community_id,member_id,member_name,function(addResults){
+          community.addCommunityMember(community_id,member_id,member_name,function(addResults){
             if(addResults){
               res.json({msg:'yes',community_id:community_id});
             }

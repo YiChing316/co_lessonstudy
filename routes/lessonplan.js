@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var dashboard = require('../models/community');
+var community = require('../models/community');
 var lessonplan = require('../models/lessonplan');
 
 /* GET lessonplan page. */
@@ -12,7 +12,7 @@ router.get('/edit/:community_id', function(req, res, next) {
 
     var unitData,activityData;
   
-    dashboard.checkCommunityMember(community_id,member_id,function(results){
+    community.checkCommunityMember(community_id,member_id,function(results){
 
         if(results.isExisted){
             //檢查是否已有儲存過年級版本
@@ -25,7 +25,7 @@ router.get('/edit/:community_id', function(req, res, next) {
 
                         lessonplan.getcourseactivity(function(actResults){
                             activityData = JSON.stringify(actResults);
-                            res.render('lessonplanEdit', { title: '教案製作',member_id:member_id,member_name:member_name,community_id:community_id,unitData:unitData,activityData:activityData});
+                            res.render('lessonplanEdit', { title: '教案製作',member_id:member_id,member_name:member_name,community_id:community_id,unitData:unitData,activityData:activityData,course_field:'',course_grade:''});
                         });
                     });
                 }
