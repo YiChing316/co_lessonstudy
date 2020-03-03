@@ -7348,6 +7348,7 @@ button.bg-dark:hover {
 }
 .position-fixed {
   position: fixed !important;
+  z-index: 1030;
 }
 .position-sticky {
   position: -webkit-sticky !important;

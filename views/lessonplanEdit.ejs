@@ -14,13 +14,9 @@
       <%- include('sidebar.ejs'); -%>
       <div class="page-content">
         <div class="content">
-          <nav id="change-page" aria-label="...">
-            <ul class="pagination justify-content-center">
-              <li class="page-item active" aria-current="page">
-                <span class="page-link">
-                  教案撰寫<span class="sr-only">(current)</span>
-                </span>
-              </li>
+          <nav id="change-page" class="row justify-content-center" aria-label="...">
+            <ul class="pagination position-fixed">
+              <li class="page-item active" aria-current="page"><span class="page-link">教案撰寫</span></li>
               <li class="page-item"><a class="page-link" href="">想法討論</a></li>
             </ul>
           </nav>
@@ -29,10 +25,12 @@
               訂定課程目標
             </div>
             <div id="setlesson" class="card-body">
+              <!--js所需資料-->
               <p id="unitData" style="display: none;"><%= unitData %></p>
               <p id="activityData" style="display: none;"><%= activityData %></p>
               <p id="course_field_info"><%= course_field %></p>
               <p id="course_grade_info"><%= course_grade %></p>
+              <!------------------------------------------------------------------>
               <div class='card' id='cardid"+data.id+"'>
                 <div class='card-header bg-white' id='header"+data.id+"'>title
                     <span class='float-right' data-toggle='collapse' data-target='#"+data.id+"'>
@@ -61,18 +59,18 @@
                     </div>
                     <hr>
                     <div id="core_competency_body">
-                      <!-- <div class="card">
-                      <div class="card-header">
-                        <b class="card-title">A2 系統思考與解決問題：</b>
-                        <p class="card-text">具備問題理解、思辨分析、推理批判的系統思考與後設思考素養，並能行動與反思，以有效處理及解決生活、生命問題。5555555555555555</p>                        
-                      </div>
-                      <div class="card-body">
-                        <b class="card-title">自-E-A2</b>
-                        <p class="card-text">能運用好奇心及想像能力，從觀察、閱讀、思考所得的資訊或數據中，提出適合科學探究的問題或解釋資料，並能依據已知的科學知識、科學概念及探索科學的方法去想像可能發生的事情，以及理解科學事實會有不同的論點、證據或解釋方式。</p>
-                        <input type="button" class="btn btn-danger float-right" value="刪除">
-                      </div>
-                    </div> 
-                    </div>-->
+                      <div class="card">
+                        <div class="card-header">
+                          <b class="card-title">A2 系統思考與解決問題：</b>
+                          <p class="card-text">具備問題理解、思辨分析、推理批判的系統思考與後設思考素養，並能行動與反思，以有效處理及解決生活、生命問題。5555555555555555</p>                        
+                        </div>
+                        <div class="card-body">
+                          <b class="card-title">自-E-A2</b>
+                          <p class="card-text">能運用好奇心及想像能力，從觀察、閱讀、思考所得的資訊或數據中，提出適合科學探究的問題或解釋資料，並能依據已知的科學知識、科學概念及探索科學的方法去想像可能發生的事情，以及理解科學事實會有不同的論點、證據或解釋方式。</p>
+                          <input type="button" class="btn btn-danger float-right" value="刪除">
+                        </div>
+                      </div><!--多select內容 card-->
+                    </div><!--core_competency_body end-->
                   </div>
                   <div class="form-group">
                     <label class="control-label font-weight-bolder">學習重點</label>
@@ -102,17 +100,17 @@
                     <input type="button" class="btn btn-secondary" value="清除">
                     <input type="button" class="btn btn-primary" value="儲存">
                   </div>
-                </div><!--card-body end -->
-              </div><!-- card end-->
+                </div><!--測試card-body end -->
+              </div><!--測試card end-->
             </div><!--setlesson end-->
-          </div>
+          </div><!--card 訂定課程目標 end-->
           <div class="card">
             <div class="card-header text-white bg-selfblue">
               活動與評量設計
             </div>
             <div class="card-body">
             </div>
-          </div>
+          </div><!--card 活動與評量設計 end-->
         </div><!--content end-->
       </div><!--pagecontent end-->
     </div>
