@@ -95,8 +95,9 @@ body{font-family: '微軟正黑體';}
 }
 
 .page-content #change-page{
-  padding-top: 10px;
-  margin-bottom: 55px;
+  /* position:fixed;
+  left:50%;  */
+  padding-top: 15px;
 }
 
 .content{
@@ -118,4 +119,9 @@ body{font-family: '微軟正黑體';}
 .nopadding-right{
   padding-right: 0;
 }
+
+#change-page{
+  margin-bottom: 55px;
+}
+
 

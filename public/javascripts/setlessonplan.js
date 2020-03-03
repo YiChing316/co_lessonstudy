@@ -106,6 +106,9 @@ function threeselecDiv(labelname,firstselid,secondselid,threeselid,bodyname,pare
                             '</div>');
 }
 
+function alertStageDiv(parentDiv){
+    $('#'+parentDiv).append('<div class="alert alert-warning" role="alert">請先完成教案基本資料填寫</div>');
+}
 
 
 /*****************append元件 *****************************************************************************/
@@ -153,24 +156,34 @@ function lessonplan_Map(){
 };
 
 var unitData,activityData;
+var course_field_info,course_grade_info;
 
 function lessonplan_unit_Set(){
-    $("#lessonplan_unit").append('<div class="row">'+
-                                    '<div class="card col nopadding">'+
-                                    '<div class="card-header bg-selfgreen">單元</div>'+
-                                    '<div class="card-body">'+
-                                        '<select class="form-control col" id="unit_sel" size="10"></select>'+
-                                    '</div>'+
-                                    '</div>'+
-                                    '<div class="card col nopadding ml-1">'+
-                                    '<div class="card-header bg-selfgreen">活動</div>'+
-                                    '<div class="card-body">'+
-                                        '<div class="col" id="activity_sel"></div>'+
-                                    '</div>'+
-                                    '</div>'+
-                                '</div>');
-    buttonDiv('lessonplan_unit');
-    unit_Map();
+        course_field_info = $("#course_field_info").text();
+        course_grade_info = $("#course_grade_info").text();
+        //判斷是否已設定領域以及年級，如果沒有則無法填寫
+        if(course_field_info == "" || course_grade_info == ""){
+            alertStageDiv("lessonplan_unit");
+        }
+        else{
+            $("#lessonplan_unit").append('<div class="row">'+
+                                            '<div class="card col nopadding">'+
+                                            '<div class="card-header bg-selfgreen">單元</div>'+
+                                            '<div class="card-body">'+
+                                                '<select class="form-control col" id="unit_sel" size="10"></select>'+
+                                            '</div>'+
+                                            '</div>'+
+                                            '<div class="card col nopadding ml-1">'+
+                                            '<div class="card-header bg-selfgreen">活動</div>'+
+                                            '<div class="card-body">'+
+                                                '<div class="col" id="activity_sel"></div>'+
+                                            '</div>'+
+                                            '</div>'+
+                                        '</div>');
+            buttonDiv('lessonplan_unit');
+            unit_Map();
+        }
+    
 }
 
 function unit_Map(){
@@ -253,10 +266,21 @@ function lessonplanstage_Map(){
 
 function twoselect_Map(){
     twoselect_Component.map(function(data){
-        twoselectDiv(data.labelname,data.firstselid,data.secondselid,data.bodyname,data.parentDiv);
+        course_field_info = $("#course_field_info").text();
+        course_grade_info = $("#course_grade_info").text();
+        if(data.parentDiv == "lessonplan_adl"){
+            $('#'+data.parentDiv).append('<div class="alert alert-light" role="alert">資料建置中</div>');
+        }
+        else if(course_field_info == "" || course_grade_info == ""){
+            alertStageDiv(data.parentDiv);
+        }
+        else{
+            twoselectDiv(data.labelname,data.firstselid,data.secondselid,data.bodyname,data.parentDiv);
+        }
     })
 }
 
+//核心素養內第二大標:學習重點
 function cirn_Set(){
     $('#lessonplan_cirn').append('<div class="form-group" id="cirn-form2">'+
                                     '<label class="control-label font-weight-bolder">學習重點</label>'+
@@ -264,9 +288,22 @@ function cirn_Set(){
 }
 
 function threeselect_Map(){
-    threeselect_Component.map(function(data){
-        threeselecDiv(data.labelname,data.firstselid,data.secondselid,data.threeselid,data.bodyname,data.parentDiv);
-    })
+
+    course_field_info = $("#course_field_info").text();
+    course_grade_info = $("#course_grade_info").text();
+    if(course_field_info == "" || course_grade_info == ""){
+        alertStageDiv("lessonplan_cirn");
+        alertStageDiv("lessonplan_issue");
+    }
+    else{
+        //三層select中有學習表現,學習內容須包含在核心素養內的學習重點，故將cirn_Set()放於此;議題融入為其餘大標
+        cirn_Set();
+        threeselect_Component.map(function(data){
+            
+            threeselecDiv(data.labelname,data.firstselid,data.secondselid,data.threeselid,data.bodyname,data.parentDiv);
+        })
+    }
+    
 }
 
 
@@ -286,8 +323,11 @@ $(function(){
     lessonplan_unit_Set();
     lessonplanstage_Map();
     twoselect_Map();
-    cirn_Set();
     threeselect_Map();
+
+
+    console.log(course_field_info);
+    console.log(course_grade_info);
 
 })
 
