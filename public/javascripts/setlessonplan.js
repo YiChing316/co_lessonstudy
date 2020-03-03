@@ -67,13 +67,13 @@ function twoselectDiv(labelname,firstselid,secondselid,bodyname,parentDiv){
     $('#'+parentDiv).append('<div class="form-group">'+
                                 '<label class="control-label font-weight-bolder">'+labelname+'</label>'+
                                 '<div class="row">'+
-                                '<div class="col-sm-4">'+
+                                '<div class="col-sm-4 nopadding-right">'+
                                     '<select class="form-control" id="'+firstselid+'"></select>'+
                                 '</div>'+
-                                '<div class="col-sm-7">'+
+                                '<div class="col-sm-7 nopadding-right">'+
                                     '<select class="form-control" id="'+secondselid+'"></select>'+
                                 ' </div>'+
-                                '<div class="col">'+
+                                '<div class="col nopadding-right">'+
                                     '<input type="button" class="btn btn-outline-info" value="加入">'+
                                 '</div>'+
                                 '</div>'+
@@ -86,18 +86,18 @@ function threeselecDiv(labelname,firstselid,secondselid,threeselid,bodyname,pare
     $('#'+parentDiv).append('<div class="form-group">'+
                                 '<label class="control-label">'+labelname+'</label>'+
                                 '<div class="row">'+
-                                    '<div class="col-sm-4">'+
+                                    '<div class="col-sm-4 nopadding-right">'+
                                     '<select class="form-control" id="'+firstselid+'"></select>'+
                                     '</div>'+
-                                    '<div class="col-sm-7">'+
+                                    '<div class="col-sm-7 nopadding-right">'+
                                     '<select class="form-control" id="'+secondselid+'"></select>'+
                                     '</div>'+
                                 '</div>'+
                                 '<div class="row mt-2">'+
-                                    '<div class="col-sm-11">'+
+                                    '<div class="col-sm-11 nopadding-right">'+
                                     '<select class="form-control" id="'+threeselid+'"></select>'+
                                     '</div>'+
-                                    '<div class="col">'+
+                                    '<div class="col nopadding-right">'+
                                     '<input type="button" class="btn btn-outline-info" value="加入">'+
                                     '</div>'+
                                 '</div>'+
