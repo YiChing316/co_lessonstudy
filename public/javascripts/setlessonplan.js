@@ -8,7 +8,7 @@ var lessonplan_Component = [
     {name:'授課時間',id:'lessonplan_time',type:'other',parentDiv:'lessonplan'}
 ];
 
-//會使用到ckeditor的位置
+//會使用到編輯器的位置
 var lessonplanstage_Component = [
     {id:'lessonplan_target',createDiv:'targetTextarea'},
     {id:'lessonplan_studentknowledge',createDiv:'studentknowledgeTextarea'},
@@ -54,13 +54,13 @@ function buttonDiv(parentDiv){
                             '</div>');
 };
 
-function ckeditorDiv(parentDiv){
-    ClassicEditor
-        .create( document.querySelector( '#'+parentDiv ) )
-        .catch( error => {
-            console.error( error );
-    });
-}
+// function ckeditorDiv(parentDiv){
+//     ClassicEditor
+//         .create( document.querySelector( '#'+parentDiv ) )
+//         .catch( error => {
+//             console.error( error );
+//     });
+// }
 
 function twoselectDiv(labelname,firstselid,secondselid,bodyname,parentDiv){
     $('#'+parentDiv).append('<div class="form-group">'+
@@ -248,9 +248,10 @@ function activity_Map(course_field,course_version,course_grade,course_unit_name)
 //將需要ckeditor的stage放入
 function lessonplanstage_Map(){
     lessonplanstage_Component.map(function(data){
-        $('#'+data.id).append('<div id="'+data.createDiv+'"></div>');
-        ckeditorDiv(data.createDiv);
+        $('#'+data.id).append('<div id="'+data.createDiv+'" class="summernote"></div>');
+        // ckeditorDiv(data.createDiv);
         buttonDiv(data.id);
+        summernoteClass();
     })
 }
 
@@ -340,4 +341,23 @@ function allchecked(){
             $(this).prop("checked", false);
         });           
     }
+}
+
+//設定summernote編輯器
+function summernoteClass(){
+    $('.summernote').summernote({
+        tabsize: 2,
+        toolbar: [
+                  // [groupName, [list of button]]
+                  ['style', ['style']],
+                  ['font', ['bold', 'underline', 'clear']],
+                  ['color', ['color']],
+                  ['para', ['ul', 'ol', 'paragraph']],
+                  ['table', ['table']],
+                  ['insert', ['link', 'picture', 'video']],
+                  ['view', ['codeview']]
+        ],
+        minHeight: 200,
+        maxHeight: 350
+    });
 }
