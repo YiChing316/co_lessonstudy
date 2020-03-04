@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var community = require('../models/community');
-var lessonplan = require('../models/lessonplan');
+var clsresource = require('../models/clsresource');
 
 /* GET lessonplan page. */
 router.get('/edit/:community_id', function(req, res, next) {
@@ -16,14 +16,14 @@ router.get('/edit/:community_id', function(req, res, next) {
 
         if(results.isExisted){
             //檢查是否已有儲存過年級版本
-            lessonplan.checklessonplandata(community_id,function(selResults){
+            clsresource.checklessonplandata(community_id,function(selResults){
                 //沒有儲存資料
                 if(selResults.isExisted == false){
-                    lessonplan.getcourseunit(function(unitResult){
+                    clsresource.getcourseunit(function(unitResult){
 
                         unitData = JSON.stringify(unitResult);
 
-                        lessonplan.getcourseactivity(function(actResults){
+                        clsresource.getcourseactivity(function(actResults){
                             activityData = JSON.stringify(actResults);
                             res.render('lessonplanEdit', { title: '教案製作',member_id:member_id,member_name:member_name,community_id:community_id,unitData:unitData,activityData:activityData,course_field:'',course_grade:''});
                         });
@@ -36,10 +36,10 @@ router.get('/edit/:community_id', function(req, res, next) {
                     var course_version = basicData.lessonplan_version;
                     var course_grade = basicData.lessonplan_grade;
 
-                    lessonplan.getcourseunitwhere(course_field,course_version,course_grade,function(unitResult){
+                    clsresource.getcourseunitwhere(course_field,course_version,course_grade,function(unitResult){
                         unitData = JSON.stringify(unitResult);
 
-                        lessonplan.getcourseactivitywhere(course_field,course_version,course_grade,function(actResults){
+                        clsresource.getcourseactivitywhere(course_field,course_version,course_grade,function(actResults){
                             activityData = JSON.stringify(actResults);
                             res.render('lessonplanEdit', { title: '教案製作',member_id:member_id,member_name:member_name,community_id:community_id,unitData:unitData,activityData:activityData,course_field:course_field,course_grade:course_grade});
                         })
