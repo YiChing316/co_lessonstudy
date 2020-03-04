@@ -160,13 +160,13 @@ var course_field_info,course_grade_info;
 function lessonplan_unit_Set(){
     $("#lessonplan_unit").append('<div class="row">'+
                                     '<div class="card col nopadding">'+
-                                    '<div class="card-header bg-selfgreen">單元</div>'+
+                                    '<div class="card-header">單元</div>'+
                                     '<div class="card-body">'+
                                         '<select class="form-control col" id="unit_sel" size="10"></select>'+
                                     '</div>'+
                                     '</div>'+
                                     '<div class="card col nopadding ml-1">'+
-                                    '<div class="card-header bg-selfgreen">活動</div>'+
+                                    '<div class="card-header">活動</div>'+
                                     '<div class="card-body">'+
                                         '<div class="col" id="activity_sel"></div>'+
                                     '</div>'+
