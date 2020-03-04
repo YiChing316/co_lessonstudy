@@ -14,12 +14,14 @@
       <%- include('sidebar.ejs'); -%>
       <div class="page-content">
         <div class="content">
-          <nav id="change-page" class="row justify-content-center" aria-label="...">
+          <nav id="change-page" class="row justify-content-center" aria-label="..." >
             <ul class="pagination position-fixed">
               <li class="page-item active" aria-current="page"><span class="page-link">教案撰寫</span></li>
               <li class="page-item"><a class="page-link" href="">想法討論</a></li>
             </ul>
           </nav>
+          
+          
           <div class="card">
             <div class="card-header text-white bg-selfblue">
               訂定課程目標
@@ -31,13 +33,14 @@
               <p id="course_field_info"><%= course_field %></p>
               <p id="course_grade_info"><%= course_grade %></p>
               <!------------------------------------------------------------------>
-              <div class='card' id='cardid"+data.id+"'>
-                <div class='card-header bg-white' id='header"+data.id+"'>title
-                    <span class='float-right' data-toggle='collapse' data-target='#"+data.id+"'>
-                        <i id='"+data.id+"icon' aria-hidden='true'></i>
+              <div class='card' id='cardidtest'>
+                <div class='card-header bg-white' id='headertest'>title
+                    <span class='float-right' data-toggle='collapse' data-target='#test'>
+                        <i id='testicon' aria-hidden='true'></i>
                     </span>
+                    <b class="text-danger">請先完成教案基本資料填寫</b>
                 </div>
-                <div class='card-body collapse show' id='"+data.id+"'>
+                <div class='card-body collapse show' id='test'>
                   <div class="form-group row">
                     <label class="control-label col-sm-2">教案簡介</label>
                     <div class="col-sm-10">
