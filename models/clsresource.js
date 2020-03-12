@@ -73,5 +73,41 @@ module.exports = {
             })
         })
 
+    },
+
+    //選取核心素養面向
+    getcore_competency_dimesion: function(cb){
+
+        resourcepool.getConnection(function(err,connection){
+            if(err) throw err;
+            connection.query('SELECT `core_competency_dimesion` FROM `core_competency` GROUP BY `core_competency_dimesion`',function(err,results){
+                if(err) throw err;
+                cb(results);
+                connection.release();
+            })
+        })
+
+    },
+
+    //選取總綱核心素養全部內容，要使用其核心素養項目與項目說明
+    getcore_competency_item: function(cb){
+        resourcepool.getConnection(function(err,connection){
+            if(err) throw err;
+            connection.query('SELECT * FROM `core_competency`',function(err,results){
+                if(err) throw err;
+                cb(results);
+                connection.release();
+            })
+        })
+    },
+
+    //選取領域核心素養內涵(需有領域、階段)
+    getcore_competency_fieldcontent: function(fieldcontent_field,fieldcontent_stage,cb){
+        if(err) throw err;
+            connection.query('SELECT * FROM `core_competency_fieldcontent` WHERE `fieldcontent_field`=? AND `fieldcontent_stage`=?',[fieldcontent_field,fieldcontent_stage],function(err,results){
+                if(err) throw err;
+                cb(results);
+                connection.release();
+            })
     }
 }

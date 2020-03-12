@@ -245,7 +245,11 @@ function activity_Map(course_field,course_version,course_grade,course_unit_name)
     });
 }
 
-//將需要ckeditor的stage放入
+function lessonplantarget_append(){
+    $("#lessonplantarget").append()
+}
+
+//將需要編輯器的stage放入
 function lessonplanstage_Map(){
     lessonplanstage_Component.map(function(data){
         $('#'+data.id).append('<div id="'+data.createDiv+'" class="summernote"></div>');
@@ -319,6 +323,15 @@ $(function(){
     threeselect_Map();
     stageControl();
 
+$( "#lessonplantargetTable tbody" ).sortable( {
+    update: function( event, ui ) {
+        $(this).children().each(function(index) {
+            $(this).find('th').first().html(index + 1)
+        });
+    }
+});   
+
+
 })
 
 //array排序
@@ -361,3 +374,4 @@ function summernoteClass(){
         maxHeight: 350
     });
 }
+
