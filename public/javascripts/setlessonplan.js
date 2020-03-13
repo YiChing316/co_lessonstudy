@@ -47,9 +47,13 @@ function selectDiv(componentname,componentid,parentDiv){
 };
 
 function buttonDiv(parentDiv){
-    $('#'+parentDiv).append('<div class="bt-group float-right pt-2">'+
-                                '<input type="button" class="btn btn-secondary" value="清除">'+
-                                '<input type="button" class="btn btn-primary ml-1" value="儲存">'+
+    $('#'+parentDiv).append('<div class="row">'+
+                                '<div class="mode-switch">'+
+                                    '<div class="bt-group float-right mr-1">'+
+                                        '<input type="button" class="btn btn-secondary" value="清除">'+
+                                        '<input type="button" class="btn btn-primary ml-1" value="儲存">'+
+                                    '</div>'+
+                                '</div>'+
                             '</div>');
 };
 
