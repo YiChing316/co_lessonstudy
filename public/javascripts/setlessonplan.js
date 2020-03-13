@@ -10,7 +10,6 @@ var lessonplan_Component = [
 
 //會使用到編輯器的位置
 var lessonplanstage_Component = [
-    {id:'lessonplan_target',createDiv:'targetTextarea'},
     {id:'lessonplan_studentknowledge',createDiv:'studentknowledgeTextarea'},
     {id:'lessonplan_resource',createDiv:'resourceTextarea'},
     {id:'lessonplan_design',createDiv:'designTextarea'}
@@ -245,8 +244,19 @@ function activity_Map(course_field,course_version,course_grade,course_unit_name)
     });
 }
 
-function lessonplantarget_append(){
-    $("#lessonplantarget").append()
+function lessonplantarget_Append(){
+    $("#lessonplan_target").append('<button id="addtargetlist" class="btn btn-outline-primary" onclick="addlessonplantargetlist()"><i class="fas fa-plus"></i> 新增學習目標</button>'+
+                                    '<table class="table table-bordered w-auto mt-3" id="lessonplantargetTable">'+
+                                    '<thead class="thead-light">'+
+                                        '<tr>'+
+                                        '<th scope="col">#</th>'+
+                                        '<th scope="col" class="col-sm-6">學習目標內容</th>'+
+                                        '<th scope="col"></th>'+
+                                        '</tr>'+
+                                    '</thead>'+
+                                    '<tbody id="lessonplantargetTbody"></tbody>'+
+                                    '</table>');
+    buttonDiv('lessonplan_target');
 }
 
 //將需要編輯器的stage放入
@@ -318,19 +328,11 @@ $(function(){
 
     lessonplan_Map();
     lessonplan_unit_Set();
+    lessonplantarget_Append();
     lessonplanstage_Map();
     twoselect_Map();
     threeselect_Map();
-    stageControl();
-
-$( "#lessonplantargetTable tbody" ).sortable( {
-    update: function( event, ui ) {
-        $(this).children().each(function(index) {
-            $(this).find('th').first().html(index + 1)
-        });
-    }
-});   
-
+    stageControl(); 
 
 })
 
