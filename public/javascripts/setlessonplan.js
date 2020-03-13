@@ -16,8 +16,8 @@ var lessonplanstage_Component = [
 ];
 
 var twoselect_Component = [
-    {labelname:'核心素養',firstselid:'core_competency_dimesion_sel',secondselid:'core_competency_item_sel',bodyname:'core_competency_body',parentDiv:'lessonplan_cirn'},
-    {labelname:'選擇所對應的因材網知識節點',firstselid:'adl_knowledgenode_unit_sel',secondselid:'adl_knowledgenode_node_sel',bodyname:'adl_body',parentDiv:'lessonplan_adl'}
+    {labelname:'核心素養',firstselid:'core_competency_dimesion_sel',secondselid:'core_competency_item_sel',bodyname:'core_competency_body',parentDiv:'lessonplan_cirn',onclickfunction:'addcore_competency()'},
+    {labelname:'選擇所對應的因材網知識節點',firstselid:'adl_knowledgenode_unit_sel',secondselid:'adl_knowledgenode_node_sel',bodyname:'adl_body',parentDiv:'lessonplan_adl',onclickfunction:''}
 ];
 
 var threeselect_Component = [
@@ -61,7 +61,7 @@ function buttonDiv(parentDiv){
 //     });
 // }
 
-function twoselectDiv(labelname,firstselid,secondselid,bodyname,parentDiv){
+function twoselectDiv(labelname,firstselid,secondselid,bodyname,parentDiv,onclickfunction){
     $('#'+parentDiv).append('<div class="form-group">'+
                                 '<label class="control-label font-weight-bolder">'+labelname+'</label>'+
                                 '<div class="row">'+
@@ -72,7 +72,7 @@ function twoselectDiv(labelname,firstselid,secondselid,bodyname,parentDiv){
                                     '<select class="form-control" id="'+secondselid+'"></select>'+
                                 ' </div>'+
                                 '<div class="col nopadding-right">'+
-                                    '<input type="button" class="btn btn-outline-info" value="加入">'+
+                                    '<input type="button" class="btn btn-outline-info" value="加入" onclick="'+onclickfunction+'">'+
                                 '</div>'+
                                 '</div>'+
                                 '<hr>'+
@@ -245,7 +245,7 @@ function activity_Map(course_field,course_version,course_grade,course_unit_name)
 }
 
 function lessonplantarget_Append(){
-    $("#lessonplan_target").append('<button id="addtargetlist" class="btn btn-outline-primary" onclick="addlessonplantargetlist()"><i class="fas fa-plus"></i> 新增學習目標</button>'+
+    $("#lessonplan_target").append('<button id="addtargetlist" class="btn btn-outline-info" onclick="addlessonplantargetlist()"><i class="fas fa-plus"></i> 新增學習目標</button>'+
                                     '<table class="table table-bordered w-auto mt-3" id="lessonplantargetTable">'+
                                     '<thead class="thead-light">'+
                                         '<tr>'+
@@ -276,7 +276,7 @@ function twoselect_Map(){
             $('#'+data.parentDiv).append('<div class="alert alert-light" role="alert">資料建置中</div>');
         }
         else{
-            twoselectDiv(data.labelname,data.firstselid,data.secondselid,data.bodyname,data.parentDiv);
+            twoselectDiv(data.labelname,data.firstselid,data.secondselid,data.bodyname,data.parentDiv,data.onclickfunction);
             buttonDiv(data.parentDiv);
         }
     })

@@ -5,6 +5,7 @@
     <script src="/javascripts/setpagecontent.js"></script>
     <script src="/javascripts/setlessonplan.js"></script>
     <script src="/javascripts/lessonplanbutton.js"></script>
+    <script src="/javascripts/setselectoption.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/16.0.0/classic/ckeditor.js"></script>
     <link href="/stylesheets/style.css" rel="stylesheet">
     <link href="/summernote/summernote-bs4.min.css" rel="stylesheet">
@@ -36,8 +37,11 @@
               <!--js所需資料-->
               <p id="unitData" style="display: none;"><%= unitData %></p>
               <p id="activityData" style="display: none;"><%= activityData %></p>
-              <p id="course_field_info"><%= course_field %></p>
-              <p id="course_grade_info"><%= course_grade %></p>
+              <p id="course_field_info" style="display: none;"><%= course_field %></p>
+              <p id="course_grade_info" style="display: none;"><%= course_grade %></p>
+              <p id="ccdimesionData" style="display: none;"><%= ccdimesionData %></p>
+              <p id="ccitemData" style="display: none;"><%= ccitemData %></p>
+              <p id="ccfieldData" style="display: none;"><%= ccfieldData %></p>
               <!------------------------------------------------------------------>
               <div class='card' id='cardidtest'>
                 <div class='card-header bg-white' id='headertest'>title
@@ -50,58 +54,6 @@
                     <label class="control-label col-sm-2">教案簡介</label>
                     <div class="col-sm-10">
                       <textarea id="lessonplan_intro" class="form-control" rows="5"></textarea>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="control-label font-weight-bolder">核心素養</label>
-                    <div class="row">
-                      <div class="col-sm-4 nopadding-right">
-                        <select class="form-control"></select>
-                      </div>
-                      <div class="col-sm-7 nopadding-right">
-                        <select class="form-control"></select>
-                      </div>
-                      <div class="col nopadding-right">
-                        <input type="button" class="btn btn-outline-info" value="加入">
-                      </div>
-                    </div>
-                    <hr>
-                    <div id="core_competency_body">
-                      <!--<div class="card">
-                        <div class="card-header">
-                          <b class="card-title">A2 系統思考與解決問題：</b>
-                          <p class="card-text">具備問題理解、思辨分析、推理批判的系統思考與後設思考素養，並能行動與反思，以有效處理及解決生活、生命問題。5555555555555555</p>                        
-                        </div>
-                        <div class="card-body">
-                          <b class="card-title">自-E-A2</b>
-                          <p class="card-text">能運用好奇心及想像能力，從觀察、閱讀、思考所得的資訊或數據中，提出適合科學探究的問題或解釋資料，並能依據已知的科學知識、科學概念及探索科學的方法去想像可能發生的事情，以及理解科學事實會有不同的論點、證據或解釋方式。</p>
-                          <input type="button" class="btn btn-danger float-right" value="刪除">
-                        </div>
-                      </div>--><!--多select內容 card-->
-                    </div><!--core_competency_body end-->
-                  </div>
-                  <div class="form-group">
-                    <label class="control-label font-weight-bolder">學習重點</label>
-                    <div class="form-group">
-                      <label class="control-label">學習表現</label>
-                      <div class="row">
-                        <div class="col-sm-4 nopadding-right">
-                          <select class="form-control"></select>
-                        </div>
-                        <div class="col-sm-7 nopadding-right">
-                          <select class="form-control"></select>
-                        </div>
-                        
-                      </div>
-                      <div class="row mt-2">
-                        <div class="col-sm-11 nopadding-right">
-                          <select class="form-control"></select>
-                        </div>
-                        <div class="col nopadding-right">
-                          <input type="button" class="btn btn-outline-info" value="加入">
-                        </div>
-                      </div>
-                      <hr>
                     </div>
                   </div>
                   
