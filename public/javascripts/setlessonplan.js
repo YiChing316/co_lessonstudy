@@ -105,7 +105,7 @@ function threeselecDiv(labelname,firstselid,secondselid,threeselid,bodyname,pare
 }
 
 function alertStageDiv(parentDiv){
-    $('#'+parentDiv).append('<b class="text-danger">請先完成教案基本資料填寫</b>');
+    $('#'+parentDiv).append('<small><b class="text-danger">(請先完成教案基本資料填寫)</b></small>');
 }
 
 
@@ -277,6 +277,7 @@ function twoselect_Map(){
         }
         else{
             twoselectDiv(data.labelname,data.firstselid,data.secondselid,data.bodyname,data.parentDiv);
+            buttonDiv(data.parentDiv);
         }
     })
 }
@@ -292,8 +293,8 @@ function threeselect_Map(){
         //三層select中有學習表現,學習內容須包含在核心素養內的學習重點，故將cirn_Set()放於此;議題融入為其餘大標
         cirn_Set();
         threeselect_Component.map(function(data){
-            
             threeselecDiv(data.labelname,data.firstselid,data.secondselid,data.threeselid,data.bodyname,data.parentDiv);
+            buttonDiv(data.parentDiv);
         })
 }
 
@@ -304,15 +305,12 @@ function stageControl(){
     if(course_field_info == "" || course_grade_info == ""){
         alertStageDiv("headerlessonplan_unit");
         alertStageDiv("headerlessonplan_cirn");
-        alertStageDiv("headerlessonplan_issue");
         $("#cardidlessonplan_unit *").prop("disabled",true);
         $("#cardidlessonplan_cirn *").prop("disabled",true);
-        $("#cardidlessonplan_issue *").prop("disabled",true);
     }
     else{
         $("#cardidlessonplan_unit *").prop("disabled",false);
         $("#cardidlessonplan_cirn *").prop("disabled",false);
-        $("#cardidlessonplan_issue *").prop("disabled",false);
     }
 }
 
