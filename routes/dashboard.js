@@ -42,7 +42,7 @@ router.post('/create', function(req, res,next) {
       //得到剛新增的社群id
       var community_id = results.insertId;
       //將創建人新增進社群成員資料表內
-      community.addCommunityMember(community_id,member_id,member_name,function(results){
+      community.addCommunityMember(community_id,member_id,member_name,"founder",function(results){
         if(results){
           res.json({msg:'yes'});
         }
@@ -75,7 +75,7 @@ router.post('/join', function(req, res,next) {
         }
         //密碼正確則加入社群
         else{
-          community.addCommunityMember(community_id,member_id,member_name,function(addResults){
+          community.addCommunityMember(community_id,member_id,member_name,"teammember",function(addResults){
             if(addResults){
               res.json({msg:'yes',community_id:community_id});
             }

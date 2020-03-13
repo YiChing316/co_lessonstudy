@@ -20,14 +20,15 @@ module.exports = {
         })
     },
 
-    addCommunityMember: function(community_id,member_id,member_name,cb){
+    addCommunityMember: function(community_id,member_id,member_name,community_member_identity,cb){
         pool.getConnection(function(err,connection){
             if(err) throw err;
 
             var sql = {
                 community_id_community: community_id,
                 member_id_member: member_id,
-                member_name: member_name
+                member_name: member_name,
+                community_member_identity: community_member_identity
             }
 
             connection.query('INSERT INTO `community_member` SET ?',sql,function(err,results){
