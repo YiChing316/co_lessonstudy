@@ -1,6 +1,8 @@
 var ccdimesionData,ccitemData,ccfieldData;
 
 function dimesion_Map(){
+    $("#core_competency_dimesion_sel").append("<option disabled selected>請選擇總綱核心面向</option>");
+    $("#core_competency_item_sel").append("<option disabled selected>請選擇總綱核心項目</option>");
     for(var i=0; i<ccdimesionData.length;i++){
         var cc = ccdimesionData[i];
         var ccdimesion = cc.core_competency_dimesion;

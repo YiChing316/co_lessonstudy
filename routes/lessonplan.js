@@ -40,33 +40,8 @@ router.get('/edit/:community_id', function(req, res, next) {
                         unitData = JSON.stringify(unitResults);
 
                         clsresource.getcourseactivitywhere(course_field,course_version,course_grade,function(actResults){
-
-                            switch(course_field){
-                                case "自然":
-                                    course_field = "自";
-                                    break;
-                                case "國語":
-                                    course_field = "國";
-                                    break;
-                                case "數學":
-                                    course_field = "數"
-                                    break;
-                                case "英語":
-                                    course_field = "英";
-                                    break;
-                            }
-                            switch(course_grade){
-                                case "第四學習階段(國中)":
-                                    course_grade = "國民中學教育（J）";
-                                    break;
-                                case "第五學習階段(高中)": 
-                                    course_grade = "普通型高級中等學校教";
-                                    break;
-                                default:
-                                    course_grade = "國民小學教育（E)"
-                            }
-
                             activityData = JSON.stringify(actResults);
+                            
                             //根據已設定好的年級、領域抓取核心素養內容
                             clsresource.getcore_competency_dimesion(function(dimesionResults){
                                 ccdimesionData = JSON.stringify(dimesionResults);

@@ -103,6 +103,32 @@ module.exports = {
 
     //選取領域核心素養內涵(需有領域、階段)
     getcore_competency_fieldcontent: function(fieldcontent_field,fieldcontent_stage,cb){
+
+        switch(fieldcontent_field){
+            case "自然":
+                fieldcontent_field = "自";
+                break;
+            case "國語":
+                fieldcontent_field = "國";
+                break;
+            case "數學":
+                fieldcontent_field = "數"
+                break;
+            case "英語":
+                fieldcontent_field = "英";
+                break;
+        }
+        switch(fieldcontent_stage){
+            case "第四學習階段(國中)":
+                fieldcontent_stage = "國民中學教育（J）";
+                break;
+            case "第五學習階段(高中)": 
+            fieldcontent_stage = "普通型高級中等學校教";
+                break;
+            default:
+                fieldcontent_stage = "國民小學教育（E)"
+        }
+
         resourcepool.getConnection(function(err,connection){
             if(err) throw err;
             connection.query('SELECT * FROM `core_competency_fieldcontent` WHERE `fieldcontent_field`=? AND `fieldcontent_stage`=?',[fieldcontent_field,fieldcontent_stage],function(err,results){
