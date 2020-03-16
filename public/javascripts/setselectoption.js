@@ -57,13 +57,13 @@ function addcore_competency(){
                     
                     $("#core_competency_body").append('<div class="card">'+
                                                         '<div class="card-header">'+
-                                                        '<b class="card-title">'+itemtext+'</b>'+
-                                                        '<p class="card-text">'+dimesion_description+'</p>'+                        
+                                                            '<b class="card-title">'+itemtext+'</b>'+
+                                                            '<p class="card-text">'+dimesion_description+'</p>'+                        
                                                         '</div>'+
                                                         '<div class="card-body">'+
-                                                        '<b class="card-title">'+field_name+'-'+field_stage+'-'+itemval+'</b>'+
-                                                        '<p class="card-text">'+field_content+'</p>'+
-                                                        '<input type="button" class="btn btn-danger float-right" value="刪除">'+
+                                                            '<b class="card-title">'+field_name+'-'+field_stage+'-'+itemval+'</b>'+
+                                                            '<p class="card-text">'+field_content+'</p>'+
+                                                            '<input type="button" class="btn btn-danger float-right deleteItem" value="刪除" >'+
                                                         '</div>'+
                                                     '</div>');
                 }
@@ -72,7 +72,17 @@ function addcore_competency(){
         }
     });
 
+    deleteItem();
+
 }
+
+//刪除內容
+function deleteItem(){
+    $(".deleteItem").click(function(){
+        $(this).closest(".card").remove();
+    })
+}
+
 
 
 $(function(){
@@ -81,4 +91,5 @@ $(function(){
     ccfieldData = JSON.parse($("#ccfieldData").text());
 
     dimesion_Map();
+
 })
