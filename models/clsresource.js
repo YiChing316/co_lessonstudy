@@ -138,5 +138,101 @@ module.exports = {
             })
         })
 
+    },
+
+    getlearning_focus_item: function(learning_focus_field,learning_focus_stage,cb){
+        
+        switch(learning_focus_stage){
+            case "3年級":
+                learning_focus_stage = "第二學習階段(Ⅱ)";
+                break;
+            case "4年級":
+                learning_focus_stage = "第二學習階段(Ⅱ)";
+                break;
+            case "5年級":
+                learning_focus_stage = "第三學習階段(Ⅲ)"
+                break;
+            case "6年級":
+                learning_focus_stage = "第三學習階段(Ⅲ)";
+                break;
+            case "第四學習階段(國中)":
+                fieldcontent_stage = "第四學習階段(Ⅳ)";
+                break;
+            case "第五學習階段(高中)": 
+                fieldcontent_stage = "第五學習階段(Ⅴc)";
+                break;
+        }
+
+        resourcepool.getConnection(function(err,connection){
+            if(err) throw err;
+            connection.query('SELECT `learning_focus_type`,`learning_focus_item` FROM `learning_focus` WHERE `learning_focus_field`=? AND `learning_focus_stage`=? GROUP BY `learning_focus_item`',[learning_focus_field,learning_focus_stage],function(err,results){
+                if(err) throw err;
+                cb(results);
+                connection.release();
+            })
+        })
+    },
+
+    getlearning_focus_childitem: function(learning_focus_field,learning_focus_stage,cb){
+
+        switch(learning_focus_stage){
+            case "3年級":
+                learning_focus_stage = "第二學習階段(Ⅱ)";
+                break;
+            case "4年級":
+                learning_focus_stage = "第二學習階段(Ⅱ)";
+                break;
+            case "5年級":
+                learning_focus_stage = "第三學習階段(Ⅲ)"
+                break;
+            case "6年級":
+                learning_focus_stage = "第三學習階段(Ⅲ)";
+                break;
+            case "第四學習階段(國中)":
+                fieldcontent_stage = "第四學習階段(Ⅳ)";
+                break;
+            case "第五學習階段(高中)": 
+                fieldcontent_stage = "第五學習階段(Ⅴc)";
+                break;
+        }
+        resourcepool.getConnection(function(err,connection){
+            if(err) throw err;
+            connection.query('SELECT `learning_focus_type`,`learning_focus_item`,`learning_focus_childitem` FROM `learning_focus` WHERE `learning_focus_field`=? AND `learning_focus_stage`=? GROUP BY `learning_focus_childitem`',[learning_focus_field,learning_focus_stage],function(err,results){
+                if(err) throw err;
+                cb(results);
+                connection.release();
+            })
+        })
+    },
+
+    getlearning_focus_content: function(learning_focus_field,learning_focus_stage,cb){
+        switch(learning_focus_stage){
+            case "3年級":
+                learning_focus_stage = "第二學習階段(Ⅱ)";
+                break;
+            case "4年級":
+                learning_focus_stage = "第二學習階段(Ⅱ)";
+                break;
+            case "5年級":
+                learning_focus_stage = "第三學習階段(Ⅲ)"
+                break;
+            case "6年級":
+                learning_focus_stage = "第三學習階段(Ⅲ)";
+                break;
+            case "第四學習階段(國中)":
+                fieldcontent_stage = "第四學習階段(Ⅳ)";
+                break;
+            case "第五學習階段(高中)": 
+                fieldcontent_stage = "第五學習階段(Ⅴc)";
+                break;
+        }
+        resourcepool.getConnection(function(err,connection){
+            if(err) throw err;
+            connection.query('SELECT * FROM `learning_focus` WHERE `learning_focus_field`=? AND `learning_focus_stage`=? ',[learning_focus_field,learning_focus_stage],function(err,results){
+                if(err) throw err;
+                cb(results);
+                connection.release();
+            })
+        })
     }
 }

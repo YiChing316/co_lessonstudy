@@ -10,7 +10,9 @@ router.get('/edit/:community_id', function(req, res, next) {
 
     var community_id = req.params.community_id;
 
-    var unitData,activityData,ccdimesionData,ccitemData,ccfieldData;
+    var unitData,activityData;
+    var ccdimesionData,ccitemData,ccfieldData;
+    var lfitemData,lfchilditemData,lfcontentData;
 
     community.checkCommunityMember(community_id,member_id,function(results){
 
@@ -25,7 +27,7 @@ router.get('/edit/:community_id', function(req, res, next) {
 
                         clsresource.getcourseactivity(function(actResults){
                             activityData = JSON.stringify(actResults);
-                            res.render('lessonplanEdit', { title: '教案製作',member_id:member_id,member_name:member_name,community_id:community_id,unitData:unitData,activityData:activityData,course_field:'',course_grade:'',ccdimesionData:'',ccitemData:'',ccfieldData:''});
+                            res.render('lessonplanEdit', { title: '教案製作',member_id:member_id,member_name:member_name,community_id:community_id,unitData:unitData,activityData:activityData,course_field:'',course_grade:'',ccdimesionData:'',ccitemData:'',ccfieldData:'',lfitemData:'',lfchilditemData:'',lfcontentData:''});
                         });
                     });
                 }
@@ -51,15 +53,23 @@ router.get('/edit/:community_id', function(req, res, next) {
 
                                     clsresource.getcore_competency_fieldcontent(course_field,course_grade,function(fieldResults){
                                         ccfieldData = JSON.stringify(fieldResults);
-                                        
-                                        res.render('lessonplanEdit', { title: '教案製作',member_id:member_id,member_name:member_name,community_id:community_id,unitData:unitData,activityData:activityData,course_field:course_field,course_grade:course_grade,ccdimesionData:ccdimesionData,ccitemData:ccitemData,ccfieldData:ccfieldData});
 
+                                        clsresource.getlearning_focus_item(course_field,course_grade,function(lfitemResults){
+                                            lfitemData = JSON.stringify(lfitemResults);
+
+                                            clsresource.getlearning_focus_childitem(course_field,course_grade,function(childitemResults){
+                                                lfchilditemData = JSON.stringify(childitemResults);
+
+                                                clsresource.getlearning_focus_content(course_field,course_grade,function(lfcontentResults){
+                                                    lfcontentData = JSON.stringify(lfcontentResults);
+
+                                                    res.render('lessonplanEdit', { title: '教案製作',member_id:member_id,member_name:member_name,community_id:community_id,unitData:unitData,activityData:activityData,course_field:course_field,course_grade:course_grade,ccdimesionData:ccdimesionData,ccitemData:ccitemData,ccfieldData:ccfieldData,lfitemData:lfitemData,lfchilditemData:lfchilditemData,lfcontentData:lfcontentData});
+                                                })//getlearning_focus_content end
+                                            })//getlearning_focus_childitem end
+                                        })//getlearning_focus_item end
                                     })//getcore_competency_fieldcontent end
-
                                 })//getcore_competency_item end
                             })//getcore_competency_dimesion end
-                            
-                            
                         })//getcourseactivitywhere end
                     })//getcourseunitwhere end
                 }
