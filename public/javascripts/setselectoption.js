@@ -42,15 +42,18 @@ function addcore_competency(){
     var itemtext = $selected.text();
     var itemval = $selected.val();
 
-    //使用現有的itemval到ccitemdata進行搜尋，找到他的描述內容
+    //使用現有的itemval到ccitemdata進行搜尋，找到**總綱核心素養**的項目說明
     $.each(ccitemData,function(i,val){
         if(ccitemData[i].core_competency_itemvalue == itemval){
 
             var dimesion_description = ccitemData[i].core_competency_item_description;
             //使用現有的itemval到ccfielddata進行搜尋，找出所需資料
+            //**總綱核心素養**的核心素養項目值 與 **領域核心素養**的核心項目值為相對應的，故要根據itemval搜尋出與總綱項目值相同的資料
             $.each(ccfieldData,function(i,val){
+
                 if(ccfieldData[i].fieldcontent_coreitem == itemval){
-                    
+
+                    //**領域核心素養**內容
                     var field_name = ccfieldData[i].fieldcontent_field;
                     var field_stage = ccfieldData[i].fieldcontent_stage;
                     var field_content = ccfieldData[i].fieldcontent_content;

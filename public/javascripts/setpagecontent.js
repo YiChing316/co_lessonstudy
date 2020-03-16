@@ -71,7 +71,7 @@ $(function(){
         //因為原本($(".card-header").height()*2)會被想法實作切換擋住故改為($(".card-header").height()*4)
         var cardheaderHeight = $(".card-header").height()*4;
         if (this.hash !== "") {
-          event.preventDefault();
+          event.preventDefault();//防止連結打開url，preventDefault()為阻止element發生默認行為，例如點擊submit時阻止表單提交
           var hash = this.hash;
           $('html, body').animate({
             scrollTop: $(hash).offset().top - cardheaderHeight
