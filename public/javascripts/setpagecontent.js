@@ -65,9 +65,11 @@ $(function(){
         $('#'+id).addClass("fa fa-angle-down");
     });
 
+    //側邊選單的錨點定位
     $(".sidebarlink").on('click', function(event) {
-        //若未*2會只滑到card-header的一半
-        var cardheaderHeight = $(".card-header").height()*2
+        //若未減去cardheaderHeight會無法蓋到每階段的標題
+        //因為原本($(".card-header").height()*2)會被想法實作切換擋住故改為($(".card-header").height()*4)
+        var cardheaderHeight = $(".card-header").height()*4;
         if (this.hash !== "") {
           event.preventDefault();
           var hash = this.hash;

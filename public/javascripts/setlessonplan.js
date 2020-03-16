@@ -148,7 +148,7 @@ function lessonplan_Map(){
             $('#lessonplan').append('<div class="form-group row">'+
                                         '<label class="control-label col-sm-2">'+data.name+'</label>'+
                                         '<div class="col-sm"><input type="text" id="'+data.name+'_class" class="form-control"></div>'+
-                                        '<div class="col-sm-1"><label>節課，共</label></div>'+
+                                        '<div class="col-sm-2"><label>節課，共</label></div>'+
                                         '<div class="col-sm"><input type="text" id="'+data.name+'_minutes" class="form-control"></div>'+
                                         '<div class="col-sm-1"><label>分鐘</label></div>'+ 
                                     '</div>');
