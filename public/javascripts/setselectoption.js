@@ -83,28 +83,28 @@ function addcore_competency(){
 function learning_focus_item_Map(){
     for(var i = 0 ;i<lfitemData.length;i++){
         var lfitem = lfitemData[i];
-        var firstlearning_focus_type = lfitem.learning_focus_type;
-        var firstlearning_focus_item = lfitem.learning_focus_item;
-        if(firstlearning_focus_type == "學習表現"){
-            $("#performancefocus_item").append("<option value='"+firstlearning_focus_item+"'>"+firstlearning_focus_item+"</option>");
-            learning_focus_childitem_Map(firstlearning_focus_type,firstlearning_focus_item,'performancefocus_item','performancefocus_childitem');
+        var first_lftype = lfitem.learning_focus_type;
+        var first_lfitem = lfitem.learning_focus_item;
+        if(first_lftype == "學習表現"){
+            $("#performancefocus_item").append("<option value='"+first_lfitem+"'>"+first_lfitem+"</option>");
+            learning_focus_childitem_Map(first_lftype,first_lfitem,'performancefocus_item','performancefocus_childitem','performancefocus_content');
         }
-        else if( firstlearning_focus_type == "學習內容"){
-            $("#contentfocus_item").append("<option value='"+firstlearning_focus_item+"'>"+firstlearning_focus_item+"</option>");
-            learning_focus_childitem_Map(firstlearning_focus_type,firstlearning_focus_item,'contentfocus_item','contentfocus_childitem');
+        else if( first_lftype == "學習內容"){
+            $("#contentfocus_item").append("<option value='"+first_lfitem+"'>"+first_lfitem+"</option>");
+            learning_focus_childitem_Map(first_lftype,first_lfitem,'contentfocus_item','contentfocus_childitem','contentfocus_content');
         }
     }
 }
 
-function learning_focus_childitem_Map(lftype,lfitem,firstselect,secondselect){
+function learning_focus_childitem_Map(lftype,lfitem,firstselect,secondselect,thirdselect){
     var child_array = [];
     for(var i = 0 ; i<lfchilditemData.length;i++){
         var lfchild = lfchilditemData[i];
-        var learning_focus_type = lfchild.learning_focus_type;
-        var learning_focus_item = lfchild.learning_focus_item;
-        var learning_focus_childitem = lfchild.learning_focus_childitem;
-        if( learning_focus_type == lftype && learning_focus_item == lfitem){
-            child_array.push(learning_focus_childitem);
+        var second_lftype = lfchild.learning_focus_type;
+        var second_lfitem = lfchild.learning_focus_item;
+        var second_lfchilditem = lfchild.learning_focus_childitem;
+        if( second_lftype == lftype && second_lfitem == lfitem){
+            child_array.push({second_lftype:second_lftype,second_lfitem:second_lfitem,second_lfchilditem:second_lfchilditem,thirdselect:thirdselect});
         }
     }
 
@@ -112,16 +112,50 @@ function learning_focus_childitem_Map(lftype,lfitem,firstselect,secondselect){
         switch($(this).val()){
             case 0:
                 $("#"+secondselect+" option").remove();
+                $("#"+thirdselect+" option").remove();
                 break;
             case lfitem:
                 $("#"+secondselect+" option").remove();
+                $("#"+thirdselect+" option").remove();
                 var array = child_array;
                 $.each(array,function(i,val){
-                    $("#"+secondselect).append("<option value='"+array[i]+"'>"+array[i]+"</option>")
+                    $("#"+secondselect).append("<option value='"+array[i].second_lfchilditem+"'>"+array[i].second_lfchilditem+"</option>")
+                    learning_focus_content_Map(array[i].second_lftype,array[i].second_lfitem,array[i].second_lfchilditem,secondselect,array[i].thirdselect)
                 });
                 break;
         }
     })
+}
+
+function learning_focus_content_Map(lftype,lfitem,lfchild,secondselect,thirdselect){
+    var content_array=[];
+
+    for(var i = 0; i<lfcontentData.length;i++){
+        var lfcontent = lfcontentData[i];
+        var third_lftype = lfcontent.learning_focus_type;
+        var third_lfitem = lfcontent.learning_focus_item;
+        var third_lfchilditem = lfcontent.learning_focus_childitem;
+        var third_sn = lfcontent.learning_focus_serial_number;
+        var third_lfcontent = lfcontent.learning_focus_content;
+        if(third_lftype == lftype && third_lfitem == lfitem && third_lfchilditem == lfchild){
+            content_array.push(third_sn+third_lfcontent);
+        }
+    }
+    
+    $("#"+secondselect).change(function(){
+        switch($(this).val()){
+            case 0:
+                $("#"+thirdselect+" option").remove();
+                break;
+            case lfchild:
+                $("#"+thirdselect+" option").remove();
+                var array = content_array;
+                $.each(array,function(i,val){
+                    $("#"+thirdselect).append("<option value='"+array[i]+"'>"+array[i]+"</option>")
+                });
+                break;
+        }
+    })  
 }
 
 //刪除內容
