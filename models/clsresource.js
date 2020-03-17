@@ -140,6 +140,7 @@ module.exports = {
 
     },
 
+    //選取學習重點項目1(需有領域、學習階段)
     getlearning_focus_item: function(learning_focus_field,learning_focus_stage,cb){
         
         switch(learning_focus_stage){
@@ -173,6 +174,7 @@ module.exports = {
         })
     },
 
+    //選取學習重點項目2(需有領域、學習階段)
     getlearning_focus_childitem: function(learning_focus_field,learning_focus_stage,cb){
 
         switch(learning_focus_stage){
@@ -205,6 +207,7 @@ module.exports = {
         })
     },
 
+    //選取學習重點全部資料(需有領域、學習階段)
     getlearning_focus_content: function(learning_focus_field,learning_focus_stage,cb){
         switch(learning_focus_stage){
             case "3年級":
@@ -234,5 +237,54 @@ module.exports = {
                 connection.release();
             })
         })
+    },
+
+    //選取議題
+    getissue_name: function(cb){
+        resourcepool.getConnection(function(err,connection){
+            if(err) throw err;
+            connection.query('SELECT `issue_name` FROM `issue` GROUP BY `issue_name`',function(err,results){
+                if(err) throw err;
+                cb(results);
+                connection.release();
+            })
+        })
+    },
+
+    //選取學習主題
+    getissue_theme: function(cb){
+        resourcepool.getConnection(function(err,connection){
+            if(err) throw err;
+            connection.query('SELECT `issue_id`,`issue_name`,`issue_learning_theme` FROM `issue` GROUP BY `issue_learning_theme`',function(err,results){
+                if(err) throw err;
+                cb(results);
+                connection.release();
+            })
+        })
+    },
+
+    //選取議題所有資料
+    getissue_content: function(issue_stage,cb){
+
+        switch(issue_stage){
+            case "第四學習階段(國中)":
+                issue_stage = "國中";
+                break;
+            case "第五學習階段(高中)": 
+                issue_stage = "高中";
+                break;
+            default:
+                issue_stage = "國小"
+        }
+
+        resourcepool.getConnection(function(err,connection){
+            if(err) throw err;
+            connection.query('SELECT * FROM `issue` WHERE `issue_stage`=?',[issue_stage],function(err,results){
+                if(err) throw err;
+                cb(results);
+                connection.release();
+            })
+        })
     }
+
 }

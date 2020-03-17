@@ -13,6 +13,7 @@ router.get('/edit/:community_id', function(req, res, next) {
     var unitData,activityData;
     var ccdimesionData,ccitemData,ccfieldData;
     var lfitemData,lfchilditemData,lfcontentData;
+    var issuenameData,issuethemeData,issuecontentData;
 
     community.checkCommunityMember(community_id,member_id,function(results){
 
@@ -27,7 +28,25 @@ router.get('/edit/:community_id', function(req, res, next) {
 
                         clsresource.getcourseactivity(function(actResults){
                             activityData = JSON.stringify(actResults);
-                            res.render('lessonplanEdit', { title: '教案製作',member_id:member_id,member_name:member_name,community_id:community_id,unitData:unitData,activityData:activityData,course_field:'',course_grade:'',ccdimesionData:'',ccitemData:'',ccfieldData:'',lfitemData:'',lfchilditemData:'',lfcontentData:''});
+
+                            res.render('lessonplanEdit', { title: '教案製作',
+                                                            member_id:member_id,
+                                                            member_name:member_name,
+                                                            community_id:community_id,
+                                                            unitData:unitData,
+                                                            activityData:activityData,
+                                                            course_field:'',
+                                                            course_grade:'',
+                                                            ccdimesionData:'',
+                                                            ccitemData:'',
+                                                            ccfieldData:'',
+                                                            lfitemData:'',
+                                                            lfchilditemData:'',
+                                                            lfcontentData:'',
+                                                            issuenameData:'',
+                                                            issuethemeData:'',
+                                                            issuecontentData:''
+                                                        });   
                         });
                     });
                 }
@@ -63,7 +82,37 @@ router.get('/edit/:community_id', function(req, res, next) {
                                                 clsresource.getlearning_focus_content(course_field,course_grade,function(lfcontentResults){
                                                     lfcontentData = JSON.stringify(lfcontentResults);
 
-                                                    res.render('lessonplanEdit', { title: '教案製作',member_id:member_id,member_name:member_name,community_id:community_id,unitData:unitData,activityData:activityData,course_field:course_field,course_grade:course_grade,ccdimesionData:ccdimesionData,ccitemData:ccitemData,ccfieldData:ccfieldData,lfitemData:lfitemData,lfchilditemData:lfchilditemData,lfcontentData:lfcontentData});
+                                                    clsresource.getissue_name(function(nameResults){
+                                                        issuenameData = JSON.stringify(nameResults);
+
+                                                        clsresource.getissue_theme(function(themeResults){
+                                                            issuethemeData = JSON.stringify(themeResults);
+
+                                                            clsresource.getissue_content(course_grade,function(issuecontentResults){
+                                                                issuecontentData = JSON.stringify(issuecontentResults);
+                                                                res.render('lessonplanEdit', { title: '教案製作',
+                                                                                                member_id:member_id,
+                                                                                                member_name:member_name,
+                                                                                                community_id:community_id,
+                                                                                                unitData:unitData,
+                                                                                                activityData:activityData,
+                                                                                                course_field:course_field,
+                                                                                                course_grade:course_grade,
+                                                                                                ccdimesionData:ccdimesionData,
+                                                                                                ccitemData:ccitemData,
+                                                                                                ccfieldData:ccfieldData,
+                                                                                                lfitemData:lfitemData,
+                                                                                                lfchilditemData:lfchilditemData,
+                                                                                                lfcontentData:lfcontentData,
+                                                                                                issuenameData:issuenameData,
+                                                                                                issuethemeData:issuethemeData,
+                                                                                                issuecontentData:issuecontentData
+                                                                                            });
+
+                                                            })//getissue_content end
+                                                        })//getissue_theme end
+                                                    })//getissue_name end
+                                                    
                                                 })//getlearning_focus_content end
                                             })//getlearning_focus_childitem end
                                         })//getlearning_focus_item end

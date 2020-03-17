@@ -309,12 +309,15 @@ function stageControl(){
     if(course_field_info == "" || course_grade_info == ""){
         alertStageDiv("headerlessonplan_unit");
         alertStageDiv("headerlessonplan_cirn");
+        alertStageDiv("headerlessonplan_issue");
         $("#cardidlessonplan_unit *").prop("disabled",true);
         $("#cardidlessonplan_cirn *").prop("disabled",true);
+        $("#cardidlessonplan_issue *").prop("disabled",true);
     }
     else{
         $("#cardidlessonplan_unit *").prop("disabled",false);
         $("#cardidlessonplan_cirn *").prop("disabled",false);
+        $("#cardidlessonplan_issue *").prop("disabled",false);
     }
 }
 

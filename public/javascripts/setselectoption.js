@@ -1,6 +1,10 @@
 var ccdimesionData,ccitemData,ccfieldData;
 var lfitemData,lfchilditemData,lfcontentData;
+var issuenameData,issuethemeData,issuecontentData;
 
+/**append select option***************************************************************************************** */
+
+//總綱核心素養1
 function dimesion_Map(){
     for(var i=0; i<ccdimesionData.length;i++){
         var cc = ccdimesionData[i];
@@ -10,6 +14,7 @@ function dimesion_Map(){
     }
 }
 
+//總綱核心素養2
 function item_Map(ccdimesion){
     var item_array =[];
     for(var i =0;i<ccitemData.length;i++){
@@ -29,6 +34,7 @@ function item_Map(ccdimesion){
                 break;
             case ccdimesion:
                 $("#core_competency_item_sel option").remove();
+                $("#core_competency_item_sel").append("<option disabled selected>請選擇總綱核心項目</option>");
                 var array = item_array;
                 $.each(array,function(i,val){
                     $("#core_competency_item_sel").append("<option value='"+array[i].ccitemval+"'>"+array[i].ccitemoption+"</option>")
@@ -38,6 +44,173 @@ function item_Map(ccdimesion){
     })
 }
 
+
+//學習重點1
+function learning_focus_item_Map(){
+    for(var i = 0 ;i<lfitemData.length;i++){
+        var lfitem = lfitemData[i];
+        var first_lftype = lfitem.learning_focus_type;
+        var first_lfitem = lfitem.learning_focus_item;
+        if(first_lftype == "學習表現"){
+            $("#performancefocus_item").append("<option value='"+first_lfitem+"'>"+first_lfitem+"</option>");
+            learning_focus_childitem_Map(first_lftype,first_lfitem,'performancefocus_item','performancefocus_childitem','performancefocus_content');
+        }
+        else if( first_lftype == "學習內容"){
+            $("#contentfocus_item").append("<option value='"+first_lfitem+"'>"+first_lfitem+"</option>");
+            learning_focus_childitem_Map(first_lftype,first_lfitem,'contentfocus_item','contentfocus_childitem','contentfocus_content');
+        }
+    }
+}
+
+//學習重點2
+function learning_focus_childitem_Map(lftype,lfitem,firstselect,secondselect,thirdselect){
+    var child_array = [];
+    for(var i = 0 ; i<lfchilditemData.length;i++){
+        var lfchild = lfchilditemData[i];
+        var second_lftype = lfchild.learning_focus_type;
+        var second_lfitem = lfchild.learning_focus_item;
+        var second_lfchilditem = lfchild.learning_focus_childitem;
+        if( second_lftype == lftype && second_lfitem == lfitem){
+            child_array.push({second_lftype:second_lftype,second_lfitem:second_lfitem,second_lfchilditem:second_lfchilditem,thirdselect:thirdselect});
+        }
+    }
+
+    $("#"+firstselect).change(function(){
+        switch($(this).val()){
+            case 0:
+                $("#"+secondselect+" option").remove();
+                $("#"+thirdselect+" option").remove();
+                break;
+            case lfitem:
+                $("#"+secondselect+" option").remove();
+                $("#"+thirdselect+" option").remove();
+                $("#"+secondselect).append("<option disabled selected>請選擇</option>");
+                $("#"+thirdselect).append("<option disabled selected>請選擇內容</option>");
+                var array = child_array;
+                $.each(array,function(i,val){
+                    $("#"+secondselect).append("<option value='"+array[i].second_lfchilditem+"'>"+array[i].second_lfchilditem+"</option>")
+                    learning_focus_content_Map(array[i].second_lftype,array[i].second_lfitem,array[i].second_lfchilditem,secondselect,array[i].thirdselect)
+                });
+                break;
+        }
+    })
+}
+
+//學習重點3
+function learning_focus_content_Map(lftype,lfitem,lfchild,secondselect,thirdselect){
+    var content_array=[];
+
+    for(var i = 0; i<lfcontentData.length;i++){
+        var lfcontent = lfcontentData[i];
+        var third_lftype = lfcontent.learning_focus_type;
+        var third_lfitem = lfcontent.learning_focus_item;
+        var third_lfchilditem = lfcontent.learning_focus_childitem;
+        var third_sn = lfcontent.learning_focus_serial_number;
+        var third_lfcontent = lfcontent.learning_focus_content;
+        if(third_lftype == lftype && third_lfitem == lfitem && third_lfchilditem == lfchild){
+            content_array.push(third_sn+third_lfcontent);
+        }
+    }
+    
+    $("#"+secondselect).change(function(){
+        switch($(this).val()){
+            case 0:
+                $("#"+thirdselect+" option").remove();
+                break;
+            case lfchild:
+                $("#"+thirdselect+" option").remove();
+                $("#"+thirdselect).append("<option disabled selected>請選擇內容</option>");
+                var array = content_array;
+                $.each(array,function(i,val){
+                    $("#"+thirdselect).append("<option value='"+array[i]+"'>"+array[i]+"</option>")
+                });
+                break;
+        }
+    })  
+}
+
+
+//議題融入1
+function issuename_Map(){
+    for(var i = 0; i<issuenameData.length;i++){
+        var firstissue = issuenameData[i];
+        var issue_name = firstissue.issue_name;
+        $("#issue_name").append("<option value='"+issue_name+"'>"+issue_name+"</option>");
+        issuetheme_Map(issue_name);
+    }
+}
+
+//議題融入2
+function issuetheme_Map(issuename){
+    var theme_array=[];
+    issuethemeData = sortByKey(issuethemeData,'issue_id')
+    for(var i =0;i<issuethemeData.length;i++){
+        var secondissue = issuethemeData[i];
+        var secondissue_name = secondissue.issue_name;
+        var secondissue_learning_theme = secondissue.issue_learning_theme;
+        if(secondissue_name == issuename){
+            theme_array.push({secondissue_name:secondissue_name,secondissue_learning_theme:secondissue_learning_theme});
+        }
+    }
+
+    $("#issue_name").change(function(){
+        switch($(this).val()){
+            case 0:
+                $("#issue_learning_theme option").remove();
+                $("#issue_content option").remove();
+                break;
+            case issuename:
+                $("#issue_learning_theme option").remove();
+                $("#issue_content option").remove();
+                $("#issue_learning_theme").append("<option disabled selected>請選擇學習主題</option>");
+                $("#issue_content").append("<option disabled selected>請選擇議題內容</option>");
+                var array = theme_array;
+                $.each(array,function(i,val){
+                    $("#issue_learning_theme").append("<option value='"+array[i].secondissue_learning_theme+"'>"+array[i].secondissue_learning_theme+"</option>");
+                    issuecontent_Map(array[i].secondissue_name,array[i].secondissue_learning_theme);
+                });
+                break;
+        }
+    })
+}
+
+//議題融入3
+function issuecontent_Map(issuename,issuetheme){
+    var content_array=[];
+    for(var i = 0;i<issuecontentData.length;i++){
+        var thirdissue= issuecontentData[i];
+        var thirdissue_name = thirdissue.issue_name;
+        var thirdissue_theme = thirdissue.issue_learning_theme;
+        var thirdissue_sn = thirdissue.issue_serial_number;
+        var thirdissue_content = thirdissue.issue_content;
+        if(thirdissue_name == issuename && thirdissue_theme == issuetheme){
+            content_array.push(thirdissue_sn+thirdissue_content);
+        }
+    }
+
+    $("#issue_learning_theme").change(function(){
+        switch($(this).val()){
+            case 0:
+                $("#issue_content option").remove();
+                break;
+            case issuetheme:
+                $("#issue_content option").remove();
+                $("#issue_content").append("<option disabled selected>請選擇議題內容</option>");
+                var array = content_array;
+                $.each(array,function(i,val){
+                    $("#issue_content").append("<option value='"+array[i]+"'>"+array[i]+"</option>")
+                });
+                break;
+        }
+    })
+
+}
+
+
+
+/**加入內容**********************************************************************/
+
+//新增核心素養card
 function addcore_competency(){
     $selected = $("#core_competency_item_sel :selected");
     var itemtext = $selected.text();
@@ -80,83 +253,9 @@ function addcore_competency(){
 
 }
 
-function learning_focus_item_Map(){
-    for(var i = 0 ;i<lfitemData.length;i++){
-        var lfitem = lfitemData[i];
-        var first_lftype = lfitem.learning_focus_type;
-        var first_lfitem = lfitem.learning_focus_item;
-        if(first_lftype == "學習表現"){
-            $("#performancefocus_item").append("<option value='"+first_lfitem+"'>"+first_lfitem+"</option>");
-            learning_focus_childitem_Map(first_lftype,first_lfitem,'performancefocus_item','performancefocus_childitem','performancefocus_content');
-        }
-        else if( first_lftype == "學習內容"){
-            $("#contentfocus_item").append("<option value='"+first_lfitem+"'>"+first_lfitem+"</option>");
-            learning_focus_childitem_Map(first_lftype,first_lfitem,'contentfocus_item','contentfocus_childitem','contentfocus_content');
-        }
-    }
-}
 
-function learning_focus_childitem_Map(lftype,lfitem,firstselect,secondselect,thirdselect){
-    var child_array = [];
-    for(var i = 0 ; i<lfchilditemData.length;i++){
-        var lfchild = lfchilditemData[i];
-        var second_lftype = lfchild.learning_focus_type;
-        var second_lfitem = lfchild.learning_focus_item;
-        var second_lfchilditem = lfchild.learning_focus_childitem;
-        if( second_lftype == lftype && second_lfitem == lfitem){
-            child_array.push({second_lftype:second_lftype,second_lfitem:second_lfitem,second_lfchilditem:second_lfchilditem,thirdselect:thirdselect});
-        }
-    }
 
-    $("#"+firstselect).change(function(){
-        switch($(this).val()){
-            case 0:
-                $("#"+secondselect+" option").remove();
-                $("#"+thirdselect+" option").remove();
-                break;
-            case lfitem:
-                $("#"+secondselect+" option").remove();
-                $("#"+thirdselect+" option").remove();
-                var array = child_array;
-                $.each(array,function(i,val){
-                    $("#"+secondselect).append("<option value='"+array[i].second_lfchilditem+"'>"+array[i].second_lfchilditem+"</option>")
-                    learning_focus_content_Map(array[i].second_lftype,array[i].second_lfitem,array[i].second_lfchilditem,secondselect,array[i].thirdselect)
-                });
-                break;
-        }
-    })
-}
-
-function learning_focus_content_Map(lftype,lfitem,lfchild,secondselect,thirdselect){
-    var content_array=[];
-
-    for(var i = 0; i<lfcontentData.length;i++){
-        var lfcontent = lfcontentData[i];
-        var third_lftype = lfcontent.learning_focus_type;
-        var third_lfitem = lfcontent.learning_focus_item;
-        var third_lfchilditem = lfcontent.learning_focus_childitem;
-        var third_sn = lfcontent.learning_focus_serial_number;
-        var third_lfcontent = lfcontent.learning_focus_content;
-        if(third_lftype == lftype && third_lfitem == lfitem && third_lfchilditem == lfchild){
-            content_array.push(third_sn+third_lfcontent);
-        }
-    }
-    
-    $("#"+secondselect).change(function(){
-        switch($(this).val()){
-            case 0:
-                $("#"+thirdselect+" option").remove();
-                break;
-            case lfchild:
-                $("#"+thirdselect+" option").remove();
-                var array = content_array;
-                $.each(array,function(i,val){
-                    $("#"+thirdselect).append("<option value='"+array[i]+"'>"+array[i]+"</option>")
-                });
-                break;
-        }
-    })  
-}
+/************************************************************************** */
 
 //刪除內容
 function deleteItem(){
@@ -191,9 +290,22 @@ $(function(){
     lfitemData = JSON.parse($("#lfitemData").text());
     lfchilditemData = JSON.parse($("#lfchilditemData").text());
     lfcontentData = JSON.parse($("#lfcontentData").text());
+    issuenameData = JSON.parse($("#issuenameData").text()); 
+    issuethemeData = JSON.parse($("#issuethemeData").text());
+    issuecontentData = JSON.parse($("#issuecontentData").text());
+
 
     selectDefault();
     dimesion_Map();
     learning_focus_item_Map();
+    issuename_Map();
 
 })
+
+//array排序
+function sortByKey(array, key) {
+    return array.sort(function(a, b) {
+        var x = a[key]; var y = b[key];
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    });
+}
