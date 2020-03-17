@@ -105,10 +105,9 @@ function learning_focus_content_Map(lftype,lfitem,lfchild,secondselect,thirdsele
         var third_lftype = lfcontent.learning_focus_type;
         var third_lfitem = lfcontent.learning_focus_item;
         var third_lfchilditem = lfcontent.learning_focus_childitem;
-        var third_sn = lfcontent.learning_focus_serial_number;
         var third_lfcontent = lfcontent.learning_focus_content;
         if(third_lftype == lftype && third_lfitem == lfitem && third_lfchilditem == lfchild){
-            content_array.push(third_sn+third_lfcontent);
+            content_array.push(third_lfcontent);
         }
     }
     
@@ -184,7 +183,7 @@ function issuecontent_Map(issuename,issuetheme){
         var thirdissue_sn = thirdissue.issue_serial_number;
         var thirdissue_content = thirdissue.issue_content;
         if(thirdissue_name == issuename && thirdissue_theme == issuetheme){
-            content_array.push(thirdissue_sn+thirdissue_content);
+            content_array.push(thirdissue_content);
         }
     }
 
@@ -251,6 +250,71 @@ function addcore_competency(){
 
     deleteItem();
 
+}
+
+//新增學習表現card
+function addlearning_performence(){
+    var item = $("#performancefocus_item :selected").val();
+    var childitem = $("#performancefocus_childitem :selected").val();
+    var content = $("#performancefocus_content :selected").val();
+
+    $.each(lfcontentData,function(i,val){
+        if(lfcontentData[i].learning_focus_item == item && lfcontentData[i].learning_focus_childitem == childitem && lfcontentData[i].learning_focus_content == content){
+            var learning_focus_coding = lfcontentData[i].learning_focus_coding;
+            var learning_focus_stage = lfcontentData[i].learning_focus_stage;
+            var learning_focus_serial_number = lfcontentData[i].learning_focus_serial_number;
+
+            var string = learning_focus_coding+"-"+learning_focus_stage+"-"+learning_focus_serial_number;
+
+            addselectbodyDiv('performancefocus_body',string,content);
+        }
+    })
+
+}
+
+function addlearning_content(){
+    var item = $("#contentfocus_item :selected").val();
+    var childitem = $("#contentfocus_childitem :selected").val();
+    var content = $("#contentfocus_content :selected").val();
+
+    $.each(lfcontentData,function(i,val){
+        if(lfcontentData[i].learning_focus_item == item && lfcontentData[i].learning_focus_childitem == childitem && lfcontentData[i].learning_focus_content == content){
+            var learning_focus_coding = lfcontentData[i].learning_focus_coding;
+            var learning_focus_stage = lfcontentData[i].learning_focus_stage;
+            var learning_focus_serial_number = lfcontentData[i].learning_focus_serial_number;
+
+            var string = learning_focus_coding+"-"+learning_focus_stage+"-"+learning_focus_serial_number;
+
+            addselectbodyDiv('contentfocus_body',string,content);
+        }
+    })
+}
+
+function addissue(){
+    var issue_name = $("#issue_name :selected").val();
+    var issue_theme = $("#issue_learning_theme :selected").val();
+    var issue_content = $("#issue_content :selected").val();
+
+    $.each(issuecontentData,function(i,val){
+        if(issuecontentData[i].issue_name == issue_name && issuecontentData[i].issue_learning_theme == issue_theme && issuecontentData[i].issue_content == issue_content){
+            var issue_sn = issuecontentData[i].issue_serial_number;
+
+            var string = issue_name+"-"+issue_sn;
+            addselectbodyDiv('issue_body',string,issue_content);
+        }
+    })
+}
+
+//學習重點以及議題融入新增出來的元件
+function addselectbodyDiv(parentDiv,title,content){
+    $("#"+parentDiv).append('<div class="card">'+
+                                '<div class="card-body">'+
+                                    '<b class="card-title">'+title+'</b>'+
+                                    '<p class="card-text">'+content+'</p>'+
+                                    '<input type="button" class="btn btn-danger float-right deleteItem" value="刪除" >'+
+                                '</div>'+
+                            '</div>');
+    deleteItem();
 }
 
 

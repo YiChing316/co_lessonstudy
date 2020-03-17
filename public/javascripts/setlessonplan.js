@@ -21,9 +21,9 @@ var twoselect_Component = [
 ];
 
 var threeselect_Component = [
-    {labelname:'學習表現',firstselid:'performancefocus_item',secondselid:'performancefocus_childitem',threeselid:'performancefocus_content',bodyname:'performancefocus_body',parentDiv:'cirn-form2'},
-    {labelname:'學習內容',firstselid:'contentfocus_item',secondselid:'contentfocus_childitem',threeselid:'contentfocus_content',bodyname:'contentfocus_body',parentDiv:'cirn-form2'},
-    {labelname:'議題融入',firstselid:'issue_name',secondselid:'issue_learning_theme',threeselid:'issue_content',bodyname:'issue_body',parentDiv:'lessonplan_issue'}
+    {labelname:'學習表現',firstselid:'performancefocus_item',secondselid:'performancefocus_childitem',threeselid:'performancefocus_content',bodyname:'performancefocus_body',parentDiv:'cirn-form2',onclickfunction:'addlearning_performence()'},
+    {labelname:'學習內容',firstselid:'contentfocus_item',secondselid:'contentfocus_childitem',threeselid:'contentfocus_content',bodyname:'contentfocus_body',parentDiv:'cirn-form2',onclickfunction:'addlearning_content()'},
+    {labelname:'議題融入',firstselid:'issue_name',secondselid:'issue_learning_theme',threeselid:'issue_content',bodyname:'issue_body',parentDiv:'lessonplan_issue',onclickfunction:'addissue()'}
 ];
 
 
@@ -84,7 +84,7 @@ function twoselectDiv(labelname,firstselid,secondselid,bodyname,parentDiv,onclic
                             '</div>');
 }
 
-function threeselecDiv(labelname,firstselid,secondselid,threeselid,bodyname,parentDiv){
+function threeselecDiv(labelname,firstselid,secondselid,threeselid,bodyname,parentDiv,onclickfunction){
     $('#'+parentDiv).append('<div class="form-group">'+
                                 '<label class="control-label">'+labelname+'</label>'+
                                 '<div class="row">'+
@@ -100,7 +100,7 @@ function threeselecDiv(labelname,firstselid,secondselid,threeselid,bodyname,pare
                                     '<select class="form-control" id="'+threeselid+'"></select>'+
                                     '</div>'+
                                     '<div class="col nopadding-right">'+
-                                    '<input type="button" class="btn btn-outline-info" value="加入">'+
+                                    '<input type="button" class="btn btn-outline-info" value="加入" onclick="'+onclickfunction+'">'+
                                     '</div>'+
                                 '</div>'+
                                 '<hr>'+
@@ -297,7 +297,7 @@ function threeselect_Map(){
         //三層select中有學習表現,學習內容須包含在核心素養內的學習重點，故將cirn_Set()放於此;議題融入為其餘大標
         cirn_Set();
         threeselect_Component.map(function(data){
-            threeselecDiv(data.labelname,data.firstselid,data.secondselid,data.threeselid,data.bodyname,data.parentDiv);
+            threeselecDiv(data.labelname,data.firstselid,data.secondselid,data.threeselid,data.bodyname,data.parentDiv,data.onclickfunction);
             buttonDiv(data.parentDiv);
         })
 }
@@ -362,6 +362,42 @@ function allchecked(){
         });           
     }
 }
+
+//新增學習目標列表
+function addlessonplantargetlist(){
+    //尋找最後一個tr的標題th數字為多少
+    var listnum = $("#lessonplantargetTbody").find("tr").last().children("th").text();
+    listnum++;
+    $("#lessonplantargetTbody").append('<tr>'+
+                                            '<th scope="row" title="可上下移動排序">'+listnum+'</th>'+
+                                            '<td><input type="text" class="form-control" name="lessonplantargercontent" placeholder="請輸入學習目標"></td>'+
+                                            '<td class="lasttd"><button class="btn btn-danger btnDelete"><i class="far fa-trash-alt"></i></button></td>'+
+                                        '</tr>');
+    deletetargetlist();
+    sorttargetlist();
+}
+
+//刪除學習目標
+function deletetargetlist(){
+    $("#lessonplantargetTbody").on('click','.btnDelete',function(){
+        $(this).closest('tr').remove();
+        $("#lessonplantargetTbody tr").each(function(index) {
+            $(this).find('th:eq(0)').first().html(index + 1);
+        });
+    });
+}
+
+//排序學習列表
+function sorttargetlist(){
+    $( "#lessonplantargetTable tbody" ).sortable( {
+        update: function(){
+            $(this).children().each(function(index) {
+                $(this).find('th:eq(0)').first().html(index + 1);
+            });
+        }
+    }); 
+}
+
 
 //設定summernote編輯器
 function summernoteClass(){
