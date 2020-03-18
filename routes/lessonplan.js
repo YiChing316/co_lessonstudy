@@ -112,7 +112,6 @@ router.get('/edit/:community_id', function(req, res, next) {
                                                             })//getissue_content end
                                                         })//getissue_theme end
                                                     })//getissue_name end
-                                                    
                                                 })//getlearning_focus_content end
                                             })//getlearning_focus_childitem end
                                         })//getlearning_focus_item end
