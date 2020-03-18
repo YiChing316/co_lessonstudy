@@ -5,7 +5,7 @@
     <script src="/javascripts/setpagecontent.js"></script>
     <script src="/javascripts/setlessonplan.js"></script>
     <script src="/javascripts/setselectoption.js"></script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/16.0.0/classic/ckeditor.js"></script>
+    <script src="/javascripts/setactivity.js"></script>
     <link href="/stylesheets/style.css" rel="stylesheet">
     <link href="/summernote/summernote-bs4.min.css" rel="stylesheet">
     <script src="/summernote/summernote-bs4.min.js"></script>
@@ -29,7 +29,7 @@
           </div>
           
           <div class="card" style="margin-top: 50px;">
-            <div class="card-header text-white bg-selfblue">
+            <div class="h5 card-header text-white bg-selfblue">
               訂定課程目標
             </div>
             <div id="setlesson" class="card-body">
@@ -76,11 +76,62 @@
             </div><!--setlesson end-->
           </div><!--card 訂定課程目標 end-->
           <div class="card">
-            <div class="card-header text-white bg-selfblue">
+            <div class="h5 card-header text-white bg-selfblue">
               活動與評量設計
             </div>
-            <div class="card-body">
-            </div>
+            <div id="setactivity" class="card-body">
+              <div class="row">
+                <div class="card col-9 nopadding">
+                  <h5 class="card-header bg-white font-weight-bolder">活動title
+                    <span class="float-right" data-toggle="collapse" data-target="#activity_1"><i class="fa fa-angle-up"></i></span>
+                  </h5>
+                  <div class="card-body collapse show" id="activity_1">
+                    <button class="btn btn-outline-info"><i class="fas fa-plus"></i> 新增活動流程</button>
+                    <table class="table table-bordered activitytable mt-3" id="activity_1Table">
+                      <thead class="thead-light">
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col" width="90">學習目標</th>
+                          <th scope="col" width="400">活動流程</th>
+                          <th scope="col" width="60">時間</th>
+                          <th scope="col" width="150">評量方式</th>
+                          <th scope="col">備註</th>
+                          <th scope="col" width="50"></th>
+                        </tr>
+                      </thead>
+                      <tbody id="activity_1Tbody">
+                        <tr>
+                          <th scope="row">1</th>
+                          <td></td>
+                          <td>課前準備1.教師利用生活情境問題引起學習動機，並點選先備知識診斷測驗未經熟知學生說說看自己的經驗。</td>
+                          <td>05</td>
+                          <td>
+                            <div class="assessment_content">
+                              <span>專注觀看並討論與分享</span>
+                              <div class="btn-group">
+                                <a href="" class="assessment_link"><small>編輯</small></a>
+                                <a href="" class="assessment_link_del ml-1"><small>刪除</small></a>
+                              </div>
+                              <hr>
+                            </div>
+                            <a href="" class="assessment_link font-weight-bolder">新增評量方式...</a>
+                          </td>
+                          <td>使用因材網學生診斷報表</td>
+                          <td>
+                            <input type="button" class="btn btn-warning mb-1" value="編輯">
+                            <input type="button" class="btn btn-danger" value="刪除">
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="card col nopadding">
+                  <h5 class="card-header bg-selfgreen font-weight-bolder">團隊想法</h5>
+                  <div class="card-body collapse"></div>
+                </div>
+              </div><!--活動流程測試-->
+            </div><!--setactivity end-->
           </div><!--card 活動與評量設計 end-->
         </div><!--content end-->
       </div><!--pagecontent end-->
