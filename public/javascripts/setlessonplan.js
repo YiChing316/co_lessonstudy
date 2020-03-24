@@ -69,15 +69,15 @@ function twoselectDiv(labelname,firstselid,secondselid,bodyname,parentDiv,onclic
     $('#'+parentDiv).append('<div class="form-group">'+
                                 '<label class="control-label font-weight-bolder">'+labelname+'</label>'+
                                 '<div class="row">'+
-                                '<div class="col-sm-4 nopadding-right">'+
-                                    '<select class="form-control" id="'+firstselid+'"></select>'+
-                                '</div>'+
-                                '<div class="col-sm-7 nopadding-right">'+
-                                    '<select class="form-control" id="'+secondselid+'"></select>'+
-                                ' </div>'+
-                                '<div class="col nopadding-right">'+
-                                    '<input type="button" class="btn btn-outline-info" value="加入" onclick="'+onclickfunction+'">'+
-                                '</div>'+
+                                    '<div class="col-sm-4 nopadding-right">'+
+                                        '<select class="form-control" id="'+firstselid+'"></select>'+
+                                    '</div>'+
+                                    '<div class="col-sm-7 nopadding-right">'+
+                                        '<select class="form-control" id="'+secondselid+'"></select>'+
+                                    ' </div>'+
+                                    '<div class="col nopadding-right">'+
+                                        '<input type="button" class="btn btn-outline-info" value="加入" onclick="'+onclickfunction+'">'+
+                                    '</div>'+
                                 '</div>'+
                                 '<hr>'+
                                 '<div id="'+bodyname+'"></div>'+
@@ -307,15 +307,15 @@ function stageControl(){
     course_field_info = $("#course_field_info").text();
     course_grade_info = $("#course_grade_info").text();
     if(course_field_info == "" || course_grade_info == ""){
-        alertStageDiv("headerlessonplan_unit");
+        // alertStageDiv("headerlessonplan_unit");
         alertStageDiv("headerlessonplan_cirn");
         alertStageDiv("headerlessonplan_issue");
-        $("#cardidlessonplan_unit *").prop("disabled",true);
+        // $("#cardidlessonplan_unit *").prop("disabled",true);
         $("#cardidlessonplan_cirn *").prop("disabled",true);
         $("#cardidlessonplan_issue *").prop("disabled",true);
     }
     else{
-        $("#cardidlessonplan_unit *").prop("disabled",false);
+        // $("#cardidlessonplan_unit *").prop("disabled",false);
         $("#cardidlessonplan_cirn *").prop("disabled",false);
         $("#cardidlessonplan_issue *").prop("disabled",false);
     }
@@ -436,8 +436,15 @@ function summernoteClass(){
         minHeight: 180,
         maxHeight: 180,
         disableResizeEditor: true,
+        dialogsInBody: true,
         placeholder: "請輸入活動流程(必填)"
     });
-    $('.note-statusbar').hide(); 
+    $('.note-statusbar').hide();
+
+    $('.notoolbarsummernote').summernote({
+        toolbar:false,
+        minHeight: 180,
+        maxHeight: 180
+    })
 }
 

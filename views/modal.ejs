@@ -54,21 +54,36 @@
 </div>
 
 <!-- 新增評量 -->
-<div class="modal fade" id="addassessmentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal fade" id="addassessmentModal" tabindex="-1" role="dialog" aria-labelledby="addassessmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">新增評量方式</h5>
+        <div class="modal-header bg-selfblue text-white">
+          <h5 class="modal-title" id="addassessmentModalLabel">新增評量方式</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+            <span class="text-white" aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          ...
+          <span id="targetid"></span>
+          <div class="form-group">
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="card">
+                  <div class="card-body nopadding-all text-center">
+                    <label class="mt-2">請選擇評量模組</label>
+                    <select class="form-control" size="6" id="assessmentselect"></select>
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <textarea class="notoolbarsummernote" id="assessmnetcontent" rows="7"></textarea>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-          <button type="button" class="btn btn-primary">儲存</button>
+          <input type="button" class="btn btn-outline-dark" value="上傳檔案">
+          <input type="button" class="btn btn-primary" value="加入">
         </div>
       </div>
     </div>
