@@ -86,7 +86,7 @@
                     <span class="float-right" data-toggle="collapse" data-target="#activity_1"><i class="fa fa-angle-up"></i></span>
                   </h5>
                   <div class="card-body collapse show" id="activity_1">
-                    <button class="btn btn-outline-info"><i class="fas fa-plus"></i> 新增活動流程</button>
+                    <button class="btn btn-outline-info" data-toggle="modal" data-target="#addprocessModal"><i class="fas fa-plus"></i> 新增活動流程</button>
                     <table class="table table-bordered activitytable mt-3" id="activity_1Table">
                       <thead class="thead-light">
                         <tr>
@@ -99,7 +99,7 @@
                           <th scope="col" width="50"></th>
                         </tr>
                       </thead>
-                      <tbody id="activity_1Tbody">
+                      <tbody class="activityTbody" id="activity_1Tbody">
                         <tr>
                           <th scope="row">1</th>
                           <td></td>
@@ -114,7 +114,7 @@
                               </div>
                               <hr>
                             </div>
-                            <a href="" class="assessment_link font-weight-bolder">新增評量方式...</a>
+                            <a href="" class="assessment_link font-weight-bolder" data-toggle="modal" data-target="#addassessmentModal">新增評量方式...</a>
                           </td>
                           <td>使用因材網學生診斷報表</td>
                           <td>
@@ -136,5 +136,6 @@
         </div><!--content end-->
       </div><!--pagecontent end-->
     </div>
+    <%- include('modal.ejs'); -%>
   </body>
 </html>

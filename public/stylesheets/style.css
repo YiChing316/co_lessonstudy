@@ -127,6 +127,10 @@ body{font-family: '微軟正黑體';}
   padding-right: 0;
 }
 
+.nopadding-all{
+  padding: 0;
+}
+
 /*活動與評量設計內card-body預設高度*/
 #setactivity .card-body{
   min-height: 50vh;
@@ -145,6 +149,10 @@ body{font-family: '微軟正黑體';}
 .assessment_link_del:hover{
   color: crimson;
   text-decoration: underline;
+}
+
+textarea{
+  resize: none;
 }
 
 

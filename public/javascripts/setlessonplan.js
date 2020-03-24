@@ -341,14 +341,6 @@ $(function(){
 
 })
 
-//array排序
-function sortByKey(array, key) {
-    return array.sort(function(a, b) {
-        var x = a[key]; var y = b[key];
-        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-    });
-}
-
 //活動選擇全選以及取消全選
 function allchecked(){
     if($("#allchecked").prop("checked")) {
@@ -373,29 +365,41 @@ function addlessonplantargetlist(){
                                             '<td><input type="text" class="form-control" name="lessonplantargercontent" placeholder="請輸入學習目標"></td>'+
                                             '<td class="lasttd"><button class="btn btn-danger btnDelete"><i class="far fa-trash-alt"></i></button></td>'+
                                         '</tr>');
-    deletetargetlist();
-    sorttargetlist();
+    deletetableTr('#lessonplantargetTbody');
+    sorttableTbody('#lessonplantargetTbody');
 }
 
-//刪除學習目標
-function deletetargetlist(){
-    $("#lessonplantargetTbody").on('click','.btnDelete',function(){
+
+
+/***功能function**************** */
+
+//array排序
+function sortByKey(array, key) {
+    return array.sort(function(a, b) {
+        var x = a[key]; var y = b[key];
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    });
+}
+
+//刪除該table內tbody的tr
+function deletetableTr(tbody){
+    $(tbody).on('click','.btnDelete',function(){
         $(this).closest('tr').remove();
-        $("#lessonplantargetTbody tr").each(function(index) {
+        $(tbody+" tr").each(function(index) {
             $(this).find('th:eq(0)').first().html(index + 1);
         });
     });
 }
 
-//排序學習列表
-function sorttargetlist(){
-    $( "#lessonplantargetTable tbody" ).sortable( {
+//重新排序該table內tbody的順序編號
+function sorttableTbody(tbody){
+    $(tbody).sortable( {
         update: function(){
             $(this).children().each(function(index) {
                 $(this).find('th:eq(0)').first().html(index + 1);
             });
         }
-    }); 
+    });
 }
 
 
@@ -413,8 +417,27 @@ function summernoteClass(){
                   ['insert', ['link', 'picture', 'video']],
                   ['view', ['codeview']]
         ],
-        minHeight: 200,
-        maxHeight: 350
+        minHeight: 250,
+        maxHeight: 250
     });
+
+    $('.fixsummernote').summernote({
+        tabsize: 2,
+        toolbar: [
+                  // [groupName, [list of button]]
+                  ['style', ['style']],
+                  ['font', ['bold', 'underline', 'clear']],
+                  ['color', ['color']],
+                  ['para', ['ul', 'ol', 'paragraph']],
+                  ['table', ['table']],
+                  ['insert', ['link', 'picture', 'video']],
+                  ['view', ['codeview']]
+        ],
+        minHeight: 180,
+        maxHeight: 180,
+        disableResizeEditor: true,
+        placeholder: "請輸入活動流程(必填)"
+    });
+    $('.note-statusbar').hide(); 
 }
 
