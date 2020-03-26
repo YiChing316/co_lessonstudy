@@ -26,11 +26,20 @@ module.exports = {
 
         resourcepool.getConnection(function(err,connection){
             if(err) throw err;
-            connection.query('SELECT * FROM `course` WHERE `course_field` =? AND `course_version`=? AND `course_grade`=? GROUP BY `course_unit_name`',[course_field,course_version,course_grade],function(err,results){
-                if(err) throw err;
-                cb(results);
-                connection.release();
-            })
+            if(course_version == "自編"){
+                connection.query('SELECT * FROM `course` WHERE `course_field` =? AND `course_grade`=? GROUP BY `course_unit_name`',[course_field,course_grade],function(err,results){
+                    if(err) throw err;
+                    cb(results);
+                    connection.release();
+                })
+            }
+            else{
+                connection.query('SELECT * FROM `course` WHERE `course_field` =? AND `course_version`=? AND `course_grade`=? GROUP BY `course_unit_name`',[course_field,course_version,course_grade],function(err,results){
+                    if(err) throw err;
+                    cb(results);
+                    connection.release();
+                })
+            }
         })
 
     },
