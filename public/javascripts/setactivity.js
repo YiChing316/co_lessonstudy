@@ -9,7 +9,7 @@ $(function(){
     assessment_Set();
     processscaffold_Add();
     assessmentscaffold_Add();
-
+    
     $("#addassessmentModal").on("show.bs.modal",function(event){
         var button = $(event.relatedTarget);
         //該活動的階段的tr的id
@@ -47,7 +47,7 @@ function processselect_Set(){
 
 function assessment_Set(){
     assessment_option.map(function(data){
-        $("#assessmentselect").append('<option value="'+data+'">'+data+'</option>');
+        $("#assessment_sel").append('<option value="'+data+'">'+data+'</option>');
     })
 }
 
@@ -61,9 +61,9 @@ function processscaffold_Add(){
 }
 //在textarea放入選擇的評量模組
 function assessmentscaffold_Add(){
-    $("#assessmentselect").change(function(){
-        var value = $("option:selected",this).val();
-        $("#assessmnetcontent").summernote('pasteHTML',value); 
+    $("#assessment_sel").change(function(){
+        var value = $("#assessment_sel :selected").val();
+        $('#assessmentsummernote').summernote('code', value);
     })
 }
 
@@ -82,12 +82,12 @@ function addactivityTr(){
     }
     else{
         //後續會將活動編號(activity_1)改為dom
-        $("#activity_1Tbody").append('<tr id="activity_1_assessmentTd_'+num+'">'+
+        $("#activity_1Tbody").append('<tr>'+
                                         '<th scope="row">'+num+'</th>'+
                                         '<td>'+processtarget+'</td>'+
                                         '<td>'+processcontent+'</td>'+
                                         '<td>'+processtime+'</td>'+
-                                        '<td>'+
+                                        '<td id="activity_1_assessmentTd_'+num+'">'+
                                             '<a href="" class="assessment_link font-weight-bolder" class="assessment_link font-weight-bolder" data-toggle="modal" data-target="#addassessmentModal" data-targettr="activity_1_assessmentTd_'+num+'">新增評量方式...</a>'+
                                         '</td>'+
                                         '<td>'+processremark+'</td>'+
@@ -99,9 +99,41 @@ function addactivityTr(){
         $("#addprocessModal").modal("hide");
         $("#processcontent").summernote("reset");
         $("#addprocessModal input[type='text']").val("");
+        $("#addprocessModal input[type='number']").val("");
+        $("#processalert").hide();
     }  
 }
 
 function addassessmentTd(){
-    
+    var td_id = $("#targetid").text();
+    var assessmentcontent = $("#assessmentsummernote").val();
+    $("#"+td_id).append('<div class="assessmentDiv">'+
+                            '<hr>'+
+                            '<div class="assessment_content">'+assessmentcontent+'</div>'+
+                            '<div class="btn-group">'+
+                            '<a href="" class="assessment_link"><small>編輯</small></a>'+
+                            '<a href="" class="assessment_link_del ml-1"><small>刪除</small></a>'+
+                            '</div>'+
+                        '</div>');
+    $("#assessmentsummernote").summernote("reset");
+    $("#addassessmentModal").modal("hide");
+}
+
+//彈出視窗closebtn的function，清空所有填寫框
+function modalclosebtn(modalid){
+    switch (modalid){
+        case 'addprocessModal':
+            $("#processcontent").summernote("reset");
+            $("#addprocessModal input[type='text']").val("");
+            $("#addprocessModal input[type='number']").val("");
+            $("#processalert").hide();
+            break;
+        case 'addassessmentModal':
+            $("#assessmentsummernote").summernote("reset");
+            break;
+    }
+}
+
+function resetsummernote(){
+    $("#assessmentsummernote").summernote("reset");   
 }

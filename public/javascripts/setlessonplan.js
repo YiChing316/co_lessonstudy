@@ -435,16 +435,19 @@ function summernoteClass(){
         ],
         minHeight: 180,
         maxHeight: 180,
-        disableResizeEditor: true,
+        disableDragAndDrop: true,
         dialogsInBody: true,
         placeholder: "請輸入活動流程(必填)"
     });
-    $('.note-statusbar').hide();
 
     $('.notoolbarsummernote').summernote({
         toolbar:false,
+        disableDragAndDrop: true,
+        dialogsInBody: true,
         minHeight: 180,
         maxHeight: 180
-    })
+    });
+
+    $('.note-statusbar').hide();
 }
 
