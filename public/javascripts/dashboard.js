@@ -1,6 +1,7 @@
 var allCommunityData;
 var memberCommunityData;
 
+//創建社群
 function createCommunity(){
     var community_name = $("#community_name").val();
     var community_key = $("#community_key").val();
@@ -33,6 +34,9 @@ function createCommunity(){
     }    
 };
 
+
+/****處理現有社群********* */
+
 // 顯示現有社群
 function showAllCommunity(){
     $allCommunityTable = $("#allCommunityTable");
@@ -50,7 +54,12 @@ function showAllCommunity(){
         detailView:true,
         detailFormatter:"detailFormatter",
         detailViewIcon:false,
-        classes:'table table-bordered mt-3'
+        search:true,
+        customSearch:"searchCommunity",
+        formatSearch: function () {
+            return '搜尋您想找的社群...'
+        },
+        classes:'table table-bordered'
     });
     $allCommunityTable.bootstrapTable("load",currectallCommunityData());
 }
@@ -105,7 +114,6 @@ function currectallCommunityData(){
 
 //根據點選'加入社群'按鈕所對應的id去顯示該id的'entertr'
 function showEntertr(id,index){
-    $("#entertr"+id).show();//這邊tr的style會移除dispaly:none的屬性
     $("#enterCommunity"+id).val('取消加入');
     $("#enterCommunity"+id).removeClass( "btn-primary" ).addClass( "btn-secondary" );
     $("#enterCommunity"+id).attr("onclick","hideEntertr("+id+","+index+")");
@@ -113,22 +121,22 @@ function showEntertr(id,index){
 }
 //上方程式變成隱藏
 function hideEntertr(id,index){
-    $("#entertr"+id).hide();
     $("#enterCommunity"+id).val('加入社群');
     $("#enterCommunity"+id).removeClass( "btn-secondary" ).addClass( "btn-primary" );
     $("#enterCommunity"+id).attr("onclick","showEntertr("+id+","+index+")");
     $allCommunityTable.bootstrapTable('collapseRow', index);
 }
 
-function searchCommunity(){
-    $("#searchInput").on("keyup", function() {
-    var value = $(this).val().toLowerCase();
-    $(".searchTr").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-  });
+//搜尋現有社群名稱
+function searchCommunity(data, text){
+    return data.filter(function (row) {
+        return row.community_name.indexOf(text) > -1
+    })
 }
 
+
+
+/*****處理已加入社群******************************* */
 //顯示會員已加入的社群
 function showMemberCommunity(){
     var $memberCommunityTable = $("#memberCommunityTable");
@@ -188,6 +196,9 @@ window.operateEvents = {
     }  
 }
 
+
+
+/****加入社群ajax************* */
 //根據社群id、密碼，加入社群
 function joinCommunity(id){
     var community_key =  $("#community_key_"+id).val();
@@ -229,6 +240,5 @@ $(function(){
 
     showAllCommunity();
     showMemberCommunity();
-    searchCommunity();
 
 });
