@@ -36,36 +36,6 @@
       </div>
     </header>
       
-    <!-- Modal -->
-    <div class="modal fade" id="creatCommunityModal" tabindex="-1" role="dialog" aria-labelledby="creatCommunityModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="creatCommunityModalLabel">創立新社群</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="alert alert-danger" role="alert" id="errmsg" style="display: none;"></div>
-            <div class="form-group">
-              <div class="input-group">
-                <input type="text" id="community_name" name="community_name" class='form-control' placeholder="請輸入社群名稱" required autofocus>
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="input-group">
-                <input type="text" id="community_key" name="community_key" class='form-control' placeholder="請輸入社群密碼" required autofocus>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <input type="button" value="建立" class="btn btn-primary" onclick="createCommunity()">
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!--Main-->
     <main role="main" class="container">
       <div class="mx-auto">
@@ -75,16 +45,7 @@
           </div>
           <p id="allCommunityData"><%= allCommunityData %></p>
           <p id='errmsgAll' class="alert alert-warning mt-3" style="display: none;"></p>
-          <table class="table table-bordered mt-3" id="allCommunityTable">
-            <thead class="thead-light">
-              <tr>
-                <th>社群名稱</th>
-                <th>創立時間</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="allCommunityTbody"></tbody>
-          </table>
+          <table id="allCommunityTable"></table>
         </div>
         <div class="form-group mt-5">
           <div class="title-bar bg-selfblue mb-3">
@@ -92,16 +53,7 @@
           </div>
           <p id="memberCommunityData"><%= memberCommunityData %></p>
           <p id="memberCommunityEmptyMsg" class="font-weight-bold text-danger"></p>
-          <table class="table table-bordered" id="memberCommunityTable">
-            <thead class="thead-light">
-              <tr>
-                <th>社群名稱</th>
-                <th>創立時間</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+          <table id="memberCommunityTable"></table>
         </div>
         <div class="form-group mt-5">
           <div class="title-bar bg-selfpink">
@@ -110,5 +62,6 @@
         </div>
       </div>
     </main>
+    <%- include('modal.ejs'); -%>
   </body>
 </html>
