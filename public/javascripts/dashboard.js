@@ -49,7 +49,7 @@ function showAllCommunity(){
             {formatter:"joinCommunityFormatter"}
         ],
         theadClasses:'thead-light',
-        pageSize: 8,
+        pageSize: 10,
         pagination:true,
         detailView:true,
         detailFormatter:"detailFormatter",
