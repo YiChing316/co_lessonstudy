@@ -131,4 +131,18 @@ router.get('/edit/:community_id', function(req, res, next) {
    
 });
 
+router.post('/edit/:community_id/save',function(req,res,next){
+    var member_id = req.session.member_id;
+    var member_name = req.session.member_name;
+
+    var community_id = req.params.community_id;
+
+    var stage = req.body.stage;
+    var lessonplanData = req.body;
+
+    res.json({msg:lessonplanData});
+
+
+})
+
 module.exports = router;

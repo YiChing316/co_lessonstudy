@@ -34,6 +34,7 @@
             </div>
             <div id="setlesson" class="card-body">
               <!--js所需資料-->
+              <p id="community_id" style="display: none;"><%= community_id %></p>
               <p id="unitData" style="display: none;"><%= unitData %></p>
               <p id="activityData" style="display: none;"><%= activityData %></p>
               <p id="course_field_info" style="display: none;"><%= course_field %></p>
@@ -99,22 +100,7 @@
                           <th scope="col" width="50"></th>
                         </tr>
                       </thead>
-                      <tbody class="activityTbody" id="activity_1Tbody">
-                        <tr>
-                          <th scope="row">1</th>
-                          <td></td>
-                          <td>課前準備1.教師利用生活情境問題引起學習動機，並點選先備知識診斷測驗未經熟知學生說說看自己的經驗。</td>
-                          <td>05</td>
-                          <td id="activity_1_assessmentTd_1">
-                            <a href="" class="assessment_link font-weight-bolder" data-toggle="modal" data-target="#addassessmentModal" data-targettr="activity_1_assessmentTd_1">新增評量方式...</a>
-                          </td>
-                          <td>使用因材網學生診斷報表</td>
-                          <td>
-                            <input type="button" class="btn btn-warning mb-1" value="編輯">
-                            <input type="button" class="btn btn-danger" value="刪除">
-                          </td>
-                        </tr>
-                      </tbody>
+                      <tbody class="activityTbody" id="activity_1Tbody"></tbody>
                     </table>
                   </div>
                 </div>
