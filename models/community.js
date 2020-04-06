@@ -61,10 +61,11 @@ module.exports = {
         })
     },
 
+    //使用DATE_FORMAT(欄位名稱,"%Y/%m/%d %T")select出想要的日期時間格式
     showAllCommunity: function(cb){
         pool.getConnection(function(err,connection){
             if(err) throw err;
-            connection.query('SELECT `community_id`,`community_name`,`community_createtime` FROM `community`',function(err,results){
+            connection.query('SELECT `community_id`,`community_name`,DATE_FORMAT(`community_createtime`,"%Y/%m/%d %T") AS `community_createtime` FROM `community`',function(err,results){
                 if(err) throw err;
                 cb(results);
                 connection.release();
@@ -73,12 +74,13 @@ module.exports = {
     },
 
     //使用到community以及community_member兩張表，故使用inner join選取此會員所在的社群名稱和建立時間
+    //使用DATE_FORMAT(欄位名稱,"%Y/%m/%d %T")select出想要的日期時間格式
     showMemberCommunity: function(member_id,cb){
         pool.getConnection(function(err,connection){
             if(err) throw err;
-            connection.query('SELECT `community`.community_id,`community`.community_name,`community`.community_createtime,`community_member`.community_member_id,`community_member`.member_name '+
+            connection.query('SELECT `community`.community_id,`community`.community_name,DATE_FORMAT(`community`.community_createtime,"%Y/%m/%d %T") AS `community_createtime`,`community_member`.community_member_id,`community_member`.member_name '+
                             'FROM `community` INNER JOIN `community_member` ON `community`.community_id=`community_member`.community_id_community '+
-                            'WHERE `community_member`.member_id_member =?',[member_id],function(err,results){
+                            'WHERE `community_member`.member_id_member = ?',[member_id],function(err,results){
                                 if(err) throw err;
                                 cb(results);
                                 connection.release();

@@ -61,7 +61,7 @@ function showAllCommunity(){
         },
         classes:'table table-bordered'
     });
-    $allCommunityTable.bootstrapTable("load",currectallCommunityData());
+    $allCommunityTable.bootstrapTable("load",allCommunityData);
 }
 
 //加入社群btn
@@ -89,27 +89,6 @@ function detailFormatter(index, row) {
             '</div>',
         '</div>'
     ].join('')
-}
-
-//現有的社群，整理加入時間
-function currectallCommunityData(){
-    var all_array = [];
-    for(var i = 0; i<allCommunityData.length;i++){
-            var community = allCommunityData[i];
-            var community_id = community.community_id;
-            var community_name = community.community_name;
-            //sql出來的時間為ISO Date ex:"2015-03-25T12:00:00Z"，new Date後會變成 Wed Mar 25 2015 08:00:00 GMT+0800
-            var community_createtime = new Date(community.community_createtime);
-            var year = community_createtime.getFullYear();
-            var month = community_createtime.getMonth()+1;//月份是由(0-11)故要+1
-            var date = community_createtime.getDate();
-            var hour = community_createtime.getHours();
-            var minute = community_createtime.getMinutes();
-            var second = community_createtime.getSeconds();
-            var createtime = year+"/"+month+"/"+date+" "+hour+":"+minute+":"+second;
-            all_array.push({tr_index:i,community_id:community_id,community_name:community_name,community_createtime:createtime});
-    }
-    return all_array;
 }
 
 //根據點選'加入社群'按鈕所對應的id去顯示該id的'entertr'
@@ -157,29 +136,8 @@ function showMemberCommunity(){
             pagination:true,
             classes:'table table-bordered'
         });
-        $memberCommunityTable.bootstrapTable("load",currectMemberCommunityData());
+        $memberCommunityTable.bootstrapTable("load",memberCommunityData);
     }
-}
-
-//會員已加入社群的資料，整理加入時間
-function currectMemberCommunityData(){
-    var currect_array = [];
-    for(var i = 0; i<memberCommunityData.length;i++){
-        var memberCommunity = memberCommunityData[i];
-        var community_id = memberCommunity.community_id;
-        var community_name = memberCommunity.community_name;
-        var community_createtime = new Date(memberCommunity.community_createtime);
-        var year = community_createtime.getFullYear();
-        var month = community_createtime.getMonth()+1;//月份是由(0-11)故要+1
-        var date = community_createtime.getDate();
-        var hour = community_createtime.getHours();
-        var minute = community_createtime.getMinutes();
-        var second = community_createtime.getSeconds();
-        var createtime = year+"/"+month+"/"+date+" "+hour+":"+minute+":"+second;
-
-        currect_array.push({community_id:community_id,community_name:community_name,community_createtime:createtime});
-    }
-    return currect_array;
 }
 
 //進入以加入社群btn
