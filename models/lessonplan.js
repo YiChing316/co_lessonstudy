@@ -15,20 +15,22 @@ module.exports = {
                 member_name:member_name
             }
 
-            connection.query('SELECT COUNT(`community_id_community`) FROM `lessonplan` WHERE `community_id_community`=?',[community_id],function(err,countResults){
+            connection.query('SELECT COUNT(`community_id_community`) AS COUNTNUM FROM `lessonplan` WHERE `community_id_community`=?',[community_id],function(err,countResults){
                 if(err) throw err;
+
+                var countNum = countResults[0].COUNTNUM;
                 
-                if(countResults == 1){
-                    connection.query('INSERT INTO `lessonplan` SET ?',sql,function(err,insertResults){
+                if(countNum == 1){
+                    connection.query('UPDATE `lessonplan` SET ? WHERE `community_id_community`=?',[sql,community_id],function(err,updateResults){
                         if(err) throw err;
-                        cb(insertResults);
+                        cb(updateResults);
                         connection.release();
                     })
                 }
                 else{
-                    connection.query('UPDATE `lessonplan` SET ? WHERE `community_id_community`=?',[sql,community_id],function(err,updateResults){
+                    connection.query('INSERT INTO `lessonplan` SET ?',sql,function(err,insertResults){
                         if(err) throw err;
-                        cb(updateResults);
+                        cb(insertResults);
                         connection.release();
                     })
                 }
