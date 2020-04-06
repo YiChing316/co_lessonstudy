@@ -115,10 +115,22 @@ function alertStageDiv(parentDiv){
 
 
 /*****************append元件 *****************************************************************************/
+var basicData;
 function lessonplan_Map(){
+    if(basicData !==""){
+        var lessonplan_intro = basicData.lessonplan_intro;
+        var lessonplan_field = basicData.lessonplan_field;
+        var lessonplan_version = basicData.lessonplan_version;
+        var lessonplan_grade = basicData.lessonplan_grade;
+        var lessonplan_time = basicData.lessonplan_time.split(',');
+        var lessonplan_time_class = lessonplan_time[0];
+        var lessonplan_time_minutes = lessonplan_time[1];
+    }
+    
     lessonplan_Component.map(function(data){
         if(data.type == 'textarea'){
             textareaDiv(data.name,data.id,data.parentDiv);
+            $("#"+data.id).val(lessonplan_intro);
         }
         else if(data.type == 'select'){
             if(data.id == 'lessonplan_field'){
@@ -127,6 +139,7 @@ function lessonplan_Map(){
                                         '<option value="英語">英語</option>'+
                                         '<option value="自然">自然</option>'+
                                         '<option value="數學">數學</option>');
+                $("#"+data.id).val(lessonplan_field);
             }
             else if(data.id == 'lessonplan_version'){
                 selectDiv(data.name,data.id,data.parentDiv);
@@ -134,6 +147,7 @@ function lessonplan_Map(){
                                         '<option value="南一">南一</option>'+
                                         '<option value="翰林">翰林</option>'+
                                         '<option value="自編">自編</option>');
+                $("#"+data.id).val(lessonplan_version);
             }
             else if(data.id == 'lessonplan_grade'){
                 selectDiv(data.name,data.id,data.parentDiv);
@@ -143,14 +157,15 @@ function lessonplan_Map(){
                                         '<option value="6年級">6年級</option>'+
                                         '<option value="國中">第四學習階段(國中)</option>'+
                                         '<option value="高中">第五學習階段(高中)</option>');
+                $("#"+data.id).val(lessonplan_grade);
             }
         }
         else{
             $('#lessonplan').append('<div class="form-group row">'+
                                         '<label class="control-label col-sm-2">'+data.name+'</label>'+
-                                        '<div class="col-sm"><input type="number" min="1" id="'+data.id+'_class" class="form-control"></div>'+
+                                        '<div class="col-sm"><input type="number" min="1" id="'+data.id+'_class" class="form-control" value="'+lessonplan_time_class+'"></div>'+
                                         '<div class="col-sm-2"><label>節課，共</label></div>'+
-                                        '<div class="col-sm"><input type="number" min="1" id="'+data.id+'_minutes" class="form-control"></div>'+
+                                        '<div class="col-sm"><input type="number" min="1" id="'+data.id+'_minutes" class="form-control" value="'+lessonplan_time_minutes+'"></div>'+
                                         '<div class="col-sm-1"><label>分鐘</label></div>'+ 
                                     '</div>');
         }
@@ -329,6 +344,9 @@ function stageControl(){
 $(function(){
     unitData = JSON.parse($("#unitData").text());
     activityData = JSON.parse($("#activityData").text());
+
+    basicData = JSON.parse($("#basicData").text());
+    
     $("#unitData").remove();
     $("#activityData").remove();
 
@@ -338,7 +356,9 @@ $(function(){
     lessonplanstage_Map();
     twoselect_Map();
     threeselect_Map();
-    stageControl(); 
+    stageControl();
+
+    // putBasicLessonplanData();
 
 })
 
@@ -402,7 +422,7 @@ function pushCustomUnitandActivity(){
 
 
 
-/***功能function**************** */
+/***功能function*********************************** */
 
 //array排序
 function sortByKey(array, key) {

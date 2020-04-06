@@ -38,15 +38,16 @@ router.get('/edit/:community_id', function(req, res, next) {
                                                             activityData:activityData,
                                                             course_field:'',
                                                             course_grade:'',
-                                                            ccdimesionData:'',
-                                                            ccitemData:'',
-                                                            ccfieldData:'',
-                                                            lfitemData:'',
-                                                            lfchilditemData:'',
-                                                            lfcontentData:'',
-                                                            issuenameData:'',
-                                                            issuethemeData:'',
-                                                            issuecontentData:''
+                                                            ccdimesionData:'""',//JSON.parse error ''所以給予空{}
+                                                            ccitemData:'""',
+                                                            ccfieldData:'""',
+                                                            lfitemData:'""',
+                                                            lfchilditemData:'""',
+                                                            lfcontentData:'""',
+                                                            issuenameData:'""',
+                                                            issuethemeData:'""',
+                                                            issuecontentData:'""',
+                                                            basicData:'""'
                                                         });   
                         });
                     });
@@ -57,6 +58,8 @@ router.get('/edit/:community_id', function(req, res, next) {
                     var course_field = basicData.lessonplan_field;
                     var course_version = basicData.lessonplan_version;
                     var course_grade = basicData.lessonplan_grade;
+
+                    basicData = JSON.stringify(basicData);
 
                     clsresource.getcourseunitwhere(course_field,course_version,course_grade,function(unitResults){
                         unitData = JSON.stringify(unitResults);
@@ -107,7 +110,8 @@ router.get('/edit/:community_id', function(req, res, next) {
                                                                                                 lfcontentData:lfcontentData,
                                                                                                 issuenameData:issuenameData,
                                                                                                 issuethemeData:issuethemeData,
-                                                                                                issuecontentData:issuecontentData
+                                                                                                issuecontentData:issuecontentData,
+                                                                                                basicData:basicData//教案基本資料
                                                                                             });
 
                                                             })//getissue_content end
@@ -140,6 +144,8 @@ router.post('/edit/:community_id/save',function(req,res,next){
 
     var stage = req.body.stage;
     var lessonplanData = req.body;
+
+    console.log(lessonplanData);
 
     switch(stage){
         case 'lessonplan':

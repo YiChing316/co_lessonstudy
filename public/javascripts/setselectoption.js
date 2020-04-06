@@ -357,11 +357,11 @@ $(function(){
     issuenameData = JSON.parse($("#issuenameData").text()); 
     issuethemeData = JSON.parse($("#issuethemeData").text());
     issuecontentData = JSON.parse($("#issuecontentData").text());
-
-
-    selectDefault();
-    dimesion_Map();
-    learning_focus_item_Map();
-    issuename_Map();
-
+    
+    if(ccdimesionData !== ""){
+        selectDefault();
+        dimesion_Map();
+        learning_focus_item_Map();
+        issuename_Map();
+    }
 })
