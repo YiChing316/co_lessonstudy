@@ -464,6 +464,7 @@ function saveLessonplanData(divId){
             var lessonplan_time_class = parseInt($("#lessonplan_time_class").val());
             var lessonplan_time_minutes = parseInt($("#lessonplan_time_minutes").val());
             var lessonplan_time = [lessonplan_time_class,lessonplan_time_minutes];
+            var timeString = lessonplan_time.toString();
 
             $.ajax({
                 url: "/lessonplan/edit/"+community_id+"/save",
@@ -474,7 +475,7 @@ function saveLessonplanData(divId){
                     lessonplan_field:lessonplan_field,
                     lessonplan_version:lessonplan_version,
                     lessonplan_grade:lessonplan_grade,
-                    lessonplan_time:lessonplan_time
+                    lessonplan_time:timeString
                 },
                 success: function(data){
                      console.log(data.msg);

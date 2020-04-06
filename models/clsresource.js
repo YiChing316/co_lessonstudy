@@ -2,24 +2,6 @@ var pool = require('./connectMysql');
 var resourcepool = require('./connectClsMysql');
 
 module.exports = {
-    //判斷此lessonplan是否已有儲存領域、版本、年級
-    checklessonplandata: function(community_id,cb){
-        pool.getConnection(function(err,connection){
-            if (err) throw err;
-
-            connection.query('SELECT `lessonplan_field`,`lessonplan_version`,`lessonplan_grade` FROM `lessonplan` WHERE `community_id_community`=?',[community_id],function(err,results){
-                if(results.length){
-                    if(err) throw err;
-                    cb(results);
-                    connection.release();
-                }
-                else{
-                    cb({isExisted:false});
-                    connection.release();
-                }
-            })
-        })
-    },
 
     //選取有條件單元
     getcourseunitwhere: function(course_field,course_version,course_grade,cb){

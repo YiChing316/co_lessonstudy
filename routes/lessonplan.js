@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var community = require('../models/community');
 var clsresource = require('../models/clsresource');
+var lessonplan = require('../models/lessonplan');
 
 /* GET lessonplan page. */
 router.get('/edit/:community_id', function(req, res, next) {
@@ -19,7 +20,7 @@ router.get('/edit/:community_id', function(req, res, next) {
 
         if(results.isExisted){
             //檢查是否已有儲存過年級版本
-            clsresource.checklessonplandata(community_id,function(selResults){
+            lessonplan.checklessonplandata(community_id,function(selResults){
                 //沒有儲存資料
                 if(selResults.isExisted == false){
                     clsresource.getcourseunit(function(unitResults){
@@ -140,7 +141,14 @@ router.post('/edit/:community_id/save',function(req,res,next){
     var stage = req.body.stage;
     var lessonplanData = req.body;
 
-    res.json({msg:lessonplanData});
+    switch(stage){
+        case 'lessonplan':
+            lessonplan.saveLessonplan(community_id,lessonplanData,member_id,member_name,function(results){
+                res.json({msg:'ok'})
+            })
+            break;
+
+    }
 
 
 })
