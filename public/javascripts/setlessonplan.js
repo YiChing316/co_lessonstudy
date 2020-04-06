@@ -162,7 +162,8 @@ var unitData,activityData;
 var course_field_info,course_grade_info;
 
 function lessonplan_unit_Set(){
-    $("#lessonplan_unit").append('<div class="row">'+
+    $("#lessonplan_unit").append('<button class="btn btn-outline-info" data-toggle="modal" data-target="#customUnitandActivityModal"><i class="fa fa-cogs"></i> 自定義單元/活動</button>'+
+                                '<div class="row mt-3">'+
                                     '<div class="card col nopadding">'+
                                     '<div class="card-header">單元</div>'+
                                     '<div class="card-body">'+
@@ -177,7 +178,7 @@ function lessonplan_unit_Set(){
                                     '</div>'+
                                 '</div>');
     buttonDiv('lessonplan_unit');
-    unit_Map();    
+    unit_Map();  
 }
 
 function unit_Map(){
@@ -185,7 +186,6 @@ function unit_Map(){
 
     for(var i=0; i<unitData.length;i++){
         var course = unitData[i];
-        var course_id = course.course_id;
         var course_field = course.course_field;
         var course_version = course.course_version;
         var course_grade = course.course_grade;
@@ -193,10 +193,10 @@ function unit_Map(){
         var course_semester = course.course_semester;
         activity_Map(course_field,course_version,course_grade,course_unit_name);
         if(course_semester=='上學期'){
-            $('#unit_sel').append('<option value="'+course_unit_name+'">'+course_id+' '+course_field+' '+course_version+' '+course_grade+' '+course_semester+' '+course_unit_name+'</option>');
+            $('#unit_sel').append('<option value="'+course_unit_name+'">'+course_field+' '+course_version+' '+course_grade+' '+course_semester+' '+course_unit_name+'</option>');
         }
         else{
-            $('#unit_sel').append('<option value="'+course_unit_name+'">'+course_id+' '+course_field+' '+course_version+' '+course_grade+' '+course_semester+' '+course_unit_name+'</option>');
+            $('#unit_sel').append('<option value="'+course_unit_name+'">'+course_field+' '+course_version+' '+course_grade+' '+course_semester+' '+course_unit_name+'</option>');
         }
     }
 
@@ -368,6 +368,36 @@ function addlessonplantargetlist(){
                                         '</tr>');
     deletetableTr('#lessonplantargetTbody');
     sorttableTbody('#lessonplantargetTbody');
+}
+
+//自定義單元/活動modal內的活動table列表
+function addCuntomActivitylist(){
+    var listnum = $("#customActivityTbody").find("tr").last().children("th").text();
+    listnum++;
+    $("#customActivityTbody").append('<tr class="appendTr">'+
+                                            '<th scope="row">'+listnum+'</th>'+
+                                            '<td><input type="text" class="form-control activityList" id="lessonplan_unit_activity_'+listnum+'" placeholder="請輸入活動名稱"></td>'+
+                                            '<td class="lasttd"><button class="btn btn-danger btnDelete"><i class="far fa-trash-alt"></i></button></td>'+
+                                        '</tr>');
+    deletetableTr('#customActivityTbody');
+}
+
+//將自定義的單元/活動放入unitData以及activtyData中，便可顯示在畫面的select內
+function pushCustomUnitandActivity(){
+    var unit_name = $("#unitName").val();
+    unitData.push({course_field: "", course_version: "",course_semester:"",course_unit_name: unit_name});
+    
+    $(".activityList").each(function() {
+        var activity_name = $(this).val();
+        activityData.push({course_field: "", course_version: "",course_semester:"",course_unit_name: unit_name,course_activity_name:activity_name});
+    });
+
+    $("#unit_sel option").remove();
+    unit_Map();
+    
+    $("#customActivityTbody .appendTr").remove();
+    $("#customUnitandActivityModal input[type='text']").val("");
+    $("#customUnitandActivityModal").modal("hide");
 }
 
 
