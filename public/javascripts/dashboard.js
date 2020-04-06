@@ -42,7 +42,6 @@ function showAllCommunity(){
     $allCommunityTable = $("#allCommunityTable");
     $allCommunityTable.bootstrapTable({
         columns:[
-            {field:"tr_index",visible:false},
             {title:"社群ID",field:"community_id",visible:false},
             {title:"社群名稱",field:"community_name",detailView:false},
             {title:"創立時間",field:"community_createtime",detailView:false},
@@ -65,11 +64,10 @@ function showAllCommunity(){
 }
 
 //加入社群btn
-function joinCommunityFormatter(index, row) {
+function joinCommunityFormatter(value, row, index) {
     var id = row.community_id;
-    var tr_index = row.tr_index;
     return[
-        "<input type='button' class='btn btn-primary joinCommunity' id='enterCommunity"+id+"' value='加入社群' onclick='showEntertr("+id+","+tr_index+")'>"
+        "<input type='button' class='btn btn-primary joinCommunity' id='enterCommunity"+id+"' value='加入社群' onclick='showEntertr("+id+","+index+")'>"
     ].join('');    
 }
 
