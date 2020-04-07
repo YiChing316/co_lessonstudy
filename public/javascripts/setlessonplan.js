@@ -524,7 +524,9 @@ function summernoteClass(){
 }
 
 //儲存的ajaxfunction
-function saveAjax(community_id,data){
+function saveAjax(data){
+    var community_id = $("#community_id").text();
+
     $.ajax({
         url: "/lessonplan/edit/"+community_id+"/save",
         type: "POST",
@@ -540,7 +542,7 @@ function saveAjax(community_id,data){
 }
 
 function saveLessonplanData(divId){
-    var community_id = $("#community_id").text();
+    
 
     switch(divId){
         case 'lessonplan':
@@ -562,7 +564,7 @@ function saveLessonplanData(divId){
                 lessonplan_time:timeString
             };
             
-            saveAjax(community_id,data);
+            saveAjax(data);
             break;
         case 'lessonplan':
             break;
