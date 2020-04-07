@@ -28,8 +28,6 @@ module.exports = {
                     member_name:member_name
                 }
             }
-
-            console.log(sql);
             
             connection.query('SELECT COUNT(`community_id_community`) AS COUNTNUM FROM `'+lessonplanData.stage+'` WHERE `community_id_community`=?',[community_id],function(err,countResults){
                 if(err) throw err;
