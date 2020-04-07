@@ -135,29 +135,32 @@ function lessonplan_Map(){
         else if(data.type == 'select'){
             if(data.id == 'lessonplan_field'){
                 selectDiv(data.name,data.id,data.parentDiv);
-                $('#'+data.id).append('<option value="國語">國語</option>'+
+                $('#'+data.id).append('<option disabled selected>請選擇課程領域</option>'+
+                                        '<option value="國語">國語</option>'+
                                         '<option value="英語">英語</option>'+
                                         '<option value="自然">自然</option>'+
                                         '<option value="數學">數學</option>');
-                $("#"+data.id).val(lessonplan_field);
+                $("#"+data.id+" option[value="+lessonplan_field+"]").attr("selected","selected");
             }
             else if(data.id == 'lessonplan_version'){
                 selectDiv(data.name,data.id,data.parentDiv);
-                $('#'+data.id).append('<option value="康軒">康軒</option>'+
+                $('#'+data.id).append('<option disabled selected>請選擇使用版本</option>'+
+                                        '<option value="康軒">康軒</option>'+
                                         '<option value="南一">南一</option>'+
                                         '<option value="翰林">翰林</option>'+
                                         '<option value="自編">自編</option>');
-                $("#"+data.id).val(lessonplan_version);
+                $("#"+data.id+" option[value="+lessonplan_version+"]").attr("selected","selected");
             }
             else if(data.id == 'lessonplan_grade'){
                 selectDiv(data.name,data.id,data.parentDiv);
-                $('#'+data.id).append('<option value="3年級">3年級</option>'+
+                $('#'+data.id).append('<option disabled selected>請選擇學習階段</option>'+
+                                        '<option value="3年級">3年級</option>'+
                                         '<option value="4年級">4年級</option>'+
                                         '<option value="5年級">5年級</option>'+
                                         '<option value="6年級">6年級</option>'+
                                         '<option value="國中">第四學習階段(國中)</option>'+
                                         '<option value="高中">第五學習階段(高中)</option>');
-                $("#"+data.id).val(lessonplan_grade);
+                $("#"+data.id+" option[value="+lessonplan_grade+"]").attr("selected","selected");
             }
         }
         else{
@@ -323,15 +326,15 @@ function stageControl(){
     course_field_info = $("#course_field_info").text();
     course_grade_info = $("#course_grade_info").text();
     if(course_field_info == "" || course_grade_info == ""){
-        // alertStageDiv("headerlessonplan_unit");
+        alertStageDiv("headerlessonplan_unit");
         alertStageDiv("headerlessonplan_cirn");
         alertStageDiv("headerlessonplan_issue");
-        // $("#cardidlessonplan_unit *").prop("disabled",true);
+        $("#cardidlessonplan_unit *").prop("disabled",true);
         $("#cardidlessonplan_cirn *").prop("disabled",true);
         $("#cardidlessonplan_issue *").prop("disabled",true);
     }
     else{
-        // $("#cardidlessonplan_unit *").prop("disabled",false);
+        $("#cardidlessonplan_unit *").prop("disabled",false);
         $("#cardidlessonplan_cirn *").prop("disabled",false);
         $("#cardidlessonplan_issue *").prop("disabled",false);
     }
