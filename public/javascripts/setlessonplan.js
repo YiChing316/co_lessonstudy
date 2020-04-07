@@ -237,7 +237,7 @@ function activity_Map(course_field,course_version,course_grade,course_unit_name)
             course_activity_version == course_version && 
             course_activity_grade == course_grade && 
             course_activity_unit == course_unit_name){
-            activity_array.push(course_id+' '+course_activity_name);
+            activity_array.push(course_activity_name);
         }
     }
 
@@ -361,7 +361,7 @@ $(function(){
     threeselect_Map();
     stageControl();
 
-    // putBasicLessonplanData();
+    openCuntomUnitBtn();
 
 })
 
@@ -408,11 +408,15 @@ function addCuntomActivitylist(){
 //將自定義的單元/活動放入unitData以及activtyData中，便可顯示在畫面的select內
 function pushCustomUnitandActivity(){
     var unit_name = $("#unitName").val();
-    unitData.push({course_field: "", course_version: "",course_semester:"",course_unit_name: unit_name});
+    var customField = $("#customField").text();
+    var customVersion = $("#customVersion").text();
+    var customGrade = $("#customGrade").text();
+    var customSemester = $("#customSemester_sel :selected").val();
+    unitData.push({course_field: customField, course_version: customVersion,course_grade:customGrade,course_semester:customSemester,course_unit_name: unit_name});
     
     $(".activityList").each(function() {
         var activity_name = $(this).val();
-        activityData.push({course_field: "", course_version: "",course_semester:"",course_unit_name: unit_name,course_activity_name:activity_name});
+        activityData.push({course_field: customField, course_version: customVersion,course_grade:customGrade,course_semester:customSemester,course_unit_name: unit_name,course_activity_name:activity_name});
     });
 
     $("#unit_sel option").remove();
@@ -421,6 +425,20 @@ function pushCustomUnitandActivity(){
     $("#customActivityTbody .appendTr").remove();
     $("#customUnitandActivityModal input[type='text']").val("");
     $("#customUnitandActivityModal").modal("hide");
+}
+
+function openCuntomUnitBtn(){
+    var lessonplan_field = $("#lessonplan_field :selected").val();
+    var lessonplan_version = $("#lessonplan_version :selected").val();
+    var lessonplan_grade = $("#lessonplan_grade :selected").val();
+
+    $('#customUnitandActivityModal').on('show.bs.modal', function (event) {
+
+        var modal = $(this)
+        modal.find('#customField').text(lessonplan_field);
+        modal.find('#customVersion').text(lessonplan_version);
+        modal.find('#customGrade').text(lessonplan_grade);
+    })
 }
 
 
