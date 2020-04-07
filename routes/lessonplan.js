@@ -145,11 +145,11 @@ router.post('/edit/:community_id/save',function(req,res,next){
     var stage = req.body.stage;
     var lessonplanData = req.body;
 
-    console.log(lessonplanData);
-
     switch(stage){
+
         case 'lessonplan':
-            lessonplan.saveLessonplan(community_id,lessonplanData,member_id,member_name,function(results){
+        case 'lessonplan_unit':
+            lessonplan.saveLessonplanandUnitActivity(community_id,lessonplanData,member_id,member_name,function(results){
                 res.json({msg:'ok'})
             })
             break;

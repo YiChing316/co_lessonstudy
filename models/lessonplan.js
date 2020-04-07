@@ -1,34 +1,50 @@
 var pool = require('./connectMysql');
 
 module.exports = {
-    saveLessonplan: function(community_id,lessonplanData,member_id,member_name,cb){
+
+    saveLessonplanandUnitActivity: function(community_id,lessonplanData,member_id,member_name,cb){
         pool.getConnection(function(err,connection){
             if(err) throw err;
-            var sql = {
-                community_id_community:community_id,
-                lessonplan_intro:lessonplanData.lessonplan_intro,
-                lessonplan_field:lessonplanData.lessonplan_field,
-                lessonplan_version:lessonplanData.lessonplan_version,
-                lessonplan_grade:lessonplanData.lessonplan_grade,
-                lessonplan_time:lessonplanData.lessonplan_time,
-                member_id_member:member_id,
-                member_name:member_name
+
+            var sql;
+            if(lessonplanData.stage == 'lessonplan'){
+                sql = {
+                    community_id_community:community_id,
+                    lessonplan_intro:lessonplanData.lessonplan_intro,
+                    lessonplan_field:lessonplanData.lessonplan_field,
+                    lessonplan_version:lessonplanData.lessonplan_version,
+                    lessonplan_grade:lessonplanData.lessonplan_grade,
+                    lessonplan_time:lessonplanData.lessonplan_time,
+                    member_id_member:member_id,
+                    member_name:member_name
+                }
+            }
+            else{//lessonplanData.stage為lessonplan_unit
+                sql = {
+                    community_id_community:community_id,
+                    lessonplan_unit_name:lessonplanData.lessonplan_unit_name,
+                    lessonplan_unit_activity:lessonplanData.lessonplan_unit_activity,
+                    member_id_member:member_id,
+                    member_name:member_name
+                }
             }
 
-            connection.query('SELECT COUNT(`community_id_community`) AS COUNTNUM FROM `lessonplan` WHERE `community_id_community`=?',[community_id],function(err,countResults){
+            console.log(sql);
+            
+            connection.query('SELECT COUNT(`community_id_community`) AS COUNTNUM FROM `'+lessonplanData.stage+'` WHERE `community_id_community`=?',[community_id],function(err,countResults){
                 if(err) throw err;
 
                 var countNum = countResults[0].COUNTNUM;
                 
                 if(countNum == 1){
-                    connection.query('UPDATE `lessonplan` SET ? WHERE `community_id_community`=?',[sql,community_id],function(err,updateResults){
+                    connection.query('UPDATE `'+lessonplanData.stage+'` SET ? WHERE `community_id_community`=?',[sql,community_id],function(err,updateResults){
                         if(err) throw err;
                         cb(updateResults);
                         connection.release();
                     })
                 }
                 else{
-                    connection.query('INSERT INTO `lessonplan` SET ?',sql,function(err,insertResults){
+                    connection.query('INSERT INTO `'+lessonplanData.stage+'` SET ?',sql,function(err,insertResults){
                         if(err) throw err;
                         cb(insertResults);
                         connection.release();

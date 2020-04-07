@@ -243,7 +243,7 @@ function activity_Map(course_field,course_version,course_grade,course_unit_name)
             course_activity_version == course_version && 
             course_activity_grade == course_grade && 
             course_activity_unit == course_unit_name){
-            activity_array.push(course_activity_name);
+            activity_array.push({course_id:course_id,course_activity_name:course_activity_name});
         }
     }
 
@@ -263,8 +263,8 @@ function activity_Map(course_field,course_version,course_grade,course_unit_name)
                 //利用each遍歷array中的值並將每個值新增到div中
                 $.each(array, function(i, val) {
                     $('#activity_sel').append($('<div class="custom-control custom-checkbox mycheckbox ml-4">'+
-                                                    '<input type="checkbox" class="custom-control-input" id="'+ array[i] +'" name="box">'+
-                                                    '<label class="custom-control-label" for="'+ array[i] +'">'+ array[i] +'</label>'+
+                                                    '<input type="checkbox" class="custom-control-input" id="'+ array[i].course_activity_name +'" name="box" value="'+array[i].course_activity_name+'">'+
+                                                    '<label class="custom-control-label" for="'+ array[i].course_activity_name +'">'+ array[i].course_activity_name +'</label>'+
                                                 '</div>'
                                                 ));
                 });      
@@ -573,6 +573,17 @@ function saveLessonplanData(divId){
             break;
         case 'lessonplan_unit':
             var lessonplan_unit_name = $("#unit_sel :selected").val();
+            var lessonplan_activity_name = [];
+            $("input[name='box']:checked").each(function(){
+                lessonplan_activity_name.push($(this).val());
+            })           
+            var activityString = lessonplan_activity_name.toString();
+            var data = {
+                stage:divId,
+                lessonplan_unit_name:lessonplan_unit_name,
+                lessonplan_unit_activity:activityString
+            };
+            saveAjax(data);
 
             break;
     }
