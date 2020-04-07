@@ -47,7 +47,8 @@ router.get('/edit/:community_id', function(req, res, next) {
                                                             issuenameData:'""',
                                                             issuethemeData:'""',
                                                             issuecontentData:'""',
-                                                            basicData:'""'
+                                                            basicData:'""',
+                                                            lessonplanUnitActivityData:'""'
                                                         });   
                         });
                     });
@@ -94,7 +95,13 @@ router.get('/edit/:community_id', function(req, res, next) {
 
                                                             clsresource.getissue_content(course_grade,function(issuecontentResults){
                                                                 issuecontentData = JSON.stringify(issuecontentResults);
-                                                                res.render('lessonplanEdit', { title: '教案製作',
+
+                                                                lessonplan.selectLessonplanUnitandActivityData(community_id,function(unitActivityResults){
+
+                                                                    var lessonplanUnitActivityData;
+                                                                    lessonplanUnitActivityData = JSON.stringify(unitActivityResults);
+
+                                                                    res.render('lessonplanEdit', { title: '教案製作',
                                                                                                 member_id:member_id,
                                                                                                 member_name:member_name,
                                                                                                 community_id:community_id,
@@ -111,9 +118,10 @@ router.get('/edit/:community_id', function(req, res, next) {
                                                                                                 issuenameData:issuenameData,
                                                                                                 issuethemeData:issuethemeData,
                                                                                                 issuecontentData:issuecontentData,
-                                                                                                basicData:basicData//教案基本資料
+                                                                                                basicData:basicData,//教案基本資料
+                                                                                                lessonplanUnitActivityData:lessonplanUnitActivityData
                                                                                             });
-
+                                                                })//getlessonplanUnitandActivity end
                                                             })//getissue_content end
                                                         })//getissue_theme end
                                                     })//getissue_name end

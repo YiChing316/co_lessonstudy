@@ -115,7 +115,8 @@ function alertStageDiv(parentDiv){
 
 
 /*****************append元件 *****************************************************************************/
-var basicData;
+var basicData,lessonplanUnitActivityData;
+
 function lessonplan_Map(){
     if(basicData !==""){
         var lessonplan_intro = basicData.lessonplan_intro;
@@ -186,27 +187,32 @@ var unitData,activityData;
 var course_field_info,course_grade_info;
 
 function lessonplan_unit_Set(){
-    $("#lessonplan_unit").append('<button class="btn btn-outline-info" data-toggle="modal" data-target="#customUnitandActivityModal"><i class="fa fa-cogs"></i> 自定義單元/活動</button>'+
-                                '<div class="row mt-3">'+
-                                    '<div class="card col nopadding">'+
-                                    '<div class="card-header">單元</div>'+
-                                    '<div class="card-body">'+
-                                        '<select class="form-control col" id="unit_sel" size="10"></select>'+
-                                    '</div>'+
-                                    '</div>'+
-                                    '<div class="card col nopadding ml-1">'+
-                                    '<div class="card-header">活動</div>'+
-                                    '<div class="card-body">'+
-                                        '<div class="col" id="activity_sel"></div>'+
-                                    '</div>'+
-                                    '</div>'+
-                                '</div>');
-    buttonDiv('lessonplan_unit');
+    var lessonplan_version = $("#lessonplan_version :selected").val();
+
+    $("#lessonplan_unit").append('<button class="btn btn-outline-info" data-toggle="modal" data-target="#versionUnitandActivityModal"><i class="fa fa-cubes"></i> '+lessonplan_version+'單元/活動</button>'+
+                                '<button class="btn btn-outline-info ml-1" data-toggle="modal" data-target="#customUnitandActivityModal"><i class="fa fa-cogs"></i> 自定義單元/活動</button>'+
+                                '<div class="card nopadding mt-3">'+
+                                    '<div class="card-header">目前單元/活動</div>'+
+                                    '<div class="card-body lessonplan_unit_body"></div>'+
+                                '</div>'
+                                );
+
+    if(lessonplanUnitActivityData.length !== 0){
+        
+        var lessonplan_unit_name = lessonplanUnitActivityData[0].lessonplan_unit_name;
+        var lessonplan_unit_activity = lessonplanUnitActivityData[0].lessonplan_unit_activity;
+
+        $(".lessonplan_unit_body").append('<p class="card-title"><b>單元：</b>'+lessonplan_unit_name+'</p>'+
+                                        '<p class="card-text"><b>活動：</b>'+lessonplan_unit_activity+'</p>'
+                                        );
+    }
+
     unit_Map();  
 }
 
 function unit_Map(){
     unitData = sortByKey(unitData,'course_id');
+    $('#unit_sel').append("<option disabled selected>請選擇單元</option>");
 
     for(var i=0; i<unitData.length;i++){
         var course = unitData[i];
@@ -355,6 +361,7 @@ $(function(){
     activityData = JSON.parse($("#activityData").text());
 
     basicData = JSON.parse($("#basicData").text());
+    lessonplanUnitActivityData = JSON.parse($("#lessonplanUnitActivityData").text());
     
     $("#unitData").remove();
     $("#activityData").remove();
@@ -411,28 +418,6 @@ function addCuntomActivitylist(){
     deletetableTr('#customActivityTbody');
 }
 
-//將自定義的單元/活動放入unitData以及activtyData中，便可顯示在畫面的select內
-function pushCustomUnitandActivity(){
-    var unit_name = $("#unitName").val();
-    var customField = $("#customField").text();
-    var customVersion = $("#customVersion").text();
-    var customGrade = $("#customGrade").text();
-    var customSemester = $("#customSemester_sel :selected").val();
-    unitData.push({course_field: customField, course_version: customVersion,course_grade:customGrade,course_semester:customSemester,course_unit_name: unit_name});
-    
-    $(".activityList").each(function() {
-        var activity_name = $(this).val();
-        activityData.push({course_field: customField, course_version: customVersion,course_grade:customGrade,course_semester:customSemester,course_unit_name: unit_name,course_activity_name:activity_name});
-    });
-
-    $("#unit_sel option").remove();
-    unit_Map();
-    
-    $("#customActivityTbody .appendTr").remove();
-    $("#customUnitandActivityModal input[type='text']").val("");
-    $("#customUnitandActivityModal").modal("hide");
-}
-
 function openCuntomUnitBtn(){
     var lessonplan_field = $("#lessonplan_field :selected").val();
     var lessonplan_version = $("#lessonplan_version :selected").val();
@@ -444,6 +429,12 @@ function openCuntomUnitBtn(){
         modal.find('#customField').text(lessonplan_field);
         modal.find('#customVersion').text(lessonplan_version);
         modal.find('#customGrade').text(lessonplan_grade);
+    })
+
+    $('#versionUnitandActivityModal').on('show.bs.modal', function (event) {
+
+        var modal = $(this)
+        modal.find('#versionUnitandActivityModalLabel').text(lessonplan_version+"單元/活動");
     })
 }
 
@@ -496,7 +487,8 @@ function summernoteClass(){
                   ['view', ['codeview']]
         ],
         minHeight: 250,
-        maxHeight: 250
+        maxHeight: 250,
+        disableDragAndDrop: true
     });
 
     $('.fixsummernote').summernote({
@@ -571,7 +563,7 @@ function saveLessonplanData(divId){
             
             saveAjax(data);
             break;
-        case 'lessonplan_unit':
+        case 'lessonplan_unit'://版本單元/活動
             var lessonplan_unit_name = $("#unit_sel :selected").val();
             var lessonplan_activity_name = [];
             $("input[name='box']:checked").each(function(){
@@ -585,6 +577,21 @@ function saveLessonplanData(divId){
             };
             saveAjax(data);
 
+            break;
+        case 'customlessonplan_unit'://自定義單元/活動
+            var lessonplan_unit_name = $("#unitName").val();
+            var lessonplan_activity_name = [];
+            $(".activityList").each(function() {
+                var activity_name = $(this).val();
+                lessonplan_activity_name.push(activity_name);
+            });          
+            var activityString = lessonplan_activity_name.toString();
+            var data = {
+                stage:'lessonplan_unit',
+                lessonplan_unit_name:lessonplan_unit_name,
+                lessonplan_unit_activity:activityString
+            };
+            saveAjax(data);
             break;
     }
 }

@@ -145,6 +145,14 @@ function modalclosebtn(modalid){
         case 'addassessmentModal':
             $("#assessmentsummernote").summernote("code",'');
             break;
+        case 'customUnitandActivityModal':
+            $("#customActivityTbody .appendTr").remove();
+            $("#customUnitandActivityModal input[type='text']").val("");
+            break;
+        case 'versionUnitandActivityModal':
+            $("#unit_sel").val($("#unit_sel option:first").val());
+            $("#activity_sel .mycheckbox").remove();
+            break;
     }
 }
 
