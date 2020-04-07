@@ -523,6 +523,22 @@ function summernoteClass(){
     $('.note-statusbar').hide();
 }
 
+//儲存的ajaxfunction
+function saveAjax(community_id,data){
+    $.ajax({
+        url: "/lessonplan/edit/"+community_id+"/save",
+        type: "POST",
+        data:data,
+        success: function(data){
+             console.log(data.msg);
+             window.location = "/lessonplan/edit/"+community_id;
+        },
+        error: function(){
+            alert('失敗');
+        }
+    })
+}
+
 function saveLessonplanData(divId){
     var community_id = $("#community_id").text();
 
@@ -537,26 +553,19 @@ function saveLessonplanData(divId){
             var lessonplan_time = [lessonplan_time_class,lessonplan_time_minutes];
             var timeString = lessonplan_time.toString();
 
-            $.ajax({
-                url: "/lessonplan/edit/"+community_id+"/save",
-                type: "POST",
-                data:{
-                    stage:divId,
-                    lessonplan_intro:lessonplan_intro,
-                    lessonplan_field:lessonplan_field,
-                    lessonplan_version:lessonplan_version,
-                    lessonplan_grade:lessonplan_grade,
-                    lessonplan_time:timeString
-                },
-                success: function(data){
-                     console.log(data.msg);
-                },
-                error: function(){
-                    alert('失敗');
-                }
-            })
-
-            break
+            var data = {
+                stage:divId,
+                lessonplan_intro:lessonplan_intro,
+                lessonplan_field:lessonplan_field,
+                lessonplan_version:lessonplan_version,
+                lessonplan_grade:lessonplan_grade,
+                lessonplan_time:timeString
+            };
+            
+            saveAjax(community_id,data);
+            break;
+        case 'lessonplan':
+            break;
     }
 }
 
