@@ -72,7 +72,7 @@ function joinCommunityFormatter(value, row, index) {
 }
 
 //加入社群填寫密碼的tr
-function detailFormatter(index, row) {
+function detailFormatter(value, row, index) {
     var id = row.community_id;
     return[
         '<div class="row">',
