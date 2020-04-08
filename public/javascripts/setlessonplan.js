@@ -205,6 +205,15 @@ function lessonplan_unit_Set(){
         $(".lessonplan_unit_body").append('<p class="card-title"><b>單元：</b>'+lessonplan_unit_name+'</p>'+
                                         '<p class="card-text"><b>活動：</b>'+lessonplan_unit_activity+'</p>'
                                         );
+
+        var activityArray = lessonplan_unit_activity.split(',');
+        //append sidebar的li
+        $.each(activityArray,function(i){
+            var activityName = activityArray[i];
+            var id = i+1;
+            $("#activityDesignUl").append('<li><a href="#cardidactivity_'+id+'" class="sidebarlink">'+activityName+'</a></li>');
+            activityandAssessmentDesign_Append(id,activityName);
+        })
     }
 
     unit_Map();  
@@ -352,6 +361,38 @@ function stageControl(){
     }
 }
 
+function activityandAssessmentDesign_Append(id,title){
+    var activityDiv = '<div class="row accordion">'+
+                            '<div class="card col-9 nopadding" id="cardidactivity_'+id+'">'+
+                                '<h5 class="card-header bg-white font-weight-bolder" id="headeractivity_'+id+'" data-toggle="collapse" data-target="#activity_'+id+'">'+title+''+
+                                    '<span class="float-right"><i class="fa fa-angle-up" id="activity_'+id+'icon"></i></span>'+
+                                '</h5>'+
+                                '<div class="card-body collapse show" id="activity_'+id+'">'+
+                                    '<button class="btn btn-outline-info" data-toggle="modal" data-target="#addprocessModal" data-parentdivid="activity_'+id+'"><i class="fas fa-plus"></i> 新增活動流程</button>'+
+                                    '<table class="table table-bordered activitytable mt-3" id="activity_'+id+'Table">'+
+                                        '<thead class="thead-light">'+
+                                            '<tr>'+
+                                            '<th scope="col">#</th>'+
+                                            '<th scope="col" width="90">學習目標</th>'+
+                                            '<th scope="col" width="400">活動流程</th>'+
+                                            '<th scope="col" width="60">時間</th>'+
+                                            '<th scope="col" width="150">評量方式</th>'+
+                                            '<th scope="col">備註</th>'+
+                                            '<th scope="col" width="50"></th>'+
+                                            '</tr>'+
+                                        '</thead>'+
+                                        '<tbody class="activityTbody" id="activity_'+id+'Tbody"></tbody>'+
+                                    '</table>'+
+                                '</div>'+
+                            '</div>'+
+                            '<div class="card col nopadding">'+
+                                '<h5 class="card-header bg-selfgreen font-weight-bolder">團隊想法</h5>'+
+                                '<div class="card-body collapse"></div>'+
+                            '</div>'+
+                        '</div>';
+    $("#setactivity").append(activityDiv);
+}
+
 
 
 /******************************************************************************** */
@@ -374,7 +415,10 @@ $(function(){
     threeselect_Map();
     stageControl();
 
-    openCuntomUnitBtn();
+    collapseControl();
+    sidebarClick();
+
+    openUnitandActivityBtn();
 
 })
 
@@ -418,7 +462,7 @@ function addCuntomActivitylist(){
     deletetableTr('#customActivityTbody');
 }
 
-function openCuntomUnitBtn(){
+function openUnitandActivityBtn(){
     var lessonplan_field = $("#lessonplan_field :selected").val();
     var lessonplan_version = $("#lessonplan_version :selected").val();
     var lessonplan_grade = $("#lessonplan_grade :selected").val();
@@ -437,6 +481,22 @@ function openCuntomUnitBtn(){
         modal.find('#versionUnitandActivityModalLabel').text(lessonplan_version+"單元/活動");
     })
 }
+
+//側邊選單的錨點定位
+function sidebarClick(){
+    $(".sidebarlink").on('click', function(event) {
+        //若未減去cardheaderHeight會無法蓋到每階段的標題
+        //因為原本($(".card-header").height()*2)會被想法實作切換擋住故改為($(".card-header").height()*4)
+        var cardheaderHeight = $(".card-header").height()*4;
+        if (this.hash !== "") {
+          event.preventDefault();//防止連結打開url，preventDefault()為阻止element發生默認行為，例如點擊submit時阻止表單提交
+          var hash = this.hash;
+          $('html, body').animate({
+            scrollTop: $(hash).offset().top - cardheaderHeight
+          }, 1000);
+        }
+    });
+};
 
 
 
@@ -468,6 +528,24 @@ function sorttableTbody(tbody){
                 $(this).find('th:eq(0)').first().html(index + 1);
             });
         }
+    });
+}
+
+//摺疊icon變化
+function collapseControl(){
+    //class摺疊執行完後更改圖形
+    $(".collapse").on('show.bs.collapse', function(){
+        $i = $(this).closest('.card').children().children().children();
+        var id = $i.attr('id');
+        $('#'+id).removeClass('fa fa-angle-down');
+        $('#'+id).addClass("fa fa-angle-up");
+    });
+    $(".collapse").on('hide.bs.collapse', function(){
+        //$(this)為card-body，需更改同父內三層的i的class
+        $i = $(this).closest('.card').children().children().children();
+        var id = $i.attr('id');
+        $('#'+id).removeClass('fa fa-angle-up');
+        $('#'+id).addClass("fa fa-angle-down");
     });
 }
 

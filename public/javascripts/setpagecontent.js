@@ -50,32 +50,4 @@ $(function(){
     pagecontent_Map();
     sidebar_Map();
 
-    //class摺疊執行完後更改圖形
-    $(".collapse").on('show.bs.collapse', function(){
-        $i = $(this).closest('.card').children().children().children();
-        var id = $i.attr('id');
-        $('#'+id).removeClass('fa fa-angle-down');
-        $('#'+id).addClass("fa fa-angle-up");
-    });
-    $(".collapse").on('hide.bs.collapse', function(){
-        //$(this)為card-body，需更改同父內三層的i的class
-        $i = $(this).closest('.card').children().children().children();
-        var id = $i.attr('id');
-        $('#'+id).removeClass('fa fa-angle-up');
-        $('#'+id).addClass("fa fa-angle-down");
-    });
-
-    //側邊選單的錨點定位
-    $(".sidebarlink").on('click', function(event) {
-        //若未減去cardheaderHeight會無法蓋到每階段的標題
-        //因為原本($(".card-header").height()*2)會被想法實作切換擋住故改為($(".card-header").height()*4)
-        var cardheaderHeight = $(".card-header").height()*4;
-        if (this.hash !== "") {
-          event.preventDefault();//防止連結打開url，preventDefault()為阻止element發生默認行為，例如點擊submit時阻止表單提交
-          var hash = this.hash;
-          $('html, body').animate({
-            scrollTop: $(hash).offset().top - cardheaderHeight
-          }, 1000);
-        }
-    });
 });

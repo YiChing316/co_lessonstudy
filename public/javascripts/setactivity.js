@@ -9,42 +9,37 @@ $(function(){
     processscaffold_Add();
     assessmentscaffold_Add();
 
+    openActivityandAssessmentBtn();
+
     sorttableTbody('.activityTbody');
     deletetableTr('.activitytable tbody');
-
-    $("#addassessmentModal").on("show.bs.modal",function(event){
-        var button = $(event.relatedTarget);
-        //該活動的階段的tr的id
-        var id = button.data('targettr');
-        var modal = $(this);
-        modal.find('#targetid').text(id);
-    })
 
 })
 
 //新增活動流程
 function addactivityTr(){
+    var parentid = $("#parentid").text();
+
     var processtarget = $("#processtarget").val();
     var processcontent = $("#processcontent").val();
     var processtime = $("#processtime").val();
     var processremark = $("#processremark").val();
     
-    //數字抓取不正確
-    var num = $(".activitytable tbody tr").length+1;
+    var num = $("#"+parentid+"Tbody tr").length+1;
 
     if(processcontent == "" || processtime == ""){
         $("#processalert").show();
         $("#processalert").html("活動流程與時間為必填");
     }
     else{
-        //後續會將活動編號(activity_1)改為dom
-        $("#activity_1Tbody").append('<tr>'+
+        //活動編號根據所在的位置id
+        $("#"+parentid+"Tbody").append('<tr>'+
                                         '<th scope="row">'+num+'</th>'+
                                         '<td>'+processtarget+'</td>'+
                                         '<td>'+processcontent+'</td>'+
                                         '<td>'+processtime+'</td>'+
-                                        '<td id="activity_1_assessmentTd_'+num+'">'+
-                                            '<a href="" class="assessment_link font-weight-bolder" class="assessment_link font-weight-bolder" data-toggle="modal" data-target="#addassessmentModal" data-targettr="activity_1_assessmentTd_'+num+'">新增評量方式...</a>'+
+                                        '<td id="'+parentid+'_assessmentTd_'+num+'">'+
+                                            '<a href="" class="assessment_link font-weight-bolder" class="assessment_link font-weight-bolder" data-toggle="modal" data-target="#addassessmentModal" data-targettr="'+parentid+'_assessmentTd_'+num+'">新增評量方式...</a>'+
                                         '</td>'+
                                         '<td>'+processremark+'</td>'+
                                         '<td>'+
@@ -83,6 +78,27 @@ function addassessmentTd(){
 
 
 /*****活動與評量的modal相關js******************************************************* */
+
+function openActivityandAssessmentBtn(){
+
+    $("#addprocessModal").on("show.bs.modal",function(event){
+        var button = $(event.relatedTarget);
+        //該活動的階段的tr的id
+        var parentid = button.data('parentdivid');
+        console.log(parentid)
+        var modal = $(this);
+        modal.find('#parentid').text(parentid);
+    })
+
+    $("#addassessmentModal").on("show.bs.modal",function(event){
+        var button = $(event.relatedTarget);
+        //該活動的階段的tr的id
+        var id = button.data('targettr');
+        var modal = $(this);
+        modal.find('#targetid').text(id);
+    })
+}
+
 
 //活動流程內鷹架放入select option
 function processselect_Set(){
