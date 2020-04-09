@@ -83,9 +83,8 @@ function openActivityandAssessmentBtn(){
 
     $("#addprocessModal").on("show.bs.modal",function(event){
         var button = $(event.relatedTarget);
-        //該活動的階段的tr的id
+        //該活動的id
         var parentid = button.data('parentdivid');
-        console.log(parentid)
         var modal = $(this);
         modal.find('#parentid').text(parentid);
     })

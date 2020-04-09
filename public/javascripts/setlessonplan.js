@@ -188,9 +188,11 @@ var course_field_info,course_grade_info;
 
 function lessonplan_unit_Set(){
     var lessonplan_version = $("#lessonplan_version :selected").val();
+    var customUnitandActivityModal = "'customUnitandActivityModal'";
+    var versionUnitandActivityModal = "'versionUnitandActivityModal'";
 
-    $("#lessonplan_unit").append('<button class="btn btn-outline-info" data-toggle="modal" data-target="#versionUnitandActivityModal"><i class="fa fa-cubes"></i> '+lessonplan_version+'單元/活動</button>'+
-                                '<button class="btn btn-outline-info ml-1" data-toggle="modal" data-target="#customUnitandActivityModal"><i class="fa fa-cogs"></i> 自定義單元/活動</button>'+
+    $("#lessonplan_unit").append('<button class="btn btn-outline-info" onclick="openUnitandActivityBtn('+versionUnitandActivityModal+')"><i class="fa fa-cubes"></i> '+lessonplan_version+'單元/活動</button>'+
+                                '<button class="btn btn-outline-info ml-1" onclick="openUnitandActivityBtn('+customUnitandActivityModal+')"><i class="fa fa-cogs"></i> 自定義單元/活動</button>'+
                                 '<div class="card nopadding mt-3">'+
                                     '<div class="card-header">目前單元/活動</div>'+
                                     '<div class="card-body lessonplan_unit_body"></div>'+
@@ -202,8 +204,8 @@ function lessonplan_unit_Set(){
         var lessonplan_unit_name = lessonplanUnitActivityData[0].lessonplan_unit_name;
         var lessonplan_unit_activity = lessonplanUnitActivityData[0].lessonplan_unit_activity;
 
-        $(".lessonplan_unit_body").append('<p class="card-title"><b>單元：</b>'+lessonplan_unit_name+'</p>'+
-                                        '<p class="card-text"><b>活動：</b>'+lessonplan_unit_activity+'</p>'
+        $(".lessonplan_unit_body").append('<p class="card-title"><b>單元：</b><p id="lessonplan_unit_name">'+lessonplan_unit_name+'</p></p>'+
+                                        '<p class="card-text"><b>活動：</b><p id="lessonplan_unit_activity">'+lessonplan_unit_activity+'</p></p>'
                                         );
 
         var activityArray = lessonplan_unit_activity.split(',');
@@ -418,7 +420,7 @@ $(function(){
     collapseControl();
     sidebarClick();
 
-    openUnitandActivityBtn();
+    modalOpen();
 
 })
 
@@ -462,24 +464,64 @@ function addCuntomActivitylist(){
     deletetableTr('#customActivityTbody');
 }
 
-function openUnitandActivityBtn(){
+//判斷此教案是否已經有安排過安排跟活動
+function openUnitandActivityBtn(targetModal){
+    var nowLessonplan_unit = $("#lessonplan_unit_name").text();
+
+    //如果還沒安排，直接開啟設定modal
+    if(nowLessonplan_unit == ""){
+
+        switch(targetModal){
+            case 'customUnitandActivityModal':
+                $("#customUnitandActivityModal").modal('toggle')
+                break;
+            case 'versionUnitandActivityModal':
+                $("#versionUnitandActivityModal").modal('toggle')
+                break
+        }  
+    }
+    //如果已經安排，跳出警告語
+    else{
+        $("#alertModal").modal('toggle')
+        $("#alertModal").find('#targetModal').text(targetModal);
+    }
+     
+}
+
+//alertModal確定修改btn
+function openRevisedUnitandActivityBtn(){
+    $("#alertModal").modal('hide');
+
+    var targetModal = $("#targetModal").text();
+
+    switch(targetModal){
+        case 'customUnitandActivityModal':
+            $("#customUnitandActivityModal").modal('toggle')
+            break;
+        case 'versionUnitandActivityModal':
+            $("#versionUnitandActivityModal").modal('toggle')
+            break
+    }
+}
+
+//安排單元活動modal打開時要做的動作
+function modalOpen(){
     var lessonplan_field = $("#lessonplan_field :selected").val();
     var lessonplan_version = $("#lessonplan_version :selected").val();
     var lessonplan_grade = $("#lessonplan_grade :selected").val();
 
     $('#customUnitandActivityModal').on('show.bs.modal', function (event) {
-
         var modal = $(this)
         modal.find('#customField').text(lessonplan_field);
         modal.find('#customVersion').text(lessonplan_version);
         modal.find('#customGrade').text(lessonplan_grade);
-    })
+    });
 
     $('#versionUnitandActivityModal').on('show.bs.modal', function (event) {
-
         var modal = $(this)
         modal.find('#versionUnitandActivityModalLabel').text(lessonplan_version+"單元/活動");
-    })
+    });
+
 }
 
 //側邊選單的錨點定位
