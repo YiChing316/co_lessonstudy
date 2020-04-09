@@ -22,6 +22,7 @@ module.exports = {
             else{//lessonplanData.stage為lessonplan_unit
                 sql = {
                     community_id_community:community_id,
+                    lessonplan_version:lessonplanData.lessonplan_version,
                     lessonplan_unit_name:lessonplanData.lessonplan_unit_name,
                     lessonplan_unit_activity:lessonplanData.lessonplan_unit_activity,
                     member_id_member:member_id,

@@ -684,6 +684,7 @@ function saveLessonplanData(divId){
             saveAjax(data);
             break;
         case 'lessonplan_unit'://版本單元/活動
+            var lessonplan_version = $("#lessonplan_version :selected").val();
             var lessonplan_unit_name = $("#unit_sel :selected").val();
             var lessonplan_activity_name = [];
             $("input[name='box']:checked").each(function(){
@@ -692,6 +693,7 @@ function saveLessonplanData(divId){
             var activityString = lessonplan_activity_name.toString();
             var data = {
                 stage:divId,
+                lessonplan_version:lessonplan_version,
                 lessonplan_unit_name:lessonplan_unit_name,
                 lessonplan_unit_activity:activityString
             };
@@ -699,6 +701,7 @@ function saveLessonplanData(divId){
 
             break;
         case 'customlessonplan_unit'://自定義單元/活動
+            var lessonplan_version = $("#customVersion").text();
             var lessonplan_unit_name = $("#unitName").val();
             var lessonplan_activity_name = [];
             $(".activityList").each(function() {
@@ -708,6 +711,7 @@ function saveLessonplanData(divId){
             var activityString = lessonplan_activity_name.toString();
             var data = {
                 stage:'lessonplan_unit',
+                lessonplan_version:lessonplan_version,
                 lessonplan_unit_name:lessonplan_unit_name,
                 lessonplan_unit_activity:activityString
             };
