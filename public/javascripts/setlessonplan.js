@@ -214,7 +214,7 @@ function lessonplan_unit_Set(){
             var activityName = activityArray[i];
             var id = i+1;
             $("#activityDesignUl").append('<li><a href="#cardidactivity_'+id+'" class="sidebarlink">'+activityName+'</a></li>');
-            activityandAssessmentDesign_Append(id,activityName);
+            activityandAssessmentDesign_Append(id,activityName,lessonplan_unit_name,lessonplan_version);
         })
     }
 
@@ -363,13 +363,17 @@ function stageControl(){
     }
 }
 
-function activityandAssessmentDesign_Append(id,title){
+function activityandAssessmentDesign_Append(id,title,unit,version){
+    var divId = "'activity_"+id+"'";
     var activityDiv = '<div class="row accordion">'+
                             '<div class="card col-9 nopadding" id="cardidactivity_'+id+'">'+
                                 '<h5 class="card-header bg-white font-weight-bolder shadow-sm" id="headeractivity_'+id+'" data-toggle="collapse" data-target=".activity_'+id+'">'+title+''+
                                     '<span class="float-right"><i class="fa fa-angle-up" id="activity_'+id+'icon"></i></span>'+
                                 '</h5>'+
                                 '<div class="card-body collapse show activity_'+id+'" id="activity_'+id+'">'+
+                                    '<p class="activity_lessonplan_unit_name" style="display:none">'+unit+'</p>'+
+                                    '<p class="activity_lessonplan_activity_name" style="display:none">'+title+'</p>'+
+                                    '<p class="activity_lessonplan_version" style="display:none">'+version+'</p>'+
                                     '<button class="btn btn-outline-info" data-toggle="modal" data-target="#addprocessModal" data-parentdivid="activity_'+id+'"><i class="fas fa-plus"></i> 新增活動流程</button>'+
                                     '<table class="table table-bordered activitytable mt-3" id="activity_'+id+'Table">'+
                                         '<thead class="thead-light">'+
@@ -387,7 +391,7 @@ function activityandAssessmentDesign_Append(id,title){
                                     '</table>'+
                                 '</div>'+
                                 '<div class="card-footer collapse show text-right activity_'+id+'">'+
-                                    '<input type="button" class="btn btn-primary" value="儲存">'+
+                                    '<input type="button" class="btn btn-primary" value="儲存" onclick="saveActivityProcessData('+divId+')">'+
                                 '</div>'+
                             '</div>'+
                             '<div class="card col nopadding">'+
@@ -721,5 +725,43 @@ function saveLessonplanData(divId){
             saveAjax(data);
             break;
     }
+}
+
+function saveActivityProcessData(divId){
+    
+    var lessonplan_version = $("#"+divId).find(".activity_lessonplan_version").text();
+    var lessonplan_unit_name = $("#"+divId).find(".activity_lessonplan_unit_name").text();
+    var lessonplan_activity_name = $("#"+divId).find(".activity_lessonplan_activity_name").text();
+
+    var activityContentArray = [];
+
+    var tr_length = $("#"+divId+"Tbody tr").length;
+
+    for(var i=0;i<tr_length;i++){
+
+        var lessonplan_activity_learningtarget = $($("#"+divId+"Tbody tr")[i]).find("td:eq(0)").text();
+        var lessonplan_activity_content = $($("#"+divId+"Tbody tr")[i]).find("td:eq(1)").text();
+        var lessonplan_activity_time = $($("#"+divId+"Tbody tr")[i]).find("td:eq(2)").text();
+        var lessonplan_activity_remark = $($("#"+divId+"Tbody tr")[i]).find("td:eq(4)").text();
+
+        activityContentArray.push({lessonplan_activity_learningtarget:lessonplan_activity_learningtarget,
+                                    lessonplan_activity_content:lessonplan_activity_content,
+                                    lessonplan_activity_time:lessonplan_activity_time,
+                                    lessonplan_activity_remark:lessonplan_activity_remark
+                                });
+        
+    }
+
+    var activityContentString = JSON.stringify(activityContentArray);
+    
+    var data = {
+        stage:'activiy_process',
+        lessonplan_version:lessonplan_version,
+        lessonplan_unit_name:lessonplan_unit_name,
+        lessonplan_activity_name:lessonplan_activity_name,
+        lessonplan_activity_content:activityContentString
+    };
+    
+    console.log(data);
 }
 
