@@ -14,78 +14,55 @@
   <body>
     <%- include('navbar2.ejs'); -%>
     <div class="page-wrapper">
-      <%- include('sidebar.ejs'); -%>
-      <div class="page-content">
-        <div class="content">
-
-          <!--實作/想法切換-->
-          <div class="row">
-            <div class="mode-switch position-fixed">
-              <div class="btn-group mode-switch-btn" role="group">
-                <input type="button" class="btn btn-success active" value="教案撰寫">
-                <input type="button" class="btn btn-success" value="想法討論">
+      <div class="row">
+        <%- include('sidebar.ejs'); -%>
+        <div class="col-10 page-content">
+  
+            <!--實作/想法切換-->
+            <div class="row">
+              <div class="mode-switch position-fixed">
+                <div class="btn-group mode-switch-btn" role="group">
+                  <input type="button" class="btn btn-success active" value="教案撰寫">
+                  <input type="button" class="btn btn-success" value="想法討論">
+                </div>
               </div>
             </div>
-          </div>
-          
-          <div class="card" style="margin-top: 50px;">
-            <div class="h5 card-header text-white bg-selfblue">
-              訂定課程目標
-            </div>
-            <div id="setlesson" class="card-body">
-              <!--js所需資料-->
-              <p id="community_id" style="display: none;"><%= community_id %></p>
-              <p id="unitData" style="display: none;"><%= unitData %></p>
-              <p id="activityData" style="display: none;"><%= activityData %></p>
-              <p id="course_field_info" style="display: none;"><%= course_field %></p>
-              <p id="course_grade_info" style="display: none;"><%= course_grade %></p>
-              <p id="ccdimesionData" style="display: none;"><%= ccdimesionData %></p>
-              <p id="ccitemData" style="display: none;"><%= ccitemData %></p>
-              <p id="ccfieldData" style="display: none;"><%= ccfieldData %></p>
-              <p id="lfitemData" style="display: none;"><%= lfitemData %></p>
-              <p id="lfchilditemData" style="display: none;"><%= lfchilditemData %></p>
-              <p id="lfcontentData" style="display: none;"><%= lfcontentData %></p>
-              <p id="issuenameData" style="display: none;"><%= issuenameData %></p>
-              <p id="issuethemeData" style="display: none;"><%= issuethemeData %></p>
-              <p id="issuecontentData" style="display: none;"><%= issuecontentData %></p>
-              <p id="basicData" style="display: none;"><%= basicData %></p>
-              <p id="lessonplanUnitActivityData" style="display: none;"><%= lessonplanUnitActivityData %></p>
-              <!------------------------------------------------------------------>
-              <!-- <div class='card' id='cardidtest'>
-                <div class='card-header bg-white' id='headertest'>title
-                    <span class='float-right' data-toggle='collapse' data-target='#test'>
-                        <i id='testicon' aria-hidden='true'></i>
-                    </span>
-                </div>
-                <div class='card-body collapse show' id='test'>
-                  <div class="form-group row">
-                    <label class="control-label col-sm-2">教案簡介</label>
-                    <div class="col-sm-10">
-                      <textarea id="lessonplan_intro" class="form-control" rows="5"></textarea>
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="mode-switch">
-                      <div class="bt-group float-right">
-                        <input type="button" id='cleartest' class="btn btn-secondary" value="清除">
-                        <input type="button" class="btn btn-primary" value="儲存">
-                      </div>
-                    </div>
-                  </div> -->
-                  
-               <!-- </div>測試card-body end -->
-              <!--</div> 測試card end -->
-            </div><!--setlesson end-->
-          </div><!--card 訂定課程目標 end-->
-          <div class="card">
-            <div class="h5 card-header text-white bg-selfblue">
-              活動與評量設計
-            </div>
-            <div id="setactivity" class="card-body"></div><!--setactivity end-->
-          </div><!--card 活動與評量設計 end-->
-        </div><!--content end-->
-      </div><!--pagecontent end-->
+            
+            <div class="card" style="margin-top: 50px;">
+              <div class="h5 card-header text-white bg-selfblue">
+                訂定課程目標
+              </div>
+              <div id="setlesson" class="card-body">
+                <!--js所需資料-->
+                <p id="community_id" style="display: none;"><%= community_id %></p>
+                <p id="unitData" style="display: none;"><%= unitData %></p>
+                <p id="activityData" style="display: none;"><%= activityData %></p>
+                <p id="course_field_info" style="display: none;"><%= course_field %></p>
+                <p id="course_grade_info" style="display: none;"><%= course_grade %></p>
+                <p id="ccdimesionData" style="display: none;"><%= ccdimesionData %></p>
+                <p id="ccitemData" style="display: none;"><%= ccitemData %></p>
+                <p id="ccfieldData" style="display: none;"><%= ccfieldData %></p>
+                <p id="lfitemData" style="display: none;"><%= lfitemData %></p>
+                <p id="lfchilditemData" style="display: none;"><%= lfchilditemData %></p>
+                <p id="lfcontentData" style="display: none;"><%= lfcontentData %></p>
+                <p id="issuenameData" style="display: none;"><%= issuenameData %></p>
+                <p id="issuethemeData" style="display: none;"><%= issuethemeData %></p>
+                <p id="issuecontentData" style="display: none;"><%= issuecontentData %></p>
+                <p id="basicData" style="display: none;"><%= basicData %></p>
+                <p id="lessonplanUnitActivityData" style="display: none;"><%= lessonplanUnitActivityData %></p>
+                <!------------------------------------------------------------------>
+              </div><!--setlesson end-->
+            </div><!--card 訂定課程目標 end-->
+            <div class="card">
+              <div class="h5 card-header text-white bg-selfblue">
+                活動與評量設計
+              </div>
+              <div id="setactivity" class="card-body"></div><!--setactivity end-->
+            </div><!--card 活動與評量設計 end-->
+        </div><!--pagecontent end-->
+      </div>
+        
+      
     </div>
     <%- include('modal.ejs'); -%>
   </body>

@@ -28,28 +28,20 @@ body{font-family: '微軟正黑體';}
 }
 
 /*側邊欄*/
-#sidebar-wrapper {
-  position: absolute;
-  left: 0px;
-  width: 200px;
-  background-color: #065B80;
-  color: white;
-  position: fixed;
-  height: 100%;
-  z-index: 1;
-  /* font-size: 18px; */
-}
-.sidebar-nav {
-  position: absolute;
+.sidebar-nav{
   top: 0;
   margin: 0;
   padding: 0;
-  width: 200px;
   list-style: none;
+  color: white;
+  width: 100%;
+  margin-top: 55px;
+  margin-bottom: 55px;
 }
+
 .sidebar-nav li {
   text-indent: 20px;
-  line-height: 50px;
+  line-height: 45px;
 }
 
 .sidebar-nav .leave{
@@ -61,6 +53,7 @@ body{font-family: '微軟正黑體';}
   display: block;
   text-decoration: none;
 }
+
 .sidebar-nav li a:hover {
   background: #065071;
   color: white;
@@ -70,30 +63,30 @@ body{font-family: '微軟正黑體';}
 .sidebar-nav li ul{
   list-style-type: none;
   padding-left: 30px;
+  padding-right: 5px;
 }
 
 .sidebar-nav li a:active, .sidebar-nav li a:focus {
   text-decoration: none;
 }
-#sidebar-wrapper.sidebar-toggle {
-  transition: all 0.3s ease-out;
-  margin-left: -200px;
-}
-@media (min-width: 768px) {
-  #sidebar-wrapper.sidebar-toggle {
-    transition: 0s;
-    left: 200px;
-  }
-}
 
-.page-wrapper {
-  top: 56px;
-  height: 100vh;
-  position: relative;
+.fixed-left{
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  top: 55px;
+  z-index: 1030;
 }
 
 .page-content{
-  margin-left: 200px;
+  margin-left: 17%;
+}
+
+.page-wrapper {
+  margin-top: 56px;
+  margin-left: 20px;
+  margin-right: 20px;
+  height: 100vh;
 }
 
 .mode-switch{
@@ -113,9 +106,9 @@ body{font-family: '微軟正黑體';}
   margin-right: 15px;
 }
 
-.ck-editor__editable_inline {
+/* .ck-editor__editable_inline {
   min-height: 200px;
-}
+} */
 
 /*讓card在col的情況下無左右padding*/
 .nopadding{

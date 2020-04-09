@@ -1,18 +1,20 @@
-<div id="sidebar-wrapper" class="sidebar-toggle">
-    <ul class="sidebar-nav">
-        <li class="leave">
-            <a href="/dashboard">
-                <img src="/images/sign-out.svg" width="20" height="20" class="d-inline-block">
-                離開共備社群
-            </a>
-        </li>
-        <li>
-            <img src="/images/idea.svg" width="30" height="30" class="d-inline-block">訂定課程目標
-            <ul id="sidebarul"></ul>
-        </li>
-        <li>
-            <img src="/images/fee.svg" width="30" height="30" class="d-inline-block">活動與評量設計
-            <ul id="activityDesignUl"></ul>
-        </li>
-    </ul>
+<div class="col-2 bg-selfblue nopadding fixed-left overflow-auto">
+    <div class="">
+        <ul class="sidebar-nav">
+            <li>
+                <a data-toggle="collapse" data-target="#sidebarul">
+                    <img src="/images/idea.svg" width="30" height="30" class="d-inline-block">訂定課程目標
+                    <i id="ideaicon" class="sidebaricon fas fa-chevron-circle-up"></i>
+                </a>
+                <ul class="siderul collapse show" id="sidebarul"></ul>
+            </li>
+            <li>
+                <a data-toggle="collapse" data-target="#activityDesignUl">
+                    <img src="/images/fee.svg" width="30" height="30" class="d-inline-block">活動與評量設計
+                    <i id="activityicon" class="sidebaricon fas fa-chevron-circle-up"></i>
+                </a>
+                <ul class="siderul collapse show" id="activityDesignUl"></ul>
+            </li>
+        </ul>
+    </div>
 </div>
