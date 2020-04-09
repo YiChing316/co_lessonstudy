@@ -16,7 +16,7 @@ function pagecontent_Map(){
     pagecontent_Components.map(function(data){
         var root = "<div class='row'>"+
                         "<div class='card col-9 nopadding' id='cardid"+data.id+"'>"+
-                            "<h5 class='card-header bg-white font-weight-bolder' id='header"+data.id+"' data-toggle='collapse' data-target='#"+data.id+"'>"+data.title+
+                            "<h5 class='card-header bg-white font-weight-bolder shadow-sm' id='header"+data.id+"' data-toggle='collapse' data-target='#"+data.id+"'>"+data.title+
                                 "<span class='float-right'>"+
                                     "<i id='"+data.id+"icon' aria-hidden='true'></i>"+
                                 "</span>"+

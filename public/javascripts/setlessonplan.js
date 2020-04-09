@@ -51,7 +51,7 @@ function buttonDiv(parentDiv){
     $('#'+parentDiv).append('<div class="row">'+
                                 '<div class="mode-switch">'+
                                     '<div class="bt-group float-right mr-1">'+
-                                        '<input type="button" class="btn btn-secondary" value="清除">'+
+                                        // '<input type="button" class="btn btn-secondary" value="清除">'+
                                         '<input type="button" class="btn btn-primary ml-1" value="儲存" onclick="saveLessonplanData('+divid+')">'+
                                     '</div>'+
                                 '</div>'+
@@ -366,10 +366,10 @@ function stageControl(){
 function activityandAssessmentDesign_Append(id,title){
     var activityDiv = '<div class="row accordion">'+
                             '<div class="card col-9 nopadding" id="cardidactivity_'+id+'">'+
-                                '<h5 class="card-header bg-white font-weight-bolder" id="headeractivity_'+id+'" data-toggle="collapse" data-target="#activity_'+id+'">'+title+''+
+                                '<h5 class="card-header bg-white font-weight-bolder shadow-sm" id="headeractivity_'+id+'" data-toggle="collapse" data-target=".activity_'+id+'">'+title+''+
                                     '<span class="float-right"><i class="fa fa-angle-up" id="activity_'+id+'icon"></i></span>'+
                                 '</h5>'+
-                                '<div class="card-body collapse show" id="activity_'+id+'">'+
+                                '<div class="card-body collapse show activity_'+id+'" id="activity_'+id+'">'+
                                     '<button class="btn btn-outline-info" data-toggle="modal" data-target="#addprocessModal" data-parentdivid="activity_'+id+'"><i class="fas fa-plus"></i> 新增活動流程</button>'+
                                     '<table class="table table-bordered activitytable mt-3" id="activity_'+id+'Table">'+
                                         '<thead class="thead-light">'+
@@ -385,6 +385,9 @@ function activityandAssessmentDesign_Append(id,title){
                                         '</thead>'+
                                         '<tbody class="activityTbody" id="activity_'+id+'Tbody"></tbody>'+
                                     '</table>'+
+                                '</div>'+
+                                '<div class="card-footer collapse show text-right activity_'+id+'">'+
+                                    '<input type="button" class="btn btn-primary" value="儲存">'+
                                 '</div>'+
                             '</div>'+
                             '<div class="card col nopadding">'+
