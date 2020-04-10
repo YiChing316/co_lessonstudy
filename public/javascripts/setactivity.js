@@ -13,6 +13,7 @@ $(function(){
 
     sorttableTbody('.activityTbody');
     deletetableTr('.activitytable tbody');
+    editActivityTr();
 
 })
 
@@ -43,7 +44,7 @@ function addactivityTr(){
                                         '</td>'+
                                         '<td>'+processremark+'</td>'+
                                         '<td>'+
-                                            '<input type="button" class="btn btn-warning mb-1" value="編輯">'+
+                                            '<input type="button" class="btn btn-warning mb-1 btnEdit" data-parentdivid="'+parentid+'" value="編輯">'+
                                             '<input type="button" class="btn btn-danger btnDelete" value="刪除">'+
                                         '</td>'+
                                     '</tr>');
@@ -57,6 +58,7 @@ function addactivityTr(){
     }  
 }
 
+//針對要增加評量的tr，新增評量內容
 function addassessmentTd(){
     var td_id = $("#targetid").text();
     var assessmentcontent = $("#assessmentsummernote").val();
@@ -65,12 +67,76 @@ function addassessmentTd(){
                             '<div class="assessment_content">'+assessmentcontent+'</div>'+
                             '<div class="btn-group">'+
                                 '<input type="button" class="btn btn-sm btn-link assessment_link" value="編輯">'+
-                                '<input type="button" class="btn btn-sm btn-link assessment_link_del" onclick="deleteassessment()" value="刪除">'+
+                                '<input type="button" class="btn btn-sm btn-link assessment_link_del" value="刪除">'+
                             '</div>'+
                         '</div>';
     $("#"+td_id).append(assessmentDiv);
     $("#assessmentsummernote").summernote("code",'');
     $("#addassessmentModal").modal("hide");
+    deleteassessment();
+}
+
+//編輯流程tr內容，不會影響評量內容
+function editActivityTr(){
+    $('.activityTbody').on('click','.btnEdit',function(){
+        var tbodyid = $(this).closest('tbody').attr('id');
+
+        var row = $(this).closest('tr');
+        var lessonplan_activity_learningtarget = row.find("td:eq(0)").text();
+        var lessonplan_activity_content = row.find("td:eq(1)").html();
+        var lessonplan_activity_time = row.find("td:eq(2)").text();
+        var lessonplan_activity_remark = row.find("td:eq(4)").text();
+
+        console.log(lessonplan_activity_content)
+
+        var rowindex = row[0].rowIndex;
+
+        var $editmodal = $("#editprocessModal");
+
+        $editmodal.find("#editprocesstarget").val(lessonplan_activity_learningtarget);
+        $editmodal.find("#editprocesscontent").summernote('code', lessonplan_activity_content);
+        $editmodal.find("#editprocesstime").val(lessonplan_activity_time);
+        $editmodal.find("#editprocessremark").val(lessonplan_activity_remark);
+        $editmodal.find("#dataindex").text(rowindex);
+        $editmodal.find("#tbodyid").text(tbodyid);
+
+        $editmodal.modal("show");
+
+    });
+}
+
+//修改流程modal內的更新按鈕
+function editActivityModalBtn(){
+    var tbodyid = $("#tbodyid").text();
+    //eq開始數字為0，但rowIdex是從1開始抓，應該是因為thead內的tr rowinde算0，但這邊是從tbody開始去跑eq故要減1
+    var dataindex = $("#dataindex").text()-1;
+
+    var processtarget = $("#editprocesstarget").val();
+    var processcontent = $("#editprocesscontent").val();
+    var processtime = $("#editprocesstime").val();
+    var processremark = $("#editprocessremark").val();
+    
+
+    if(processcontent == "" || processtime == ""){
+        $("#editprocessalert").show();
+        $("#editprocessalert").html("活動流程與時間為必填");
+    }
+    else{
+        
+        var row = $("#"+tbodyid+" tr:eq("+dataindex+")");
+
+        row.find("td:eq(0)").text(processtarget);
+        row.find("td:eq(1)").html(processcontent);
+        row.find("td:eq(2)").text(processtime);
+        row.find("td:eq(4)").text(processremark);
+
+
+        $("#editprocessModal").modal("hide");
+        $("#editprocesscontent").summernote("code",'');
+        $("#editprocessModal input[type='text']").val("");
+        $("#editprocessModal input[type='number']").val("");
+        $("#editprocessalert").hide();
+    }
 }
 
 
@@ -78,7 +144,7 @@ function addassessmentTd(){
 
 
 /*****活動與評量的modal相關js******************************************************* */
-
+//打開新增活動流程以及評量modal會發生的事情
 function openActivityandAssessmentBtn(){
 
     $("#addprocessModal").on("show.bs.modal",function(event){
@@ -102,24 +168,24 @@ function openActivityandAssessmentBtn(){
 //活動流程內鷹架放入select option
 function processselect_Set(){
     $.each(explore_option, function(i, val) {
-        $("#processcontent_sel_2").append($("<option value='" + explore_option[i] + "'>" + explore_option[i] + "</option>"));
+        $(".processcontent_sel_2").append($("<option value='" + explore_option[i] + "'>" + explore_option[i] + "</option>"));
     });
 
-    $("#processcontent_sel_1").change(function(){
+    $(".processcontent_sel_1").change(function(){
         switch(parseInt($(this).val())){
             case 0:
-                $("#processcontent_sel_2 option").remove();
+                $(".processcontent_sel_2 option").remove();
                 break;
             case 1:
-                $("#processcontent_sel_2 option").remove();
+                $(".processcontent_sel_2 option").remove();
                 $.each(explore_option, function(i, val) {
-                    $("#processcontent_sel_2").append($("<option value='" + explore_option[i] + "'>" + explore_option[i] + "</option>"));
+                    $(".processcontent_sel_2").append($("<option value='" + explore_option[i] + "'>" + explore_option[i] + "</option>"));
                 }); 
                 break;
             case 2:
-                $("#processcontent_sel_2 option").remove();
+                $(".processcontent_sel_2 option").remove();
                 $.each(common_option, function(i, val) {
-                    $("#processcontent_sel_2").append($("<option value='" + common_option[i] + "'>" + common_option[i] + "</option>"));
+                    $(".processcontent_sel_2").append($("<option value='" + common_option[i] + "'>" + common_option[i] + "</option>"));
                 });
                 break;
         }
@@ -139,6 +205,12 @@ function processscaffold_Add(){
         var string = "<b><font style='background-color: rgb(255, 231, 206);'>"+value+"</font></b>";
         $("#processcontent").summernote('pasteHTML', string);
     })
+
+    $("#editprocesscontent_sel_2").change(function(){
+        var value = $("#editprocesscontent_sel_2 :selected").val();
+        var string = "<b><font style='background-color: rgb(255, 231, 206);'>"+value+"</font></b>";
+        $("#editprocesscontent").summernote('pasteHTML', string);
+    })
 }
 //在textarea放入選擇的評量模組
 function assessmentscaffold_Add(){
@@ -151,6 +223,12 @@ function assessmentscaffold_Add(){
 //彈出視窗closebtn的function，清空所有填寫框
 function modalclosebtn(modalid){
     switch (modalid){
+        case 'editprocessModal':
+            $("#editprocesscontent").summernote("code",'');
+            $("#editprocessModal input[type='text']").val("");
+            $("#editprocessModal input[type='number']").val("");
+            $("#editprocessalert").hide();
+            break;
         case 'addprocessModal':
             $("#processcontent").summernote("code",'');
             $("#addprocessModal input[type='text']").val("");
@@ -176,5 +254,7 @@ function resetsummernote(){
 }
 
 function deleteassessment(){
-    $(this).find('.assessmentDiv').remove();
+    $(".assessment_link_del").on('click',function(){
+        $(this).closest(".assessmentDiv").remove();
+    });
 }

@@ -380,7 +380,7 @@ function activityandAssessmentDesign_Append(id,title,unit,version){
                                             '<tr>'+
                                             '<th scope="col">#</th>'+
                                             '<th scope="col" width="90">學習目標</th>'+
-                                            '<th scope="col" width="400">活動流程</th>'+
+                                            '<th scope="col" width="350">活動流程</th>'+
                                             '<th scope="col" width="60">時間</th>'+
                                             '<th scope="col" width="150">評量方式</th>'+
                                             '<th scope="col">備註</th>'+
@@ -744,15 +744,26 @@ function saveActivityProcessData(divId){
         var lessonplan_activity_time = $($("#"+divId+"Tbody tr")[i]).find("td:eq(2)").text();
         var lessonplan_activity_remark = $($("#"+divId+"Tbody tr")[i]).find("td:eq(4)").text();
 
+        var assessmentArray = [];
+
+        $($("#"+divId+"Tbody tr")[i]).find('.assessmentDiv').each(function(){
+            var assessment_content = $(this).find(".assessment_content").text();
+            assessmentArray.push({assessment_content:assessment_content,assessment_url:""})
+        })
+
+
         activityContentArray.push({lessonplan_activity_learningtarget:lessonplan_activity_learningtarget,
                                     lessonplan_activity_content:lessonplan_activity_content,
                                     lessonplan_activity_time:lessonplan_activity_time,
+                                    lessonplan_activity_assessment:assessmentArray,
                                     lessonplan_activity_remark:lessonplan_activity_remark
                                 });
         
     }
 
     var activityContentString = JSON.stringify(activityContentArray);
+
+    console.log(activityContentString)
     
     var data = {
         stage:'activiy_process',

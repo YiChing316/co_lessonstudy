@@ -40,10 +40,10 @@
         </div>
         <div class="modal-body">
           <span id="parentid" style="display: none;"></span>
-          <div class="alert alert-danger" id="processalert" role="alert" style="display: none;"></div>
+          <div class="alert alert-danger processalert" id="processalert" role="alert" style="display: none;"></div>
           <div class="form-group">
             <label class="control-label">學習目標</label>
-            <input type="text" class="form-control" id="processtarget">
+            <input type="text" class="form-control processtarget" id="processtarget">
           </div>
           <div class="form-group">
             <label class="control-label">活動流程</label>
@@ -51,29 +51,29 @@
               <div class="col-3">
                 <div class="card border-light">
                   <div class="card-header nopadding-all">
-                    <select class="form-control bg-light" id="processcontent_sel_1">
+                    <select class="form-control bg-light processcontent_sel_1" id="processcontent_sel_1">
                         <option value="1">探究活動模組</option>
                         <option value="2">一般活動模組</option>
                     </select>
                   </div>
                   <div class="card-body nopadding-all mt-2">
-                    <select class="form-control" id="processcontent_sel_2" size="7"></select>
+                    <select class="form-control processcontent_sel_2" id="processcontent_sel_2" size="7"></select>
                   </div>
                 </div>
               </div>
               <div class="col">
-                <textarea class="fixsummernote" id="processcontent"></textarea>
+                <textarea class="fixsummernote processcontent" id="processcontent"></textarea>
               </div>
             </div>
           </div>
           <div class="form-group">
             <label class="control-label">時間</label>
             <small class="control-label">(單位：分鐘)</small>
-            <input type="number" class="form-control" id="processtime" placeholder="僅可以輸入數字(必填)" min="1">
+            <input type="number" class="form-control processtime" id="processtime" placeholder="僅可以輸入數字(必填)" min="1">
           </div>
           <div class="form-group">
             <label class="control-label">備註</label>
-            <input type="text" class="form-control" id="processremark">
+            <input type="text" class="form-control processremark" id="processremark">
           </div>
         </div>
         <div class="modal-footer">
@@ -82,6 +82,63 @@
         </div>
       </div>
     </div>
+</div>
+
+<!--修改活動流程-->
+<div class="modal fade" id="editprocessModal" tabindex="-1" role="dialog" aria-labelledby="editprocessModalLabel" aria-hidden="true" data-backdrop="static">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-selfblue text-white">
+        <h5 class="modal-title" id="editprocessModalLabel">修改活動流程</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="modalclosebtn('editprocessModal')">
+          <span class="text-white" aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <span id="tbodyid" style="display: none;"></span>
+        <span id="dataindex" style="display: none;"></span>
+        <div class="alert alert-danger processalert" id="editprocessalert" role="alert" style="display: none;"></div>
+        <div class="form-group">
+          <label class="control-label">學習目標</label>
+          <input type="text" class="form-control processtarget" id="editprocesstarget">
+        </div>
+        <div class="form-group">
+          <label class="control-label">活動流程</label>
+          <div class="row">
+            <div class="col-3">
+              <div class="card border-light">
+                <div class="card-header nopadding-all">
+                  <select class="form-control bg-light processcontent_sel_1" id="editprocesscontent_sel_1">
+                      <option value="1">探究活動模組</option>
+                      <option value="2">一般活動模組</option>
+                  </select>
+                </div>
+                <div class="card-body nopadding-all mt-2">
+                  <select class="form-control processcontent_sel_2" id="editprocesscontent_sel_2" size="7"></select>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <textarea class="fixsummernote processcontent" id="editprocesscontent"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label">時間</label>
+          <small class="control-label">(單位：分鐘)</small>
+          <input type="number" class="form-control processtime" id="editprocesstime" placeholder="僅可以輸入數字(必填)" min="1">
+        </div>
+        <div class="form-group">
+          <label class="control-label">備註</label>
+          <input type="text" class="form-control processremark" id="editprocessremark">
+        </div>
+      </div>
+      <div class="modal-footer">
+          <input type="button" class="btn btn-secondary" data-dismiss="modal" value="取消" onclick="modalclosebtn('editprocessModal')">
+          <input type="button" class="btn btn-primary" value="更新" onclick="editActivityModalBtn()">
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- 新增評量 -->
