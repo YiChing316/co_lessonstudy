@@ -14,7 +14,7 @@ $(function(){
     sorttableTbody('.activityTbody');
     deletetableTr('.activitytable tbody');
     editActivityTr();
-
+    
 })
 
 //新增活動流程
@@ -66,7 +66,7 @@ function addassessmentTd(){
                             '<hr>'+
                             '<div class="assessment_content">'+assessmentcontent+'</div>'+
                             '<div class="btn-group">'+
-                                '<input type="button" class="btn btn-sm btn-link assessment_link" value="編輯">'+
+                                '<input type="button" class="btn btn-sm btn-link assessment_link_edit" value="編輯">'+
                                 '<input type="button" class="btn btn-sm btn-link assessment_link_del" value="刪除">'+
                             '</div>'+
                         '</div>';
@@ -74,6 +74,7 @@ function addassessmentTd(){
     $("#assessmentsummernote").summernote("code",'');
     $("#addassessmentModal").modal("hide");
     deleteassessment();
+    editAssessmentDiv();
 }
 
 //編輯流程tr內容，不會影響評量內容
@@ -86,8 +87,6 @@ function editActivityTr(){
         var lessonplan_activity_content = row.find("td:eq(1)").html();
         var lessonplan_activity_time = row.find("td:eq(2)").text();
         var lessonplan_activity_remark = row.find("td:eq(4)").text();
-
-        console.log(lessonplan_activity_content)
 
         var rowindex = row[0].rowIndex;
 
@@ -139,6 +138,37 @@ function editActivityModalBtn(){
     }
 }
 
+//編輯評量div內容，根據所在的td以及它是td內第幾個assessmentDiv的物件進行修改
+function editAssessmentDiv(){
+    $(".assessment_link_edit").on('click',function(){
+        $div = $(this).closest(".assessmentDiv");
+        var $editmodal = $("#editassessmentModal");
+        var assessment_content = $div.find("p").text();
+
+        var divindex = $div.index();
+        var targetid = $div.parent('td').attr('id');
+
+        $editmodal.find("#divindex").text(divindex);
+        $editmodal.find("#edittargetid").text(targetid);
+        $editmodal.find("#editassessmentsummernote").summernote('code', assessment_content);
+
+        $editmodal.modal("show");
+    });
+}
+
+//修改評量modal內的更新按鈕
+function editAssessmentModalBtn(){
+    var targetid = $("#edittargetid").text();
+    var divindex = $("divindex").text();
+
+    var assessmentcontent = $("#editassessmentsummernote").val();
+
+    var div = $("#"+targetid).find(".assessmentDiv:eq("+divindex+")");
+    div.find("p").html(assessmentcontent);
+
+    $("#editassessmentsummernote").summernote("code",'');
+    $("#editassessmentModal").modal("hide");
+}
 
 
 
@@ -194,7 +224,7 @@ function processselect_Set(){
 //評量鷹架放入select option
 function assessment_Set(){
     assessment_option.map(function(data){
-        $("#assessment_sel").append('<option value="'+data+'">'+data+'</option>');
+        $(".assessment_sel").append('<option value="'+data+'">'+data+'</option>');
     })
 }
 
@@ -218,6 +248,11 @@ function assessmentscaffold_Add(){
         var value = $("#assessment_sel :selected").val();
         $("#assessmentsummernote").summernote('pasteHTML', value);
     })
+
+    $("#editassessment_sel").change(function(){
+        var value = $("#editassessment_sel :selected").val();
+        $("#editassessmentsummernote").summernote('pasteHTML', value);
+    })
 }
 
 //彈出視窗closebtn的function，清空所有填寫框
@@ -238,6 +273,9 @@ function modalclosebtn(modalid){
         case 'addassessmentModal':
             $("#assessmentsummernote").summernote("code",'');
             break;
+        case 'editassessmentModal':
+            $("#editassessmentsummernote").summernote("code",'');
+            break;
         case 'customUnitandActivityModal':
             $("#customActivityTbody .appendTr").remove();
             $("#customUnitandActivityModal input[type='text']").val("");
@@ -250,7 +288,8 @@ function modalclosebtn(modalid){
 }
 
 function resetsummernote(){
-    $("#assessmentsummernote").summernote("code",'');  
+    $("#assessmentsummernote").summernote("code",'');
+    $("#editassessmentsummernote").summernote("code",'');  
 }
 
 function deleteassessment(){

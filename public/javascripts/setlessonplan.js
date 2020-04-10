@@ -740,7 +740,7 @@ function saveActivityProcessData(divId){
     for(var i=0;i<tr_length;i++){
 
         var lessonplan_activity_learningtarget = $($("#"+divId+"Tbody tr")[i]).find("td:eq(0)").text();
-        var lessonplan_activity_content = $($("#"+divId+"Tbody tr")[i]).find("td:eq(1)").text();
+        var lessonplan_activity_content = $($("#"+divId+"Tbody tr")[i]).find("td:eq(1)").html();
         var lessonplan_activity_time = $($("#"+divId+"Tbody tr")[i]).find("td:eq(2)").text();
         var lessonplan_activity_remark = $($("#"+divId+"Tbody tr")[i]).find("td:eq(4)").text();
 

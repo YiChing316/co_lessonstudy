@@ -159,12 +159,12 @@
               <div class="card border-light">
                 <div class="card-header nopadding-all text-center">請選擇評量模組</div>
                 <div class="card-body nopadding-all mt-2">
-                  <select class="form-control" id="assessment_sel" size="6" ></select>
+                  <select class="form-control assessment_sel" id="assessment_sel" size="6" ></select>
                 </div>
               </div>
             </div>
             <div class="col">
-              <textarea class="notoolbarsummernote" id="assessmentsummernote"></textarea>
+              <textarea class="notoolbarsummernote assessmentsummernote" id="assessmentsummernote"></textarea>
             </div>
           </div>
         </div>
@@ -173,6 +173,44 @@
         <input type="button" class="btn btn-light" value="清除" onclick="resetsummernote()">
         <input type="button" class="btn btn-outline-dark" value="上傳檔案">
         <input type="button" class="btn btn-primary" value="加入" onclick="addassessmentTd()">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 修改評量 -->
+<div class="modal fade" id="editassessmentModal" tabindex="-1" role="dialog" aria-labelledby="editassessmentModalLabel" aria-hidden="true" data-backdrop="static">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-selfblue text-white">
+        <h5 class="modal-title" id="editassessmentModalLabel">修改評量方式</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="modalclosebtn('editassessmentModal')">
+          <span class="text-white" aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <span id="edittargetid" style="display: none;"></span>
+        <span id="divindex" style="display: none;"></span>
+        <div class="form-group">
+          <div class="row">
+            <div class="col-3">
+              <div class="card border-light">
+                <div class="card-header nopadding-all text-center">請選擇評量模組</div>
+                <div class="card-body nopadding-all mt-2">
+                  <select class="form-control assessment_sel" id="editassessment_sel" size="6" ></select>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <textarea class="notoolbarsummernote assessmentsummernote" id="editassessmentsummernote"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input type="button" class="btn btn-light" value="清除" onclick="resetsummernote()">
+        <input type="button" class="btn btn-outline-dark" value="上傳檔案">
+        <input type="button" class="btn btn-primary" value="更新" onclick="editAssessmentModalBtn()">
       </div>
     </div>
   </div>
