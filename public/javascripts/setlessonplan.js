@@ -48,9 +48,9 @@ function selectDiv(componentname,componentid,parentDiv){
 
 function buttonDiv(parentDiv){
     var divid = "'"+parentDiv+"'";
-    $('#'+parentDiv).append('<div class="row">'+
-                                '<div class="mode-switch">'+
-                                    '<div class="bt-group float-right mr-1">'+
+    $('#'+parentDiv).append('<div class="row float-right">'+
+                                '<div class="">'+
+                                    '<div class="bt-group mr-1">'+
                                         // '<input type="button" class="btn btn-secondary" value="清除">'+
                                         '<input type="button" class="btn btn-primary ml-1" value="儲存" onclick="saveLessonplanData('+divid+')">'+
                                     '</div>'+

@@ -95,6 +95,7 @@ body{font-family: '微軟正黑體';}
   padding-top: 5px;
   padding-bottom: 5px;
   background-color: #fff;
+  z-index: 1020;
 }
 
 .mode-switch-btn{
