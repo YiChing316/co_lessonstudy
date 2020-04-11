@@ -48,7 +48,8 @@ router.get('/edit/:community_id', function(req, res, next) {
                                                             issuethemeData:'""',
                                                             issuecontentData:'""',
                                                             basicData:'""',
-                                                            lessonplanUnitActivityData:'""'
+                                                            lessonplanUnitActivityData:'""',
+                                                            lessonplanActivityProcessData:'""'
                                                         });   
                         });
                     });
@@ -100,8 +101,13 @@ router.get('/edit/:community_id', function(req, res, next) {
 
                                                                     var lessonplanUnitActivityData;
                                                                     lessonplanUnitActivityData = JSON.stringify(unitActivityResults);
-                                                                    
-                                                                    res.render('lessonplanEdit', { title: '教案製作',
+
+                                                                    lessonplan.selectLessonplanActivityProcess(community_id,course_version,function(processResults){
+
+                                                                        var lessonplanActivityProcessData;
+                                                                        lessonplanActivityProcessData = JSON.stringify(processResults);
+
+                                                                        res.render('lessonplanEdit', { title: '教案製作',
                                                                                                 member_id:member_id,
                                                                                                 member_name:member_name,
                                                                                                 community_id:community_id,
@@ -119,8 +125,10 @@ router.get('/edit/:community_id', function(req, res, next) {
                                                                                                 issuethemeData:issuethemeData,
                                                                                                 issuecontentData:issuecontentData,
                                                                                                 basicData:basicData,//教案基本資料
-                                                                                                lessonplanUnitActivityData:lessonplanUnitActivityData
+                                                                                                lessonplanUnitActivityData:lessonplanUnitActivityData,
+                                                                                                lessonplanActivityProcessData:lessonplanActivityProcessData
                                                                                             });
+                                                                    })//getlessonplanActivityProcess end
                                                                 })//getlessonplanUnitandActivity end
                                                             })//getissue_content end
                                                         })//getissue_theme end

@@ -121,5 +121,16 @@ module.exports = {
                 connection.release();
             })
         })
+    },
+
+    selectLessonplanActivityProcess: function(community_id,lessonplan_version,cb){
+        pool.getConnection(function(err,connection){
+            if (err) throw err;
+
+            connection.query('SELECT * FROM `lessonplan_activity_process` WHERE `community_id_community`=? AND `lessonplan_version` =?',[community_id,lessonplan_version],function(err,results){
+                cb(results);
+                connection.release();
+            })
+        })
     }
 }

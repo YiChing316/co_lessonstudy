@@ -2,8 +2,39 @@ var explore_option = ["課前準備","關鍵提問","探究活動","直接觀察
 var common_option = ["引起動機","發展活動","綜合活動","課堂結束"];
 var assessment_option = ["紙筆測驗","口頭評量","實作能力評量","作品評量","態度評量","課室教學記錄","學習反思札記","同儕互評","學習歷程檔案評量","評量指標"];
 
+function trElement(parentid,num,processtarget,processcontent,processtime,processremark){
+    $("#"+parentid+"Tbody").append('<tr>'+
+                                '<th scope="row">'+num+'</th>'+
+                                '<td>'+processtarget+'</td>'+
+                                '<td>'+processcontent+'</td>'+
+                                '<td>'+processtime+'</td>'+
+                                '<td id="'+parentid+'_assessmentTd_'+num+'">'+
+                                    '<a href="" class="assessment_link font-weight-bolder" class="assessment_link font-weight-bolder" data-toggle="modal" data-target="#addassessmentModal" data-targettr="'+parentid+'_assessmentTd_'+num+'">新增評量方式...</a>'+
+                                '</td>'+
+                                '<td>'+processremark+'</td>'+
+                                '<td>'+
+                                    '<input type="button" class="btn btn-warning mb-1 btnEdit" data-parentdivid="'+parentid+'" value="編輯">'+
+                                    '<input type="button" class="btn btn-danger btnDelete" value="刪除">'+
+                                '</td>'+
+                            '</tr>');
+}
+
+function assessmentDiv(td_id,assessmentcontent){
+
+    $("#"+td_id).append('<div class="assessmentDiv">'+
+                            '<hr>'+
+                            '<div class="assessment_content">'+assessmentcontent+'</div>'+
+                            '<div class="btn-group">'+
+                                '<input type="button" class="btn btn-sm btn-link assessment_link_edit" value="編輯">'+
+                                '<input type="button" class="btn btn-sm btn-link assessment_link_del" value="刪除">'+
+                            '</div>'+
+                        '</div>');
+}
+
 $(function(){
     
+    setActivityProcess();
+
     processselect_Set();
     assessment_Set();
     processscaffold_Add();
@@ -18,6 +49,7 @@ $(function(){
 })
 
 var processArray = [];
+var lessonplanActivityProcessData;
 
 //新增活動流程
 function addactivityTr(){
@@ -36,20 +68,7 @@ function addactivityTr(){
     }
     else{
         //活動編號根據所在的位置id
-        $("#"+parentid+"Tbody").append('<tr>'+
-                                        '<th scope="row">'+num+'</th>'+
-                                        '<td>'+processtarget+'</td>'+
-                                        '<td>'+processcontent+'</td>'+
-                                        '<td>'+processtime+'</td>'+
-                                        '<td id="'+parentid+'_assessmentTd_'+num+'">'+
-                                            '<a href="" class="assessment_link font-weight-bolder" class="assessment_link font-weight-bolder" data-toggle="modal" data-target="#addassessmentModal" data-targettr="'+parentid+'_assessmentTd_'+num+'">新增評量方式...</a>'+
-                                        '</td>'+
-                                        '<td>'+processremark+'</td>'+
-                                        '<td>'+
-                                            '<input type="button" class="btn btn-warning mb-1 btnEdit" data-parentdivid="'+parentid+'" value="編輯">'+
-                                            '<input type="button" class="btn btn-danger btnDelete" value="刪除">'+
-                                        '</td>'+
-                                    '</tr>');
+        trElement(parentid,num,processtarget,processcontent,processtime,processremark);
 
         $("#addprocessModal").modal("hide");
         $("#processcontent").summernote("code",'');
@@ -66,15 +85,9 @@ function addactivityTr(){
 function addassessmentTd(){
     var td_id = $("#targetid").text();
     var assessmentcontent = $("#assessmentsummernote").val();
-    var assessmentDiv = '<div class="assessmentDiv">'+
-                            '<hr>'+
-                            '<div class="assessment_content">'+assessmentcontent+'</div>'+
-                            '<div class="btn-group">'+
-                                '<input type="button" class="btn btn-sm btn-link assessment_link_edit" value="編輯">'+
-                                '<input type="button" class="btn btn-sm btn-link assessment_link_del" value="刪除">'+
-                            '</div>'+
-                        '</div>';
-    $("#"+td_id).append(assessmentDiv);
+
+    assessmentDiv(td_id,assessmentcontent);
+
     $("#assessmentsummernote").summernote("code",'');
     $("#addassessmentModal").modal("hide");
     deleteassessment();
@@ -216,6 +229,45 @@ function saveLocalStorage(divId){
     var activityContentString = JSON.stringify(activityContentArray);
     
     localStorage.setItem(divId,activityContentString);
+}
+
+//放入已經儲存活動流程資料
+function setActivityProcess(){
+
+    var lessonplanActivityProcessData = $("#lessonplanActivityProcessData").text();
+    
+    if( lessonplanActivityProcessData.length !== 0){
+        lessonplanActivityProcessData = JSON.parse(lessonplanActivityProcessData);
+
+        for(var i=0; i<lessonplanActivityProcessData.length;i++){
+
+            var processData = lessonplanActivityProcessData[i];
+            var number = i+1;
+            var parentid = "activity_"+number;
+
+            var lessonplan_activity_content = JSON.parse(processData.lessonplan_activity_content);
+            
+            for(var s=0;s<lessonplan_activity_content.length;s++){
+                var contentData = lessonplan_activity_content[s];
+                var num = s+1;
+                var processtarget = contentData.lessonplan_activity_learningtarget;
+                var processcontent = contentData.lessonplan_activity_content;
+                var processtime = contentData.lessonplan_activity_time;
+                var processremark = contentData.lessonplan_activity_remark;
+                var assessmentArray = contentData.lessonplan_activity_assessment;
+
+                trElement(parentid,num,processtarget,processcontent,processtime,processremark);
+
+                for(var r=0;r<assessmentArray.length;r++){
+                    var assessmentData= assessmentArray[r];
+                    var td_id = parentid+"_assessmentTd_"+num;
+                    var assessment_content = assessmentData.assessment_content;
+                    assessmentDiv(td_id,assessment_content);
+                }
+
+            }
+        }  
+    }
 }
 
 
