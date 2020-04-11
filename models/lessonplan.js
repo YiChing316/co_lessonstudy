@@ -112,11 +112,11 @@ module.exports = {
         })
     },
 
-    selectLessonplanUnitandActivityData: function(community_id,cb){
+    selectLessonplanUnitandActivityData: function(community_id,lessonplan_version,cb){
         pool.getConnection(function(err,connection){
             if (err) throw err;
 
-            connection.query('SELECT * FROM `lessonplan_unit` WHERE `community_id_community`=?',[community_id],function(err,results){
+            connection.query('SELECT * FROM `lessonplan_unit` WHERE `community_id_community`=? AND `lessonplan_version` =?',[community_id,lessonplan_version],function(err,results){
                 cb(results);
                 connection.release();
             })

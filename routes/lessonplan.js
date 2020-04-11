@@ -96,11 +96,11 @@ router.get('/edit/:community_id', function(req, res, next) {
                                                             clsresource.getissue_content(course_grade,function(issuecontentResults){
                                                                 issuecontentData = JSON.stringify(issuecontentResults);
 
-                                                                lessonplan.selectLessonplanUnitandActivityData(community_id,function(unitActivityResults){
+                                                                lessonplan.selectLessonplanUnitandActivityData(community_id,course_version,function(unitActivityResults){
 
                                                                     var lessonplanUnitActivityData;
                                                                     lessonplanUnitActivityData = JSON.stringify(unitActivityResults);
-
+                                                                    
                                                                     res.render('lessonplanEdit', { title: '教案製作',
                                                                                                 member_id:member_id,
                                                                                                 member_name:member_name,
