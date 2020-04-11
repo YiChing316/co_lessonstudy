@@ -17,6 +17,8 @@ $(function(){
     
 })
 
+var processArray = [];
+
 //新增活動流程
 function addactivityTr(){
     var parentid = $("#parentid").text();
@@ -55,6 +57,8 @@ function addactivityTr(){
         $("#addprocessModal input[type='number']").val("");
         $("#processalert").hide();
 
+        saveLocalStorage(parentid);
+
     }  
 }
 
@@ -75,6 +79,11 @@ function addassessmentTd(){
     $("#addassessmentModal").modal("hide");
     deleteassessment();
     editAssessmentDiv();
+
+    //該活動的id
+    var parentdivid = $("#"+td_id).closest(".card-body").attr('id');
+
+    saveLocalStorage(parentdivid);
 }
 
 //編輯流程tr內容，不會影響評量內容
@@ -170,7 +179,44 @@ function editAssessmentModalBtn(){
     $("#editassessmentModal").modal("hide");
 }
 
+function saveLocalStorage(divId){
 
+    var lessonplan_version = $("#"+divId).find(".activity_lessonplan_version").text();
+    var lessonplan_unit_name = $("#"+divId).find(".activity_lessonplan_unit_name").text();
+    var lessonplan_activity_name = $("#"+divId).find(".activity_lessonplan_activity_name").text();
+
+    var activityContentArray = [];
+
+    var tr_length = $("#"+divId+"Tbody tr").length;
+
+    for(var i=0;i<tr_length;i++){
+
+        var lessonplan_activity_learningtarget = $($("#"+divId+"Tbody tr")[i]).find("td:eq(0)").text();
+        var lessonplan_activity_content = $($("#"+divId+"Tbody tr")[i]).find("td:eq(1)").html();
+        var lessonplan_activity_time = $($("#"+divId+"Tbody tr")[i]).find("td:eq(2)").text();
+        var lessonplan_activity_remark = $($("#"+divId+"Tbody tr")[i]).find("td:eq(4)").text();
+
+        var assessmentArray = [];
+
+        $($("#"+divId+"Tbody tr")[i]).find('.assessmentDiv').each(function(){
+            var assessment_content = $(this).find(".assessment_content").text();
+            assessmentArray.push({assessment_content:assessment_content,assessment_url:""})
+        })
+
+
+        activityContentArray.push({lessonplan_activity_learningtarget:lessonplan_activity_learningtarget,
+                                    lessonplan_activity_content:lessonplan_activity_content,
+                                    lessonplan_activity_time:lessonplan_activity_time,
+                                    lessonplan_activity_assessment:assessmentArray,
+                                    lessonplan_activity_remark:lessonplan_activity_remark
+                                });
+        
+    }
+
+    var activityContentString = JSON.stringify(activityContentArray);
+    
+    localStorage.setItem(divId,activityContentString);
+}
 
 
 /*****活動與評量的modal相關js******************************************************* */

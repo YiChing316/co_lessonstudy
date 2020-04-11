@@ -53,6 +53,46 @@ module.exports = {
         })
     },
 
+    saveLessonplanActivityProcess: function(community_id,lessonplanData,member_id,member_name,cb){
+        pool.getConnection(function(err,connection){
+            if (err) throw err;
+
+            var lessonplan_version = lessonplanData.lessonplan_version;
+            var lessonplan_unit_name = lessonplanData.lessonplan_unit_name;
+            var lessonplan_activity_name = lessonplanData.lessonplan_activity_name;
+
+            var sql = {
+                community_id_community:community_id,
+                lessonplan_version:lessonplan_version,
+                lessonplan_unit_name:lessonplan_unit_name,
+                lessonplan_activity_name:lessonplan_activity_name,
+                lessonplan_activity_content:lessonplanData.lessonplan_activity_content,
+                member_id_member:member_id,
+                member_name:member_name
+            }
+            connection.query('SELECT COUNT(`lessonplan_activity_content`) AS COUNTNUM FROM `lessonplan_activity_process` WHERE `community_id_community` =? AND `lessonplan_version` =? AND `lessonplan_unit_name` =? AND `lessonplan_activity_name` = ?',[community_id,lessonplan_version,lessonplan_unit_name,lessonplan_activity_name],function(err,countResults){
+                if(err) throw err;
+
+                var countNum = countResults[0].COUNTNUM;
+                
+                if(countNum == 1){
+                    connection.query('UPDATE `lessonplan_activity_process` SET ? WHERE `community_id_community` =? AND `lessonplan_version` =? AND `lessonplan_unit_name` =? AND `lessonplan_activity_name` = ?',[sql,community_id,lessonplan_version,lessonplan_unit_name,lessonplan_activity_name],function(err,updateResults){
+                        if(err) throw err;
+                        cb(updateResults);
+                        connection.release();
+                    })
+                }
+                else{
+                    connection.query('INSERT INTO `lessonplan_activity_process` SET ?',sql,function(err,insertResults){
+                        if(err) throw err;
+                        cb(insertResults);
+                        connection.release();
+                    })
+                }
+            })
+        })
+    },
+
     //判斷此lessonplan是否已有儲存領域、版本、年級
     checklessonplandata: function(community_id,cb){
         pool.getConnection(function(err,connection){

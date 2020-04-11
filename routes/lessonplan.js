@@ -161,7 +161,11 @@ router.post('/edit/:community_id/save',function(req,res,next){
                 res.json({msg:'ok'})
             })
             break;
-
+        case 'activiy_process':
+            lessonplan.saveLessonplanActivityProcess(community_id,lessonplanData,member_id,member_name,function(results){
+                res.json({msg:'ok'})
+            })
+            break;
     }
 
 

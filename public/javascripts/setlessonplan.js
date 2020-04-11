@@ -733,46 +733,25 @@ function saveActivityProcessData(divId){
     var lessonplan_unit_name = $("#"+divId).find(".activity_lessonplan_unit_name").text();
     var lessonplan_activity_name = $("#"+divId).find(".activity_lessonplan_activity_name").text();
 
-    var activityContentArray = [];
+    var activityContentString = localStorage.getItem(divId);
 
-    var tr_length = $("#"+divId+"Tbody tr").length;
+    if(activityContentString !== null){
+        var data = {
+            stage:'activiy_process',
+            lessonplan_version:lessonplan_version,
+            lessonplan_unit_name:lessonplan_unit_name,
+            lessonplan_activity_name:lessonplan_activity_name,
+            lessonplan_activity_content:activityContentString
+        };
 
-    for(var i=0;i<tr_length;i++){
-
-        var lessonplan_activity_learningtarget = $($("#"+divId+"Tbody tr")[i]).find("td:eq(0)").text();
-        var lessonplan_activity_content = $($("#"+divId+"Tbody tr")[i]).find("td:eq(1)").html();
-        var lessonplan_activity_time = $($("#"+divId+"Tbody tr")[i]).find("td:eq(2)").text();
-        var lessonplan_activity_remark = $($("#"+divId+"Tbody tr")[i]).find("td:eq(4)").text();
-
-        var assessmentArray = [];
-
-        $($("#"+divId+"Tbody tr")[i]).find('.assessmentDiv').each(function(){
-            var assessment_content = $(this).find(".assessment_content").text();
-            assessmentArray.push({assessment_content:assessment_content,assessment_url:""})
-        })
-
-
-        activityContentArray.push({lessonplan_activity_learningtarget:lessonplan_activity_learningtarget,
-                                    lessonplan_activity_content:lessonplan_activity_content,
-                                    lessonplan_activity_time:lessonplan_activity_time,
-                                    lessonplan_activity_assessment:assessmentArray,
-                                    lessonplan_activity_remark:lessonplan_activity_remark
-                                });
+        localStorage.removeItem(divId);
         
+        saveAjax(data);
+
     }
-
-    var activityContentString = JSON.stringify(activityContentArray);
-
-    console.log(activityContentString)
+    else{
+        alert('目前沒有資料可以儲存');
+    }
     
-    var data = {
-        stage:'activiy_process',
-        lessonplan_version:lessonplan_version,
-        lessonplan_unit_name:lessonplan_unit_name,
-        lessonplan_activity_name:lessonplan_activity_name,
-        lessonplan_activity_content:activityContentString
-    };
-    
-    console.log(data);
 }
 

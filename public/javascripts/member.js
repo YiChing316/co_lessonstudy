@@ -135,6 +135,8 @@ function postData(){
 $(function(){
     registerMap();
     loginMap();
+    //回到登入畫面則清除所有localstorage
+    localStorage.clear();
 });
 
 
