@@ -86,5 +86,16 @@ module.exports = {
                                 connection.release();
             })
         })
+    },
+
+    selectCommunityName: function(community_id,cb){
+        pool.getConnection(function(err,connection){
+            if(err) throw err;
+            connection.query('SELECT `community_name` FROM `community` WHERE `community_id`=?',[community_id],function(err,results){
+                if(err) throw err;
+                cb(results);
+                connection.release();
+            })
+        })
     }
 }
