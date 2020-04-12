@@ -197,4 +197,6 @@ $(function(){
     showAllCommunity();
     showMemberCommunity();
 
+    //回到dashboard畫面則清除所有localstorage
+    localStorage.clear();
 });

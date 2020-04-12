@@ -52,7 +52,7 @@ function buttonDiv(parentDiv){
                                 '<div class="">'+
                                     '<div class="bt-group mr-1">'+
                                         // '<input type="button" class="btn btn-secondary" value="清除">'+
-                                        '<input type="button" class="btn btn-primary ml-1" value="儲存" onclick="saveLessonplanData('+divid+')">'+
+                                        '<input type="button" class="btn btn-primary ml-1 mt-2" value="儲存" onclick="saveLessonplanData('+divid+')">'+
                                     '</div>'+
                                 '</div>'+
                             '</div>');
@@ -405,7 +405,7 @@ function activityandAssessmentDesign_Append(id,title,unit,version){
 
 
 /******************************************************************************** */
-
+var isChange = false;
 $(function(){
     unitData = JSON.parse($("#unitData").text());
     activityData = JSON.parse($("#activityData").text());
@@ -428,6 +428,23 @@ $(function(){
     sidebarClick();
 
     modalOpen();
+
+    //判斷畫面上是否有物件有更動，但未儲存
+    $("input,textarea,select").change(function () {
+        isChange = true;
+        $(this).addClass("editing");
+    });
+
+    $(".summernote").on("summernote.change", function (e) {
+        isChange = true;
+        $(this).addClass("editing");
+    });
+
+    $(window).bind('beforeunload', function (e) {
+        if (isChange || $(".editing").get().length > 0) {
+            return '資料尚未存檔，確定是否要離開？';
+        }
+    })
 
 })
 
@@ -657,8 +674,8 @@ function saveAjax(data){
         type: "POST",
         data:data,
         success: function(data){
-             console.log(data.msg);
-             window.location = "/lessonplan/edit/"+community_id;
+            console.log(data.msg);
+            // window.location = "/lessonplan/edit/"+community_id;
         },
         error: function(){
             alert('失敗');
@@ -687,10 +704,22 @@ function saveLessonplanData(divId){
                 lessonplan_grade:lessonplan_grade,
                 lessonplan_time:timeString
             };
-            
-            saveAjax(data);
+
+            var editing = $("#lessonplan").find(".editing").get().length;
+
+            if(editing == 0){
+                alert('此區沒有資料變動喔!!')
+            }
+            else{
+                for(var i=0;i<editing;i++){
+                    $($("#lessonplan").find(".editing")[i]).removeClass("editing");
+                }
+                isChange = false;
+                saveAjax(data);
+            }
             break;
         case 'lessonplan_unit'://版本單元/活動
+            var community_id = $("#community_id").text();
             var lessonplan_version = $("#lessonplan_version :selected").val();
             var lessonplan_unit_name = $("#unit_sel :selected").val();
             var lessonplan_activity_name = [];
@@ -704,10 +733,15 @@ function saveLessonplanData(divId){
                 lessonplan_unit_name:lessonplan_unit_name,
                 lessonplan_unit_activity:activityString
             };
+
+            $("#unit_sel").removeClass("editing");
+            isChange = false;
             saveAjax(data);
+            window.location = "/lessonplan/edit/"+community_id;
 
             break;
         case 'customlessonplan_unit'://自定義單元/活動
+            var community_id = $("#community_id").text();
             var lessonplan_version = $("#customVersion").text();
             var lessonplan_unit_name = $("#unitName").val();
             var lessonplan_activity_name = [];
@@ -722,7 +756,14 @@ function saveLessonplanData(divId){
                 lessonplan_unit_name:lessonplan_unit_name,
                 lessonplan_unit_activity:activityString
             };
+
+            $("#customSemester_sel").removeClass("editing");
+            $("#unitName").removeClass("editing");
+            $(".activityList").removeClass("editing");
+
+            isChange = false;
             saveAjax(data);
+            window.location = "/lessonplan/edit/"+community_id;
             break;
     }
 }

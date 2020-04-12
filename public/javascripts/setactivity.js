@@ -425,10 +425,16 @@ function modalclosebtn(modalid){
         case 'customUnitandActivityModal':
             $("#customActivityTbody .appendTr").remove();
             $("#customUnitandActivityModal input[type='text']").val("");
+            $("#customSemester_sel").removeClass("editing");
+            $("#unitName").removeClass("editing");
+            $(".activityList").removeClass("editing");
+            isChange = false;
             break;
         case 'versionUnitandActivityModal':
             $("#unit_sel").val($("#unit_sel option:first").val());
             $("#activity_sel .mycheckbox").remove();
+            $("#unit_sel").removeClass("editing");
+            isChange = false;
             break;
     }
 }
