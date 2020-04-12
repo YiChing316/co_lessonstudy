@@ -40,10 +40,11 @@ $(function(){
     processscaffold_Add();
     assessmentscaffold_Add();
 
+    deleteActivityTableTr();
+    sortActivityTableTbody();
+
     openActivityandAssessmentBtn();
 
-    sorttableTbody('.activityTbody');
-    deletetableTr('.activitytable tbody');
     editActivityTr();
     
 })
@@ -102,6 +103,7 @@ function addassessmentTd(){
 //編輯流程tr內容，不會影響評量內容
 function editActivityTr(){
     $('.activityTbody').on('click','.btnEdit',function(){
+        var parentid = $(this).closest('.card-body').attr('id');
         var tbodyid = $(this).closest('tbody').attr('id');
 
         var row = $(this).closest('tr');
@@ -120,6 +122,7 @@ function editActivityTr(){
         $editmodal.find("#editprocessremark").val(lessonplan_activity_remark);
         $editmodal.find("#dataindex").text(rowindex);
         $editmodal.find("#tbodyid").text(tbodyid);
+        $editmodal.find("#editparentid").text(parentid);
 
         $editmodal.modal("show");
 
@@ -128,6 +131,8 @@ function editActivityTr(){
 
 //修改流程modal內的更新按鈕
 function editActivityModalBtn(){
+    var parentid = $("#editparentid").text();
+    console.log(parentid)
     var tbodyid = $("#tbodyid").text();
     //eq開始數字為0，但rowIdex是從1開始抓，應該是因為thead內的tr rowinde算0，但這邊是從tbody開始去跑eq故要減1
     var dataindex = $("#dataindex").text()-1;
@@ -157,6 +162,8 @@ function editActivityModalBtn(){
         $("#editprocessModal input[type='text']").val("");
         $("#editprocessModal input[type='number']").val("");
         $("#editprocessalert").hide();
+
+        saveLocalStorage(parentid);
     }
 }
 
@@ -166,6 +173,8 @@ function editAssessmentDiv(){
         $div = $(this).closest(".assessmentDiv");
         var $editmodal = $("#editassessmentModal");
         var assessment_content = $div.find("p").text();
+
+        console.log(assessment_content)
 
         var divindex = $div.index();
         var targetid = $div.parent('td').attr('id');
@@ -188,15 +197,24 @@ function editAssessmentModalBtn(){
     var div = $("#"+targetid).find(".assessmentDiv:eq("+divindex+")");
     div.find("p").html(assessmentcontent);
 
+    //該活動的id
+    var parentdivid = $("#"+targetid).closest(".card-body").attr('id');
+
     $("#editassessmentsummernote").summernote("code",'');
     $("#editassessmentModal").modal("hide");
+
+    saveLocalStorage(parentdivid);
+}
+
+function deleteassessment(){
+    $(".assessment_link_del").on('click',function(){
+        var parentid = $(this).closest('.card-body').attr('id');
+        $(this).closest(".assessmentDiv").remove();
+        saveLocalStorage(parentid);
+    });
 }
 
 function saveLocalStorage(divId){
-
-    var lessonplan_version = $("#"+divId).find(".activity_lessonplan_version").text();
-    var lessonplan_unit_name = $("#"+divId).find(".activity_lessonplan_unit_name").text();
-    var lessonplan_activity_name = $("#"+divId).find(".activity_lessonplan_activity_name").text();
 
     var activityContentArray = [];
 
@@ -262,12 +280,42 @@ function setActivityProcess(){
                     var assessmentData= assessmentArray[r];
                     var td_id = parentid+"_assessmentTd_"+num;
                     var assessment_content = assessmentData.assessment_content;
-                    assessmentDiv(td_id,assessment_content);
+                    var content = "<p>"+assessment_content+"</p>";
+                    assessmentDiv(td_id,content);
+                    deleteassessment();
+                    editAssessmentDiv();
                 }
 
             }
         }  
     }
+}
+
+//刪除該table內tbody的tr
+function deleteActivityTableTr(){
+    $('.activityTbody').on('click','.btnDelete',function(){
+        var parentid = $(this).closest('.card-body').attr('id');
+        $(this).closest('tr').remove();
+        $(".activityTbody tr").each(function(index) {
+            $(this).find('th:eq(0)').first().html(index + 1);
+        });
+
+        saveLocalStorage(parentid);
+    });
+}
+
+//重新排序該table內tbody的順序編號
+function sortActivityTableTbody(){
+    $('.activityTbody').sortable( {
+        update: function(){
+            $(this).children().each(function(index) {
+                $(this).find('th:eq(0)').first().html(index + 1);
+            });
+            var parentid = $(this).closest('.card-body').attr('id');
+
+            saveLocalStorage(parentid);
+        }
+    });
 }
 
 
@@ -390,8 +438,3 @@ function resetsummernote(){
     $("#editassessmentsummernote").summernote("code",'');  
 }
 
-function deleteassessment(){
-    $(".assessment_link_del").on('click',function(){
-        $(this).closest(".assessmentDiv").remove();
-    });
-}
