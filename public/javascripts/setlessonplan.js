@@ -402,6 +402,37 @@ function activityandAssessmentDesign_Append(id,title,unit,version){
     $("#setactivity").append(activityDiv);
 }
 
+//呈現儲存於lessonplan_stage資料庫中資料
+function showLessonplanStageSaveData(){
+    lessonplanStageData = $("#lessonplanStageData").text();
+    if( lessonplanStageData.length !== 0){
+        lessonplanStageData = JSON.parse(lessonplanStageData);
+
+        for(var i=0;i<lessonplanStageData.length;i++){
+            var stageData = lessonplanStageData[i];
+            var lessonplan_stage_type = stageData.lessonplan_stage_type;
+            var lessonplan_stage_content = stageData.lessonplan_stage_content;
+
+            switch(lessonplan_stage_type){
+                case 'lessonplan_target':
+                    var targetContent = lessonplan_stage_content.split(',');
+                    
+                    for(var s=0;s<targetContent.length;s++){
+                        var listnum = s+1;
+                        var value = targetContent[s];
+
+                        $("#lessonplantargetTbody").append('<tr>'+
+                                                                '<th scope="row" title="可上下移動排序">'+listnum+'</th>'+
+                                                                '<td><input type="text" class="form-control" name="lessonplantargercontent" placeholder="請輸入學習目標" value="'+value+'"></td>'+
+                                                                '<td class="lasttd"><button class="btn btn-danger btnDelete"><i class="far fa-trash-alt"></i></button></td>'+
+                                                            '</tr>');
+                    }
+
+                    break;
+            }
+        }
+    }
+}
 
 
 /******************************************************************************** */
@@ -424,6 +455,8 @@ $(function(){
     threeselect_Map();
     stageControl();
 
+    showLessonplanStageSaveData();
+
     collapseControl();
     sidebarClick();
 
@@ -439,6 +472,12 @@ $(function(){
         isChange = true;
         $(this).addClass("editing");
     });
+
+    //lessonplantargetTable內的input有變化時
+    $("#lessonplantargetTable").on("change","input",function(){
+        isChange = true;
+        $(this).addClass("editing");
+    })
 
     $(window).bind('beforeunload', function (e) {
         if (isChange || $(".editing").get().length > 0) {
@@ -675,6 +714,7 @@ function saveAjax(data){
         data:data,
         success: function(data){
             console.log(data.msg);
+            alert("儲存成功");
             // window.location = "/lessonplan/edit/"+community_id;
         },
         error: function(){
@@ -764,6 +804,31 @@ function saveLessonplanData(divId){
             isChange = false;
             saveAjax(data);
             window.location = "/lessonplan/edit/"+community_id;
+            break;
+        case 'lessonplan_target':
+            var tr_length = $("#lessonplantargetTbody tr").length;
+            var targetArray = [];
+
+            var targetString = targetArray.toString();
+            var data= {
+                stage:divId,
+                lessonplan_stage_type:divId,
+                lessonplan_stage_content:targetString
+            }
+
+            var editing = $("#lessonplan_target").find(".editing").get().length;
+            if(editing == 0){
+                alert('此區沒有資料變動喔!!')
+            }
+            else{
+                for(var i=0;i<tr_length;i++){
+                    var lessonplantargetcontent = $($("#lessonplantargetTbody tr")[i]).find("input[name='lessonplantargercontent']").val();
+                    $($("#lessonplantargetTbody tr")[i]).find("input[name='lessonplantargercontent']").removeClass('editing');
+                    targetArray.push(lessonplantargetcontent);
+                }
+                isChange = false;
+                saveAjax(data);
+            }
             break;
     }
 }

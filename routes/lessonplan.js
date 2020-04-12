@@ -54,7 +54,8 @@ router.get('/edit/:community_id', function(req, res, next) {
                                                                 issuecontentData:'""',
                                                                 basicData:'""',
                                                                 lessonplanUnitActivityData:'""',
-                                                                lessonplanActivityProcessData:'""'
+                                                                lessonplanActivityProcessData:'""',
+                                                                lessonplanStageData:'""'
                                                             });   
                             });
                         });
@@ -111,8 +112,12 @@ router.get('/edit/:community_id', function(req, res, next) {
     
                                                                             var lessonplanActivityProcessData;
                                                                             lessonplanActivityProcessData = JSON.stringify(processResults);
-    
-                                                                            res.render('lessonplanEdit', { title: '教案製作',
+
+                                                                            lessonplan.selectLessonplanStageData(community_id,function(stageResults){
+                                                                                var lessonplanStageData;
+                                                                                lessonplanStageData = JSON.stringify(stageResults);
+
+                                                                                res.render('lessonplanEdit', { title: '教案製作',
                                                                                                     member_id:member_id,
                                                                                                     member_name:member_name,
                                                                                                     community_id:community_id,
@@ -132,8 +137,10 @@ router.get('/edit/:community_id', function(req, res, next) {
                                                                                                     issuecontentData:issuecontentData,
                                                                                                     basicData:basicData,//教案基本資料
                                                                                                     lessonplanUnitActivityData:lessonplanUnitActivityData,
-                                                                                                    lessonplanActivityProcessData:lessonplanActivityProcessData
+                                                                                                    lessonplanActivityProcessData:lessonplanActivityProcessData,
+                                                                                                    lessonplanStageData:lessonplanStageData
                                                                                                 });
+                                                                            })//getlessonplanStage end
                                                                         })//getlessonplanActivityProcess end
                                                                     })//getlessonplanUnitandActivity end
                                                                 })//getissue_content end
@@ -181,6 +188,11 @@ router.post('/edit/:community_id/save',function(req,res,next){
             break;
         case 'activiy_process':
             lessonplan.saveLessonplanActivityProcess(community_id,lessonplanData,member_id,member_name,function(results){
+                res.json({msg:'ok'})
+            })
+            break;
+        case 'lessonplan_target':
+            lessonplan.saveLessonplanStage(community_id,lessonplanData,member_id,member_name,function(results){
                 res.json({msg:'ok'})
             })
             break;
