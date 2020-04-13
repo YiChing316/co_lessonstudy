@@ -32,7 +32,7 @@ function textareaDiv(componentname,componentid,parentDiv){
     $('#'+parentDiv).append('<div class="form-group row">'+
                                 '<label class="control-label col-sm-2">'+componentname+'</label>'+
                                 '<div class="col-sm-10">'+
-                                '<textarea id="'+componentid+'" class="form-control" rows="5"></textarea>'+
+                                '<textarea id="'+componentid+'" class="form-control" rows="10"></textarea>'+
                                 '</div>'+
                             '</div>');
 };
@@ -48,11 +48,11 @@ function selectDiv(componentname,componentid,parentDiv){
 
 function buttonDiv(parentDiv){
     var divid = "'"+parentDiv+"'";
-    $('#'+parentDiv).append('<div class="row float-right">'+
-                                '<div class="">'+
-                                    '<div class="bt-group mr-1">'+
+    $('#'+parentDiv).append('<div class="row">'+
+                                '<div class="btn-bg">'+
+                                    '<div class="bt-group float-right mr-1">'+
                                         // '<input type="button" class="btn btn-secondary" value="清除">'+
-                                        '<input type="button" class="btn btn-primary ml-1 mt-2" value="儲存" onclick="saveLessonplanData('+divid+')">'+
+                                        '<input type="button" class="btn btn-primary mt-2" value="儲存" onclick="saveLessonplanData('+divid+')">'+
                                     '</div>'+
                                 '</div>'+
                             '</div>');
@@ -480,7 +480,7 @@ $(function(){
     })
 
     $(window).bind('beforeunload', function (e) {
-        if (isChange || $(".editing").get().length > 0) {
+        if (isChange || $(".editing").get().length > 0 || localStorage !== null) {
             return '資料尚未存檔，確定是否要離開？';
         }
     })
@@ -809,13 +809,6 @@ function saveLessonplanData(divId){
             var tr_length = $("#lessonplantargetTbody tr").length;
             var targetArray = [];
 
-            var targetString = targetArray.toString();
-            var data= {
-                stage:divId,
-                lessonplan_stage_type:divId,
-                lessonplan_stage_content:targetString
-            }
-
             var editing = $("#lessonplan_target").find(".editing").get().length;
             if(editing == 0){
                 alert('此區沒有資料變動喔!!')
@@ -827,6 +820,13 @@ function saveLessonplanData(divId){
                     targetArray.push(lessonplantargetcontent);
                 }
                 isChange = false;
+
+                var targetString = targetArray.toString();
+                var data= {
+                    stage:divId,
+                    lessonplan_stage_type:divId,
+                    lessonplan_stage_content:targetString
+                }
                 saveAjax(data);
             }
             break;
@@ -851,8 +851,10 @@ function saveActivityProcessData(divId){
         };
 
         localStorage.removeItem(divId);
+
+        isChange = false;
         
-        saveAjax(data);
+        // saveAjax(data);
 
     }
     else{

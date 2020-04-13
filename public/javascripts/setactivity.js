@@ -71,6 +71,13 @@ function addactivityTr(){
         //活動編號根據所在的位置id
         trElement(parentid,num,processtarget,processcontent,processtime,processremark);
 
+        $("#processtarget").removeClass("editing");
+        $("#processtime").removeClass("editing");
+        $("#processremark").removeClass("editing");
+        $("#processcontent_sel_1").removeClass("editing");
+        $("#processcontent_sel_2").removeClass("editing");
+        isChange = false;
+
         $("#addprocessModal").modal("hide");
         $("#processcontent").summernote("code",'');
         $("#addprocessModal input[type='text']").val("");
@@ -88,6 +95,9 @@ function addassessmentTd(){
     var assessmentcontent = $("#assessmentsummernote").val();
 
     assessmentDiv(td_id,assessmentcontent);
+
+    $("#assessment_sel").removeClass("editing");
+    isChange = false;
 
     $("#assessmentsummernote").summernote("code",'');
     $("#addassessmentModal").modal("hide");
@@ -132,7 +142,6 @@ function editActivityTr(){
 //修改流程modal內的更新按鈕
 function editActivityModalBtn(){
     var parentid = $("#editparentid").text();
-    console.log(parentid)
     var tbodyid = $("#tbodyid").text();
     //eq開始數字為0，但rowIdex是從1開始抓，應該是因為thead內的tr rowinde算0，但這邊是從tbody開始去跑eq故要減1
     var dataindex = $("#dataindex").text()-1;
@@ -156,6 +165,12 @@ function editActivityModalBtn(){
         row.find("td:eq(2)").text(processtime);
         row.find("td:eq(4)").text(processremark);
 
+        $("#editprocesstarget").removeClass("editing");
+        $("#editprocesstime").removeClass("editing");
+        $("#editprocessremark").removeClass("editing");
+        $("#editprocesscontent_sel_1").removeClass("editing");
+        $("#editprocesscontent_sel_2").removeClass("editing");
+        isChange = false;
 
         $("#editprocessModal").modal("hide");
         $("#editprocesscontent").summernote("code",'');
@@ -199,6 +214,9 @@ function editAssessmentModalBtn(){
 
     //該活動的id
     var parentdivid = $("#"+targetid).closest(".card-body").attr('id');
+
+    $("#editassessment_sel").removeClass("editing");
+    isChange = false;
 
     $("#editassessmentsummernote").summernote("code",'');
     $("#editassessmentModal").modal("hide");
@@ -247,6 +265,7 @@ function saveLocalStorage(divId){
     var activityContentString = JSON.stringify(activityContentArray);
     
     localStorage.setItem(divId,activityContentString);
+
 }
 
 //放入已經儲存活動流程資料
@@ -409,18 +428,34 @@ function modalclosebtn(modalid){
             $("#editprocessModal input[type='text']").val("");
             $("#editprocessModal input[type='number']").val("");
             $("#editprocessalert").hide();
+            $("#processtarget").removeClass("editing");
+            $("#processtime").removeClass("editing");
+            $("#processremark").removeClass("editing");
+            $("#processcontent_sel_1").removeClass("editing");
+            $("#processcontent_sel_2").removeClass("editing");
+            isChange = false;
             break;
         case 'addprocessModal':
             $("#processcontent").summernote("code",'');
             $("#addprocessModal input[type='text']").val("");
             $("#addprocessModal input[type='number']").val("");
             $("#processalert").hide();
+            $("#editprocesstarget").removeClass("editing");
+            $("#editprocesstime").removeClass("editing");
+            $("#editprocessremark").removeClass("editing");
+            $("#editprocesscontent_sel_1").removeClass("editing");
+            $("#editprocesscontent_sel_2").removeClass("editing");
+            isChange = false;
             break;
         case 'addassessmentModal':
             $("#assessmentsummernote").summernote("code",'');
+            $("#assessment_sel").removeClass("editing");
+            isChange = false;
             break;
         case 'editassessmentModal':
             $("#editassessmentsummernote").summernote("code",'');
+            $("#editassessment_sel").removeClass("editing");
+            isChange = false;
             break;
         case 'customUnitandActivityModal':
             $("#customActivityTbody .appendTr").remove();
