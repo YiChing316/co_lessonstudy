@@ -856,7 +856,7 @@ function saveActivityProcessData(divId){
 
         isChange = false;
         
-        // saveAjax(data);
+        saveAjax(data);
 
     }
     else{
