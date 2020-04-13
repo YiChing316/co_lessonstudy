@@ -712,6 +712,7 @@ function saveAjax(data){
         url: "/lessonplan/edit/"+community_id+"/save",
         type: "POST",
         data:data,
+        async:false,
         success: function(data){
             console.log(data.msg);
             alert("儲存成功");
@@ -756,8 +757,20 @@ function saveLessonplanData(divId){
                     $($("#lessonplan").find(".editing")[i]).removeClass("editing");
                 }
                 isChange = false;
-                saveAjax(data);
-                window.location = "/lessonplan/edit/"+community_id;
+                $.ajax({
+                    url: "/lessonplan/edit/"+community_id+"/save",
+                    type: "POST",
+                    data:data,
+                    async:false,//ajax請求結束後才會執行window function
+                    success: function(data){
+                        console.log(data.msg);
+                        alert("儲存成功");
+                        window.location = "/lessonplan/edit/"+community_id;
+                    },
+                    error: function(){
+                        alert('失敗');
+                    }
+                })
             }
             break;
         case 'lessonplan_unit'://版本單元/活動
