@@ -480,7 +480,7 @@ $(function(){
     })
 
     $(window).bind('beforeunload', function (e) {
-        if (isChange || $(".editing").get().length > 0 || localStorage !== null) {
+        if (isChange || $(".editing").get().length > 0 || localStorage.length > 0) {
             return '資料尚未存檔，確定是否要離開？';
         }
     })
@@ -727,6 +727,7 @@ function saveLessonplanData(divId){
     
     switch(divId){
         case 'lessonplan':
+            var community_id = $("#community_id").text();
             var lessonplan_intro = $("#lessonplan_intro").val();
             var lessonplan_field = $("#lessonplan_field :selected").val();
             var lessonplan_version = $("#lessonplan_version :selected").val();
@@ -756,6 +757,7 @@ function saveLessonplanData(divId){
                 }
                 isChange = false;
                 saveAjax(data);
+                window.location = "/lessonplan/edit/"+community_id;
             }
             break;
         case 'lessonplan_unit'://版本單元/活動
