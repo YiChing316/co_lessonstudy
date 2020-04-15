@@ -135,15 +135,35 @@ function lessonplan_Map(){
         }
         else if(data.type == 'select'){
             if(data.id == 'lessonplan_field'){
-                selectDiv(data.name,data.id,data.parentDiv);
-                $('#'+data.id).append('<option value="" disabled selected>請選擇課程領域</option>'+
-                                        '<option value="國語">國語</option>'+
-                                        '<option value="英語">英語</option>'+
-                                        '<option value="自然">自然</option>'+
-                                        '<option value="數學">數學</option>');
+                var fieldArray = ['國語','英語','自然','數學'];
+                $('#'+data.parentDiv).append('<div class="form-group row">'+
+                                            '<label class="control-label col-sm-2">'+data.name+'</label>'+
+                                            '<div class="col-sm-10">'+
+                                                '<div id="'+data.id+'" class="form-check form-check-inline"></div>'+
+                                            '</div>'+
+                                        '</div>');
+                $.each(fieldArray, function(i, val) {
+                    $('#'+data.id).append($('<div class="custom-control custom-checkbox mr-4">'+
+                                                    '<input type="checkbox" class="custom-control-input" id="'+ fieldArray[i]+'" name="fieldbox" value="'+fieldArray[i]+'">'+
+                                                    '<label class="custom-control-label" for="'+ fieldArray[i] +'">'+ fieldArray[i] +'</label>'+
+                                                '</div>'
+                                                ));
+                });
                 if(lessonplan_field !== ""){
-                   $("#"+data.id+" option[value="+lessonplan_field+"]").attr("selected","selected"); 
+                    var fieldData = lessonplan_field.split(',');
+                    for(var i=0;i<fieldData.length;i++){
+                        $("#"+data.id+" input[value="+fieldData[i]+"]").prop('checked', true);
+                    }
                 }
+                // selectDiv(data.name,data.id,data.parentDiv);
+                // $('#'+data.id).append('<option value="" disabled selected>請選擇課程領域</option>'+
+                //                         '<option value="國語">國語</option>'+
+                //                         '<option value="英語">英語</option>'+
+                //                         '<option value="自然">自然</option>'+
+                //                         '<option value="數學">數學</option>');
+                // if(lessonplan_field !== ""){
+                //    $("#"+data.id+" option[value="+lessonplan_field+"]").attr("selected","selected"); 
+                // }
             }
             else if(data.id == 'lessonplan_version'){
                 selectDiv(data.name,data.id,data.parentDiv);
@@ -730,7 +750,11 @@ function saveLessonplanData(divId){
         case 'lessonplan':
             var community_id = $("#community_id").text();
             var lessonplan_intro = $("#lessonplan_intro").val();
-            var lessonplan_field = $("#lessonplan_field :selected").val();
+            var lessonplan_field = [];
+            $("input[name='fieldbox']:checked").each(function(){
+                lessonplan_field.push($(this).val());
+            })
+            var fieldString = lessonplan_field.toString();
             var lessonplan_version = $("#lessonplan_version :selected").val();
             var lessonplan_grade = $("#lessonplan_grade :selected").val();
             var lessonplan_time_class = parseInt($("#lessonplan_time_class").val());
@@ -741,7 +765,7 @@ function saveLessonplanData(divId){
             var data = {
                 stage:divId,
                 lessonplan_intro:lessonplan_intro,
-                lessonplan_field:lessonplan_field,
+                lessonplan_field:fieldString,
                 lessonplan_version:lessonplan_version,
                 lessonplan_grade:lessonplan_grade,
                 lessonplan_time:timeString
