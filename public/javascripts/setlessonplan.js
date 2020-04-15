@@ -469,14 +469,14 @@ function showLessonplanStageSaveData(){
 /******************************************************************************** */
 var isChange = false;
 $(function(){
-    unitData = JSON.parse($("#unitData").text());
-    activityData = JSON.parse($("#activityData").text());
+    // unitData = JSON.parse($("#unitData").text());
+    // activityData = JSON.parse($("#activityData").text());
 
     basicData = JSON.parse($("#basicData").text());
     lessonplanUnitActivityData = JSON.parse($("#lessonplanUnitActivityData").text());
     
-    $("#unitData").remove();
-    $("#activityData").remove();
+    // $("#unitData").remove();
+    // $("#activityData").remove();
 
     lessonplan_Map();
     lessonplan_unit_Set();

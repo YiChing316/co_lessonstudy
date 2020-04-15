@@ -39,25 +39,27 @@ module.exports = {
         })
     },
 
-    checkCommunityMember: function(community_id,member_id,cb){
-        pool.getConnection(function(err,connection){
-            if(err) throw err;
-            //select看社群成員表內是否此會員已在此社群中
-            connection.query('SELECT * FROM `community_member` WHERE `community_id_community`=? AND `member_id_member`=?',[community_id,member_id],function(err,seleResults){
-                if(err) throw err;
+    checkCommunityMember: function(community_id,member_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                //select看社群成員表內是否此會員已在此社群中
+                connection.query('SELECT * FROM `community_member` WHERE `community_id_community`=? AND `member_id_member`=?',[community_id,member_id],function(err,rows,fields){
+                    if(err) return reject(err);
 
-                if(seleResults.length){
-                    cb({isExisted:true});
-                    connection.release();
-                }
-                else{
-                    connection.query('SELECT * FROM `community` WHERE `community_id`=?',[community_id],function(err,results){
-                        if(err) throw err;
-                        cb(results);
+                    if(rows.length){
+                        resolve({isExisted:true});
                         connection.release();
-                    });
-                }
-            })   
+                    }
+                    else{
+                        connection.query('SELECT * FROM `community` WHERE `community_id`=?',[community_id],function(err,results){
+                            if(err) return reject(err);
+                            resolve(rows);
+                            connection.release();
+                        });
+                    }
+                })
+            })
         })
     },
 
@@ -88,13 +90,15 @@ module.exports = {
         })
     },
 
-    selectCommunityName: function(community_id,cb){
-        pool.getConnection(function(err,connection){
-            if(err) throw err;
-            connection.query('SELECT `community_name` FROM `community` WHERE `community_id`=?',[community_id],function(err,results){
-                if(err) throw err;
-                cb(results);
-                connection.release();
+    selectCommunityName: function(community_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT `community_name` FROM `community` WHERE `community_id`=?',[community_id],function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
             })
         })
     }
