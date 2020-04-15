@@ -95,20 +95,32 @@ module.exports = {
     //選取領域核心素養內涵(需有領域、階段)
     getcore_competency_fieldcontent: function(fieldcontent_field,fieldcontent_stage,cb){
 
-        switch(fieldcontent_field){
-            case "自然":
-                fieldcontent_field = "自";
-                break;
-            case "國語":
-                fieldcontent_field = "國";
-                break;
-            case "數學":
-                fieldcontent_field = "數"
-                break;
-            case "英語":
-                fieldcontent_field = "英";
-                break;
+        var fieldArray = fieldcontent_field.split(',');
+        var newfieldArray = [];
+
+        for(var i=0;i<fieldArray.length;i++){
+            switch(fieldArray[i]){
+                case "自然":
+                    fieldArray[i] = "'自'";
+                    newfieldArray.push(fieldArray[i])
+                    break;
+                case "國語":
+                    fieldArray[i] = "'國'";
+                    newfieldArray.push(fieldArray[i])
+                    break;
+                case "數學":
+                    fieldArray[i] = "'數'"
+                    newfieldArray.push(fieldArray[i])
+                    break;
+                case "英語":
+                    fieldArray[i] = "'英'";
+                    newfieldArray.push(fieldArray[i])
+                    break;
+            }
         }
+
+        var field = newfieldArray.toString();
+        
         switch(fieldcontent_stage){
             case "第四學習階段(國中)":
                 fieldcontent_stage = "國民中學教育（J）";
@@ -122,9 +134,10 @@ module.exports = {
 
         resourcepool.getConnection(function(err,connection){
             if(err) throw err;
-            connection.query('SELECT * FROM `core_competency_fieldcontent` WHERE `fieldcontent_field`=? AND `fieldcontent_stage`=?',[fieldcontent_field,fieldcontent_stage],function(err,results){
+            connection.query('SELECT * FROM `core_competency_fieldcontent` WHERE `fieldcontent_field` IN ('+field+') AND `fieldcontent_stage` = ?',fieldcontent_stage,function(err,results){
                 if(err) throw err;
                 cb(results);
+                console.log(results)
                 connection.release();
             })
         })
@@ -133,6 +146,32 @@ module.exports = {
 
     //選取學習重點項目1(需有領域、學習階段)
     getlearning_focus_item: function(learning_focus_field,learning_focus_stage,cb){
+
+        var fieldArray = learning_focus_field.split(',');
+        var newfieldArray = [];
+
+        for(var i=0;i<fieldArray.length;i++){
+            switch(fieldArray[i]){
+                case "自然":
+                    fieldArray[i] = "'自然'";
+                    newfieldArray.push(fieldArray[i])
+                    break;
+                case "國語":
+                    fieldArray[i] = "'國語'";
+                    newfieldArray.push(fieldArray[i])
+                    break;
+                case "數學":
+                    fieldArray[i] = "'數學'"
+                    newfieldArray.push(fieldArray[i])
+                    break;
+                case "英語":
+                    fieldArray[i] = "'英語'";
+                    newfieldArray.push(fieldArray[i])
+                    break;
+            }
+        }
+
+        var field = newfieldArray.toString();
         
         switch(learning_focus_stage){
             case "3年級":
@@ -157,7 +196,7 @@ module.exports = {
 
         resourcepool.getConnection(function(err,connection){
             if(err) throw err;
-            connection.query('SELECT `learning_focus_type`,`learning_focus_item` FROM `learning_focus` WHERE `learning_focus_field`=? AND `learning_focus_stage`=? GROUP BY `learning_focus_item`',[learning_focus_field,learning_focus_stage],function(err,results){
+            connection.query('SELECT `learning_focus_type`,`learning_focus_item` FROM `learning_focus` WHERE `learning_focus_field` IN ('+field+') AND `learning_focus_stage`=? GROUP BY `learning_focus_item`',[learning_focus_stage],function(err,results){
                 if(err) throw err;
                 cb(results);
                 connection.release();
@@ -168,6 +207,32 @@ module.exports = {
     //選取學習重點項目2(需有領域、學習階段)
     getlearning_focus_childitem: function(learning_focus_field,learning_focus_stage,cb){
 
+        var fieldArray = learning_focus_field.split(',');
+        var newfieldArray = [];
+
+        for(var i=0;i<fieldArray.length;i++){
+            switch(fieldArray[i]){
+                case "自然":
+                    fieldArray[i] = "'自然'";
+                    newfieldArray.push(fieldArray[i])
+                    break;
+                case "國語":
+                    fieldArray[i] = "'國語'";
+                    newfieldArray.push(fieldArray[i])
+                    break;
+                case "數學":
+                    fieldArray[i] = "'數學'"
+                    newfieldArray.push(fieldArray[i])
+                    break;
+                case "英語":
+                    fieldArray[i] = "'英語'";
+                    newfieldArray.push(fieldArray[i])
+                    break;
+            }
+        }
+
+        var field = newfieldArray.toString();
+
         switch(learning_focus_stage){
             case "3年級":
                 learning_focus_stage = "第二學習階段(Ⅱ)";
@@ -190,7 +255,7 @@ module.exports = {
         }
         resourcepool.getConnection(function(err,connection){
             if(err) throw err;
-            connection.query('SELECT `learning_focus_type`,`learning_focus_item`,`learning_focus_childitem` FROM `learning_focus` WHERE `learning_focus_field`=? AND `learning_focus_stage`=? GROUP BY `learning_focus_childitem`',[learning_focus_field,learning_focus_stage],function(err,results){
+            connection.query('SELECT `learning_focus_type`,`learning_focus_item`,`learning_focus_childitem` FROM `learning_focus` WHERE `learning_focus_field` IN ('+field+') AND `learning_focus_stage`=? GROUP BY `learning_focus_childitem`',[learning_focus_stage],function(err,results){
                 if(err) throw err;
                 cb(results);
                 connection.release();
@@ -200,6 +265,32 @@ module.exports = {
 
     //選取學習重點全部資料(需有領域、學習階段)
     getlearning_focus_content: function(learning_focus_field,learning_focus_stage,cb){
+        var fieldArray = learning_focus_field.split(',');
+        var newfieldArray = [];
+
+        for(var i=0;i<fieldArray.length;i++){
+            switch(fieldArray[i]){
+                case "自然":
+                    fieldArray[i] = "'自然'";
+                    newfieldArray.push(fieldArray[i])
+                    break;
+                case "國語":
+                    fieldArray[i] = "'國語'";
+                    newfieldArray.push(fieldArray[i])
+                    break;
+                case "數學":
+                    fieldArray[i] = "'數學'"
+                    newfieldArray.push(fieldArray[i])
+                    break;
+                case "英語":
+                    fieldArray[i] = "'英語'";
+                    newfieldArray.push(fieldArray[i])
+                    break;
+            }
+        }
+
+        var field = newfieldArray.toString();
+
         switch(learning_focus_stage){
             case "3年級":
                 learning_focus_stage = "第二學習階段(Ⅱ)";
@@ -222,7 +313,7 @@ module.exports = {
         }
         resourcepool.getConnection(function(err,connection){
             if(err) throw err;
-            connection.query('SELECT * FROM `learning_focus` WHERE `learning_focus_field`=? AND `learning_focus_stage`=? ',[learning_focus_field,learning_focus_stage],function(err,results){
+            connection.query('SELECT * FROM `learning_focus` WHERE `learning_focus_field` IN ('+field+') AND `learning_focus_stage`=? ',[learning_focus_stage],function(err,results){
                 if(err) throw err;
                 cb(results);
                 connection.release();

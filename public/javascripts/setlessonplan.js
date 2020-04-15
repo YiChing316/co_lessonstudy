@@ -16,13 +16,13 @@ var lessonplanstage_Component = [
 ];
 
 var twoselect_Component = [
-    {labelname:'核心素養',firstselid:'core_competency_dimesion_sel',secondselid:'core_competency_item_sel',bodyname:'core_competency_body',parentDiv:'lessonplan_cirn',onclickfunction:'addcore_competency()'},
     {labelname:'選擇所對應的因材網知識節點',firstselid:'adl_knowledgenode_unit_sel',secondselid:'adl_knowledgenode_node_sel',bodyname:'adl_body',parentDiv:'lessonplan_adl',onclickfunction:''}
 ];
 
 var threeselect_Component = [
-    {labelname:'學習表現',firstselid:'performancefocus_item',secondselid:'performancefocus_childitem',threeselid:'performancefocus_content',bodyname:'performancefocus_body',parentDiv:'cirn-form2',onclickfunction:'addlearning_performence()'},
-    {labelname:'學習內容',firstselid:'contentfocus_item',secondselid:'contentfocus_childitem',threeselid:'contentfocus_content',bodyname:'contentfocus_body',parentDiv:'cirn-form2',onclickfunction:'addlearning_content()'},
+    {labelname:'',firstselid:'fieldcontent_field_sel',secondselid:'core_competency_dimesion_sel',threeselid:'core_competency_item_sel',bodyname:'core_competency_body',parentDiv:'cirn_form1',onclickfunction:'addcore_competency()'},
+    {labelname:'學習表現',firstselid:'performancefocus_item',secondselid:'performancefocus_childitem',threeselid:'performancefocus_content',bodyname:'performancefocus_body',parentDiv:'cirn_form2',onclickfunction:'addlearning_performence()'},
+    {labelname:'學習內容',firstselid:'contentfocus_item',secondselid:'contentfocus_childitem',threeselid:'contentfocus_content',bodyname:'contentfocus_body',parentDiv:'cirn_form2',onclickfunction:'addlearning_content()'},
     {labelname:'議題融入',firstselid:'issue_name',secondselid:'issue_learning_theme',threeselid:'issue_content',bodyname:'issue_body',parentDiv:'lessonplan_issue',onclickfunction:'addissue()'}
 ];
 
@@ -118,7 +118,7 @@ function alertStageDiv(parentDiv){
 var basicData,lessonplanUnitActivityData;
 
 function lessonplan_Map(){
-    if(basicData !==""){
+    if(basicData.length !== 0){
         var lessonplan_intro = basicData.lessonplan_intro;
         var lessonplan_field = basicData.lessonplan_field;
         var lessonplan_version = basicData.lessonplan_version;
@@ -149,7 +149,7 @@ function lessonplan_Map(){
                                                 '</div>'
                                                 ));
                 });
-                if(lessonplan_field !== ""){
+                if(lessonplan_field !== undefined){
                     var fieldData = lessonplan_field.split(',');
                     for(var i=0;i<fieldData.length;i++){
                         $("#"+data.id+" input[value="+fieldData[i]+"]").prop('checked', true);
@@ -208,107 +208,117 @@ var course_field_info,course_grade_info;
 
 function lessonplan_unit_Set(){
     var lessonplan_version = $("#lessonplan_version :selected").val();
-    var customUnitandActivityModal = "'customUnitandActivityModal'";
-    var versionUnitandActivityModal = "'versionUnitandActivityModal'";
 
-    $("#lessonplan_unit").append('<button class="btn btn-outline-info" onclick="openUnitandActivityBtn('+versionUnitandActivityModal+')"><i class="fa fa-cubes"></i> '+lessonplan_version+'單元/活動</button>'+
-                                '<button class="btn btn-outline-info ml-1" onclick="openUnitandActivityBtn('+customUnitandActivityModal+')"><i class="fa fa-cogs"></i> 自定義單元/活動</button>'+
-                                '<div class="card nopadding mt-3">'+
-                                    '<div class="card-header">目前單元/活動</div>'+
-                                    '<div class="card-body lessonplan_unit_body"></div>'+
-                                '</div>'
-                                );
+    $("#lessonplan_unit").append('<div class="form-group row">'+
+                                    '<label class="control-label col-sm-2">單元名稱</label>'+
+                                    '<div class="col-sm-10">'+
+                                        '<input type="text" class="form-control" id="unitName" placeholder="請輸入單元名稱">'+
+                                    '</div>'+
+                                '</div>'+
+                                '<button id="addtargetlist" class="btn btn-outline-info" onclick="addUnitActivitylist()"><i class="fas fa-plus"></i> 新增活動</button>'+
+                                '<table class="table table-bordered w-auto mt-3" id="unitActivityTable">'+
+                                    '<thead class="thead-light">'+
+                                        '<tr>'+
+                                        '<th scope="col">#</th>'+
+                                        '<th scope="col" class="col-sm-6">活動名稱</th>'+
+                                        '<th scope="col" width="10%"></th>'+
+                                        '</tr>'+
+                                    '</thead>'+
+                                    '<tbody id="unitActivityTbody"></tbody>'+
+                                '</table>');
 
-    if(lessonplanUnitActivityData.length !== 0){
+    // if(lessonplanUnitActivityData.length !== 0){
         
-        var lessonplan_unit_name = lessonplanUnitActivityData[0].lessonplan_unit_name;
-        var lessonplan_unit_activity = lessonplanUnitActivityData[0].lessonplan_unit_activity;
+    //     var lessonplan_unit_name = lessonplanUnitActivityData[0].lessonplan_unit_name;
+    //     var lessonplan_unit_activity = lessonplanUnitActivityData[0].lessonplan_unit_activity;
 
-        $(".lessonplan_unit_body").append('<p class="card-title"><b>單元：</b><p id="lessonplan_unit_name">'+lessonplan_unit_name+'</p></p>'+
-                                        '<p class="card-text"><b>活動：</b><p id="lessonplan_unit_activity">'+lessonplan_unit_activity+'</p></p>'
-                                        );
+    //     $(".lessonplan_unit_body").append('<p class="card-title"><b>單元：</b><p id="lessonplan_unit_name">'+lessonplan_unit_name+'</p></p>'+
+    //                                     '<p class="card-text"><b>活動：</b><p id="lessonplan_unit_activity">'+lessonplan_unit_activity+'</p></p>'
+    //                                     );
 
-        var activityArray = lessonplan_unit_activity.split(',');
-        //append sidebar的li
-        $.each(activityArray,function(i){
-            var activityName = activityArray[i];
-            var id = i+1;
-            $("#activityDesignUl").append('<li><a href="#cardidactivity_'+id+'" class="sidebarlink">'+activityName+'</a></li>');
-            activityandAssessmentDesign_Append(id,activityName,lessonplan_unit_name,lessonplan_version);
-        })
-    }
+    //     var activityArray = lessonplan_unit_activity.split(',');
+    //     //append sidebar的li
+    //     $.each(activityArray,function(i){
+    //         var activityName = activityArray[i];
+    //         var id = i+1;
+    //         $("#activityDesignUl").append('<li><a href="#cardidactivity_'+id+'" class="sidebarlink">'+activityName+'</a></li>');
+    //         activityandAssessmentDesign_Append(id,activityName,lessonplan_unit_name,lessonplan_version);
+    //     })
+    // }
 
-    unit_Map();  
+    buttonDiv('lessonplan_unit');
+
+    // unit_Map();  
 }
 
-function unit_Map(){
-    unitData = sortByKey(unitData,'course_id');
-    $('#unit_sel').append("<option disabled selected>請選擇單元</option>");
+// function unit_Map(){
+//     unitData = sortByKey(unitData,'course_id');
+//     $('#unit_sel').append("<option disabled selected>請選擇單元</option>");
 
-    for(var i=0; i<unitData.length;i++){
-        var course = unitData[i];
-        var course_field = course.course_field;
-        var course_version = course.course_version;
-        var course_grade = course.course_grade;
-        var course_unit_name = course.course_unit_name;
-        var course_semester = course.course_semester;
-        activity_Map(course_field,course_version,course_grade,course_unit_name);
-        if(course_semester=='上學期'){
-            $('#unit_sel').append('<option value="'+course_unit_name+'">'+course_field+' '+course_version+' '+course_grade+' '+course_semester+' '+course_unit_name+'</option>');
-        }
-        else{
-            $('#unit_sel').append('<option value="'+course_unit_name+'">'+course_field+' '+course_version+' '+course_grade+' '+course_semester+' '+course_unit_name+'</option>');
-        }
-    }
+//     for(var i=0; i<unitData.length;i++){
+//         var course = unitData[i];
+//         var course_field = course.course_field;
+//         var course_version = course.course_version;
+//         var course_grade = course.course_grade;
+//         var course_unit_name = course.course_unit_name;
+//         var course_semester = course.course_semester;
+//         activity_Map(course_field,course_version,course_grade,course_unit_name);
+//         if(course_semester=='上學期'){
+//             $('#unit_sel').append('<option value="'+course_unit_name+'">'+course_field+' '+course_version+' '+course_grade+' '+course_semester+' '+course_unit_name+'</option>');
+//         }
+//         else{
+//             $('#unit_sel').append('<option value="'+course_unit_name+'">'+course_field+' '+course_version+' '+course_grade+' '+course_semester+' '+course_unit_name+'</option>');
+//         }
+//     }
 
-}
+// }
 
-//根據領域版本年級的單元名稱形成array
-function activity_Map(course_field,course_version,course_grade,course_unit_name){
-    activityData = sortByKey(activityData,'course_id');
-    var activity_array = [];
+// //根據領域版本年級的單元名稱形成array
+// function activity_Map(course_field,course_version,course_grade,course_unit_name){
+//     activityData = sortByKey(activityData,'course_id');
+//     var activity_array = [];
 
-    for(var i=0;i<activityData.length;i++){
-        var course_activity = activityData[i];
-        var course_id = course_activity.course_id;
-        var course_activity_field = course_activity.course_field;
-        var course_activity_version = course_activity.course_version;
-        var course_activity_grade = course_activity.course_grade;
-        var course_activity_unit = course_activity.course_unit_name;
-        var course_activity_name = course_activity.course_activity_name;
-        if(course_activity_field == course_field && 
-            course_activity_version == course_version && 
-            course_activity_grade == course_grade && 
-            course_activity_unit == course_unit_name){
-            activity_array.push({course_id:course_id,course_activity_name:course_activity_name});
-        }
-    }
+//     for(var i=0;i<activityData.length;i++){
+//         var course_activity = activityData[i];
+//         var course_id = course_activity.course_id;
+//         var course_activity_field = course_activity.course_field;
+//         var course_activity_version = course_activity.course_version;
+//         var course_activity_grade = course_activity.course_grade;
+//         var course_activity_unit = course_activity.course_unit_name;
+//         var course_activity_name = course_activity.course_activity_name;
+//         if(course_activity_field == course_field && 
+//             course_activity_version == course_version && 
+//             course_activity_grade == course_grade && 
+//             course_activity_unit == course_unit_name){
+//             activity_array.push({course_id:course_id,course_activity_name:course_activity_name});
+//         }
+//     }
 
-    $("#unit_sel").change(function(){
-        switch ($(this).val()){
+//     $("#unit_sel").change(function(){
+//         switch ($(this).val()){
       
-            case 0: 
-                $("#activity_sel .mycheckbox").remove();
-            break;
-            case course_unit_name: 
-                $("#activity_sel .mycheckbox").remove();
-                $('#activity_sel').append('<div class="custom-control custom-checkbox mycheckbox">'+
-                                                '<input type="checkbox" class="custom-control-input" id="allchecked" onclick="allchecked()">'+
-                                                '<label class="custom-control-label font-weight-bolder" for="allchecked">全選</label>'+
-                                            '</div>');
-                var array = activity_array;
-                //利用each遍歷array中的值並將每個值新增到div中
-                $.each(array, function(i, val) {
-                    $('#activity_sel').append($('<div class="custom-control custom-checkbox mycheckbox ml-4">'+
-                                                    '<input type="checkbox" class="custom-control-input" id="'+ array[i].course_activity_name +'" name="box" value="'+array[i].course_activity_name+'">'+
-                                                    '<label class="custom-control-label" for="'+ array[i].course_activity_name +'">'+ array[i].course_activity_name +'</label>'+
-                                                '</div>'
-                                                ));
-                });      
-            break;
-        }
-    });
-}
+//             case 0: 
+//                 $("#activity_sel .mycheckbox").remove();
+//             break;
+//             case course_unit_name: 
+//                 $("#activity_sel .mycheckbox").remove();
+//                 $('#activity_sel').append('<div class="custom-control custom-checkbox mycheckbox">'+
+//                                                 '<input type="checkbox" class="custom-control-input" id="allchecked" onclick="allchecked()">'+
+//                                                 '<label class="custom-control-label font-weight-bolder" for="allchecked">全選</label>'+
+//                                             '</div>');
+//                 var array = activity_array;
+//                 //利用each遍歷array中的值並將每個值新增到div中
+//                 $.each(array, function(i, val) {
+//                     $('#activity_sel').append($('<div class="custom-control custom-checkbox mycheckbox ml-4">'+
+//                                                     '<input type="checkbox" class="custom-control-input" id="'+ array[i].course_activity_name +'" name="box" value="'+array[i].course_activity_name+'">'+
+//                                                     '<label class="custom-control-label" for="'+ array[i].course_activity_name +'">'+ array[i].course_activity_name +'</label>'+
+//                                                 '</div>'
+//                                                 ));
+//                 });      
+//             break;
+//         }
+//     });
+// }
 
 function lessonplantarget_Append(){
     $("#lessonplan_target").append('<button id="addtargetlist" class="btn btn-outline-info" onclick="addlessonplantargetlist()"><i class="fas fa-plus"></i> 新增學習目標</button>'+
@@ -341,16 +351,15 @@ function twoselect_Map(){
         if(data.parentDiv == "lessonplan_adl"){
             $('#'+data.parentDiv).append('<div class="alert alert-light" role="alert">資料建置中</div>');
         }
-        else{
-            twoselectDiv(data.labelname,data.firstselid,data.secondselid,data.bodyname,data.parentDiv,data.onclickfunction);
-            buttonDiv(data.parentDiv);
-        }
     })
 }
 
 //核心素養內第二大標:學習重點
 function cirn_Set(){
-    $('#lessonplan_cirn').append('<div class="form-group" id="cirn-form2">'+
+    $('#lessonplan_cirn').append('<div class="form-group" id="cirn_form1">'+
+                                    '<label class="control-label font-weight-bolder">總綱核心素養</label>'+
+                                '</div>'+
+                                '<div class="form-group" id="cirn_form2">'+
                                     '<label class="control-label font-weight-bolder">學習重點</label>'+
                                 '</div>');
 }
@@ -447,6 +456,8 @@ function showLessonplanStageSaveData(){
                                                                 '<td class="lasttd"><button class="btn btn-danger btnDelete"><i class="far fa-trash-alt"></i></button></td>'+
                                                             '</tr>');
                     }
+                    deletetableTr('#lessonplantargetTbody');
+                    sorttableTbody('#lessonplantargetTbody');
 
                     break;
             }
@@ -480,7 +491,7 @@ $(function(){
     collapseControl();
     sidebarClick();
 
-    modalOpen();
+    // modalOpen();
 
     //判斷畫面上是否有物件有更動，但未儲存
     $("input,textarea,select").change(function () {
@@ -536,78 +547,79 @@ function addlessonplantargetlist(){
 }
 
 //自定義單元/活動modal內的活動table列表
-function addCuntomActivitylist(){
-    var listnum = $("#customActivityTbody").find("tr").last().children("th").text();
+function addUnitActivitylist(){
+    var listnum = $("#unitActivityTbody").find("tr").last().children("th").text();
     listnum++;
-    $("#customActivityTbody").append('<tr class="appendTr">'+
-                                            '<th scope="row">'+listnum+'</th>'+
-                                            '<td><input type="text" class="form-control activityList" id="lessonplan_unit_activity_'+listnum+'" placeholder="請輸入活動名稱"></td>'+
-                                            '<td class="lasttd"><button class="btn btn-danger btnDelete"><i class="far fa-trash-alt"></i></button></td>'+
-                                        '</tr>');
-    deletetableTr('#customActivityTbody');
+    $("#unitActivityTbody").append('<tr class="appendTr">'+
+                                        '<th scope="row">'+listnum+'</th>'+
+                                        '<td><input type="text" class="form-control activityList" id="lessonplan_unit_activity_'+listnum+'" placeholder="請輸入活動名稱"></td>'+
+                                        '<td class="lasttd"><button class="btn btn-danger btnDelete"><i class="far fa-trash-alt"></i></button></td>'+
+                                    '</tr>');
+    deletetableTr('#unitActivityTbody');
 }
 
 //判斷此教案是否已經有安排過安排跟活動
-function openUnitandActivityBtn(targetModal){
-    var nowLessonplan_unit = $("#lessonplan_unit_name").text();
+// function openUnitandActivityBtn(targetModal){
+//     var nowLessonplan_unit = $("#lessonplan_unit_name").text();
 
-    //如果還沒安排，直接開啟設定modal
-    if(nowLessonplan_unit == ""){
+//     //如果還沒安排，直接開啟設定modal
+//     if(nowLessonplan_unit == ""){
 
-        switch(targetModal){
-            case 'customUnitandActivityModal':
-                $("#customUnitandActivityModal").modal('toggle')
-                break;
-            case 'versionUnitandActivityModal':
-                $("#versionUnitandActivityModal").modal('toggle')
-                break
-        }  
-    }
-    //如果已經安排，跳出警告語
-    else{
-        $("#alertModal").modal('toggle')
-        $("#alertModal").find('#targetModal').text(targetModal);
-    }
+//         switch(targetModal){
+//             case 'customUnitandActivityModal':
+//                 $("#customUnitandActivityModal").modal('toggle')
+//                 break;
+//             case 'versionUnitandActivityModal':
+//                 $("#versionUnitandActivityModal").modal('toggle')
+//                 break
+//         }  
+//     }
+//     //如果已經安排，跳出警告語
+//     else{
+//         $("#alertModal").modal('toggle')
+//         $("#alertModal").find('#targetModal').text(targetModal);
+//     }
      
-}
+// }
 
 //alertModal確定修改btn
-function openRevisedUnitandActivityBtn(){
-    $("#alertModal").modal('hide');
+// function openRevisedUnitandActivityBtn(){
+//     $("#alertModal").modal('hide');
 
-    var targetModal = $("#targetModal").text();
+//     var targetModal = $("#targetModal").text();
 
-    switch(targetModal){
-        case 'customUnitandActivityModal':
-            $("#customUnitandActivityModal").modal('toggle')
-            break;
-        case 'versionUnitandActivityModal':
-            $("#versionUnitandActivityModal").modal('toggle')
-            break
-    }
-}
+//     switch(targetModal){
+//         case 'customUnitandActivityModal':
+//             $("#customUnitandActivityModal").modal('toggle')
+//             break;
+//         case 'versionUnitandActivityModal':
+//             $("#versionUnitandActivityModal").modal('toggle')
+//             break
+//     }
+// }
 
 //安排單元活動modal打開時要做的動作
-function modalOpen(){
-    var lessonplan_field = $("#lessonplan_field :selected").val();
-    var lessonplan_version = $("#lessonplan_version :selected").val();
-    var lessonplan_grade = $("#lessonplan_grade :selected").val();
+// function modalOpen(){
+//     var lessonplan_field = $("#lessonplan_field :selected").val();
+//     var lessonplan_version = $("#lessonplan_version :selected").val();
+//     var lessonplan_grade = $("#lessonplan_grade :selected").val();
 
-    $('#customUnitandActivityModal').on('show.bs.modal', function (event) {
-        var modal = $(this)
-        modal.find('#customField').text(lessonplan_field);
-        modal.find('#customVersion').text(lessonplan_version);
-        modal.find('#customGrade').text(lessonplan_grade);
-    });
+//     $('#customUnitandActivityModal').on('show.bs.modal', function (event) {
+//         var modal = $(this)
+//         modal.find('#customField').text(lessonplan_field);
+//         modal.find('#customVersion').text(lessonplan_version);
+//         modal.find('#customGrade').text(lessonplan_grade);
+//     });
 
-    $('#versionUnitandActivityModal').on('show.bs.modal', function (event) {
-        var modal = $(this)
-        modal.find('#versionUnitandActivityModalLabel').text(lessonplan_version+"單元/活動");
-    });
+//     $('#versionUnitandActivityModal').on('show.bs.modal', function (event) {
+//         var modal = $(this)
+//         modal.find('#versionUnitandActivityModalLabel').text(lessonplan_version+"單元/活動");
+//     });
 
-}
+// }
 
 //側邊選單的錨點定位
+
 function sidebarClick(){
     $(".sidebarlink").on('click', function(event) {
         //若未減去cardheaderHeight會無法蓋到每階段的標題
@@ -797,31 +809,8 @@ function saveLessonplanData(divId){
                 })
             }
             break;
-        case 'lessonplan_unit'://版本單元/活動
-            var community_id = $("#community_id").text();
+        case 'lessonplan_unit':
             var lessonplan_version = $("#lessonplan_version :selected").val();
-            var lessonplan_unit_name = $("#unit_sel :selected").val();
-            var lessonplan_activity_name = [];
-            $("input[name='box']:checked").each(function(){
-                lessonplan_activity_name.push($(this).val());
-            })           
-            var activityString = lessonplan_activity_name.toString();
-            var data = {
-                stage:divId,
-                lessonplan_version:lessonplan_version,
-                lessonplan_unit_name:lessonplan_unit_name,
-                lessonplan_unit_activity:activityString
-            };
-
-            $("#unit_sel").removeClass("editing");
-            isChange = false;
-            saveAjax(data);
-            window.location = "/lessonplan/edit/"+community_id;
-
-            break;
-        case 'customlessonplan_unit'://自定義單元/活動
-            var community_id = $("#community_id").text();
-            var lessonplan_version = $("#customVersion").text();
             var lessonplan_unit_name = $("#unitName").val();
             var lessonplan_activity_name = [];
             $(".activityList").each(function() {
@@ -830,20 +819,61 @@ function saveLessonplanData(divId){
             });          
             var activityString = lessonplan_activity_name.toString();
             var data = {
-                stage:'lessonplan_unit',
-                lessonplan_version:lessonplan_version,
-                lessonplan_unit_name:lessonplan_unit_name,
-                lessonplan_unit_activity:activityString
-            };
+                        stage:divId,
+                        lessonplan_version:lessonplan_version,
+                        lessonplan_unit_name:lessonplan_unit_name,
+                        lessonplan_activity_name:activityString
+                    };
 
-            $("#customSemester_sel").removeClass("editing");
-            $("#unitName").removeClass("editing");
-            $(".activityList").removeClass("editing");
-
-            isChange = false;
             saveAjax(data);
-            window.location = "/lessonplan/edit/"+community_id;
             break;
+        // case 'lessonplan_unit'://版本單元/活動
+        //     var community_id = $("#community_id").text();
+        //     var lessonplan_version = $("#lessonplan_version :selected").val();
+        //     var lessonplan_unit_name = $("#unit_sel :selected").val();
+        //     var lessonplan_activity_name = [];
+        //     $("input[name='box']:checked").each(function(){
+        //         lessonplan_activity_name.push($(this).val());
+        //     })           
+        //     var activityString = lessonplan_activity_name.toString();
+        //     var data = {
+        //         stage:divId,
+        //         lessonplan_version:lessonplan_version,
+        //         lessonplan_unit_name:lessonplan_unit_name,
+        //         lessonplan_unit_activity:activityString
+        //     };
+
+        //     $("#unit_sel").removeClass("editing");
+        //     isChange = false;
+        //     saveAjax(data);
+        //     window.location = "/lessonplan/edit/"+community_id;
+
+        //     break;
+        // case 'customlessonplan_unit'://自定義單元/活動
+        //     var community_id = $("#community_id").text();
+        //     var lessonplan_version = $("#customVersion").text();
+        //     var lessonplan_unit_name = $("#unitName").val();
+        //     var lessonplan_activity_name = [];
+        //     $(".activityList").each(function() {
+        //         var activity_name = $(this).val();
+        //         lessonplan_activity_name.push(activity_name);
+        //     });          
+        //     var activityString = lessonplan_activity_name.toString();
+        //     var data = {
+        //         stage:'lessonplan_unit',
+        //         lessonplan_version:lessonplan_version,
+        //         lessonplan_unit_name:lessonplan_unit_name,
+        //         lessonplan_unit_activity:activityString
+        //     };
+
+        //     $("#customSemester_sel").removeClass("editing");
+        //     $("#unitName").removeClass("editing");
+        //     $(".activityList").removeClass("editing");
+
+        //     isChange = false;
+        //     saveAjax(data);
+        //     window.location = "/lessonplan/edit/"+community_id;
+        //     break;
         case 'lessonplan_target':
             var tr_length = $("#lessonplantargetTbody tr").length;
             var targetArray = [];
