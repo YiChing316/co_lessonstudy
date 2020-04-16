@@ -183,36 +183,29 @@ module.exports = {
             })
         })
     },
-
-    selectLessonplanUnitandActivityData: function(community_id,lessonplan_version,cb){
-        pool.getConnection(function(err,connection){
-            if (err) throw err;
-
-            connection.query('SELECT * FROM `lessonplan_unit` WHERE `community_id_community`=? AND `lessonplan_version` =?',[community_id,lessonplan_version],function(err,results){
-                cb(results);
-                connection.release();
-            })
-        })
-    },
-
-    selectLessonplanActivityProcess: function(community_id,lessonplan_version,cb){
-        pool.getConnection(function(err,connection){
-            if (err) throw err;
-
-            connection.query('SELECT * FROM `lessonplan_activity_process` WHERE `community_id_community`=? AND `lessonplan_version` =?',[community_id,lessonplan_version],function(err,results){
-                cb(results);
-                connection.release();
+    
+    selectLessonplanActivityProcess: function(community_id,lessonplan_version){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT * FROM `lessonplan_activity_process` WHERE `community_id_community`=? AND `lessonplan_version` =?',[community_id,lessonplan_version],function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
             })
         })
     },
     
-    selectLessonplanStageData: function(community_id,cb){
-        pool.getConnection(function(err,connection){
-            if (err) throw err;
-
-            connection.query('SELECT * FROM `lessonplan_stage` WHERE `community_id_community`=?',[community_id],function(err,results){
-                cb(results);
-                connection.release();
+    selectLessonplanStageData: function(community_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT * FROM `lessonplan_stage` WHERE `community_id_community`=?',[community_id],function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
             })
         })
     }

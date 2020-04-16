@@ -473,7 +473,7 @@ $(function(){
     // activityData = JSON.parse($("#activityData").text());
 
     basicData = JSON.parse($("#basicData").text());
-    lessonplanUnitActivityData = JSON.parse($("#lessonplanUnitActivityData").text());
+    // lessonplanUnitActivityData = JSON.parse($("#lessonplanUnitActivityData").text());
     
     // $("#unitData").remove();
     // $("#activityData").remove();
@@ -824,56 +824,8 @@ function saveLessonplanData(divId){
                         lessonplan_unit_name:lessonplan_unit_name,
                         lessonplan_activity_name:activityString
                     };
-
             saveAjax(data);
             break;
-        // case 'lessonplan_unit'://版本單元/活動
-        //     var community_id = $("#community_id").text();
-        //     var lessonplan_version = $("#lessonplan_version :selected").val();
-        //     var lessonplan_unit_name = $("#unit_sel :selected").val();
-        //     var lessonplan_activity_name = [];
-        //     $("input[name='box']:checked").each(function(){
-        //         lessonplan_activity_name.push($(this).val());
-        //     })           
-        //     var activityString = lessonplan_activity_name.toString();
-        //     var data = {
-        //         stage:divId,
-        //         lessonplan_version:lessonplan_version,
-        //         lessonplan_unit_name:lessonplan_unit_name,
-        //         lessonplan_unit_activity:activityString
-        //     };
-
-        //     $("#unit_sel").removeClass("editing");
-        //     isChange = false;
-        //     saveAjax(data);
-        //     window.location = "/lessonplan/edit/"+community_id;
-
-        //     break;
-        // case 'customlessonplan_unit'://自定義單元/活動
-        //     var community_id = $("#community_id").text();
-        //     var lessonplan_version = $("#customVersion").text();
-        //     var lessonplan_unit_name = $("#unitName").val();
-        //     var lessonplan_activity_name = [];
-        //     $(".activityList").each(function() {
-        //         var activity_name = $(this).val();
-        //         lessonplan_activity_name.push(activity_name);
-        //     });          
-        //     var activityString = lessonplan_activity_name.toString();
-        //     var data = {
-        //         stage:'lessonplan_unit',
-        //         lessonplan_version:lessonplan_version,
-        //         lessonplan_unit_name:lessonplan_unit_name,
-        //         lessonplan_unit_activity:activityString
-        //     };
-
-        //     $("#customSemester_sel").removeClass("editing");
-        //     $("#unitName").removeClass("editing");
-        //     $(".activityList").removeClass("editing");
-
-        //     isChange = false;
-        //     saveAjax(data);
-        //     window.location = "/lessonplan/edit/"+community_id;
-        //     break;
         case 'lessonplan_target':
             var tr_length = $("#lessonplantargetTbody tr").length;
             var targetArray = [];
