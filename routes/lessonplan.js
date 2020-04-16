@@ -176,14 +176,15 @@ router.post('/edit/:community_id/save',function(req,res,next){
                 })
                 break;
             case 'lessonplan_unit':
-                lessonplan.saveUnitandActivity(community_id,lessonplanData,member_id,member_name,function(rows){
-                    console.log(rows);
-                    res.json({msg:'ok'})
+                lessonplan.saveUnitandActivity(community_id,lessonplanData,member_id,member_name)
+                .then(function(data){
+                    return res.send(data)
                 })
                 break;
             case 'activiy_process':
-                lessonplan.saveLessonplanActivityProcess(community_id,lessonplanData,member_id,member_name,function(results){
-                    res.json({msg:'ok'})
+                lessonplan.saveLessonplanActivityProcess(community_id,lessonplanData,member_id,member_name)
+                .then(function(data){
+                    return res.json({msg:'ok'})
                 })
                 break;
             case 'lessonplan_target':
@@ -194,6 +195,26 @@ router.post('/edit/:community_id/save',function(req,res,next){
         }
 
     }
+})
+
+router.post('/edit/delete',function(req,res,next){
+    var member_id = req.session.member_id;
+    
+    if(!member_id){
+        res.redirect('/member/login');
+        res.json({msg:"no"});
+    }
+    else{
+        var lessonplan_activity_process_id = req.body.lessonplan_activity_process_id;
+        
+        lessonplan.deletLessonplanActivityProcess(lessonplan_activity_process_id)
+        .then(function(data){
+            if(data){
+                res.json({msg:"ok"});
+            }
+        })
+    }
+    
 })
 
 module.exports = router;
