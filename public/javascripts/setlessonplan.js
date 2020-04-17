@@ -817,6 +817,7 @@ function deleteActivityData(){
                 var newProcessData = data.selectData;
                 $("#lessonplanActivityProcessData").text(newProcessData);
                 $("#lessonplan_unit").empty();
+                $("#activityDesignUl").empty();
                 $("#setactivity").find('div').remove();
                 lessonplan_unit_Set();
             }
