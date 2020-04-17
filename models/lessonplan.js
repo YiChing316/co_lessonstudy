@@ -195,7 +195,12 @@ module.exports = {
         })
     },
 
-    deletLessonplanActivityProcess(lessonplan_activity_process_id){
+    deletLessonplanActivityProcess: function(lessonplanData){
+
+        var lessonplan_activity_process_id = lessonplanData.lessonplan_activity_process_id;
+        var community_id = lessonplanData.community_id;
+        var lessonplan_version = lessonplanData.lessonplan_version;
+
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
@@ -205,6 +210,9 @@ module.exports = {
                     connection.release();
                 })
             })
+        })
+        .then(function(data){
+            return module.exports.selectLessonplanActivityProcess(community_id,lessonplan_version)
         })
     }
 }

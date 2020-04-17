@@ -231,6 +231,7 @@ function lessonplan_unit_Set(){
     buttonDiv('lessonplan_unit');
 
     if(lessonplanActivityProcessData.length !== 0){
+        lessonplanActivityProcessData = $("#lessonplanActivityProcessData").text();
         lessonplanActivityProcessData = JSON.parse(lessonplanActivityProcessData);
 
         for(var i=0;i<lessonplanActivityProcessData.length;i++){
@@ -595,7 +596,8 @@ function deleteUnittableTr(){
         //若為已儲存的tr跳出警示窗，Model內會影響到資料庫
         if(saveaction == "update"){
             $("#alertModal").modal("show");
-            $("#alertModal").find("#deleteid").text(baseid)
+            $("#alertModal").find("#inputid").text(inputid);
+            $("#alertModal").find("#deleteid").text(baseid);
         }
         //若為新增的則直接刪除不影響資料庫
         else if(saveaction =="new"){
@@ -761,7 +763,7 @@ function saveLessonplanData(divId){
             break;
         case 'lessonplan_unit':
             var community_id = $("#community_id").text();
-            var lessonplan_version = $("#lessonplan_version :selected").val();
+            var lessonplan_version = $("#course_version_info").text();
             var lessonplan_unit_name = $("#unitName").val();
             var lessonplan_activity_name = [];
             $(".activityList").each(function() {
@@ -855,8 +857,14 @@ function saveActivityProcessData(divId){
 
 function deleteActivityData(){
     var community_id = $("#community_id").text();
+    var lessonplan_version = $("#course_version_info").text();
     var lessonplan_activity_process_id = $("#deleteid").text();
-    var data = {lessonplan_activity_process_id:lessonplan_activity_process_id}
+    var inputid = $("#inputid").text();
+    var data = {
+        community_id:community_id,
+        lessonplan_version:lessonplan_version,
+        lessonplan_activity_process_id:lessonplan_activity_process_id
+    }
 
     $.ajax({
         url: "/lessonplan/edit/delete",
@@ -865,8 +873,14 @@ function deleteActivityData(){
         data:data,
         success: function(data){
             if(data.msg == "ok"){
-                alert("已刪除");
-                window.location = "/lessonplan/edit/"+community_id;
+                // alert("已刪除");
+                $("#alertModal").modal('hide');
+                $("#"+inputid).closest('tr').remove();
+                var newProcessData = data.selectData;
+                $("#lessonplanActivityProcessData").text(newProcessData);
+                $("#lessonplan_unit").empty();
+                $("#setactivity").find('div').remove();
+                lessonplan_unit_Set();
             }
             else{
                 window.location = "/member/login";

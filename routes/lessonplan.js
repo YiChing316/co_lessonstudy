@@ -137,6 +137,7 @@ router.get('/edit/:community_id', function(req, res, next) {
                                             community_name:community_name,
                                             course_field:course_field,
                                             course_grade:course_grade,
+                                            course_version:course_version,
                                             ccdimesionData:ccdimesionData,
                                             ccitemData:ccitemData,
                                             ccfieldData:ccfieldData,
@@ -205,12 +206,13 @@ router.post('/edit/delete',function(req,res,next){
         res.json({msg:"no"});
     }
     else{
-        var lessonplan_activity_process_id = req.body.lessonplan_activity_process_id;
+        var lessonplanData= req.body;
         
-        lessonplan.deletLessonplanActivityProcess(lessonplan_activity_process_id)
+        lessonplan.deletLessonplanActivityProcess(lessonplanData)
         .then(function(data){
             if(data){
-                res.json({msg:"ok"});
+                data = JSON.stringify(data)
+                res.json({msg:"ok",selectData:data});
             }
         })
     }
