@@ -698,9 +698,12 @@ function saveAjax(data){
         async:false,
         data:data,
         success: function(data){
-            console.log(data.msg);
-            alert("儲存成功");
-            // window.location = "/lessonplan/edit/"+community_id;
+            if(data.msg == "ok"){
+                alert("儲存成功");
+            }
+            else{
+                window.location = "/member/login";
+            }
         },
         error: function(){
             alert('失敗');
@@ -751,9 +754,14 @@ function saveLessonplanData(divId){
                     data:data,
                     async:false,//ajax請求結束後才會執行window function
                     success: function(data){
-                        console.log(data.msg);
-                        alert("儲存成功");
-                        window.location = "/lessonplan/edit/"+community_id;
+                        if(data.msg == "ok"){
+                            alert("儲存成功");
+                            window.location = "/lessonplan/edit/"+community_id;
+                        }
+                        else{
+                            window.location = "/member/login";
+                        }
+                        
                     },
                     error: function(){
                         alert('失敗');
@@ -792,9 +800,13 @@ function saveLessonplanData(divId){
                 data:data,
                 async:false,//ajax請求結束後才會執行window function
                 success: function(data){
-                    console.log(data.msg);
-                    alert("儲存成功");
-                    window.location = "/lessonplan/edit/"+community_id;
+                    if(data.msg == "ok"){
+                        alert("儲存成功");
+                        window.location = "/lessonplan/edit/"+community_id;
+                    }
+                    else{
+                        window.location = "/member/login";
+                    }
                 },
                 error: function(){
                     alert('失敗');
@@ -806,25 +818,20 @@ function saveLessonplanData(divId){
             var targetArray = [];
 
             var editing = $("#lessonplan_target").find(".editing").get().length;
-            if(editing == 0){
-                alert('此區沒有資料變動喔!!')
+            for(var i=0;i<tr_length;i++){
+                var lessonplantargetcontent = $($("#lessonplantargetTbody tr")[i]).find("input[name='lessonplantargercontent']").val();
+                $($("#lessonplantargetTbody tr")[i]).find("input[name='lessonplantargercontent']").removeClass('editing');
+                targetArray.push(lessonplantargetcontent);
             }
-            else{
-                for(var i=0;i<tr_length;i++){
-                    var lessonplantargetcontent = $($("#lessonplantargetTbody tr")[i]).find("input[name='lessonplantargercontent']").val();
-                    $($("#lessonplantargetTbody tr")[i]).find("input[name='lessonplantargercontent']").removeClass('editing');
-                    targetArray.push(lessonplantargetcontent);
-                }
-                isChange = false;
+            isChange = false;
 
-                var targetString = targetArray.toString();
-                var data= {
-                    stage:divId,
-                    lessonplan_stage_type:divId,
-                    lessonplan_stage_content:targetString
-                }
-                saveAjax(data);
+            var targetString = targetArray.toString();
+            var data= {
+                stage:divId,
+                lessonplan_stage_type:divId,
+                lessonplan_stage_content:targetString
             }
+            saveAjax(data);
             break;
     }
 }

@@ -166,31 +166,42 @@ router.post('/edit/:community_id/save',function(req,res,next){
     var lessonplanData = req.body;
 
     if(!member_id){
-        res.redirect('/member/login');  
+        res.redirect('/member/login');
+        res.json({msg:"no"});
     }
     else{
         switch(stage){
 
             case 'lessonplan':
-                lessonplan.saveLessonplan(community_id,lessonplanData,member_id,member_name,function(results){
-                    res.json({msg:'ok'})
+                lessonplan.saveLessonplan(community_id,lessonplanData,member_id,member_name)
+                .then(function(data){
+                    if(data){
+                        return res.json({msg:'ok'})
+                    }
                 })
                 break;
             case 'lessonplan_unit':
                 lessonplan.saveUnitandActivity(community_id,lessonplanData,member_id,member_name)
                 .then(function(data){
-                    return res.send(data)
+                    if(data){
+                        return res.json({msg:'ok'})
+                    }
                 })
                 break;
             case 'activiy_process':
                 lessonplan.saveLessonplanActivityProcess(community_id,lessonplanData,member_id,member_name)
                 .then(function(data){
-                    return res.json({msg:'ok'})
+                    if(data){
+                        return res.json({msg:'ok'})
+                    }
                 })
                 break;
             case 'lessonplan_target':
-                lessonplan.saveLessonplanStage(community_id,lessonplanData,member_id,member_name,function(results){
-                    res.json({msg:'ok'})
+                lessonplan.saveLessonplanStage(community_id,lessonplanData,member_id,member_name)
+                .then(function(data){
+                    if(data){
+                        return res.json({msg:'ok'})
+                    }
                 })
                 break;
         }

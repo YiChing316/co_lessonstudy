@@ -24,21 +24,49 @@ module.exports = {
         })
     },
 
-    saveLessonplan: function(community_id,lessonplanData,member_id,member_name,cb){
+    saveLessonplan: function(community_id,lessonplanData,member_id,member_name){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                var  sql = {
+                    community_id_community:community_id,
+                    lessonplan_intro:lessonplanData.lessonplan_intro,
+                    lessonplan_field:lessonplanData.lessonplan_field,
+                    lessonplan_version:lessonplanData.lessonplan_version,
+                    lessonplan_grade:lessonplanData.lessonplan_grade,
+                    lessonplan_time:lessonplanData.lessonplan_time,
+                    member_id_member:member_id,
+                    member_name:member_name
+                }
+
+                connection.query('SELECT COUNT(`community_id_community`) AS COUNTNUM FROM `lessonplan` WHERE `community_id_community`=?',[community_id],function(err,countResults,fields){
+                    if(err) return reject(err);
+    
+                    var countNum = countResults[0].COUNTNUM;
+                    
+                    if(countNum == 1){
+                        connection.query('UPDATE `lessonplan` SET ? WHERE `community_id_community`=?',[sql,community_id],function(err,updateResults,fields){
+                            if(err) return reject(err);
+                            resolve(updateResults);
+                            connection.release();
+                        })
+                    }
+                    else{
+                        connection.query('INSERT INTO `lessonplan` SET ?',sql,function(err,insertResults,fields){
+                            if(err) return reject(err);
+                            resolve(insertResults);
+                            connection.release();
+                        })
+                    }
+                })
+            })
+        })
+
         pool.getConnection(function(err,connection){
             if(err) throw err;
 
-            var sql;
-            sql = {
-                community_id_community:community_id,
-                lessonplan_intro:lessonplanData.lessonplan_intro,
-                lessonplan_field:lessonplanData.lessonplan_field,
-                lessonplan_version:lessonplanData.lessonplan_version,
-                lessonplan_grade:lessonplanData.lessonplan_grade,
-                lessonplan_time:lessonplanData.lessonplan_time,
-                member_id_member:member_id,
-                member_name:member_name
-            }
+            
 
             connection.query('SELECT COUNT(`community_id_community`) AS COUNTNUM FROM `lessonplan` WHERE `community_id_community`=?',[community_id],function(err,countResults){
                 if(err) throw err;
@@ -133,38 +161,41 @@ module.exports = {
         })
     },
 
-    saveLessonplanStage: function(community_id,lessonplanData,member_id,member_name,cb){
-        pool.getConnection(function(err,connection){
-            if (err) throw err;
+    saveLessonplanStage: function(community_id,lessonplanData,member_id,member_name){
 
-            var lessonplan_stage_type = lessonplanData.lessonplan_stage_type;
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                var lessonplan_stage_type = lessonplanData.lessonplan_stage_type;
 
-            var sql = {
-                community_id_community:community_id,
-                lessonplan_stage_type:lessonplan_stage_type,
-                lessonplan_stage_content:lessonplanData.lessonplan_stage_content,
-                member_id_member:member_id,
-                member_name:member_name
-            }
-            connection.query('SELECT COUNT(`lessonplan_stage_content`) AS COUNTNUM FROM `lessonplan_stage` WHERE `community_id_community` =?  AND `lessonplan_stage_type` =? ',[community_id,lessonplan_stage_type],function(err,countResults){
-                if(err) throw err;
-
-                var countNum = countResults[0].COUNTNUM;
-                
-                if(countNum == 1){
-                    connection.query('UPDATE `lessonplan_stage` SET ? WHERE `community_id_community` =?  AND `lessonplan_stage_type` =? ',[sql,community_id,lessonplan_stage_type],function(err,updateResults){
-                        if(err) throw err;
-                        cb(updateResults);
-                        connection.release();
-                    })
+                var sql = {
+                    community_id_community:community_id,
+                    lessonplan_stage_type:lessonplan_stage_type,
+                    lessonplan_stage_content:lessonplanData.lessonplan_stage_content,
+                    member_id_member:member_id,
+                    member_name:member_name
                 }
-                else{
-                    connection.query('INSERT INTO `lessonplan_stage` SET ?',sql,function(err,insertResults){
-                        if(err) throw err;
-                        cb(insertResults);
-                        connection.release();
-                    })
-                }
+
+                connection.query('SELECT COUNT(`lessonplan_stage_content`) AS COUNTNUM FROM `lessonplan_stage` WHERE `community_id_community` =?  AND `lessonplan_stage_type` =? ',[community_id,lessonplan_stage_type],function(err,countResults,fields){
+                    if(err) return reject(err);
+    
+                    var countNum = countResults[0].COUNTNUM;
+                    
+                    if(countNum == 1){
+                        connection.query('UPDATE `lessonplan_stage` SET ? WHERE `community_id_community` =?  AND `lessonplan_stage_type` =? ',[sql,community_id,lessonplan_stage_type],function(err,updateResults,fields){
+                            if(err) return reject(err);
+                            resolve(updateResults);
+                            connection.release();
+                        })
+                    }
+                    else{
+                        connection.query('INSERT INTO `lessonplan_stage` SET ?',sql,function(err,insertResults,fields){
+                            if(err) return reject(err);
+                            resolve(insertResults);
+                            connection.release();
+                        })
+                    }
+                })
             })
         })
     },
