@@ -51,6 +51,7 @@ router.get('/edit/:community_id', function(req, res, next) {
                                                 community_name:community_name,
                                                 course_field:'',
                                                 course_grade:'',
+                                                course_version:'',
                                                 ccdimesionData:'""',//JSON.parse error ''所以給予空{}
                                                 ccitemData:'""',
                                                 ccfieldData:'""',

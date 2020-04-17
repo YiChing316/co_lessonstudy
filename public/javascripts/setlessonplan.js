@@ -156,15 +156,6 @@ function lessonplan_Map(){
                         $("#"+data.id+" input[value="+fieldData[i]+"]").prop('checked', true);
                     }
                 }
-                // selectDiv(data.name,data.id,data.parentDiv);
-                // $('#'+data.id).append('<option value="" disabled selected>請選擇課程領域</option>'+
-                //                         '<option value="國語">國語</option>'+
-                //                         '<option value="英語">英語</option>'+
-                //                         '<option value="自然">自然</option>'+
-                //                         '<option value="數學">數學</option>');
-                // if(lessonplan_field !== ""){
-                //    $("#"+data.id+" option[value="+lessonplan_field+"]").attr("selected","selected"); 
-                // }
             }
             else if(data.id == 'lessonplan_version'){
                 selectDiv(data.name,data.id,data.parentDiv);
@@ -363,6 +354,7 @@ function activityandAssessmentDesign_Append(id,baseid,activity_name){
                             '</div>'+
                         '</div>';
     $("#setactivity").append(activityDiv);
+    $("#activityDesignUl").append('<li><a href="#cardidactivity_'+id+'" class="sidebarlink">'+activity_name+'</a></li>');
 }
 
 //呈現儲存於lessonplan_stage資料庫中資料
@@ -419,8 +411,6 @@ $(function(){
 
     collapseControl();
     sidebarClick();
-
-    // modalOpen();
 
     //判斷畫面上是否有物件有更動，但未儲存
     $("input,textarea,select").change(function () {
@@ -487,68 +477,7 @@ function addUnitActivitylist(){
     deleteUnittableTr();
 }
 
-//判斷此教案是否已經有安排過安排跟活動
-// function openUnitandActivityBtn(targetModal){
-//     var nowLessonplan_unit = $("#lessonplan_unit_name").text();
-
-//     //如果還沒安排，直接開啟設定modal
-//     if(nowLessonplan_unit == ""){
-
-//         switch(targetModal){
-//             case 'customUnitandActivityModal':
-//                 $("#customUnitandActivityModal").modal('toggle')
-//                 break;
-//             case 'versionUnitandActivityModal':
-//                 $("#versionUnitandActivityModal").modal('toggle')
-//                 break
-//         }  
-//     }
-//     //如果已經安排，跳出警告語
-//     else{
-//         $("#alertModal").modal('toggle')
-//         $("#alertModal").find('#targetModal').text(targetModal);
-//     }
-     
-// }
-
-//alertModal確定修改btn
-// function openRevisedUnitandActivityBtn(){
-//     $("#alertModal").modal('hide');
-
-//     var targetModal = $("#targetModal").text();
-
-//     switch(targetModal){
-//         case 'customUnitandActivityModal':
-//             $("#customUnitandActivityModal").modal('toggle')
-//             break;
-//         case 'versionUnitandActivityModal':
-//             $("#versionUnitandActivityModal").modal('toggle')
-//             break
-//     }
-// }
-
-//安排單元活動modal打開時要做的動作
-// function modalOpen(){
-//     var lessonplan_field = $("#lessonplan_field :selected").val();
-//     var lessonplan_version = $("#lessonplan_version :selected").val();
-//     var lessonplan_grade = $("#lessonplan_grade :selected").val();
-
-//     $('#customUnitandActivityModal').on('show.bs.modal', function (event) {
-//         var modal = $(this)
-//         modal.find('#customField').text(lessonplan_field);
-//         modal.find('#customVersion').text(lessonplan_version);
-//         modal.find('#customGrade').text(lessonplan_grade);
-//     });
-
-//     $('#versionUnitandActivityModal').on('show.bs.modal', function (event) {
-//         var modal = $(this)
-//         modal.find('#versionUnitandActivityModalLabel').text(lessonplan_version+"單元/活動");
-//     });
-
-// }
-
 //側邊選單的錨點定位
-
 function sidebarClick(){
     $(".sidebarlink").on('click', function(event) {
         //若未減去cardheaderHeight會無法蓋到每階段的標題
@@ -710,6 +639,8 @@ function saveAjax(data){
         }
     })
 }
+
+/*******儲存******************************************** */
 
 function saveLessonplanData(divId){
     
