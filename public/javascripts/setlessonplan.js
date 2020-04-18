@@ -105,7 +105,7 @@ function threeselecDiv(labelname,firstselid,secondselid,threeselid,bodyname,pare
                                     '</div>'+
                                 '</div>'+
                                 '<hr>'+
-                                '<div id="'+bodyname+'"></div>'+
+                                '<div class="cirn" id="'+bodyname+'"></div>'+
                             '</div>');
 }
 
@@ -293,11 +293,14 @@ function cirn_Set(){
 
 function threeselect_Map(){
         //三層select中有學習表現,學習內容須包含在核心素養內的學習重點，故將cirn_Set()放於此;議題融入為其餘大標
+        //總綱核心素養，增加領域選擇
         cirn_Set();
         threeselect_Component.map(function(data){
             threeselecDiv(data.labelname,data.firstselid,data.secondselid,data.threeselid,data.bodyname,data.parentDiv,data.onclickfunction);
-            buttonDiv(data.parentDiv);
         })
+        buttonDiv('cirn_form1');
+        buttonDiv('cirn_form2');
+        buttonDiv('lessonplan_issue');
 }
 
 //階段鎖定，須先完成教案基本資料填寫才開放安排單元、核心素養、議題融入
@@ -385,6 +388,40 @@ function showLessonplanStageSaveData(){
                     deletetableTr('#lessonplantargetTbody');
                     sorttableTbody('#lessonplantargetTbody');
 
+                    break;
+                case 'core_competency':
+                    var core_content = JSON.parse(lessonplan_stage_content);
+                    
+                    for(var z=0;z<core_content.length;z++){
+                        var item_text = core_content[z].item_text;
+                        var dimesion_description = core_content[z].dimesion_description;
+                        var field_title = core_content[z].field_title;
+                        var field_content = core_content[z].field_content;
+                        coreCardDiv(item_text,dimesion_description,field_title,field_content);
+                    }
+                    break;
+                case 'learning_focus':
+                    var learningFocus_content = JSON.parse(lessonplan_stage_content);
+
+                    for(var y=0;y<learningFocus_content.length;y++){
+                        var data = learningFocus_content[y];
+                        var stage = data.stage;
+                        var content = data.content;
+
+                        for(var t=0;t<content.length;t++){
+                            var focussavetitle = content[t].title;
+                            var focussavecontent = content[t].content;
+                            addselectbodyDiv(stage,focussavetitle,focussavecontent);
+                        }
+                    }
+                    break;
+                case 'learning_issue':
+                    var issue_content = JSON.parse(lessonplan_stage_content);
+                    for(var x=0;x<issue_content.length;x++){
+                        var issuesavetitle = issue_content[x].title;
+                        var issuesavecontent = issue_content[x].content;
+                        addselectbodyDiv('issue_body',issuesavetitle,issuesavecontent);
+                    }
                     break;
             }
         }
@@ -512,6 +549,7 @@ function deletetableTr(tbody){
         $(tbody+" tr").each(function(index) {
             $(this).find('th:eq(0)').first().html(index + 1);
         });
+        isChange = true;
     });
 }
 
@@ -678,6 +716,7 @@ function saveLessonplanData(divId){
                 for(var i=0;i<editing;i++){
                     $($("#lessonplan").find(".editing")[i]).removeClass("editing");
                 }
+                $("#lessonplan").find(".custom-control-input").removeClass("editing");
                 isChange = false;
                 $.ajax({
                     url: "/lessonplan/edit/"+community_id+"/save",
@@ -758,10 +797,92 @@ function saveLessonplanData(divId){
 
             var targetString = targetArray.toString();
             var data= {
-                stage:divId,
+                stage:'lessonplan_stage',
                 lessonplan_stage_type:divId,
                 lessonplan_stage_content:targetString
             }
+            saveAjax(data);
+            break;
+        case 'cirn_form1':
+            var coreArray = [];
+            var $card = $("#core_competency_body").find('.card');
+            var card_length = $card.length;
+            var editing = $("#cirn_form1").find(".editing").get().length;
+            for(var i=0;i<editing;i++){
+                $($("#cirn_form1").find(".editing")[i]).removeClass("editing");
+            }
+            isChange = false;
+            
+            for(var i=0;i<card_length;i++){
+                var item_text = $($card[i]).find(".itemtext").text();
+                var dimesion_description = $($card[i]).find(".dimesion_description").text();
+                var field_title = $($card[i]).find(".field_title").text();
+                var field_content = $($card[i]).find(".field_content").text();
+                coreArray.push({item_text:item_text,dimesion_description:dimesion_description,field_title:field_title,field_content:field_content})
+            }
+
+            var coreString = JSON.stringify(coreArray)
+
+            var data = {
+                stage:'lessonplan_stage',
+                lessonplan_stage_type:'core_competency',
+                lessonplan_stage_content:coreString
+            }
+
+            saveAjax(data);
+            break;
+        case 'cirn_form2':
+            var learningFocusItem = ["performancefocus_body","contentfocus_body"];
+            var form2Array = [];
+            learningFocusItem.map(function(data){
+                var learnignFocusArray = [];
+                var $card = $("#"+data).find('.card');
+                var card_length = $card.length;
+
+                for(var i=0;i<card_length;i++){
+                    var title = $($card[i]).find(".card-title").text();
+                    var content = $($card[i]).find(".card-text").text();
+                    learnignFocusArray.push({title:title,content:content});
+                }
+                // var learningFocusString = JSON.stringify(learnignFocusArray)
+                form2Array.push({stage:data,content:learnignFocusArray})
+            })
+
+            var editing = $("#cirn_form2").find(".editing").get().length;
+            for(var i=0;i<editing;i++){
+                $($("#cirn_form2").find(".editing")[i]).removeClass("editing");
+            }
+            isChange = false;
+
+            var form2String = JSON.stringify(form2Array);
+
+            var data = {
+                stage:'lessonplan_stage',
+                lessonplan_stage_type:'learning_focus',
+                lessonplan_stage_content:form2String
+            }
+
+            saveAjax(data);
+            break;
+        case 'lessonplan_issue':
+            var issueArray = [];
+            var $card = $("#issue_body").find('.card');
+            var card_length = $card.length;
+            
+            for(var i=0;i<card_length;i++){
+                var title = $($card[i]).find(".card-title").text();
+                var content = $($card[i]).find(".card-text").text();
+                issueArray.push({title:title,content:content});
+            }
+
+            var issueString = JSON.stringify(issueArray);
+
+            var data = {
+                stage:'lessonplan_stage',
+                lessonplan_stage_type:'learning_issue',
+                lessonplan_stage_content:issueString
+            }
+
             saveAjax(data);
             break;
     }
@@ -803,6 +924,7 @@ function deleteActivityData(){
         lessonplan_version:lessonplan_version,
         lessonplan_activity_process_id:lessonplan_activity_process_id
     }
+    isChange = true;
 
     $.ajax({
         url: "/lessonplan/edit/delete",

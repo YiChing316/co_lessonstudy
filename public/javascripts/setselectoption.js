@@ -258,17 +258,8 @@ function addcore_competency(){
                     var field_content = ccfieldData[i].fieldcontent_content;
 
                     if(field_name == dimesion_field){
-                        $("#core_competency_body").append('<div class="card">'+
-                                                        '<div class="card-header">'+
-                                                            '<b class="card-title">'+itemtext+'</b>'+
-                                                            '<p class="card-text">'+dimesion_description+'</p>'+                        
-                                                        '</div>'+
-                                                        '<div class="card-body">'+
-                                                            '<b class="card-title">'+field_name+'-'+field_stage+'-'+itemval+'</b>'+
-                                                            '<p class="card-text">'+field_content+'</p>'+
-                                                            '<input type="button" class="btn btn-danger float-right deleteItem" value="刪除" >'+
-                                                        '</div>'+
-                                                    '</div>');
+                        var field_title = field_name+'-'+field_stage+'-'+itemval;
+                        coreCardDiv(itemtext,dimesion_description,field_title,field_content);
                     }
                     
                 }
@@ -278,7 +269,6 @@ function addcore_competency(){
     });
 
     deleteItem();
-
 }
 
 //新增學習表現card
@@ -298,7 +288,6 @@ function addlearning_performence(){
             addselectbodyDiv('performancefocus_body',string,content);
         }
     })
-
 }
 
 function addlearning_content(){
@@ -347,13 +336,13 @@ function addselectbodyDiv(parentDiv,title,content){
 }
 
 
-
 /************************************************************************** */
 
 //刪除內容
 function deleteItem(){
     $(".deleteItem").click(function(){
         $(this).closest(".card").remove();
+        isChange = true;
     })
 }
 
@@ -374,6 +363,19 @@ function selectDefault(){
     $("#issue_content").append("<option disabled selected>請選擇議題內容</option>");
 }
 
+function coreCardDiv(itemtext,dimesion_description,field_title,field_content){
+    $("#core_competency_body").append('<div class="card">'+
+                                            '<div class="card-header">'+
+                                                '<b class="card-title itemtext">'+itemtext+'</b>'+
+                                                '<p class="card-text dimesion_description">'+dimesion_description+'</p>'+                        
+                                            '</div>'+
+                                            '<div class="card-body">'+
+                                                '<b class="card-title field_title">'+field_title+'</b>'+
+                                                '<p class="card-text field_content">'+field_content+'</p>'+
+                                                '<input type="button" class="btn btn-danger float-right deleteItem" value="刪除" >'+
+                                            '</div>'+
+                                        '</div>');
+}
 
 
 $(function(){

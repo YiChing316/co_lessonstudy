@@ -197,7 +197,7 @@ router.post('/edit/:community_id/save',function(req,res,next){
                     }
                 })
                 break;
-            case 'lessonplan_target':
+            case 'lessonplan_stage':
                 lessonplan.saveLessonplanStage(community_id,lessonplanData,member_id,member_name)
                 .then(function(data){
                     if(data){
