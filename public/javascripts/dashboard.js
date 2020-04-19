@@ -19,12 +19,12 @@ function createCommunity(){
                 community_key:community_key
             },
             success: function(data){
-                if(data.msg == 'no'){
-                    alert('新增失敗');
-                }
-                else{
+                if(data.msg == 'yes'){
                     alert('新增成功');
                     window.location.reload();
+                }
+                else{
+                    window.location = "/member/login";
                 } 
             },
             error: function(){
@@ -167,17 +167,18 @@ function joinCommunity(id){
             community_key: community_key
         },
         success: function(data){
-            if(data.msg == 'no'){
-                $("#errmsgAll").show();
-                $("#errmsgAll").html('密碼錯誤');
+            if(data.msg == 'errorKey'){
+                alert('密碼錯誤');
             }
             else if(data.msg == 'existed'){
-                $("#errmsgAll").show();
-                $("#errmsgAll").html('您已加入此社群');
+                alert('您已加入此社群');
             }
-            else{
+            else if(data.msg == 'yes'){
                 alert('加入成功');
                 window.location.href = '/lessonplan/edit/'+data.community_id;
+            }
+            else{
+                window.location = "/member/login";
             }     
         },
         error: function(){
