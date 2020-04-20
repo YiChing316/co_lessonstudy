@@ -1,9 +1,23 @@
 var pool = require('./connectMysql');
+var fs = require('fs');
 
 module.exports = {
-    create: function(community_name,community_key,member_id,member_name,cb){
-        pool.getConnection(function(err,connection){
-            if(err) throw err;
+    createNewFolder: function(path){
+        return new Promise(function(resolve,reject){
+            if( !fs.existsSync(path)){
+                fs.mkdirSync(path, { recursive: true }, function(err){ 
+                    if (err) throw err;
+                })
+                resolve(path)
+            }
+        })
+    },
+    
+    create: function(community_name,community_key,member_id,member_name){
+        var community_id,communityPath;
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
 
             var sql = {
                 community_name: community_name,
@@ -18,11 +32,35 @@ module.exports = {
                 connection.release();
             })
         })
+        .then(function(insertRows){
+            //得到剛新增的社群id
+            community_id = insertRows.insertId;
+            //創立社群資料夾
+            var path = './public/communityfolder/community_'+community_id;
+            return module.exports.createNewFolder(path)
+        })
+        .then(function(result){
+            communityPath = result;
+            //創立放summernote檔案資料夾在社群資料夾內
+            var summernotePath = communityPath+'/summernotefile';
+            return module.exports.createNewFolder(summernotePath)
+        })
+        .then(function(result){
+             //創立放社群公用檔案資料夾在社群資料夾內
+            var filePath = communityPath+'/communityfile';
+            return module.exports.createNewFolder(filePath)
+        })
+        .then(function(result){
+            //將創建人新增進社群成員資料表內
+            return module.exports.addCommunityMember(community_id,member_id,member_name,"founder")
+        })
     },
 
-    addCommunityMember: function(community_id,member_id,member_name,community_member_identity,cb){
-        pool.getConnection(function(err,connection){
-            if(err) throw err;
+    addCommunityMember: function(community_id,member_id,member_name,community_member_identity){
+        var insertResults;
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
 
             var sql = {
                 community_id_community: community_id,
@@ -36,6 +74,15 @@ module.exports = {
                 cb(results);
                 connection.release();
             })
+        })
+        .then(function(data){
+            insertResults = data;
+            //新增會員的資料夾
+            var path = './public/communityfolder/community_'+community_id+'/member_'+member_id;
+            return module.exports.createNewFolder(path)
+        })
+        .then(function(result){
+            return insertResults
         })
     },
 

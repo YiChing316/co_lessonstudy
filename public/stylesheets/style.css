@@ -138,6 +138,10 @@ body{font-family: '微軟正黑體';}
   min-height: 50vh;
 }
 
+#setactivity .row{
+  min-height: 450px;
+}
+
 .assessment_link{
   color: #065B80;
   text-decoration: underline;
