@@ -11,162 +11,150 @@ router.get('/edit/:community_id', function(req, res, next) {
 
     var community_id = req.params.community_id;
 
-    var unitData,activityData;
+    var community_name;
+
+    var basicData;
+    var course_field,course_version,course_grade;
     var ccdimesionData,ccitemData,ccfieldData;
     var lfitemData,lfchilditemData,lfcontentData;
     var issuenameData,issuethemeData,issuecontentData;
+    var lessonplanActivityProcessData,lessonplanStageData;
 
-    community.selectCommunityName(community_id,function(nameResults){
+    if(!member_id){
+        res.redirect('/member/login');
+    }
+    else{
+        community.selectCommunityName(community_id)//get communityname end
+        .then(function(communitydata){
+            community_name = communitydata[0].community_name;
 
-        var community_name = nameResults[0].community_name;
-           
-        community.checkCommunityMember(community_id,member_id,function(results){
-
-            if(results.isExisted){
+            //檢查是否是在此社群
+            return community.checkCommunityMember(community_id,member_id)
+        })
+        .then(function(data){
+            if(data.isExisted == true){
                 //檢查是否已有儲存過年級版本
-                lessonplan.checklessonplandata(community_id,function(selResults){
-                    //沒有儲存資料
-                    if(selResults.isExisted == false){
-                        clsresource.getcourseunit(function(unitResults){
-    
-                            unitData = JSON.stringify(unitResults);
-    
-                            clsresource.getcourseactivity(function(actResults){
-                                activityData = JSON.stringify(actResults);
-    
-                                res.render('lessonplanEdit', { title: '教案製作',
-                                                                member_id:member_id,
-                                                                member_name:member_name,
-                                                                community_id:community_id,
-                                                                community_name:community_name,
-                                                                unitData:unitData,
-                                                                activityData:activityData,
-                                                                course_field:'',
-                                                                course_grade:'',
-                                                                ccdimesionData:'""',//JSON.parse error ''所以給予空{}
-                                                                ccitemData:'""',
-                                                                ccfieldData:'""',
-                                                                lfitemData:'""',
-                                                                lfchilditemData:'""',
-                                                                lfcontentData:'""',
-                                                                issuenameData:'""',
-                                                                issuethemeData:'""',
-                                                                issuecontentData:'""',
-                                                                basicData:'""',
-                                                                lessonplanUnitActivityData:'""',
-                                                                lessonplanActivityProcessData:'""',
-                                                                lessonplanStageData:'""'
-                                                            });   
-                            });
-                        });
-                    }
-                    //已經有儲存
-                    else{
-                        var basicData = selResults[0];
-                        var course_field = basicData.lessonplan_field;
-                        var course_version = basicData.lessonplan_version;
-                        var course_grade = basicData.lessonplan_grade;
-    
-                        basicData = JSON.stringify(basicData);
-    
-                        clsresource.getcourseunitwhere(course_field,course_version,course_grade,function(unitResults){
-                            unitData = JSON.stringify(unitResults);
-    
-                            clsresource.getcourseactivitywhere(course_field,course_version,course_grade,function(actResults){
-                                activityData = JSON.stringify(actResults);
-                                
-                                //根據已設定好的年級、領域抓取核心素養內容
-                                clsresource.getcore_competency_dimesion(function(dimesionResults){
-                                    ccdimesionData = JSON.stringify(dimesionResults);
-    
-                                    clsresource.getcore_competency_item(function(itemResults){
-                                        ccitemData = JSON.stringify(itemResults);
-    
-                                        clsresource.getcore_competency_fieldcontent(course_field,course_grade,function(fieldResults){
-                                            ccfieldData = JSON.stringify(fieldResults);
-    
-                                            clsresource.getlearning_focus_item(course_field,course_grade,function(lfitemResults){
-                                                lfitemData = JSON.stringify(lfitemResults);
-    
-                                                clsresource.getlearning_focus_childitem(course_field,course_grade,function(childitemResults){
-                                                    lfchilditemData = JSON.stringify(childitemResults);
-    
-                                                    clsresource.getlearning_focus_content(course_field,course_grade,function(lfcontentResults){
-                                                        lfcontentData = JSON.stringify(lfcontentResults);
-    
-                                                        clsresource.getissue_name(function(nameResults){
-                                                            issuenameData = JSON.stringify(nameResults);
-    
-                                                            clsresource.getissue_theme(function(themeResults){
-                                                                issuethemeData = JSON.stringify(themeResults);
-    
-                                                                clsresource.getissue_content(course_grade,function(issuecontentResults){
-                                                                    issuecontentData = JSON.stringify(issuecontentResults);
-    
-                                                                    lessonplan.selectLessonplanUnitandActivityData(community_id,course_version,function(unitActivityResults){
-    
-                                                                        var lessonplanUnitActivityData;
-                                                                        lessonplanUnitActivityData = JSON.stringify(unitActivityResults);
-    
-                                                                        lessonplan.selectLessonplanActivityProcess(community_id,course_version,function(processResults){
-    
-                                                                            var lessonplanActivityProcessData;
-                                                                            lessonplanActivityProcessData = JSON.stringify(processResults);
-
-                                                                            lessonplan.selectLessonplanStageData(community_id,function(stageResults){
-                                                                                var lessonplanStageData;
-                                                                                lessonplanStageData = JSON.stringify(stageResults);
-
-                                                                                res.render('lessonplanEdit', { title: '教案製作',
-                                                                                                    member_id:member_id,
-                                                                                                    member_name:member_name,
-                                                                                                    community_id:community_id,
-                                                                                                    community_name:community_name,
-                                                                                                    unitData:unitData,
-                                                                                                    activityData:activityData,
-                                                                                                    course_field:course_field,
-                                                                                                    course_grade:course_grade,
-                                                                                                    ccdimesionData:ccdimesionData,
-                                                                                                    ccitemData:ccitemData,
-                                                                                                    ccfieldData:ccfieldData,
-                                                                                                    lfitemData:lfitemData,
-                                                                                                    lfchilditemData:lfchilditemData,
-                                                                                                    lfcontentData:lfcontentData,
-                                                                                                    issuenameData:issuenameData,
-                                                                                                    issuethemeData:issuethemeData,
-                                                                                                    issuecontentData:issuecontentData,
-                                                                                                    basicData:basicData,//教案基本資料
-                                                                                                    lessonplanUnitActivityData:lessonplanUnitActivityData,
-                                                                                                    lessonplanActivityProcessData:lessonplanActivityProcessData,
-                                                                                                    lessonplanStageData:lessonplanStageData
-                                                                                                });
-                                                                            })//getlessonplanStage end
-                                                                        })//getlessonplanActivityProcess end
-                                                                    })//getlessonplanUnitandActivity end
-                                                                })//getissue_content end
-                                                            })//getissue_theme end
-                                                        })//getissue_name end
-                                                    })//getlearning_focus_content end
-                                                })//getlearning_focus_childitem end
-                                            })//getlearning_focus_item end
-                                        })//getcore_competency_fieldcontent end
-                                    })//getcore_competency_item end
-                                })//getcore_competency_dimesion end
-                            })//getcourseactivitywhere end
-                        })//getcourseunitwhere end
-                    }
-                })
+                return lessonplan.checklessonplandata(community_id)
             }
-            //如果community_id為會員無加入的社群則會被退回dashboard頁面
             else{
+                //如果community_id為使用者無加入的社群則會被退回dashboard頁面
                 res.redirect('/dashboard');
             }
         })
+        .then(function(checkdata){
+            //沒有儲存過基本資料資料
+            if(checkdata.isExisted == false){
+                res.render('lessonplanEdit', { title: '教案製作',
+                                                member_id:member_id,
+                                                member_name:member_name,
+                                                community_id:community_id,
+                                                community_name:community_name,
+                                                course_field:'',
+                                                course_grade:'',
+                                                course_version:'',
+                                                ccdimesionData:'""',//JSON.parse error ''所以給予空{}
+                                                ccitemData:'""',
+                                                ccfieldData:'""',
+                                                lfitemData:'""',
+                                                lfchilditemData:'""',
+                                                lfcontentData:'""',
+                                                issuenameData:'""',
+                                                issuethemeData:'""',
+                                                issuecontentData:'""',
+                                                basicData:'""',
+                                                lessonplanActivityProcessData:'""',
+                                                lessonplanStageData:'""'
+                                            });
+            }
+            else{
+                basicData = checkdata[0];
+                course_field = basicData.lessonplan_field;
+                course_version = basicData.lessonplan_version;
+                course_grade = basicData.lessonplan_grade;
 
-    })
+                basicData = JSON.stringify(basicData);
 
-    
-   
+                //根據已設定好的年級、領域抓取核心素養內容
+                return clsresource.getcore_competency_dimesion();
+            }
+        })
+        .then(function(ccdimesiondata){
+            ccdimesionData = JSON.stringify(ccdimesiondata);
+
+            return clsresource.getcore_competency_item()
+        })
+        .then(function(ccitemdata){
+            ccitemData = JSON.stringify(ccitemdata);
+
+            return clsresource.getcore_competency_fieldcontent(course_field,course_grade)
+        })
+        .then(function(ccfielddata){
+            ccfieldData = JSON.stringify(ccfielddata);
+
+            return clsresource.getlearning_focus_item(course_field,course_grade)
+        })
+        .then(function(lfitemdata){
+            lfitemData = JSON.stringify(lfitemdata);
+
+            return clsresource.getlearning_focus_childitem(course_field,course_grade)
+        })
+        .then(function(lfchilddata){
+            lfchilditemData = JSON.stringify(lfchilddata);
+
+            return clsresource.getlearning_focus_content(course_field,course_grade)
+        })
+        .then(function(lfcontentdata){
+            lfcontentData = JSON.stringify(lfcontentdata);
+
+            return clsresource.getissue_name()
+        })
+        .then(function(issuenamedata){
+            issuenameData = JSON.stringify(issuenamedata);
+
+            return clsresource.getissue_theme()
+        })
+        .then(function(issuethemedata){
+            issuethemeData = JSON.stringify(issuethemedata);
+
+            return clsresource.getissue_content(course_grade)
+        })
+        .then(function(issuecontentdata){
+            issuecontentData = JSON.stringify(issuecontentdata);
+
+            return lessonplan.selectLessonplanActivityProcess(community_id,course_version)
+        })
+        .then(function(processdata){
+            lessonplanActivityProcessData = JSON.stringify(processdata);
+
+            return lessonplan.selectLessonplanStageData(community_id)
+        })
+        .then(function(stagedata){
+            lessonplanStageData = JSON.stringify(stagedata);
+
+            res.render('lessonplanEdit', { title: '教案製作',
+                                            member_id:member_id,
+                                            member_name:member_name,
+                                            community_id:community_id,
+                                            community_name:community_name,
+                                            course_field:course_field,
+                                            course_grade:course_grade,
+                                            course_version:course_version,
+                                            ccdimesionData:ccdimesionData,
+                                            ccitemData:ccitemData,
+                                            ccfieldData:ccfieldData,
+                                            lfitemData:lfitemData,
+                                            lfchilditemData:lfchilditemData,
+                                            lfcontentData:lfcontentData,
+                                            issuenameData:issuenameData,
+                                            issuethemeData:issuethemeData,
+                                            issuecontentData:issuecontentData,
+                                            basicData:basicData,//教案基本資料
+                                            lessonplanActivityProcessData:lessonplanActivityProcessData,
+                                            lessonplanStageData:lessonplanStageData
+                                        });
+        })
+        .catch(function (err) {console.log(err);});
+    }
 });
 
 router.post('/edit/:community_id/save',function(req,res,next){
@@ -178,27 +166,69 @@ router.post('/edit/:community_id/save',function(req,res,next){
     var stage = req.body.stage;
     var lessonplanData = req.body;
 
-    switch(stage){
-
-        case 'lessonplan':
-        case 'lessonplan_unit':
-            lessonplan.saveLessonplanandUnitActivity(community_id,lessonplanData,member_id,member_name,function(results){
-                res.json({msg:'ok'})
-            })
-            break;
-        case 'activiy_process':
-            lessonplan.saveLessonplanActivityProcess(community_id,lessonplanData,member_id,member_name,function(results){
-                res.json({msg:'ok'})
-            })
-            break;
-        case 'lessonplan_target':
-            lessonplan.saveLessonplanStage(community_id,lessonplanData,member_id,member_name,function(results){
-                res.json({msg:'ok'})
-            })
-            break;
+    if(!member_id){
+        res.redirect('/member/login');
+        res.json({msg:"no"});
     }
+    else{
+        switch(stage){
 
+            case 'lessonplan':
+                lessonplan.saveLessonplan(community_id,lessonplanData,member_id,member_name)
+                .then(function(data){
+                    if(data){
+                        return res.json({msg:'ok'})
+                    }
+                })
+                break;
+            case 'lessonplan_unit':
+                lessonplan.saveUnitandActivity(community_id,lessonplanData,member_id,member_name)
+                .then(function(data){
+                    if(data){
+                        return res.json({msg:'ok'})
+                    }
+                })
+                break;
+            case 'activiy_process':
+                lessonplan.saveLessonplanActivityProcess(community_id,lessonplanData,member_id,member_name)
+                .then(function(data){
+                    if(data){
+                        return res.json({msg:'ok'})
+                    }
+                })
+                break;
+            case 'lessonplan_stage':
+                lessonplan.saveLessonplanStage(community_id,lessonplanData,member_id,member_name)
+                .then(function(data){
+                    if(data){
+                        return res.json({msg:'ok'})
+                    }
+                })
+                break;
+        }
 
+    }
+})
+
+router.post('/edit/delete',function(req,res,next){
+    var member_id = req.session.member_id;
+    
+    if(!member_id){
+        res.redirect('/member/login');
+        res.json({msg:"no"});
+    }
+    else{
+        var lessonplanData= req.body;
+        
+        lessonplan.deletLessonplanActivityProcess(lessonplanData)
+        .then(function(data){
+            if(data){
+                data = JSON.stringify(data)
+                res.json({msg:"ok",selectData:data});
+            }
+        })
+    }
+    
 })
 
 module.exports = router;

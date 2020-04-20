@@ -134,8 +134,8 @@ body{font-family: '微軟正黑體';}
 }
 
 /*活動與評量設計內card-body預設高度*/
-#setactivity .card-body{
-  min-height: 50vh;
+#setactivity{
+  min-height: 20vh;
 }
 
 #setactivity .row{

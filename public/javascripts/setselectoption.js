@@ -4,6 +4,15 @@ var issuenameData,issuethemeData,issuecontentData;
 
 /**append select option***************************************************************************************** */
 
+function dimesion_field(){
+    var course_field_info = $("#course_field_info").text();
+    var fieldArray = course_field_info.split(',');
+    $("#fieldcontent_field_sel").append("<option disabled selected>請選擇領域</option>");
+    $.each(fieldArray,function(i){
+        $("#fieldcontent_field_sel").append("<option value='"+fieldArray[i]+"'>"+fieldArray[i]+"</option>");
+    })
+}
+
 //總綱核心素養1
 function dimesion_Map(){
     for(var i=0; i<ccdimesionData.length;i++){
@@ -211,6 +220,23 @@ function issuecontent_Map(issuename,issuetheme){
 
 //新增核心素養card
 function addcore_competency(){
+    var dimesion_field = $("#fieldcontent_field_sel :selected").val();
+
+    switch(dimesion_field){
+        case "自然":
+            dimesion_field = "自";
+            break;
+        case "國語":
+            dimesion_field = "國";
+            break;
+        case "數學":
+            dimesion_field = "數"
+            break;
+        case "英語":
+            dimesion_field = "英";
+            break;
+    }
+
     $selected = $("#core_competency_item_sel :selected");
     var itemtext = $selected.text();
     var itemval = $selected.val();
@@ -230,18 +256,12 @@ function addcore_competency(){
                     var field_name = ccfieldData[i].fieldcontent_field;
                     var field_stage = ccfieldData[i].fieldcontent_stage;
                     var field_content = ccfieldData[i].fieldcontent_content;
+
+                    if(field_name == dimesion_field){
+                        var field_title = field_name+'-'+field_stage+'-'+itemval;
+                        coreCardDiv(itemtext,dimesion_description,field_title,field_content);
+                    }
                     
-                    $("#core_competency_body").append('<div class="card">'+
-                                                        '<div class="card-header">'+
-                                                            '<b class="card-title">'+itemtext+'</b>'+
-                                                            '<p class="card-text">'+dimesion_description+'</p>'+                        
-                                                        '</div>'+
-                                                        '<div class="card-body">'+
-                                                            '<b class="card-title">'+field_name+'-'+field_stage+'-'+itemval+'</b>'+
-                                                            '<p class="card-text">'+field_content+'</p>'+
-                                                            '<input type="button" class="btn btn-danger float-right deleteItem" value="刪除" >'+
-                                                        '</div>'+
-                                                    '</div>');
                 }
             });
 
@@ -249,7 +269,6 @@ function addcore_competency(){
     });
 
     deleteItem();
-
 }
 
 //新增學習表現card
@@ -269,7 +288,6 @@ function addlearning_performence(){
             addselectbodyDiv('performancefocus_body',string,content);
         }
     })
-
 }
 
 function addlearning_content(){
@@ -318,13 +336,13 @@ function addselectbodyDiv(parentDiv,title,content){
 }
 
 
-
 /************************************************************************** */
 
 //刪除內容
 function deleteItem(){
     $(".deleteItem").click(function(){
         $(this).closest(".card").remove();
+        isChange = true;
     })
 }
 
@@ -345,6 +363,19 @@ function selectDefault(){
     $("#issue_content").append("<option disabled selected>請選擇議題內容</option>");
 }
 
+function coreCardDiv(itemtext,dimesion_description,field_title,field_content){
+    $("#core_competency_body").append('<div class="card">'+
+                                            '<div class="card-header">'+
+                                                '<b class="card-title itemtext">'+itemtext+'</b>'+
+                                                '<p class="card-text dimesion_description">'+dimesion_description+'</p>'+                        
+                                            '</div>'+
+                                            '<div class="card-body">'+
+                                                '<b class="card-title field_title">'+field_title+'</b>'+
+                                                '<p class="card-text field_content">'+field_content+'</p>'+
+                                                '<input type="button" class="btn btn-danger float-right deleteItem" value="刪除" >'+
+                                            '</div>'+
+                                        '</div>');
+}
 
 
 $(function(){
@@ -360,6 +391,7 @@ $(function(){
     
     if(ccdimesionData !== ""){
         selectDefault();
+        dimesion_field();
         dimesion_Map();
         learning_focus_item_Map();
         issuename_Map();

@@ -270,11 +270,9 @@ function saveLocalStorage(divId){
 
 //放入已經儲存活動流程資料
 function setActivityProcess(){
-
-    var lessonplanActivityProcessData = $("#lessonplanActivityProcessData").text();
     
     if( lessonplanActivityProcessData.length !== 0){
-        lessonplanActivityProcessData = JSON.parse(lessonplanActivityProcessData);
+        // lessonplanActivityProcessData = JSON.parse(lessonplanActivityProcessData);
 
         for(var i=0; i<lessonplanActivityProcessData.length;i++){
 
@@ -282,30 +280,35 @@ function setActivityProcess(){
             var number = i+1;
             var parentid = "activity_"+number;
 
-            var lessonplan_activity_content = JSON.parse(processData.lessonplan_activity_content);
-            
-            for(var s=0;s<lessonplan_activity_content.length;s++){
-                var contentData = lessonplan_activity_content[s];
-                var num = s+1;
-                var processtarget = contentData.lessonplan_activity_learningtarget;
-                var processcontent = contentData.lessonplan_activity_content;
-                var processtime = contentData.lessonplan_activity_time;
-                var processremark = contentData.lessonplan_activity_remark;
-                var assessmentArray = contentData.lessonplan_activity_assessment;
+            var lessonplan_activity_content = processData.lessonplan_activity_content;
 
-                trElement(parentid,num,processtarget,processcontent,processtime,processremark);
+            if(lessonplan_activity_content.length !== 0){
+                lessonplan_activity_content = JSON.parse(lessonplan_activity_content);
 
-                for(var r=0;r<assessmentArray.length;r++){
-                    var assessmentData= assessmentArray[r];
-                    var td_id = parentid+"_assessmentTd_"+num;
-                    var assessment_content = assessmentData.assessment_content;
-                    var content = "<p>"+assessment_content+"</p>";
-                    assessmentDiv(td_id,content);
-                    deleteassessment();
-                    editAssessmentDiv();
+                for(var s=0;s<lessonplan_activity_content.length;s++){
+                    var contentData = lessonplan_activity_content[s];
+                    var num = s+1;
+                    var processtarget = contentData.lessonplan_activity_learningtarget;
+                    var processcontent = contentData.lessonplan_activity_content;
+                    var processtime = contentData.lessonplan_activity_time;
+                    var processremark = contentData.lessonplan_activity_remark;
+                    var assessmentArray = contentData.lessonplan_activity_assessment;
+    
+                    trElement(parentid,num,processtarget,processcontent,processtime,processremark);
+    
+                    for(var r=0;r<assessmentArray.length;r++){
+                        var assessmentData= assessmentArray[r];
+                        var td_id = parentid+"_assessmentTd_"+num;
+                        var assessment_content = assessmentData.assessment_content;
+                        var content = "<p>"+assessment_content+"</p>";
+                        assessmentDiv(td_id,content);
+                        deleteassessment();
+                        editAssessmentDiv();
+                    }
+    
                 }
-
             }
+
         }  
     }
 }

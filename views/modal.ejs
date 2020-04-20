@@ -218,7 +218,7 @@
 </div>
 
 <!--自定義單元/活動-->
-<div class="modal fade" id="customUnitandActivityModal" tabindex="-1" role="dialog" aria-labelledby="customUnitandActivityModalLabel" aria-hidden="true" data-backdrop="static">
+<!-- <div class="modal fade" id="customUnitandActivityModal" tabindex="-1" role="dialog" aria-labelledby="customUnitandActivityModalLabel" aria-hidden="true" data-backdrop="static">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header bg-selfblue text-white">
@@ -269,10 +269,10 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
 <!--版本單元/活動-->
-<div class="modal fade" id="versionUnitandActivityModal" tabindex="-1" role="dialog" aria-labelledby="versionUnitandActivityModalLabel" aria-hidden="true" data-backdrop="static">
+<!-- <div class="modal fade" id="versionUnitandActivityModal" tabindex="-1" role="dialog" aria-labelledby="versionUnitandActivityModalLabel" aria-hidden="true" data-backdrop="static">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header bg-selfblue text-white">
@@ -296,7 +296,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
 <!-- 警告Modal -->
 <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
@@ -309,13 +309,14 @@
         </button>
       </div>
       <div class="modal-body">
-        <label id="targetModal" style="display: none;"></label>
-        已設定過單元和活動<br>
-        若修改<b class="text-danger">現有單元活動</b>會影響到<b class="text-danger">活動與評量設計</b>的內容
+        <label id="deleteid" style="display: none;"></label>
+        <label id="inputid" style="display: none;"></label>
+        此為已儲存的活動<br>
+        若<b class="text-danger">刪除</b>此活動，此活動的<b class="text-danger">活動與評量設計</b>的內容也會同時被刪除
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-        <button type="button" class="btn btn-primary" onclick="openRevisedUnitandActivityBtn()">確定修改</button>
+        <button type="button" class="btn btn-primary" onclick="deleteActivityData()">確定刪除</button>
       </div>
     </div>
   </div>
