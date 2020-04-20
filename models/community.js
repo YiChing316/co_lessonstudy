@@ -17,19 +17,18 @@ module.exports = {
         var community_id,communityPath;
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
-                if(err) return reject(err);
-
-            var sql = {
-                community_name: community_name,
-                community_key: community_key,
-                member_id_member: member_id,
-                member_name: member_name
-            }
-
-            connection.query('INSERT INTO `community` SET ?',sql,function(err,results){
-                if(err) throw err;
-                cb(results);
-                connection.release();
+                var sql = {
+                    community_name: community_name,
+                    community_key: community_key,
+                    member_id_member: member_id,
+                    member_name: member_name
+                }
+            
+                connection.query('INSERT INTO `community` SET ?',sql,function(err,results){
+                    if(err) throw err;
+                    cb(results);
+                    connection.release();
+                })
             })
         })
         .then(function(insertRows){
@@ -60,19 +59,17 @@ module.exports = {
         var insertResults;
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
-                if(err) return reject(err);
-
-            var sql = {
-                community_id_community: community_id,
-                member_id_member: member_id,
-                member_name: member_name,
-                community_member_identity: community_member_identity
-            }
-
-            connection.query('INSERT INTO `community_member` SET ?',sql,function(err,results){
-                if(err) throw err;
-                cb(results);
-                connection.release();
+                var sql = {
+                    community_id_community: community_id,
+                    member_id_member: member_id,
+                    member_name: member_name,
+                    community_member_identity: community_member_identity
+                }
+                connection.query('INSERT INTO `community_member` SET ?',sql,function(err,results){
+                    if(err) throw err;
+                    cb(results);
+                    connection.release();
+                })
             })
         })
         .then(function(data){
