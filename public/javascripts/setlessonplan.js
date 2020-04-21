@@ -110,7 +110,7 @@ function threeselecDiv(labelname,firstselid,secondselid,threeselid,bodyname,pare
 }
 
 function alertStageDiv(parentDiv){
-    $('#'+parentDiv).append('<small><b class="text-danger">(請先完成教案基本資料填寫)</b></small>');
+    $('#'+parentDiv).append('<small><b class="text-danger">(請先完成領域、版本以及學習階段的設定)</b></small>');
 }
 
 
@@ -717,6 +717,7 @@ function saveLessonplanData(divId){
                     $($("#lessonplan").find(".editing")[i]).removeClass("editing");
                 }
                 $("#lessonplan").find(".custom-control-input").removeClass("editing");
+                $("#lessonplan").find(".form-control").removeClass("editing");
                 isChange = false;
                 $.ajax({
                     url: "/lessonplan/edit/"+community_id+"/save",
