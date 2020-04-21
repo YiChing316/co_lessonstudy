@@ -79,6 +79,10 @@ module.exports = {
             var path = './public/communityfolder/community_'+community_id+'/member_'+member_id;
             return module.exports.createNewFolder(path)
         })
+        .then(function(memberresult){
+            var multerpath = memberresult+'/multeruploads';
+            return module.exports.createNewFolder(multerpath)
+        })
         .then(function(result){
             return insertResults
         })
