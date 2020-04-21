@@ -121,7 +121,7 @@ router.get('/edit/:community_id', function(req, res, next) {
         .then(function(issuecontentdata){
             issuecontentData = JSON.stringify(issuecontentdata);
 
-            return lessonplan.selectLessonplanActivityProcess(community_id,course_version)
+            return lessonplan.selectLessonplanActivityProcess(community_id)
         })
         .then(function(processdata){
             lessonplanActivityProcessData = JSON.stringify(processdata);

@@ -742,7 +742,7 @@ function saveLessonplanData(divId){
             break;
         case 'lessonplan_unit':
             var community_id = $("#community_id").text();
-            var lessonplan_version = $("#course_version_info").text();
+            // var lessonplan_version = $("#course_version_info").text();
             var lessonplan_unit_name = $("#unitName").val();
             var lessonplan_activity_name = [];
             $(".activityList").each(function() {
@@ -754,7 +754,6 @@ function saveLessonplanData(divId){
             var activityString = JSON.stringify(lessonplan_activity_name);
             var data = {
                         stage:divId,
-                        lessonplan_version:lessonplan_version,
                         lessonplan_unit_name:lessonplan_unit_name,
                         lessonplan_activity_name:activityString
                     };
@@ -845,7 +844,6 @@ function saveLessonplanData(divId){
                     var content = $($card[i]).find(".card-text").text();
                     learnignFocusArray.push({title:title,content:content});
                 }
-                // var learningFocusString = JSON.stringify(learnignFocusArray)
                 form2Array.push({stage:data,content:learnignFocusArray})
             })
 
@@ -917,12 +915,10 @@ function saveActivityProcessData(divId){
 
 function deleteActivityData(){
     var community_id = $("#community_id").text();
-    var lessonplan_version = $("#course_version_info").text();
     var lessonplan_activity_process_id = $("#deleteid").text();
     var inputid = $("#inputid").text();
     var data = {
         community_id:community_id,
-        lessonplan_version:lessonplan_version,
         lessonplan_activity_process_id:lessonplan_activity_process_id
     }
     isChange = true;

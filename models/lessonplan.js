@@ -62,33 +62,6 @@ module.exports = {
                 })
             })
         })
-
-        pool.getConnection(function(err,connection){
-            if(err) throw err;
-
-            
-
-            connection.query('SELECT COUNT(`community_id_community`) AS COUNTNUM FROM `lessonplan` WHERE `community_id_community`=?',[community_id],function(err,countResults){
-                if(err) throw err;
-
-                var countNum = countResults[0].COUNTNUM;
-                
-                if(countNum == 1){
-                    connection.query('UPDATE `lessonplan` SET ? WHERE `community_id_community`=?',[sql,community_id],function(err,updateResults){
-                        if(err) throw err;
-                        cb(updateResults);
-                        connection.release();
-                    })
-                }
-                else{
-                    connection.query('INSERT INTO `lessonplan` SET ?',sql,function(err,insertResults){
-                        if(err) throw err;
-                        cb(insertResults);
-                        connection.release();
-                    })
-                }
-            })
-        })
     },
 
     saveUnitandActivity: function(community_id,lessonplanData,member_id,member_name){
@@ -105,7 +78,6 @@ module.exports = {
     
                         var sql = {
                             community_id_community:community_id,
-                            lessonplan_version:lessonplanData.lessonplan_version,
                             lessonplan_unit_name:lessonplanData.lessonplan_unit_name,
                             lessonplan_activity_name:activity_name,
                             member_id_member:member_id,
@@ -200,11 +172,11 @@ module.exports = {
         })
     },
     
-    selectLessonplanActivityProcess: function(community_id,lessonplan_version){
+    selectLessonplanActivityProcess: function(community_id){
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
-                connection.query('SELECT * FROM `lessonplan_activity_process` WHERE `community_id_community`=? AND `lessonplan_version` =?',[community_id,lessonplan_version],function(err,rows,fields){
+                connection.query('SELECT * FROM `lessonplan_activity_process` WHERE `community_id_community`=?',community_id,function(err,rows,fields){
                     if(err) return reject(err);
                     resolve(rows);
                     connection.release();
@@ -230,7 +202,6 @@ module.exports = {
 
         var lessonplan_activity_process_id = lessonplanData.lessonplan_activity_process_id;
         var community_id = lessonplanData.community_id;
-        var lessonplan_version = lessonplanData.lessonplan_version;
 
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
@@ -243,7 +214,7 @@ module.exports = {
             })
         })
         .then(function(data){
-            return module.exports.selectLessonplanActivityProcess(community_id,lessonplan_version)
+            return module.exports.selectLessonplanActivityProcess(community_id)
         })
     }
 }
