@@ -1,9 +1,9 @@
 //設定表格資料
-var TextComponents = [ {title:'請輸入姓名',id:"member_name",name:"member_name",type:"text",show:"all"},
-                        {title:'請選擇縣市',id:"member_city",name:"member_city",type:"select",show:"all"},
-                        {title:'請輸入學校',id:"member_school",name:"member_school",type:"text",show:"all"},
-                        {title:'請輸入帳號',id:"member_account",name:"member_account",type:"text",show:"login"},
-                        {title:'請輸入密碼',id:"member_password",name:"member_password",type:"password",show:"login"}
+var TextComponents = [ {title:'請輸入姓名',id:"member_name",name:"member_name",type:"text",show:"all",maxlength:"20"},
+                        {title:'請選擇縣市',id:"member_city",name:"member_city",type:"select",show:"all",maxlength:"0"},
+                        {title:'請輸入學校',id:"member_school",name:"member_school",type:"text",show:"all",maxlength:"20"},
+                        {title:'請輸入帳號',id:"member_account",name:"member_account",type:"text",show:"login",maxlength:"20"},
+                        {title:'請輸入密碼',id:"member_password",name:"member_password",type:"password",show:"login",maxlength:"8"}
                     ];
 //設定縣市
 var cityName = [{value:'台北市',name: '台北市'}, 
@@ -35,7 +35,7 @@ function registerMap(){
         }
         else{
             $("#registerRoot").append('<div class="wrap-input100 validate-input m-b-16">'+
-                                        '<input class="input100" type="'+data.type+'" id="'+data.id+'" name="'+data.name+'" placeholder="'+data.title+'">'+
+                                        '<input class="input100" type="'+data.type+'" id="'+data.id+'" name="'+data.name+'" placeholder="'+data.title+'" maxlength="'+data.maxlength+'">'+
                                         '<span class="focus-input100"></span>'+
                                     '</div>');
         }
