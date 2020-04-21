@@ -94,20 +94,27 @@ function addassessmentTd(){
     var td_id = $("#targetid").text();
     var assessmentcontent = $("#assessmentsummernote").val();
 
-    assessmentDiv(td_id,assessmentcontent);
+    if(assessmentcontent == ""){
+        $("#assessmentalert").show();
+        $("#assessmentalert").html("評量內容為必填");
+    }
+    else{
+        assessmentDiv(td_id,assessmentcontent);
 
-    $("#assessment_sel").removeClass("editing");
-    isChange = false;
+        $("#assessment_sel").removeClass("editing");
+        isChange = false;
 
-    $("#assessmentsummernote").summernote("code",'');
-    $("#addassessmentModal").modal("hide");
-    deleteassessment();
-    editAssessmentDiv();
+        $("#assessmentsummernote").summernote("code",'');
+        $("#addassessmentModal").modal("hide");
+        $("#assessmentalert").hide();
+        deleteassessment();
+        editAssessmentDiv();
 
-    //該活動的id
-    var parentdivid = $("#"+td_id).closest(".card-body").attr('id');
+        //該活動的id
+        var parentdivid = $("#"+td_id).closest(".card-body").attr('id');
 
-    saveLocalStorage(parentdivid);
+        saveLocalStorage(parentdivid);
+    }
 }
 
 //編輯流程tr內容，不會影響評量內容
@@ -189,8 +196,6 @@ function editAssessmentDiv(){
         var $editmodal = $("#editassessmentModal");
         var assessment_content = $div.find("p").text();
 
-        console.log(assessment_content)
-
         var divindex = $div.index();
         var targetid = $div.parent('td').attr('id');
 
@@ -209,19 +214,26 @@ function editAssessmentModalBtn(){
 
     var assessmentcontent = $("#editassessmentsummernote").val();
 
-    var div = $("#"+targetid).find(".assessmentDiv:eq("+divindex+")");
-    div.find("p").html(assessmentcontent);
+    if(assessmentcontent == ""){
+        $("#editassessmentalert").show();
+        $("#editassessmentalert").html("評量內容為必填");
+    }
+    else{
+        var div = $("#"+targetid).find(".assessmentDiv:eq("+divindex+")");
+        div.find("p").html(assessmentcontent);
 
-    //該活動的id
-    var parentdivid = $("#"+targetid).closest(".card-body").attr('id');
+        //該活動的id
+        var parentdivid = $("#"+targetid).closest(".card-body").attr('id');
 
-    $("#editassessment_sel").removeClass("editing");
-    isChange = false;
+        $("#editassessment_sel").removeClass("editing");
+        isChange = false;
 
-    $("#editassessmentsummernote").summernote("code",'');
-    $("#editassessmentModal").modal("hide");
+        $("#editassessmentsummernote").summernote("code",'');
+        $("#editassessmentModal").modal("hide");
+        $("#editassessmentalert").hide();
 
-    saveLocalStorage(parentdivid);
+        saveLocalStorage(parentdivid);
+    }
 }
 
 function deleteassessment(){
@@ -249,7 +261,7 @@ function saveLocalStorage(divId){
 
         $($("#"+divId+"Tbody tr")[i]).find('.assessmentDiv').each(function(){
             var assessment_content = $(this).find(".assessment_content").text();
-            assessmentArray.push({assessment_content:assessment_content,assessment_url:""})
+            assessmentArray.push({assessment_content:assessment_content,assessment_originname:"",assessment_des:""})
         })
 
 
@@ -453,11 +465,13 @@ function modalclosebtn(modalid){
         case 'addassessmentModal':
             $("#assessmentsummernote").summernote("code",'');
             $("#assessment_sel").removeClass("editing");
+            $("#assessmentalert").hide();
             isChange = false;
             break;
         case 'editassessmentModal':
             $("#editassessmentsummernote").summernote("code",'');
             $("#editassessment_sel").removeClass("editing");
+            $("#editassessmentalert").hide();
             isChange = false;
             break;
         case 'customUnitandActivityModal':

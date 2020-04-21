@@ -155,25 +155,29 @@
       </div>
       <div class="modal-body">
         <span id="targetid" style="display: none;"></span>
+        <div class="alert alert-danger" role="alert" id="assessmentalert" style="display: none;"></div>
         <div class="form-group">
           <div class="row">
             <div class="col-3">
               <div class="card border-light">
                 <div class="card-header nopadding-all text-center">請選擇評量模組</div>
                 <div class="card-body nopadding-all mt-2">
-                  <select class="form-control assessment_sel" id="assessment_sel" size="6" ></select>
+                  <select class="form-control assessment_sel" id="assessment_sel" size="8" ></select>
                 </div>
               </div>
             </div>
             <div class="col">
               <textarea class="notoolbarsummernote assessmentsummernote" id="assessmentsummernote"></textarea>
+              <div class="custom-file mt-2">
+                <input type="file" class="custom-file-input" id="assessmentFile">
+                <label class="custom-file-label" for="assessmentFile">選擇檔案</label>
+              </div>
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <input type="button" class="btn btn-light" value="清除" onclick="resetsummernote()">
-        <input type="button" class="btn btn-outline-dark" value="上傳檔案">
         <input type="button" class="btn btn-primary" value="加入" onclick="addassessmentTd()">
       </div>
     </div>
@@ -191,6 +195,7 @@
         </button>
       </div>
       <div class="modal-body">
+        <div class="alert alert-danger" role="alert" id="editassessmentalert" style="display: none;"></div>
         <span id="edittargetid" style="display: none;"></span>
         <span id="divindex" style="display: none;"></span>
         <div class="form-group">
@@ -199,19 +204,22 @@
               <div class="card border-light">
                 <div class="card-header nopadding-all text-center">請選擇評量模組</div>
                 <div class="card-body nopadding-all mt-2">
-                  <select class="form-control assessment_sel" id="editassessment_sel" size="6" ></select>
+                  <select class="form-control assessment_sel" id="editassessment_sel" size="8" ></select>
                 </div>
               </div>
             </div>
             <div class="col">
               <textarea class="notoolbarsummernote assessmentsummernote" id="editassessmentsummernote"></textarea>
+              <div class="custom-file mt-2">
+                <input type="file" class="custom-file-input" id="editassessmentFile">
+                <label class="custom-file-label" for="editassessmentFile">選擇檔案</label>
+              </div>
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <input type="button" class="btn btn-light" value="清除" onclick="resetsummernote()">
-        <input type="button" class="btn btn-outline-dark" value="上傳檔案">
         <input type="button" class="btn btn-primary" value="更新" onclick="editAssessmentModalBtn()">
       </div>
     </div>
