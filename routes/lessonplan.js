@@ -3,6 +3,7 @@ var router = express.Router();
 var community = require('../models/community');
 var clsresource = require('../models/clsresource');
 var lessonplan = require('../models/lessonplan');
+var multer = require('multer');
 
 /* GET lessonplan page. */
 router.get('/edit/:community_id', function(req, res, next) {
@@ -229,6 +230,22 @@ router.post('/edit/delete',function(req,res,next){
         })
     }
     
+})
+
+var upload = multer({
+    storage: multer.diskStorage({
+      destination: function(req, file, callback){
+        var member_id = req.session.member_id;
+        var community_id = req.params.community_id;
+        var path = './public/communityfolder/community_'+community_id+'/member_'+member_id+'/multeruploads';
+        callback(null, path);
+      }
+    })
+  });
+
+router.post('/edit/:community_id/uploadfile',upload.single('file'),function(req,res){
+    console.log(req.file)
+    res.send(req.file)
 })
 
 module.exports = router;
