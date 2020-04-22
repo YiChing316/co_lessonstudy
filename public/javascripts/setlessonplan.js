@@ -903,7 +903,6 @@ function saveActivityProcessData(divId){
         localStorage.removeItem(divId);
 
         isChange = false;
-        console.log(data)
         saveAjax(data);
 
     }

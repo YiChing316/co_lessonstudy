@@ -191,7 +191,11 @@ router.post('/edit/:community_id/save',function(req,res,next){
                 })
                 break;
             case 'activiy_process':
-                lessonplan.saveLessonplanActivityProcess(community_id,lessonplanData,member_id,member_name)
+                var lessonplan_activity_process_id = lessonplanData.lessonplan_activity_process_id;
+                lessonplan.saveActivityFile(community_id,lessonplanData)
+                .then(function(fileResults){
+                    return lessonplan.saveLessonplanActivityProcess(lessonplan_activity_process_id,fileResults,member_id,member_name)
+                })
                 .then(function(data){
                     if(data){
                         return res.json({msg:'ok'})
@@ -244,7 +248,7 @@ var upload = multer({
   });
 
 router.post('/edit/:community_id/uploadfile',upload.single('file'),function(req,res){
-    console.log(req.file)
+    // console.log(req.file)
     res.send(req.file)
 })
 

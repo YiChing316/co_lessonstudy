@@ -19,12 +19,12 @@ function trElement(parentid,num,processtarget,processcontent,processtime,process
                             '</tr>');
 }
 
-function assessmentDiv(td_id,assessmentcontent,tmpname,file){
+function assessmentDiv(td_id,assessmentcontent,tmppath,file){
 
     $("#"+td_id).append('<div class="assessmentDiv">'+
                             '<hr>'+
                             '<div class="assessment_content">'+assessmentcontent+'</div>'+
-                            '<div class="assessment_filename text-muted" data-tmpname="'+tmpname+'">'+file+'</div>'+
+                            '<div class="assessment_filename text-muted" data-tmppath="'+tmppath+'">'+file+'</div>'+
                             '<div class="btn-group">'+
                                 '<input type="button" class="btn btn-sm btn-link assessment_link_edit" value="編輯">'+
                                 '<input type="button" class="btn btn-sm btn-link assessment_link_del" value="刪除">'+
@@ -58,6 +58,8 @@ $(function(){
 
 var processArray = [];
 var lessonplanActivityProcessData;
+
+/***活動流程************************************************* */
 
 //新增活動流程
 function addactivityTr(){
@@ -96,6 +98,50 @@ function addactivityTr(){
     }  
 }
 
+//編輯流程tr內容，不會影響評量內容
+function editActivityTr(){
+    $('.activityTbody').on('click','.btnEdit',function(){
+        var parentid = $(this).closest('.card-body').attr('id');
+        var tbodyid = $(this).closest('tbody').attr('id');
+
+        var row = $(this).closest('tr');
+        var lessonplan_activity_learningtarget = row.find("td:eq(0)").text();
+        var lessonplan_activity_content = row.find("td:eq(1)").html();
+        var lessonplan_activity_time = row.find("td:eq(2)").text();
+        var lessonplan_activity_remark = row.find("td:eq(4)").text();
+
+        var rowindex = row[0].rowIndex;
+
+        var $editmodal = $("#editprocessModal");
+
+        $editmodal.find("#editprocesstarget").val(lessonplan_activity_learningtarget);
+        $editmodal.find("#editprocesscontent").summernote('code', lessonplan_activity_content);
+        $editmodal.find("#editprocesstime").val(lessonplan_activity_time);
+        $editmodal.find("#editprocessremark").val(lessonplan_activity_remark);
+        $editmodal.find("#dataindex").text(rowindex);
+        $editmodal.find("#tbodyid").text(tbodyid);
+        $editmodal.find("#editparentid").text(parentid);
+
+        $editmodal.modal("show");
+
+    });
+}
+
+//刪除該table內tbody的tr
+function deleteActivityTableTr(){
+    $('.activityTbody').on('click','.btnDelete',function(){
+        var parentid = $(this).closest('.card-body').attr('id');
+        $(this).closest('tr').remove();
+        $("#"+parentid+"Tbody tr").each(function(index) {
+            $(this).find('th:eq(0)').first().html(index + 1);
+        });
+
+        saveLocalStorage(parentid);
+    });
+}
+
+/***活動流程內評量************************************************* */
+
 //針對要增加評量的tr，新增評量內容
 function addassessmentTd(){
     var community_id = $("#community_id").text();
@@ -127,15 +173,15 @@ function addassessmentTd(){
                 contentType: false,
                 processData: false,
                 success: function(data){
-                    console.log(data)
+                    // console.log(data)
                     //上傳的原始檔名
                     var uploadoriginalname = data.originalname;
                     //在暫存區的檔名
-                    var uploadfilename = data.filename;
+                    var uploadfilepath = data.path;
                     //要出現在assessmentDiv的
                     var filediv = '<i class="fas fa-paperclip"></i> '+uploadoriginalname;
 
-                    assessmentDiv(td_id,assessmentcontent,uploadfilename,filediv);
+                    assessmentDiv(td_id,assessmentcontent,uploadfilepath,filediv);
                     closeassessmentModal(td_id);
                 },
                 error: function(){
@@ -143,78 +189,6 @@ function addassessmentTd(){
                 }
             })
         }
-    }
-}
-
-//編輯流程tr內容，不會影響評量內容
-function editActivityTr(){
-    $('.activityTbody').on('click','.btnEdit',function(){
-        var parentid = $(this).closest('.card-body').attr('id');
-        var tbodyid = $(this).closest('tbody').attr('id');
-
-        var row = $(this).closest('tr');
-        var lessonplan_activity_learningtarget = row.find("td:eq(0)").text();
-        var lessonplan_activity_content = row.find("td:eq(1)").html();
-        var lessonplan_activity_time = row.find("td:eq(2)").text();
-        var lessonplan_activity_remark = row.find("td:eq(4)").text();
-
-        var rowindex = row[0].rowIndex;
-
-        var $editmodal = $("#editprocessModal");
-
-        $editmodal.find("#editprocesstarget").val(lessonplan_activity_learningtarget);
-        $editmodal.find("#editprocesscontent").summernote('code', lessonplan_activity_content);
-        $editmodal.find("#editprocesstime").val(lessonplan_activity_time);
-        $editmodal.find("#editprocessremark").val(lessonplan_activity_remark);
-        $editmodal.find("#dataindex").text(rowindex);
-        $editmodal.find("#tbodyid").text(tbodyid);
-        $editmodal.find("#editparentid").text(parentid);
-
-        $editmodal.modal("show");
-
-    });
-}
-
-//修改流程modal內的更新按鈕
-function editActivityModalBtn(){
-    var parentid = $("#editparentid").text();
-    var tbodyid = $("#tbodyid").text();
-    //eq開始數字為0，但rowIdex是從1開始抓，應該是因為thead內的tr rowinde算0，但這邊是從tbody開始去跑eq故要減1
-    var dataindex = $("#dataindex").text()-1;
-
-    var processtarget = $("#editprocesstarget").val();
-    var processcontent = $("#editprocesscontent").val();
-    var processtime = $("#editprocesstime").val();
-    var processremark = $("#editprocessremark").val();
-    
-
-    if(processcontent == "" || processtime == ""){
-        $("#editprocessalert").show();
-        $("#editprocessalert").html("活動流程與時間為必填");
-    }
-    else{
-        
-        var row = $("#"+tbodyid+" tr:eq("+dataindex+")");
-
-        row.find("td:eq(0)").text(processtarget);
-        row.find("td:eq(1)").html(processcontent);
-        row.find("td:eq(2)").text(processtime);
-        row.find("td:eq(4)").text(processremark);
-
-        $("#editprocesstarget").removeClass("editing");
-        $("#editprocesstime").removeClass("editing");
-        $("#editprocessremark").removeClass("editing");
-        $("#editprocesscontent_sel_1").removeClass("editing");
-        $("#editprocesscontent_sel_2").removeClass("editing");
-        isChange = false;
-
-        $("#editprocessModal").modal("hide");
-        $("#editprocesscontent").summernote("code",'');
-        $("#editprocessModal input[type='text']").val("");
-        $("#editprocessModal input[type='number']").val("");
-        $("#editprocessalert").hide();
-
-        saveLocalStorage(parentid);
     }
 }
 
@@ -236,35 +210,6 @@ function editAssessmentDiv(){
     });
 }
 
-//修改評量modal內的更新按鈕
-function editAssessmentModalBtn(){
-    var targetid = $("#edittargetid").text();
-    var divindex = $("divindex").text();
-
-    var assessmentcontent = $("#editassessmentsummernote").val();
-
-    if(assessmentcontent == ""){
-        $("#editassessmentalert").show();
-        $("#editassessmentalert").html("評量內容為必填");
-    }
-    else{
-        var div = $("#"+targetid).find(".assessmentDiv:eq("+divindex+")");
-        div.find("p").html(assessmentcontent);
-
-        //該活動的id
-        var parentdivid = $("#"+targetid).closest(".card-body").attr('id');
-
-        $("#editassessment_sel").removeClass("editing");
-        isChange = false;
-
-        $("#editassessmentsummernote").summernote("code",'');
-        $("#editassessmentModal").modal("hide");
-        $("#editassessmentalert").hide();
-
-        saveLocalStorage(parentdivid);
-    }
-}
-
 function deleteassessment(){
     $(".assessment_link_del").on('click',function(){
         var parentid = $(this).closest('.card-body').attr('id');
@@ -273,6 +218,21 @@ function deleteassessment(){
     });
 }
 
+//重新排序該table內tbody的順序編號
+function sortActivityTableTbody(){
+    $('.activityTbody').sortable( {
+        update: function(){
+            $(this).children().each(function(index) {
+                $(this).find('th:eq(0)').first().html(index + 1);
+            });
+            var parentid = $(this).closest('.card-body').attr('id');
+
+            saveLocalStorage(parentid);
+        }
+    });
+}
+
+//存入localstorage
 function saveLocalStorage(divId){
 
     var activityContentArray = [];
@@ -291,8 +251,8 @@ function saveLocalStorage(divId){
         $($("#"+divId+"Tbody tr")[i]).find('.assessmentDiv').each(function(){
             var assessment_content = $(this).find(".assessment_content").text();
             var originalname = $(this).find(".assessment_filename").text();
-            var tmpdata = $(this).find(".assessment_filename").data("tmpname");
-            assessmentArray.push({assessment_content:assessment_content,assessment_originname:originalname,assessment_tmp:tmpdata})
+            var tmppath = $(this).find(".assessment_filename").data("tmppath");
+            assessmentArray.push({assessment_content:assessment_content,assessment_originalname:originalname,assessment_tmp:tmppath})
         })
 
 
@@ -343,8 +303,11 @@ function setActivityProcess(){
                         var assessmentData= assessmentArray[r];
                         var td_id = parentid+"_assessmentTd_"+num;
                         var assessment_content = assessmentData.assessment_content;
+                        var assessment_originalname = assessmentData.assessment_originalname;
+                        //要出現在assessmentDiv的
+                        var filediv = '<i class="fas fa-paperclip"></i> '+assessment_originalname;
                         var content = "<p>"+assessment_content+"</p>";
-                        assessmentDiv(td_id,content);
+                        assessmentDiv(td_id,content,"",filediv);
                         deleteassessment();
                         editAssessmentDiv();
                     }
@@ -354,33 +317,6 @@ function setActivityProcess(){
 
         }  
     }
-}
-
-//刪除該table內tbody的tr
-function deleteActivityTableTr(){
-    $('.activityTbody').on('click','.btnDelete',function(){
-        var parentid = $(this).closest('.card-body').attr('id');
-        $(this).closest('tr').remove();
-        $(".activityTbody tr").each(function(index) {
-            $(this).find('th:eq(0)').first().html(index + 1);
-        });
-
-        saveLocalStorage(parentid);
-    });
-}
-
-//重新排序該table內tbody的順序編號
-function sortActivityTableTbody(){
-    $('.activityTbody').sortable( {
-        update: function(){
-            $(this).children().each(function(index) {
-                $(this).find('th:eq(0)').first().html(index + 1);
-            });
-            var parentid = $(this).closest('.card-body').attr('id');
-
-            saveLocalStorage(parentid);
-        }
-    });
 }
 
 
@@ -405,6 +341,77 @@ function openActivityandAssessmentBtn(){
     })
 }
 
+//修改流程modal內的更新按鈕
+function editActivityModalBtn(){
+    var parentid = $("#editparentid").text();
+    var tbodyid = $("#tbodyid").text();
+    //eq開始數字為0，但rowIdex是從1開始抓，應該是因為thead內的tr rowinde算0，但這邊是從tbody開始去跑eq故要減1
+    var dataindex = $("#dataindex").text()-1;
+
+    var processtarget = $("#editprocesstarget").val();
+    var processcontent = $("#editprocesscontent").val();
+    var processtime = $("#editprocesstime").val();
+    var processremark = $("#editprocessremark").val();
+    
+
+    if(processcontent == "" || processtime == ""){
+        $("#editprocessalert").show();
+        $("#editprocessalert").html("活動流程與時間為必填");
+    }
+    else{
+        
+        var row = $("#"+tbodyid+" tr:eq("+dataindex+")");
+
+        row.find("td:eq(0)").text(processtarget);
+        row.find("td:eq(1)").html(processcontent);
+        row.find("td:eq(2)").text(processtime);
+        row.find("td:eq(4)").text(processremark);
+
+        $("#editprocesstarget").removeClass("editing");
+        $("#editprocesstime").removeClass("editing");
+        $("#editprocessremark").removeClass("editing");
+        $("#editprocesscontent_sel_1").removeClass("editing");
+        $("#editprocesscontent_sel_2").removeClass("editing");
+        isChange = false;
+
+        $("#editprocessModal").modal("hide");
+        $("#editprocesscontent").summernote("code",'');
+        $("#editprocessModal input[type='text']").val("");
+        $("#editprocessModal input[type='number']").val("");
+        $("#editprocessalert").hide();
+
+        saveLocalStorage(parentid);
+    }
+}
+
+//修改評量modal內的更新按鈕
+function editAssessmentModalBtn(){
+    var targetid = $("#edittargetid").text();
+    var divindex = $("divindex").text();
+
+    var assessmentcontent = $("#editassessmentsummernote").val();
+
+    if(assessmentcontent == ""){
+        $("#editassessmentalert").show();
+        $("#editassessmentalert").html("評量內容為必填");
+    }
+    else{
+        var div = $("#"+targetid).find(".assessmentDiv:eq("+divindex+")");
+        div.find("p").html(assessmentcontent);
+
+        //該活動的id
+        var parentdivid = $("#"+targetid).closest(".card-body").attr('id');
+
+        $("#editassessment_sel").removeClass("editing");
+        isChange = false;
+
+        $("#editassessmentsummernote").summernote("code",'');
+        $("#editassessmentModal").modal("hide");
+        $("#editassessmentalert").hide();
+
+        saveLocalStorage(parentdivid);
+    }
+}
 
 //活動流程內鷹架放入select option
 function processselect_Set(){

@@ -1,4 +1,5 @@
 var pool = require('./connectMysql');
+var fs = require('fs');
 
 module.exports = {
 
@@ -109,15 +110,48 @@ module.exports = {
         )  
     },
 
-    saveLessonplanActivityProcess: function(community_id,lessonplanData,member_id,member_name){
+    saveActivityFile: function(community_id,lessonplanData){
+        var lessonplan_activity_content = lessonplanData.lessonplan_activity_content;
+        return new Promise(function(resolve,reject){
+            lessonplan_activity_content = JSON.parse(lessonplan_activity_content);
+            var newpath = './public/communityfolder/community_'+community_id+'/communityfile/';
+            var newactivity_array =[];
+            for(var i=0;i<lessonplan_activity_content.length;i++){
+                var data = lessonplan_activity_content[i];
+                var learningtarget = data.lessonplan_activity_learningtarget;
+                var content = data.lessonplan_activity_content;
+                var time = data.lessonplan_activity_time;
+                var remark = data.lessonplan_activity_remark;
+                var assessmentdata = data.lessonplan_activity_assessment;
+                var newasessment_array = [];
+                for(var s=0;s<assessmentdata.length;s++){
+                    var assessment_content = assessmentdata[s].assessment_content;
+                    var assessment_originalname = assessmentdata[s].assessment_originalname;
+                    var assessment_tmp = assessmentdata[s].assessment_tmp;
+                    if(fs.existsSync(assessment_tmp)){
+                        fs.renameSync(assessment_tmp,newpath+assessment_originalname,function(err){
+                            if (err) throw err;
+                        })
+                    }
+                    newasessment_array.push({assessment_content:assessment_content,assessment_originalname:assessment_originalname,assessment_tmp:""}) 
+                }
+                newactivity_array.push({lessonplan_activity_learningtarget:learningtarget,
+                                            lessonplan_activity_content:content,
+                                            lessonplan_activity_time:time,
+                                            lessonplan_activity_assessment:newasessment_array,
+                                            lessonplan_activity_remark:remark
+                                        })
+            }
+            var newString = JSON.stringify(newactivity_array);
+            resolve(newString);
+        })
+    },
+
+    saveLessonplanActivityProcess: function(lessonplan_activity_process_id,lessonplan_activity_content,member_id,member_name){
 
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
-
-                var lessonplan_activity_process_id = lessonplanData.lessonplan_activity_process_id;
-                var lessonplan_activity_content = lessonplanData.lessonplan_activity_content;
-
                 var sql = {
                     lessonplan_activity_content:lessonplan_activity_content,
                     member_id_member:member_id,
