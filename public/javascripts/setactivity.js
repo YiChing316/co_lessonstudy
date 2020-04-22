@@ -237,7 +237,6 @@ function deleteassessment(){
         $(this).closest(".assessmentDiv").remove();
         var $div = $(this).closest(".assessmentDiv");
         var filename = $div.find(".assessment_filename").text();
-        console.log(filename)
         var data = {
             filename:filename,
             filepath:'./public/communityfolder/community_'+community_id+'/communityfile/'
