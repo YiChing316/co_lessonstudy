@@ -132,7 +132,40 @@ function editActivityTr(){
 //刪除該table內tbody的tr
 function deleteActivityTableTr(){
     $('.activityTbody').on('click','.btnDelete',function(){
+        var community_id = $("#community_id").text();
         var parentid = $(this).closest('.card-body').attr('id');
+        var $row = $(this).closest('tr');
+        //刪除活動流程的同時，如果有已經儲存的檔案也一併刪除
+        $row.find('.assessmentDiv').each(function(){
+            var originalname = $(this).find(".assessment_filename").text();
+            if(originalname !== ""){
+                var data = {
+                    filename:originalname,
+                    filepath:'./public/communityfolder/community_'+community_id+'/communityfile/'
+                }
+    
+                $.ajax({
+                    url: "/lessonplan/edit/"+community_id+"/deletefile",
+                    type: "POST",
+                    async:false,
+                    data:data,
+                    success: function(data){
+                        if(data.msg == "yes"){
+                            console.log("已刪除");
+                        }
+                        else if(data.msg == "notsave"){
+                            console.log("未儲存");
+                        }
+                        else if(data.msg == "no"){
+                            window.location = "/member/login";
+                        }
+                    },
+                    error: function(){
+                        alert('失敗');
+                    }
+                })
+            }
+        })
         $(this).closest('tr').remove();
         $("#"+parentid+"Tbody tr").each(function(index) {
             $(this).find('th:eq(0)').first().html(index + 1);
@@ -211,7 +244,7 @@ function editAssessmentDiv(){
         var divindex = $div.index();
         var targetid = $div.parent('td').attr('id');
         
-        console.log(filename)
+        // console.log(filename)
 
         if(filename == ""){
             $("#showfilename").hide();
@@ -248,10 +281,10 @@ function deleteassessment(){
             data:data,
             success: function(data){
                 if(data.msg == "yes"){
-                    alert("已刪除");
+                    console.log("已刪除");
                 }
                 else if(data.msg == "notsave"){
-                    alert("未儲存");
+                    console.log("未儲存");
                 }
                 else if(data.msg == "no"){
                     window.location = "/member/login";
@@ -320,7 +353,7 @@ function saveLocalStorage(divId){
 
 //放入已經儲存活動流程資料
 function setActivityProcess(){
-    
+    var community_id = $("#community_id").text();
     if( lessonplanActivityProcessData.length !== 0){
         // lessonplanActivityProcessData = JSON.parse(lessonplanActivityProcessData);
 
@@ -353,9 +386,28 @@ function setActivityProcess(){
                         var assessment_originalname = assessmentData.assessment_originalname;
                         var content = "<p>"+assessment_content+"</p>";
                         var filediv = '<i class="fas fa-paperclip mr-1"></i>'+assessment_originalname;
+                        var data = {
+                            filepath:'./public/communityfolder/community_'+community_id+'/communityfile/'+assessment_originalname
+                        }
                         //要出現在assessmentDiv的
                         if(assessment_originalname !== ""){
-                            assessmentDiv(td_id,content,"",filediv);
+                            $.ajax({
+                                url: "/lessonplan/edit/"+community_id+"/checkfile",
+                                type: "POST",
+                                async:false,
+                                data:data,
+                                success: function(data){
+                                    if(data.msg == "ok"){
+                                        assessmentDiv(td_id,content,"",filediv);
+                                    }
+                                    else if(data.msg == "notexist"){
+                                        assessmentDiv(td_id,content,"","");
+                                    }
+                                },
+                                error: function(){
+                                    alert('失敗');
+                                }
+                            })
                         }
                         else{
                             assessmentDiv(td_id,content,"","");
@@ -541,12 +593,12 @@ function deleteeditfile(){
             data:data,
             success: function(data){
                 if(data.msg == "yes"){
-                    alert("已刪除");
+                    console.log("已刪除");
                     $("#showfilename").hide();
                     $('#editfilediv').show();
                 }
                 else if(data.msg == "notsave"){
-                    alert("未儲存");
+                    console.log("未儲存");
                     $("#showfilename").hide();
                     $('#editfilediv').show();
                 }

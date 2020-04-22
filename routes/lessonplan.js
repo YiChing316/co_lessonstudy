@@ -287,4 +287,18 @@ router.post('/edit/:community_id/deletefile',function(req,res){
  
 })
 
+router.post('/edit/:community_id/checkfile',function(req,res){
+    var filepath = req.body.filepath;
+    console.log(filepath)
+    fs.stat(filepath, function (err, stats) {
+         
+        if (err && err.code == 'ENOENT') {
+            return res.json({msg:"notexist"})
+        }
+        else{
+            res.json({msg:"ok"})
+        }            
+    });
+})
+
 module.exports = router;
