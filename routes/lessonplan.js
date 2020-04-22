@@ -260,6 +260,31 @@ router.post('/edit/:community_id/uploadfile',upload.single('file'),function(req,
     }
 })
 
+router.post('/edit/:community_id/uploadsummernotefile',upload.array('imageFile',5),function(req,res){
+    var member_id = req.session.member_id;
+    var community_id = req.params.community_id;
+    var path = '/communityfolder/community_'+community_id+'/communityfile/';
+    var today = new Date();
+    if(!member_id){
+        res.json({msg:"no"});
+        res.redirect('/member/login');
+    }
+    else{
+        for(var i=0;i<req.files.length;i++){
+            var oldpath = req.files[i].path;
+            var newpath = path+today.getFullYear()+today.getMonth()+today.getDate()+today.getHours()+today.getMinutes()+today.getSeconds()+ req.files[i].originalname;
+            fs.rename(oldpath, './public'+newpath, function(err) {
+                if (err) {
+                    throw err;
+                }
+                console.log('done!');
+                res.json({msg:"yes",filepath:newpath})
+            })
+        }
+        // console.log(req.file)
+    }
+})
+
 router.post('/edit/:community_id/deletefile',function(req,res){
     var member_id = req.session.member_id;
     var filename = req.body.filename;
@@ -289,7 +314,6 @@ router.post('/edit/:community_id/deletefile',function(req,res){
 
 router.post('/edit/:community_id/checkfile',function(req,res){
     var filepath = req.body.filepath;
-    console.log(filepath)
     fs.stat(filepath, function (err, stats) {
          
         if (err && err.code == 'ENOENT') {

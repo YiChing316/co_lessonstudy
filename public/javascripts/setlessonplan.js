@@ -622,7 +622,36 @@ function summernoteClass(){
         ],
         minHeight: 250,
         maxHeight: 250,
-        disableDragAndDrop: true
+        disableDragAndDrop: true,
+        callbacks:{
+            onImageUpload : function(files){
+                var community_id = $("#community_id").text();
+                var formData = new FormData();
+                formData.append('imageFile',files[0]); 
+                var id = $(this).attr("id");
+
+                $.ajax({
+                    url: "/lessonplan/edit/"+community_id+"/uploadsummernotefile",
+                    type: "POST",
+                    async:false,
+                    data:formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(data){
+                        if(data.msg == "no"){
+                            window.location = "/member/login";
+                        }
+                        else if(data.msg =="yes"){
+                            var filepath = data.filepath;
+                            $("#"+id).summernote('insertImage', filepath);
+                        }
+                    },
+                    error: function(){
+                        alert('失敗');
+                    }
+                })
+            }
+        }
     });
 
     $('.fixsummernote').summernote({
