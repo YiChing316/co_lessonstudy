@@ -48,6 +48,8 @@ $(function(){
 
     editActivityTr();
 
+    deleteeditfile();
+
     // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function() {
         var fileName = $(this).val().split("\\").pop();
@@ -173,16 +175,22 @@ function addassessmentTd(){
                 contentType: false,
                 processData: false,
                 success: function(data){
-                    // console.log(data)
-                    //上傳的原始檔名
-                    var uploadoriginalname = data.originalname;
-                    //在暫存區的檔名
-                    var uploadfilepath = data.path;
-                    //要出現在assessmentDiv的
-                    var filediv = '<i class="fas fa-paperclip"></i> '+uploadoriginalname;
+                    if(data.msg == "no"){
+                        window.location = "/member/login";
+                    }
+                    else if(data.msg =="yes"){
+                        var filedata = data.filedata;
+                        // console.log(data)
+                        //上傳的原始檔名
+                        var uploadoriginalname = filedata.originalname;
+                        //在暫存區的檔名
+                        var uploadfilepath = filedata.path;
+                        //要出現在assessmentDiv的
+                        var filediv = '<i class="fas fa-paperclip mr-1"></i>'+uploadoriginalname;
 
-                    assessmentDiv(td_id,assessmentcontent,uploadfilepath,filediv);
-                    closeassessmentModal(td_id);
+                        assessmentDiv(td_id,assessmentcontent,uploadfilepath,filediv);
+                        closeassessmentModal(td_id);
+                    }
                 },
                 error: function(){
                     alert('失敗');
@@ -198,10 +206,22 @@ function editAssessmentDiv(){
         $div = $(this).closest(".assessmentDiv");
         var $editmodal = $("#editassessmentModal");
         var assessment_content = $div.find("p").text();
+        var filename = $div.find(".assessment_filename").text();
 
         var divindex = $div.index();
         var targetid = $div.parent('td').attr('id');
+        
+        console.log(filename)
 
+        if(filename == ""){
+            $("#showfilename").hide();
+            $('#editfilediv').show();
+        }
+        else{
+            $editmodal.find("#editfilename").text(filename);
+            $("#showfilename").show();
+            $('#editfilediv').hide();
+        }
         $editmodal.find("#divindex").text(divindex);
         $editmodal.find("#edittargetid").text(targetid);
         $editmodal.find("#editassessmentsummernote").summernote('code', assessment_content);
@@ -212,8 +232,36 @@ function editAssessmentDiv(){
 
 function deleteassessment(){
     $(".assessment_link_del").on('click',function(){
+        var community_id = $("#community_id").text();
         var parentid = $(this).closest('.card-body').attr('id');
         $(this).closest(".assessmentDiv").remove();
+        var $div = $(this).closest(".assessmentDiv");
+        var filename = $div.find(".assessment_filename").text();
+        console.log(filename)
+        var data = {
+            filename:filename,
+            filepath:'./public/communityfolder/community_'+community_id+'/communityfile/'
+        }
+        $.ajax({
+            url: "/lessonplan/edit/"+community_id+"/deletefile",
+            type: "POST",
+            async:false,
+            data:data,
+            success: function(data){
+                if(data.msg == "yes"){
+                    alert("已刪除");
+                }
+                else if(data.msg == "notsave"){
+                    alert("未儲存");
+                }
+                else if(data.msg == "no"){
+                    window.location = "/member/login";
+                }
+            },
+            error: function(){
+                alert('失敗');
+            }
+        })
         saveLocalStorage(parentid);
     });
 }
@@ -304,10 +352,16 @@ function setActivityProcess(){
                         var td_id = parentid+"_assessmentTd_"+num;
                         var assessment_content = assessmentData.assessment_content;
                         var assessment_originalname = assessmentData.assessment_originalname;
-                        //要出現在assessmentDiv的
-                        var filediv = '<i class="fas fa-paperclip"></i> '+assessment_originalname;
                         var content = "<p>"+assessment_content+"</p>";
-                        assessmentDiv(td_id,content,"",filediv);
+                        var filediv = '<i class="fas fa-paperclip mr-1"></i>'+assessment_originalname;
+                        //要出現在assessmentDiv的
+                        if(assessment_originalname !== ""){
+                            assessmentDiv(td_id,content,"",filediv);
+                        }
+                        else{
+                            assessmentDiv(td_id,content,"","");
+                        }
+                        
                         deleteassessment();
                         editAssessmentDiv();
                     }
@@ -386,8 +440,10 @@ function editActivityModalBtn(){
 
 //修改評量modal內的更新按鈕
 function editAssessmentModalBtn(){
+    var community_id = $("#community_id").text();
     var targetid = $("#edittargetid").text();
     var divindex = $("divindex").text();
+    var fileData = $("#editassessmentFile").prop("files")[0];
 
     var assessmentcontent = $("#editassessmentsummernote").val();
 
@@ -396,21 +452,114 @@ function editAssessmentModalBtn(){
         $("#editassessmentalert").html("評量內容為必填");
     }
     else{
-        var div = $("#"+targetid).find(".assessmentDiv:eq("+divindex+")");
-        div.find("p").html(assessmentcontent);
+        if(fileData !== undefined){
+            var formData = new FormData();
+            formData.append('file',fileData);
 
-        //該活動的id
-        var parentdivid = $("#"+targetid).closest(".card-body").attr('id');
+            $.ajax({
+                url: "/lessonplan/edit/"+community_id+"/uploadfile",
+                type: "POST",
+                async:false,
+                data:formData,
+                contentType: false,
+                processData: false,
+                success: function(data){
+                    if(data.msg == "no"){
+                        window.location = "/member/login";
+                    }
+                    else if(data.msg =="yes"){
+                        var filedata = data.filedata;
+                        //console.log(data)
+                        //上傳的原始檔名
+                        var uploadoriginalname = filedata.originalname;
+                        //在暫存區的檔名
+                        var uploadfilepath = filedata.path;
+                        //要出現在assessmentDiv的
+                        var filediv = '<i class="fas fa-paperclip mr-1"></i>'+uploadoriginalname;
 
-        $("#editassessment_sel").removeClass("editing");
-        isChange = false;
+                        var $div = $("#"+targetid).find(".assessmentDiv:eq("+divindex+")");
+                        $div.find("p").html(assessmentcontent);
+                        $div.find(".assessment_filename").html(filediv);
+                        $div.find(".assessment_filename").attr("data-tmppath",uploadfilepath)
 
-        $("#editassessmentsummernote").summernote("code",'');
-        $("#editassessmentModal").modal("hide");
-        $("#editassessmentalert").hide();
+                        //該活動的id
+                        var parentdivid = $("#"+targetid).closest(".card-body").attr('id');
 
-        saveLocalStorage(parentdivid);
+                        $("#editassessment_sel").removeClass("editing");
+                        $(".custom-file-input").removeClass("editing");
+                        isChange = false;
+
+                        $("#editassessmentsummernote").summernote("code",'');
+                        $("#editassessmentFile").val("");
+                        $(".custom-file-label").removeClass("selected").html("請選擇檔案");
+                        $("#editassessmentModal").modal("hide");
+                        $("#editassessmentalert").hide();
+
+                        saveLocalStorage(parentdivid);
+                    }
+                },
+                error: function(){
+                    alert('失敗');
+                }
+            })
+        }
+        else{
+            var $div = $("#"+targetid).find(".assessmentDiv:eq("+divindex+")");
+            $div.find("p").html(assessmentcontent);
+            $div.find(".assessment_filename").text("");
+            $div.find(".assessment_filename").attr("tmppath","")
+
+            //該活動的id
+            var parentdivid = $("#"+targetid).closest(".card-body").attr('id');
+
+            $("#editassessment_sel").removeClass("editing");
+            $(".custom-file-input").removeClass("editing");
+            isChange = false;
+
+            $("#editassessmentsummernote").summernote("code",'');
+            $("#editassessmentFile").val("");
+            $(".custom-file-label").removeClass("selected").html("請選擇檔案");
+            $("#editassessmentModal").modal("hide");
+            $("#editassessmentalert").hide();
+
+            saveLocalStorage(parentdivid);
+        }
     }
+}
+
+function deleteeditfile(){
+    $("#deletefile").click(function(){
+        var community_id = $("#community_id").text();
+        var filename = $("#editfilename").text();
+        var data = {
+            filename:filename,
+            filepath:'./public/communityfolder/community_'+community_id+'/communityfile/'
+        }
+        $.ajax({
+            url: "/lessonplan/edit/"+community_id+"/deletefile",
+            type: "POST",
+            async:false,
+            data:data,
+            success: function(data){
+                if(data.msg == "yes"){
+                    alert("已刪除");
+                    $("#showfilename").hide();
+                    $('#editfilediv').show();
+                }
+                else if(data.msg == "notsave"){
+                    alert("未儲存");
+                    $("#showfilename").hide();
+                    $('#editfilediv').show();
+                }
+                else if(data.msg == "no"){
+                    window.location = "/member/login";
+                }
+            },
+            error: function(){
+                alert('失敗');
+            }
+        })
+    })
 }
 
 //活動流程內鷹架放入select option

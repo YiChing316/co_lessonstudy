@@ -210,7 +210,11 @@
             </div>
             <div class="col">
               <textarea class="notoolbarsummernote assessmentsummernote" id="editassessmentsummernote"></textarea>
-              <div class="custom-file mt-2">
+              <div class="form-inline" id="showfilename">
+                <div id="editfilename"></div>
+                <a class="text-danger ml-2" id="deletefile"><i class="fas fa-times"></i></a>
+              </div>
+              <div class="custom-file mt-2" style="display: none;" id="editfilediv">
                 <input type="file" class="custom-file-input" id="editassessmentFile">
                 <label class="custom-file-label" for="editassessmentFile">選擇檔案</label>
               </div>

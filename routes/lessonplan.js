@@ -4,6 +4,7 @@ var community = require('../models/community');
 var clsresource = require('../models/clsresource');
 var lessonplan = require('../models/lessonplan');
 var multer = require('multer');
+var fs = require('fs');
 
 /* GET lessonplan page. */
 router.get('/edit/:community_id', function(req, res, next) {
@@ -248,8 +249,42 @@ var upload = multer({
   });
 
 router.post('/edit/:community_id/uploadfile',upload.single('file'),function(req,res){
-    // console.log(req.file)
-    res.send(req.file)
+    var member_id = req.session.member_id;
+    if(!member_id){
+        res.json({msg:"no"});
+        res.redirect('/member/login');
+    }
+    else{
+        // console.log(req.file)
+        res.json({msg:"yes",filedata:req.file})
+    }
+})
+
+router.post('/edit/:community_id/deletefile',function(req,res){
+    var member_id = req.session.member_id;
+    var filename = req.body.filename;
+    var filepath = req.body.filepath;
+    var path = filepath+filename;
+    if(!member_id){
+        res.json({msg:"no"});
+        res.redirect('/member/login');
+    }
+    else{
+        fs.stat(path, function (err, stats) {
+         
+            if (err && err.code == 'ENOENT') {
+                return res.json({msg:"notsave"})
+            }
+            else{
+                fs.unlink(path,function(err){
+                    if(err) return console.log(err);
+                    console.log('file deleted successfully');
+                    res.json({msg:"yes"})
+               }); 
+            }            
+        });
+    }
+ 
 })
 
 module.exports = router;
