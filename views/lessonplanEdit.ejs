@@ -2,13 +2,8 @@
 <html>
   <head>
     <%- include('bootstrap.ejs'); -%>
-    <script src="/javascripts/setpagecontent.js"></script>
-    <script src="/javascripts/setlessonplan.js"></script>
-    <script src="/javascripts/setselectoption.js"></script>
-    <script src="/javascripts/setactivity.js"></script>
     <link href="/stylesheets/style.css" rel="stylesheet">
-    <link href="/summernote/summernote-bs4.min.css" rel="stylesheet">
-    <script src="/summernote/summernote-bs4.min.js"></script>
+    <script src="/javascripts/setpagecontent.js"></script>
     <title><%= title %></title>
   </head>
   <body>
@@ -21,49 +16,42 @@
             <!--實作/想法切換-->
             <div class="row">
               <div class="mode-switch position-fixed">
-                <div class="btn-group mode-switch-btn" role="group">
-                  <input type="button" class="btn btn-success active" value="教案撰寫">
-                  <input type="button" class="btn btn-success" value="想法討論">
+                <div class="btn-group mode-switch-btn" role="group" id="mode_switch">
+                  <input type="button" class="btn btn-success mode_btn" value="教案撰寫" id="edit">
+                  <input type="button" class="btn btn-success mode_btn" value="想法討論" id="idea">
                 </div>
               </div>
             </div>
+            <p id="lessonplanActivityName" style="display: none;"><%= lessonplanActivityName %></p>
             
-            <div class="card" style="margin-top: 50px;">
-              <div class="h5 card-header text-white bg-selfblue">
-                訂定課程目標
-              </div>
-              <div id="setlesson" class="card-body">
-                <!--js所需資料-->
-                <p id="community_id" style="display: none;"><%= community_id %></p>
-                <p id="course_field_info" style="display: none;"><%= course_field %></p>
-                <p id="course_grade_info" style="display: none;"><%= course_grade %></p>
-                <p id="course_version_info" style="display: none;"><%= course_version %></p>
-                <p id="ccdimesionData" style="display: none;"><%= ccdimesionData %></p>
-                <p id="ccitemData" style="display: none;"><%= ccitemData %></p>
-                <p id="ccfieldData" style="display: none;"><%= ccfieldData %></p>
-                <p id="lfitemData" style="display: none;"><%= lfitemData %></p>
-                <p id="lfchilditemData" style="display: none;"><%= lfchilditemData %></p>
-                <p id="lfcontentData" style="display: none;"><%= lfcontentData %></p>
-                <p id="issuenameData" style="display: none;"><%= issuenameData %></p>
-                <p id="issuethemeData" style="display: none;"><%= issuethemeData %></p>
-                <p id="issuecontentData" style="display: none;"><%= issuecontentData %></p>
-                <p id="basicData" style="display: none;"><%= basicData %></p>
-                <p id="lessonplanActivityProcessData" style="display: none;"><%= lessonplanActivityProcessData %></p>
-                <p id="lessonplanStageData" style="display: none;"><%= lessonplanStageData %></p>
-                <!------------------------------------------------------------------>
-              </div><!--setlesson end-->
-            </div><!--card 訂定課程目標 end-->
-            <div class="card">
-              <div class="h5 card-header text-white bg-selfblue">
-                活動與評量設計
-              </div>
-              <div id="setactivity" class="card-body"></div><!--setactivity end-->
-            </div><!--card 活動與評量設計 end-->
+            <% if (mode == "lessonplanContent") { %>
+              <%- include('lessonplanContent.ejs'); -%>
+            <% }else if(mode =="ideaContent"){ %>
+              <%- include('ideaContent.ejs'); -%>
+            <% } %>
+            
         </div><!--pagecontent end-->
       </div>
-        
-      
     </div>
     <%- include('modal.ejs'); -%>
+    <script>
+      if("<%= mode %>" == "lessonplanContent"){
+        $("#edit").addClass("active");
+      }
+      else{
+        $("#idea").addClass("active");
+      }
+
+      $(".mode-switch-btn > .mode_btn").click(function(){
+        var id = $(this).attr("id");
+        $(".mode-switch-btn > .mode_btn").removeClass("active");
+        window.location.href = "/lessonplan/"+id+"/<%= community_id %>";
+        $(this).addClass("active");
+      })
+
+      $(".siderul").click(function(){
+        $(this).addClass("active");
+      })
+    </script>
   </body>
 </html>

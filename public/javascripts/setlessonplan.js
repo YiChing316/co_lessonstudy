@@ -357,7 +357,6 @@ function activityandAssessmentDesign_Append(id,baseid,activity_name){
                             '</div>'+
                         '</div>';
     $("#setactivity").append(activityDiv);
-    $("#activityDesignUl").append('<li><a href="#cardidactivity_'+id+'" class="sidebarlink">'+activity_name+'</a></li>');
 }
 
 //呈現儲存於lessonplan_stage資料庫中資料

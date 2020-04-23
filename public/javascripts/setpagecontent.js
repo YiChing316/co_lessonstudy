@@ -40,10 +40,19 @@ function pagecontent_Map(){
     })
 };
 
+var activityName;
+
 function sidebar_Map(){
     pagecontent_Components.map(function(data){
         $("#sidebarul").append('<li><a href="#cardid'+data.id+'" class="sidebarlink">'+data.title+'</a></li>');
     })
+
+    if(activityName.length !== 0){
+        $.each(activityName,function(i,val){
+            var id = i+1;
+            $("#activityDesignUl").append('<li><a href="#cardidactivity_'+id+'" class="sidebarlink">'+activityName[i].lessonplan_activity_name+'</a></li>');
+        })
+    }   
 };
 
 function sidebarIcon(){
@@ -60,9 +69,10 @@ function sidebarIcon(){
 }
 
 $(function(){
+    activityName = JSON.parse($("#lessonplanActivityName").text());
+
     pagecontent_Map();
     sidebar_Map();
 
-    sidebarIcon()
-
+    sidebarIcon();
 });

@@ -6,7 +6,7 @@ var lessonplan = require('../models/lessonplan');
 var multer = require('multer');
 var fs = require('fs');
 
-/* GET lessonplan page. */
+/* GET lessonplan/edit page. */
 router.get('/edit/:community_id', function(req, res, next) {
     var member_id = req.session.member_id;
     var member_name = req.session.member_name;
@@ -19,6 +19,7 @@ router.get('/edit/:community_id', function(req, res, next) {
     var lfitemData,lfchilditemData,lfcontentData;
     var issuenameData,issuethemeData,issuecontentData;
     var lessonplanActivityProcessData,lessonplanStageData;
+    var lessonplanActivityName;
 
     if(!member_id){
         res.redirect('/member/login');
@@ -46,6 +47,7 @@ router.get('/edit/:community_id', function(req, res, next) {
             //沒有儲存過基本資料資料
             if(checkdata.isExisted == false){
                 res.render('lessonplanEdit', { title: '教案製作',
+                                                mode: 'lessonplanContent',
                                                 member_id:member_id,
                                                 member_name:member_name,
                                                 community_id:community_id,
@@ -64,6 +66,7 @@ router.get('/edit/:community_id', function(req, res, next) {
                                                 issuecontentData:'""',
                                                 basicData:'""',
                                                 lessonplanActivityProcessData:'""',
+                                                lessonplanActivityName:'""',
                                                 lessonplanStageData:'""'
                                             });
             }
@@ -132,7 +135,13 @@ router.get('/edit/:community_id', function(req, res, next) {
         .then(function(stagedata){
             lessonplanStageData = JSON.stringify(stagedata);
 
+            return lessonplan.selectLessonplanActivityName(community_id)
+        })
+        .then(function(activiynamedata){
+            lessonplanActivityName = JSON.stringify(activiynamedata)
+
             res.render('lessonplanEdit', { title: '教案製作',
+                                            mode: 'lessonplanContent',
                                             member_id:member_id,
                                             member_name:member_name,
                                             community_id:community_id,
@@ -151,6 +160,7 @@ router.get('/edit/:community_id', function(req, res, next) {
                                             issuecontentData:issuecontentData,
                                             basicData:basicData,//教案基本資料
                                             lessonplanActivityProcessData:lessonplanActivityProcessData,
+                                            lessonplanActivityName:lessonplanActivityName,
                                             lessonplanStageData:lessonplanStageData
                                         });
         })
@@ -324,5 +334,36 @@ router.post('/edit/:community_id/checkfile',function(req,res){
         }            
     });
 })
+
+
+router.get('/idea/:community_id', function(req, res, next) {
+    var member_id = req.session.member_id;
+    var member_name = req.session.member_name;
+
+    var community_id = req.params.community_id;
+
+    var community_name;
+    if(!member_id){
+        res.redirect('/member/login');
+    }
+    else{
+        community.selectCommunityName(community_id)//get communityname end
+        .then(function(communitydata){
+            community_name = communitydata[0].community_name;
+            return lessonplan.selectLessonplanActivityName(community_id)
+        })
+        .then(function(activiynamedata){
+            lessonplanActivityName = JSON.stringify(activiynamedata)
+            res.render('lessonplanEdit', { title: '教案製作',
+                                            mode: 'ideaContent',
+                                            community_id:community_id,
+                                            community_name:community_name,
+                                            member_id:member_id,
+                                            member_name:member_name,
+                                            lessonplanActivityName:lessonplanActivityName
+                                        });
+        })
+    }
+});
 
 module.exports = router;

@@ -218,6 +218,19 @@ module.exports = {
             })
         })
     },
+
+    selectLessonplanActivityName: function(community_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT `lessonplan_activity_name` FROM `lessonplan_activity_process` WHERE `community_id_community`=?',community_id,function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
+        })
+    },
     
     selectLessonplanStageData: function(community_id){
         return new Promise(function(resolve,reject){
