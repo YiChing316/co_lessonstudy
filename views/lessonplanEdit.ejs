@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <%- include('bootstrap.ejs'); -%>
+    <%- include('layout/bootstrap.ejs'); -%>
     <link href="/stylesheets/style.css" rel="stylesheet">
     <script src="/javascripts/setpagecontent.js"></script>
     <title><%= title %></title>
   </head>
   <body>
-    <%- include('navbar2.ejs'); -%>
+    <%- include('layout/navbar2.ejs'); -%>
     <div class="page-wrapper">
       <div class="row">
-        <%- include('sidebar.ejs'); -%>
+        <%- include('layout/sidebar.ejs'); -%>
         <div class="col-10 page-content">
   
             <!--實作/想法切換-->
@@ -25,9 +25,9 @@
             <p id="lessonplanActivityName" style="display: none;"><%= lessonplanActivityName %></p>
             
             <% if (mode == "lessonplanContent") { %>
-              <%- include('lessonplanContent.ejs'); -%>
+              <%- include('layout/lessonplanContent.ejs'); -%>
             <% }else if(mode =="ideaContent"){ %>
-              <%- include('ideaContent.ejs'); -%>
+              <%- include('layout/ideaContent.ejs'); -%>
             <% } %>
             
         </div><!--pagecontent end-->
