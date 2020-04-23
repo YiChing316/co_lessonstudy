@@ -10,9 +10,9 @@ var lessonplan_Component = [
 
 //會使用到編輯器的位置
 var lessonplanstage_Component = [
-    {id:'lessonplan_studentknowledge',createDiv:'studentknowledgeTextarea'},
-    {id:'lessonplan_resource',createDiv:'resourceTextarea'},
-    {id:'lessonplan_design',createDiv:'designTextarea'}
+    {id:'lessonplan_studentknowledge',createDiv:'lessonplan_studentknowledgeTextarea'},
+    {id:'lessonplan_resource',createDiv:'lessonplan_resourceTextarea'},
+    {id:'lessonplan_design',createDiv:'lessonplan_designTextarea'}
 ];
 
 var twoselect_Component = [
@@ -423,6 +423,11 @@ function showLessonplanStageSaveData(){
                         addselectbodyDiv('issue_body',issuesavetitle,issuesavecontent);
                     }
                     break;
+                case 'lessonplan_studentknowledge':
+                case 'lessonplan_resource':
+                case 'lessonplan_design':
+                    $("#"+lessonplan_stage_type+"Textarea").summernote('code',lessonplan_stage_content);
+                break;
             }
         }
     }
@@ -617,17 +622,21 @@ function summernoteClass(){
                   ['color', ['color']],
                   ['para', ['ul', 'ol', 'paragraph']],
                   ['table', ['table']],
-                  ['insert', ['link', 'picture', 'video']],
+                  ['insert', ['link', 'picture']],
                   ['view', ['codeview']]
         ],
         minHeight: 250,
-        maxHeight: 250,
+        maxHeight: 450,
         disableDragAndDrop: true,
         callbacks:{
             onImageUpload : function(files){
                 var community_id = $("#community_id").text();
                 var formData = new FormData();
-                formData.append('imageFile',files[0]); 
+                var file_length = files.length;
+
+                for(var i=0;i<file_length;i++){
+                    formData.append("imageFile",files[i])
+                }
                 var id = $(this).attr("id");
 
                 $.ajax({
@@ -643,7 +652,9 @@ function summernoteClass(){
                         }
                         else if(data.msg =="yes"){
                             var filepath = data.filepath;
-                            $("#"+id).summernote('insertImage', filepath);
+                            $.each(filepath,function(i){
+                                $("#"+id).summernote('insertImage', filepath[i].url);
+                            })
                         }
                     },
                     error: function(){
@@ -666,11 +677,47 @@ function summernoteClass(){
                   ['insert', ['link', 'picture', 'video']],
                   ['view', ['codeview']]
         ],
+        width:560,
         minHeight: 180,
         maxHeight: 180,
         disableDragAndDrop: true,
         dialogsInBody: true,
-        placeholder: "請輸入活動流程(必填)"
+        placeholder: "請輸入活動流程(必填)",
+        callbacks:{
+            onImageUpload : function(files){
+                var community_id = $("#community_id").text();
+                var formData = new FormData();
+                var file_length = files.length;
+
+                for(var i=0;i<file_length;i++){
+                    formData.append("imageFile",files[i])
+                }
+                var id = $(this).attr("id");
+
+                $.ajax({
+                    url: "/lessonplan/edit/"+community_id+"/uploadsummernotefile",
+                    type: "POST",
+                    async:false,
+                    data:formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(data){
+                        if(data.msg == "no"){
+                            window.location = "/member/login";
+                        }
+                        else if(data.msg =="yes"){
+                            var filepath = data.filepath;
+                            $.each(filepath,function(i){
+                                $("#"+id).summernote('insertImage', filepath[i].url);
+                            })
+                        }
+                    },
+                    error: function(){
+                        alert('失敗');
+                    }
+                })
+            }
+        }
     });
 
     $('.notoolbarsummernote').summernote({
@@ -681,7 +728,7 @@ function summernoteClass(){
         maxHeight: 180
     });
 
-    $('.note-statusbar').hide();
+    // $('.note-statusbar').hide();
 }
 
 //儲存的ajaxfunction
@@ -909,6 +956,21 @@ function saveLessonplanData(divId){
                 stage:'lessonplan_stage',
                 lessonplan_stage_type:'learning_issue',
                 lessonplan_stage_content:issueString
+            }
+
+            saveAjax(data);
+            break;
+        case 'lessonplan_studentknowledge':
+        case 'lessonplan_resource':
+        case 'lessonplan_design':
+            var summernote_content = $("#"+divId+"Textarea").summernote('code');
+            $("#"+divId+"Textarea").find(".editing").removeClass(".editing");
+            isChange = false;
+
+            var data = {
+                stage:'lessonplan_stage',
+                lessonplan_stage_type:divId,
+                lessonplan_stage_content:summernote_content
             }
 
             saveAjax(data);

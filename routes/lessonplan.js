@@ -13,8 +13,6 @@ router.get('/edit/:community_id', function(req, res, next) {
 
     var community_id = req.params.community_id;
 
-    var community_name;
-
     var basicData;
     var course_field,course_version,course_grade;
     var ccdimesionData,ccitemData,ccfieldData;
@@ -26,6 +24,7 @@ router.get('/edit/:community_id', function(req, res, next) {
         res.redirect('/member/login');
     }
     else{
+        var community_name;
         community.selectCommunityName(community_id)//get communityname end
         .then(function(communitydata){
             community_name = communitydata[0].community_name;
@@ -264,6 +263,7 @@ router.post('/edit/:community_id/uploadsummernotefile',upload.array('imageFile',
     var member_id = req.session.member_id;
     var community_id = req.params.community_id;
     var path = '/communityfolder/community_'+community_id+'/communityfile/';
+    var patharray = [];
     var today = new Date();
     if(!member_id){
         res.json({msg:"no"});
@@ -278,10 +278,10 @@ router.post('/edit/:community_id/uploadsummernotefile',upload.array('imageFile',
                     throw err;
                 }
                 console.log('done!');
-                res.json({msg:"yes",filepath:newpath})
             })
+            patharray.push({url:newpath});
         }
-        // console.log(req.file)
+        res.json({msg:"yes",filepath:patharray})
     }
 })
 
