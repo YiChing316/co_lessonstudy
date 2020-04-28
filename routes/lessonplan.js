@@ -3,6 +3,7 @@ var router = express.Router();
 var community = require('../models/community');
 var clsresource = require('../models/clsresource');
 var lessonplan = require('../models/lessonplan');
+var node = require('../models/node');
 var multer = require('multer');
 var fs = require('fs');
 
@@ -343,6 +344,9 @@ router.get('/idea/:community_id', function(req, res, next) {
     var community_id = req.params.community_id;
 
     var community_name;
+    var lessonplanActivityName;
+    var nodeData,edgeData;
+
     if(!member_id){
         res.redirect('/member/login');
     }
@@ -354,13 +358,23 @@ router.get('/idea/:community_id', function(req, res, next) {
         })
         .then(function(activiynamedata){
             lessonplanActivityName = JSON.stringify(activiynamedata)
+            return node.selectNodeData(community_id);
+        })
+        .then(function(nodedata){
+            nodeData = JSON.stringify(nodedata);
+            return node.selectEdgeData(community_id)
+        })
+        .then(function(edgedata){
+            edgeData = JSON.stringify(edgedata);
             res.render('lessonplanEdit', { title: '教案製作',
                                             mode: 'ideaContent',
                                             community_id:community_id,
                                             community_name:community_name,
                                             member_id:member_id,
                                             member_name:member_name,
-                                            lessonplanActivityName:lessonplanActivityName
+                                            lessonplanActivityName:lessonplanActivityName,
+                                            nodeData:nodeData,
+                                            edgeData:edgeData
                                         });
         })
     }

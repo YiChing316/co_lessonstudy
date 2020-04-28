@@ -1,5 +1,6 @@
 var pool = require('./connectMysql');
 var fs = require('fs');
+var node = require('./node');
 
 module.exports = {
 
@@ -26,6 +27,7 @@ module.exports = {
     },
 
     saveLessonplan: function(community_id,lessonplanData,member_id,member_name){
+        var saveResults;
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
@@ -62,6 +64,16 @@ module.exports = {
                     }
                 })
             })
+        })
+        .then(function(results){
+            saveResults = results;
+            var insertid = results.insertId;
+            if(insertid !== 0){
+                return node.createNewNode(community_id,'教案基本資料','教案基本資料','lessonplan',member_id,member_name)
+            }
+        })
+        .then(function(data){
+            return saveResults;
         })
     },
 
@@ -105,7 +117,6 @@ module.exports = {
                         }
                     })
                 })
-                
             })
         )  
     },
@@ -168,11 +179,11 @@ module.exports = {
     },
 
     saveLessonplanStage: function(community_id,lessonplanData,member_id,member_name){
-
+        var lessonplan_stage_type,saveResults;
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
-                var lessonplan_stage_type = lessonplanData.lessonplan_stage_type;
+                lessonplan_stage_type = lessonplanData.lessonplan_stage_type;
 
                 var sql = {
                     community_id_community:community_id,
@@ -203,6 +214,42 @@ module.exports = {
                     }
                 })
             })
+        })
+        .then(function(results){
+            saveResults = results;
+            var insertid = results.insertId;
+            var stage_name;
+            if(insertid !== 0){
+
+                switch(lessonplan_stage_type){
+                    case "lessonplan_target":
+                        stage_name = "課程學習目標";
+                        break;
+                    case "core_competency":
+                        stage_name = "總綱核心素養";
+                        break;
+                    case "learning_focus":
+                        stage_name = "學習重點";
+                        break;
+                    case "learning_issue":
+                        stage_name = "議題融入";
+                        break;
+                    case "lessonplan_studentknowledge":
+                        stage_name = "學生先備知識";
+                        break;
+                    case "lessonplan_resource":
+                        stage_name = "教學資源及器材";
+                        break;
+                    case "lessonplan_design":
+                        stage_name = "教學設計理念";
+                        break;
+                }
+
+                return node.createNewNode(community_id,stage_name,stage_name,lessonplan_stage_type,member_id,member_name)
+            }
+        })
+        .then(function(data){
+            return saveResults;
         })
     },
     
