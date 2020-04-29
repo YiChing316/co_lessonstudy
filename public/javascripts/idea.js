@@ -92,11 +92,10 @@ function addNodeContent(){
             ctx.font = "bold 16px 微軟正黑體";
             ctx.fillStyle = 'black';
             ctx.fillText(node_title, nodePosition[nodeid].x+30, nodePosition[nodeid].y-10);
-            ctx.font = "14px 微軟正黑體";
-            ctx.fillStyle = 'black';
-            ctx.fillText(member_name, nodePosition[nodeid].x+30, nodePosition[nodeid].y+10);
             ctx.font = "12px 微軟正黑體";
             ctx.fillStyle = 'gray';
+            ctx.fillText(member_name, nodePosition[nodeid].x+30, nodePosition[nodeid].y+10);
+            ctx.font = "12px 微軟正黑體";
             ctx.fillText(node_createtime, nodePosition[nodeid].x+30, nodePosition[nodeid].y+30);
         }
     })
@@ -204,4 +203,120 @@ $(function(){
 
     drawNetwork();
     clickevent();
+
+    ideasummernoteClass();
+    ideatagClass();
+    ideaScaffold_Add();
+
+    // Add the following code if you want the name of the file appear on select
+    $(".custom-file-input").on("change", function() {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+
 })
+
+function ideaScaffold_Add(){
+    $(".ideascaffold").click(function(){
+        var scaffoldText = $(this).text();
+        var textareaId = $(this).parents(".row").find("textarea").attr("id");
+        var string = "<b><font style='background-color: rgb(255, 231, 206);'>"+scaffoldText+"</font></b>";
+        $("#"+textareaId).summernote('pasteHTML', string);
+        
+    })
+}
+
+function ideaModalCloseBtn(modalid){
+    switch(modalid){
+        case "createIdeaModel":
+            $("#newIdeaTitle").val("");
+            $("#newIdeaContent").summernote("code",'');
+            $(".custom-file-label").removeClass("selected").html("請選擇檔案");
+            break;
+    } 
+}
+
+function ideasummernoteClass(){
+    $('.ideasummernote').summernote({
+        tabsize: 2,
+        toolbar: [
+                  // [groupName, [list of button]]
+                  ['style', ['style']],
+                  ['font', ['bold', 'underline', 'clear']],
+                  ['color', ['color']],
+                  ['para', ['ul', 'ol', 'paragraph']],
+                  ['table', ['table']],
+                  ['insert', ['link', 'picture', 'video']],
+                  ['view', ['codeview']]
+        ],
+        width:560,
+        minHeight: 250,
+        maxHeight: 250,
+        disableDragAndDrop: true,
+        dialogsInBody: true,
+        callbacks:{
+            onImageUpload : function(files){
+                var community_id = $("#community_id").text();
+                var formData = new FormData();
+                var file_length = files.length;
+
+                for(var i=0;i<file_length;i++){
+                    formData.append("imageFile",files[i])
+                }
+                var id = $(this).attr("id");
+
+                $.ajax({
+                    url: "/lessonplan/edit/"+community_id+"/uploadsummernotefile",
+                    type: "POST",
+                    async:false,
+                    data:formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(data){
+                        if(data.msg == "no"){
+                            window.location = "/member/login";
+                        }
+                        else if(data.msg =="yes"){
+                            var filepath = data.filepath;
+                            $.each(filepath,function(i){
+                                $("#"+id).summernote('insertImage', filepath[i].url);
+                            })
+                        }
+                    },
+                    error: function(){
+                        alert('失敗');
+                    }
+                })
+            }
+        }
+    });
+}
+
+function ideatagClass(){
+    var stageTag = [
+        {text:"教案基本資料",type:"lessonplan"},
+        {text:"課程學習目標",type:"lessonplan_target"},
+        {text:"學生先備概念",type:"lessonplan_studentknowledge"},
+        {text:"核心素養",type:"core_competency"},
+        {text:"學習重點",type:"learning_focus"},
+        {text:"議題融入",type:"learning_issue"},
+        {text:"教學資源及器材",type:"lessonplan_resource"},
+        {text:"教學設計理念",type:"lessonplan_resource"},
+        {text:"活動與評量設計",type:"activity"}
+    ];
+    $('.tagInput').tagsinput({
+        typeahead: {
+            source: ['Amsterdam', 'Washington', 'Sydney', 'Beijing', 'Cairo']
+        },
+        freeInput: false
+    });
+}
+
+function saveNode(modalId){
+    switch(modalId){
+        case "createIdeaModel":
+            var node_title = $("#newIdeaTitle").val();
+            var idea_content = $("#newIdeaContent").summernote('code');
+            break;
+    }
+}

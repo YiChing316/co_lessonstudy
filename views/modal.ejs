@@ -312,7 +312,7 @@
 </div> -->
 
 <!-- 警告Modal -->
-<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+<div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true" data-backdrop="static">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header bg-warning">
@@ -336,7 +336,7 @@
 </div>
 
 <!-- 查看想法Modal -->
-<div class="modal" id="readIdeaModal" tabindex="-1" role="dialog" aria-labelledby="readIdeaModalLabel" aria-hidden="true">
+<div class="modal" id="readIdeaModal" tabindex="-1" role="dialog" aria-labelledby="readIdeaModalLabel" aria-hidden="true" data-backdrop="static">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -357,20 +357,57 @@
 </div>
 
 <!-- 新增想法Modal -->
-<div class="modal" id="createIdeaModel" tabindex="-1" role="dialog" aria-labelledby="createIdeaModelTitle" aria-hidden="true">
+<div class="modal" id="createIdeaModel" tabindex="-1" role="dialog" aria-labelledby="createIdeaModelTitle" aria-hidden="true" data-backdrop="static">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="createIdeaModelTitle">新增想法</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ideaModalCloseBtn('createIdeaModel')">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        ...
+        <div class="form-group">
+          <label class="control-label">標題</label>
+          <input type="text" class="form-control" id="newIdeaTitle">
+        </div>
+        <div class="form-group">
+          <label class="col-form-label"><i class="fas fa-tag mr-1"></i>Tags</label>
+          <input type="text" class="form-control tagInput" data-role="tagsinput">
+        </div>
+        <div class="form-group">
+          <div class="row">
+            <div class="col-3">
+              <div class="btn-group-vertical" role="group">
+                <button type="button" class="btn btn-outline-primary ideascaffold">我想知道</button>
+                <button type="button" class="btn btn-outline-primary ideascaffold">我的想法</button>
+                <button type="button" class="btn btn-outline-primary ideascaffold">我的理論</button>
+                <button type="button" class="btn btn-outline-primary ideascaffold">新資訊或參考來源</button>
+                <button type="button" class="btn btn-outline-primary ideascaffold">另一個觀點是</button>
+                <button type="button" class="btn btn-outline-primary ideascaffold">我覺得更好的想法</button>
+                <button type="button" class="btn btn-outline-primary ideascaffold">有發展性的想法</button>
+              </div>
+            </div>
+            <div class="col">
+              <textarea class="ideasummernote" id="newIdeaContent"></textarea>
+              <div class="custom-file mt-2">
+                <input type="file" class="custom-file-input" id="createNewIdeaFile">
+                <label class="custom-file-label" for="createNewIdeaFile">選擇檔案</label>
+              </div>
+              <div>
+                <div class="form-inline mt-2">
+                  <div class="form-group"> 
+                    <label>123.pdf</label>
+                    <a class="text-danger ml-2"><i class="fas fa-times"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary">新增</button>
       </div>
     </div>
   </div>
