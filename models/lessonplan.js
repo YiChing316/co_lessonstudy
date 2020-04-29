@@ -82,12 +82,13 @@ module.exports = {
 
         return Promise.all(
             activityArray.map(function(data){
+                var activity_name,saveResults;
                 return new Promise(function(resolve,reject){
                     pool.getConnection(function(err,connection){
                         if(err) throw err;
                         var saveaction = data.saveaction;
                         var baseid = data.baseid;
-                        var activity_name = data.name;
+                        activity_name = data.name;
     
                         var sql = {
                             community_id_community:community_id,
@@ -116,6 +117,16 @@ module.exports = {
                             })
                         }
                     })
+                })
+                .then(function(results){
+                    saveResults = results;
+                    var insertid = results.insertId;
+                    if(insertid !== 0){
+                        return node.createNewNode(community_id,activity_name,'活動與評量設計','activity',member_id,member_name)
+                    }
+                })
+                .then(function(data){
+                    return saveResults;
                 })
             })
         )  

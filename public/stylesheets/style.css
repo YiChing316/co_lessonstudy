@@ -98,6 +98,37 @@ body{font-family: '微軟正黑體';}
   z-index: 1020;
 }
 
+.idea-toolbar{
+  height: 80vh;
+  width: auto;
+  position: fixed;
+  background-color: rgba(181,221,194,0.8);
+  z-index: 1020;
+  text-align: center;
+}
+
+.idea-toolbar img{
+  width: 2vw;
+}
+
+.idea-toolbar .idea-tool{
+  height: auto;
+  display: block;
+  padding: 10px;
+}
+
+.idea-tool:hover{
+  background-color: rgba(113, 193, 180, 0.5);
+  text-decoration: none;
+}
+
+.idea-tooltext{
+  margin-top: 2px;
+  text-decoration: none;
+  color: black;
+}
+
+
 .btn-bg{
   height: 50px;
   width: 100%;

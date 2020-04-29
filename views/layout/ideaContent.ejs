@@ -6,7 +6,18 @@
 <p id="edgeData" style="display: none;"><%= edgeData %></p>
 
 <div style="margin-top: 50px;" id="ideacontent">
-    <div id="ideanetwork" class="border border-secondary"></div>
+    <div class="idea-toolbar">
+        <p class="mt-2"><b>新增</b></p>
+        <a href="#" id="creatIdeaBtn" class="idea-tool" data-toggle="modal" data-target="#createIdeaModel">
+            <img src="/images/idea-btn.svg" alt="新增想法">
+            <div class="idea-tooltext">想法</div>
+        </a>
+        <a href="#" id="creatVoteBtn" class="idea-tool"  data-toggle="modal" data-target="#createVoteModel">
+            <img class="mt-2" src="/images/vote-btn.svg" alt="新增投票">
+            <div class="idea-tooltext">投票</div>
+        </a>
+    </div>
+    <div class="border" id="ideanetwork"></div>
 </div>
 
 <script src="/javascripts/idea.js"></script>

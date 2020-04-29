@@ -48,7 +48,7 @@ var nodeOptions = {
             shape: 'image',
             image: '/images/lessonplannode.svg'
         },
-        actvity:{
+        activity:{
             shape: 'image',
             image: '/images/activitynode.svg'
         }
