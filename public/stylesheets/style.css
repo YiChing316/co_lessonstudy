@@ -27,6 +27,22 @@ body{font-family: '微軟正黑體';}
   background-color: #ED557E;
 }
 
+.bg-1{
+  background-color: #F16C84;
+}
+.bg-2{
+  background-color: #BF214B;
+}
+.bg-4{
+  background-color: #0E6973;
+}
+.bg-5{
+  background-color: #F29F05;
+}
+.bg-6{
+  background-color: #F2B705;
+}
+
 /*側邊欄*/
 .sidebar-nav{
   top: 0;

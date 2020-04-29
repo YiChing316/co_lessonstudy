@@ -203,10 +203,7 @@ $(function(){
 
     drawNetwork();
     clickevent();
-
-    ideasummernoteClass();
-    ideatagClass();
-    ideaScaffold_Add();
+    openIdeaModal();
 
     // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function() {
@@ -215,6 +212,19 @@ $(function(){
     });
 
 })
+
+function openIdeaModal(){
+    $("#creatIdeaBtn").click(function(){
+        $("#createIdeaModel").modal("show");
+        ideasummernoteClass();
+        ideatagClass();
+        ideaScaffold_Add();
+    })
+
+    $("#creatVoteBtn").click(function(){
+        $("#createVoteModel").modal("show");
+    })
+}
 
 function ideaScaffold_Add(){
     $(".ideascaffold").click(function(){
@@ -293,23 +303,18 @@ function ideasummernoteClass(){
 }
 
 function ideatagClass(){
-    var stageTag = [
-        {text:"教案基本資料",type:"lessonplan"},
-        {text:"課程學習目標",type:"lessonplan_target"},
-        {text:"學生先備概念",type:"lessonplan_studentknowledge"},
-        {text:"核心素養",type:"core_competency"},
-        {text:"學習重點",type:"learning_focus"},
-        {text:"議題融入",type:"learning_issue"},
-        {text:"教學資源及器材",type:"lessonplan_resource"},
-        {text:"教學設計理念",type:"lessonplan_resource"},
-        {text:"活動與評量設計",type:"activity"}
-    ];
-    $('.tagInput').tagsinput({
-        typeahead: {
-            source: ['Amsterdam', 'Washington', 'Sydney', 'Beijing', 'Cairo']
-        },
-        freeInput: false
-    });
+    $('input[name="tagInput"]').amsifySuggestags({
+		suggestions: ['教案基本資料', '課程學習目標', '學生先備概念', '核心素養', '學習重點','議題融入','教學資源及器材','教學設計理念','活動與評量設計'],
+		classes: ['bg-1', 'bg-2', 'bg-selfgreen', 'bg-4', 'bg-4', 'bg-4', 'bg-5', 'bg-6', 'bg-primary'],
+        whiteList: true,
+        tagLimit: 3,
+		afterAdd : function(value) {
+			console.info(value);
+		},
+		afterRemove : function(value) {
+			console.info(value);
+		},
+	});
 }
 
 function saveNode(modalId){
