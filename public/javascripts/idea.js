@@ -208,8 +208,13 @@ $(function(){
     
     // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function() {
-        var fileName = $(this).val().split("\\").pop();
-        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        var files = [];
+        for (var i = 0; i < $(this)[0].files.length; i++) {
+            files.push($(this)[0].files[i].name);
+        }
+        // $(this).next('.custom-file-label').html(files.join(', '));
+        // var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(files.join(', '));
     });
 
 })
@@ -244,6 +249,7 @@ function ideaModalCloseBtn(modalid){
             $("#newIdeaTitle").val("");
             $("#newIdeaContent").summernote("code",'');
             $(".custom-file-label").removeClass("selected").html("請選擇檔案");
+            $("#createNewIdeaFile").val("");
             $("#createIdeaModel").find("input[name='tagInputText']").remove();
             $("#createIdeaModel").find(".inputTags-list").remove();
             break;
@@ -326,12 +332,47 @@ function ideatagClass(){
 function saveNode(modalId){
     switch(modalId){
         case "createIdeaModel":
+            var community_id = $("#community_id").text();
             var node_title = $("#newIdeaTitle").val();
             var idea_content = $("#newIdeaContent").summernote('code');
             var tagcontent = $("input[name='tagInputText']").val();
-            var tagarray = [];
-            tagarray.push(tagcontent)
+            var node_tagarray = [];
+            node_tagarray.push(tagcontent)
+            var fileData = $("#createNewIdeaFile").prop("files");
+            var file_length = fileData.length;
 
+            if( node_title == ""){
+                alert("想法標題不可空白!!")
+            }
+            else{
+                var formData = new FormData();
+                formData.append("node_title",node_title);
+                formData.append("idea_content",idea_content);
+                formData.append("node_tag",node_tagarray);
+                for(var i=0;i<file_length;i++){
+                    formData.append("ideafile",fileData[i])
+                }
+
+                $.ajax({
+                    url: "/lessonplan/idea/"+community_id+"/createIdea",
+                    type: "POST",
+                    async:false,
+                    data:formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(data){
+                        if(data.msg == "no"){
+                            window.location = "/member/login";
+                        }
+                        else if(data.msg =="yes"){
+                            console.log(data.msg)
+                        }
+                    },
+                    error: function(){
+                        alert('失敗');
+                    }
+                })
+            }
             break;
     }
 }
