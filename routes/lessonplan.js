@@ -273,7 +273,7 @@ router.post('/edit/:community_id/uploadfile',upload.single('file'),function(req,
 router.post('/edit/:community_id/uploadsummernotefile',upload.array('imageFile',5),function(req,res){
     var member_id = req.session.member_id;
     var community_id = req.params.community_id;
-    var path = '/communityfolder/community_'+community_id+'/communityfile/';
+    var path = '/communityfolder/community_'+community_id+'/summernotefile/';
     var patharray = [];
     var today = new Date();
     if(!member_id){
