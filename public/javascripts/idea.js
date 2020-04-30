@@ -205,6 +205,7 @@ $(function(){
     clickevent();
     openIdeaModal();
 
+    
     // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function() {
         var fileName = $(this).val().split("\\").pop();
@@ -216,6 +217,7 @@ $(function(){
 function openIdeaModal(){
     $("#creatIdeaBtn").click(function(){
         $("#createIdeaModel").modal("show");
+        $("#createIdeaModel").find(".ideatag").append('<input type="text" class="form-control" name="tagInputText" id="createIdeaTag">');
         ideasummernoteClass();
         ideatagClass();
         ideaScaffold_Add();
@@ -242,6 +244,8 @@ function ideaModalCloseBtn(modalid){
             $("#newIdeaTitle").val("");
             $("#newIdeaContent").summernote("code",'');
             $(".custom-file-label").removeClass("selected").html("請選擇檔案");
+            $("#createIdeaModel").find("input[name='tagInputText']").remove();
+            $("#createIdeaModel").find(".inputTags-list").remove();
             break;
     } 
 }
@@ -303,18 +307,20 @@ function ideasummernoteClass(){
 }
 
 function ideatagClass(){
-    $('input[name="tagInput"]').amsifySuggestags({
-		suggestions: ['教案基本資料', '課程學習目標', '學生先備概念', '核心素養', '學習重點','議題融入','教學資源及器材','教學設計理念','活動與評量設計'],
-		classes: ['bg-1', 'bg-2', 'bg-selfgreen', 'bg-4', 'bg-4', 'bg-4', 'bg-5', 'bg-6', 'bg-primary'],
-        whiteList: true,
-        tagLimit: 3,
-		afterAdd : function(value) {
-			console.info(value);
-		},
-		afterRemove : function(value) {
-			console.info(value);
-		},
-	});
+    
+    $('input[name="tagInputText"]').inputTags({
+        autocomplete: {
+            values: ['教案基本資料', '課程學習目標', '學生先備概念', '核心素養', '學習重點','議題融入','教學資源及器材','教學設計理念','活動與評量設計'],
+            only: true
+        },
+        max: 3,
+        init: function($elem) {
+            console.log('Event called on plugin init', $elem);
+        },
+        create: function() {
+            //console.log('Tag added !');
+        }
+    });
 }
 
 function saveNode(modalId){
@@ -322,6 +328,10 @@ function saveNode(modalId){
         case "createIdeaModel":
             var node_title = $("#newIdeaTitle").val();
             var idea_content = $("#newIdeaContent").summernote('code');
+            var tagcontent = $("input[name='tagInputText']").val();
+            var tagarray = [];
+            tagarray.push(tagcontent)
+
             break;
     }
 }

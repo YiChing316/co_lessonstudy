@@ -93,7 +93,7 @@ function postData(){
                         $("#errmsg").html('此帳號不存在');
                     }
                     else{
-                        alert('登入成功');
+                        // alert('登入成功');
                         window.location.href = '/dashboard';
                     }     
                 },

@@ -963,7 +963,7 @@ function saveLessonplanData(divId){
         case 'lessonplan_resource':
         case 'lessonplan_design':
             var summernote_content = $("#"+divId+"Textarea").summernote('code');
-            $("#"+divId+"Textarea").find(".editing").removeClass(".editing");
+            $("#"+divId+"Textarea").removeClass("editing");
             isChange = false;
 
             var data = {
