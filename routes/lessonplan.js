@@ -394,12 +394,35 @@ router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function
     else{
         var nodeData = req.body;
         var fileData = req.files;
-        node.createNewIdeaNode(community_id,nodeData,fileData,member_id,member_name)
-        .then(function(nodeResults){
-            if(nodeResults){
-                return res.json({msg:'yes'})
+        var node_title = nodeData.node_title;
+        var node_tag = nodeData.node_tag;
+        var idea_content = nodeData.idea_content;
+        var nodeResults;
+
+        //檢查是否已有同檔名檔案存在
+        node.checkFileExists(community_id,fileData)
+        .then(function(checkResults){
+            //沒有的話做儲存
+            if(checkResults == "notexist"){
+                node.createNewNode(community_id,node_title,node_tag,'idea',member_id,member_name)
+                .then(function(data){
+                    nodeResults = data;
+                    node_id = nodeResults.insertId;
+                    return node.ideaNode(node_id,idea_content)
+                })
+                .then(function(ideaResults){
+                    return node.saveIdeaFile(community_id,fileData,node_id)
+                })
+                .then(function(fileResults){
+                    return res.json({msg:"ok",nodeResults:nodeResults})
+                })
+            }
+            //有的話回傳
+            else{
+                return res.json({msg:"isexist"})
             }
         })
+        
     }
 })
 

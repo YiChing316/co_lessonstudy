@@ -25,26 +25,6 @@ module.exports = {
         })
     },
 
-    createNewIdeaNode:function(community_id,nodeData,fileData,member_id,member_name){
-        var node_title = nodeData.node_title;
-        var node_tag = nodeData.node_tag;
-        var idea_content = nodeData.idea_content;
-        var node_id;
-        var nodeResults;
-        module.exports.createNewNode(community_id,node_title,node_tag,'idea',member_id,member_name)
-        .then(function(data){
-            nodeResults = data;
-            node_id = nodeResults.insertId;
-            return module.exports.ideaNode(node_id,idea_content)
-        })
-        .then(function(ideaResults){
-            return module.exports.saveIdeaFile(community_id,fileData,node_id)
-        })
-        .then(function(fileResults){
-            return nodeResults;
-        })
-    },
-
     ideaNode: function(node_id,idea_content){
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
@@ -66,6 +46,7 @@ module.exports = {
 
     saveIdeaFile: function(community_id,fileData,node_id){
         if(fileData.length >0){
+            console.log("檔案數量:"+fileData.length)
             return Promise.all(
                 fileData.map(function(data){
                     var newpath = './public/communityfolder/community_'+community_id+'/communityfile/';
@@ -111,6 +92,7 @@ module.exports = {
             )
         }
         else{
+            console.log("無檔案")
             return fileData
         } 
     },
@@ -139,5 +121,29 @@ module.exports = {
                 })
             })
         })
+    },
+
+    checkFileExists: function(community_id,fileData){
+        if(fileData.length >0){
+            return Promise.all(
+                fileData.map(function(data){
+                    return new Promise(function(resolve,reject){
+                        var originalname = data.originalname;
+                        var filepath = './public/communityfolder/community_'+community_id+'/communityfile/'+originalname;
+                        fs.stat(filepath, function (err, stats) {
+                            if (err && err.code == 'ENOENT') {
+                                resolve("notexist")
+                            }
+                            else{
+                                resolve(originalname)
+                            }            
+                        });
+                    })
+                })
+            )
+        }
+        else{
+            return "notexist"
+        }
     }
 }

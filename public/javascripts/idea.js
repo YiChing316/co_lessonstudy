@@ -365,8 +365,12 @@ function saveNode(modalId){
                         if(data.msg == "no"){
                             window.location = "/member/login";
                         }
-                        else if(data.msg =="yes"){
-                            console.log(data.msg)
+                        else if(data.msg =="ok"){
+                            ideaModalCloseBtn('createIdeaModel');
+                            $("#createIdeaModel").modal("hide");
+                        }
+                        else if(data.msg == "isexist"){
+                            alert("相同檔名檔案已存在，請修改檔名後再上傳");
                         }
                     },
                     error: function(){
