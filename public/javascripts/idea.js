@@ -338,6 +338,7 @@ function saveNode(modalId){
             var tagcontent = $("input[name='tagInputText']").val();
             var node_tagarray = [];
             node_tagarray.push(tagcontent)
+            var node_tag = node_tagarray.toString();
             var fileData = $("#createNewIdeaFile").prop("files");
             var file_length = fileData.length;
 
@@ -348,7 +349,7 @@ function saveNode(modalId){
                 var formData = new FormData();
                 formData.append("node_title",node_title);
                 formData.append("idea_content",idea_content);
-                formData.append("node_tag",node_tagarray);
+                formData.append("node_tag",node_tag);
                 for(var i=0;i<file_length;i++){
                     formData.append("ideafile",fileData[i])
                 }

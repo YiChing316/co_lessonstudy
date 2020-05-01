@@ -392,35 +392,14 @@ router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function
         res.json({msg:"no"});
     }
     else{
-        console.log(req.body)
-        // [Object: null prototype] {
-        //     node_title: '標題測試',
-        //     idea_content: '...',      
-        //     node_tag: '核心素養'
-        // }
-        console.log(req.files)
-        // [
-        //     {
-        //         fieldname: 'ideafile',
-        //         originalname: '337613.jpg',
-        //         encoding: '7bit',
-        //         mimetype: 'image/jpeg',
-        //         destination: './public/communityfolder/community_1/member_1/multeruploads',
-        //         filename: '62650f32913abc1331d57b41d0cf0eec',
-        //         path: 'public\\communityfolder\\community_1\\member_1\\multeruploads\\62650f32913abc1331d57b41d0cf0eec',
-        //         size: 1204854
-        //     },
-        //     {
-        //         fieldname: 'ideafile',
-        //         originalname: '557459.jpg',
-        //         encoding: '7bit',
-        //         mimetype: 'image/jpeg',
-        //         destination: './public/communityfolder/community_1/member_1/multeruploads',
-        //         filename: 'e9430c4355711ef63cf8b3f87619b5e3',
-        //         path: 'public\\communityfolder\\community_1\\member_1\\multeruploads\\e9430c4355711ef63cf8b3f87619b5e3',
-        //         size: 209303
-        //     }
-        // ]
+        var nodeData = req.body;
+        var fileData = req.files;
+        node.createNewIdeaNode(community_id,nodeData,fileData,member_id,member_name)
+        .then(function(nodeResults){
+            if(nodeResults){
+                return res.json({msg:'yes'})
+            }
+        })
     }
 })
 
