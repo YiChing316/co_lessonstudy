@@ -124,26 +124,21 @@ module.exports = {
     },
 
     checkFileExists: function(community_id,fileData){
-        if(fileData.length >0){
-            return Promise.all(
-                fileData.map(function(data){
-                    return new Promise(function(resolve,reject){
-                        var originalname = data.originalname;
-                        var filepath = './public/communityfolder/community_'+community_id+'/communityfile/'+originalname;
-                        fs.stat(filepath, function (err, stats) {
-                            if (err && err.code == 'ENOENT') {
-                                resolve("notexist")
-                            }
-                            else{
-                                resolve(originalname)
-                            }            
-                        });
-                    })
-                })
-            )
-        }
-        else{
-            return "notexist"
-        }
+        return new Promise(function(resolve,reject){
+            if(fileData.length >0){
+                var testarray = [];
+                for(var i=0;i<fileData.length;i++){
+                    var originalname = fileData[i].originalname;
+                    var filepath = './public/communityfolder/community_'+community_id+'/communityfile/'+originalname;
+                    if(fs.existsSync(filepath)){
+                        testarray.push(originalname)
+                    }
+                }
+                resolve(testarray)
+            }
+            else{
+                resolve("notexist")
+            }
+        })
     }
 }

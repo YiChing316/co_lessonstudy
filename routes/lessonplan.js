@@ -388,8 +388,8 @@ router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function
     var community_id = req.params.community_id;
 
     if(!member_id){
-        res.redirect('/member/login');
         res.json({msg:"no"});
+        res.redirect('/member/login');
     }
     else{
         var nodeData = req.body;
@@ -403,7 +403,7 @@ router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function
         node.checkFileExists(community_id,fileData)
         .then(function(checkResults){
             //沒有的話做儲存
-            if(checkResults == "notexist"){
+            if(checkResults == "notexist" || checkResults.length == 0){
                 node.createNewNode(community_id,node_title,node_tag,'idea',member_id,member_name)
                 .then(function(data){
                     nodeResults = data;
@@ -419,7 +419,7 @@ router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function
             }
             //有的話回傳
             else{
-                return res.json({msg:"isexist"})
+                return res.json({msg:"isexist",checkResults:checkResults})
             }
         })
         

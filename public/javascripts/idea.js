@@ -370,7 +370,7 @@ function saveNode(modalId){
                             $("#createIdeaModel").modal("hide");
                         }
                         else if(data.msg == "isexist"){
-                            alert("相同檔名檔案已存在，請修改檔名後再上傳");
+                            alert(data.checkResults+"\n已存在相同檔名檔案，請修改檔名後再上傳");
                         }
                     },
                     error: function(){
