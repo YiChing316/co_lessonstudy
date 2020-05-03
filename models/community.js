@@ -53,6 +53,9 @@ module.exports = {
             //將創建人新增進社群成員資料表內
             return module.exports.addCommunityMember(community_id,member_id,member_name,"founder")
         })
+        .then(function(memeberresults){
+            return community_id
+        })
     },
 
     addCommunityMember: function(community_id,member_id,member_name,community_member_identity){

@@ -21,7 +21,8 @@ function createCommunity(){
             success: function(data){
                 if(data.msg == 'yes'){
                     alert('新增成功');
-                    window.location.reload();
+                    window.location.href = '/lessonplan/edit/'+data.community_id;
+                    // window.location.reload();
                 }
                 else{
                     window.location = "/member/login";
@@ -171,7 +172,7 @@ function joinCommunity(id){
                 alert('密碼錯誤');
             }
             else if(data.msg == 'existed'){
-                alert('您已加入此社群');
+                alert('您已是此社群成員');
             }
             else if(data.msg == 'yes'){
                 alert('加入成功');
