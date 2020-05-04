@@ -21,8 +21,8 @@ var twoselect_Component = [
 
 var threeselect_Component = [
     {labelname:'',firstselid:'fieldcontent_field_sel',secondselid:'core_competency_dimesion_sel',threeselid:'core_competency_item_sel',bodyname:'core_competency_body',parentDiv:'cirn_form1',onclickfunction:'addcore_competency()'},
-    {labelname:'學習表現',firstselid:'performancefocus_item',secondselid:'performancefocus_childitem',threeselid:'performancefocus_content',bodyname:'performancefocus_body',parentDiv:'cirn_form2',onclickfunction:'addlearning_performence()'},
-    {labelname:'學習內容',firstselid:'contentfocus_item',secondselid:'contentfocus_childitem',threeselid:'contentfocus_content',bodyname:'contentfocus_body',parentDiv:'cirn_form2',onclickfunction:'addlearning_content()'},
+    {labelname:'學習表現',firstselid:'performancefocus_item',secondselid:'performancefocus_childitem',threeselid:'performancefocus_content',bodyname:'performancefocus_body',parentDiv:'learning_focus',onclickfunction:'addlearning_performence()'},
+    {labelname:'學習內容',firstselid:'contentfocus_item',secondselid:'contentfocus_childitem',threeselid:'contentfocus_content',bodyname:'contentfocus_body',parentDiv:'learning_focus',onclickfunction:'addlearning_content()'},
     {labelname:'議題融入',firstselid:'issue_name',secondselid:'issue_learning_theme',threeselid:'issue_content',bodyname:'issue_body',parentDiv:'lessonplan_issue',onclickfunction:'addissue()'}
 ];
 
@@ -283,12 +283,7 @@ function twoselect_Map(){
 
 //核心素養內第二大標:學習重點
 function cirn_Set(){
-    $('#lessonplan_cirn').append('<div class="form-group" id="cirn_form1">'+
-                                    '<label class="control-label font-weight-bolder">總綱核心素養</label>'+
-                                '</div>'+
-                                '<div class="form-group" id="cirn_form2">'+
-                                    '<label class="control-label font-weight-bolder">學習重點</label>'+
-                                '</div>');
+    $('#lessonplan_cirn').append('<div class="form-group" id="cirn_form1"></div>');
 }
 
 function threeselect_Map(){
@@ -299,7 +294,7 @@ function threeselect_Map(){
             threeselecDiv(data.labelname,data.firstselid,data.secondselid,data.threeselid,data.bodyname,data.parentDiv,data.onclickfunction);
         })
         buttonDiv('cirn_form1');
-        buttonDiv('cirn_form2');
+        buttonDiv('learning_focus');
         buttonDiv('lessonplan_issue');
 }
 
@@ -310,14 +305,17 @@ function stageControl(){
     if(course_field_info == "" || course_grade_info == ""){
         alertStageDiv("headerlessonplan_unit");
         alertStageDiv("headerlessonplan_cirn");
+        alertStageDiv("headerlearning_focus");
         alertStageDiv("headerlessonplan_issue");
         $("#cardidlessonplan_unit *").prop("disabled",true);
         $("#cardidlessonplan_cirn *").prop("disabled",true);
+        $("#cardidlearning_focus *").prop("disabled",true);
         $("#cardidlessonplan_issue *").prop("disabled",true);
     }
     else{
         $("#cardidlessonplan_unit *").prop("disabled",false);
         $("#cardidlessonplan_cirn *").prop("disabled",false);
+        $("#cardidlearning_focus *").prop("disabled",false);
         $("#cardidlessonplan_issue *").prop("disabled",false);
     }
 }
@@ -906,7 +904,7 @@ function saveLessonplanData(divId){
 
             saveAjax(data);
             break;
-        case 'cirn_form2':
+        case 'learning_focus':
             var learningFocusItem = ["performancefocus_body","contentfocus_body"];
             var form2Array = [];
             learningFocusItem.map(function(data){
@@ -922,9 +920,9 @@ function saveLessonplanData(divId){
                 form2Array.push({stage:data,content:learnignFocusArray})
             })
 
-            var editing = $("#cirn_form2").find(".editing").get().length;
+            var editing = $("#learning_focus").find(".editing").get().length;
             for(var i=0;i<editing;i++){
-                $($("#cirn_form2").find(".editing")[i]).removeClass("editing");
+                $($("#learning_focus").find(".editing")[i]).removeClass("editing");
             }
             isChange = false;
 
