@@ -93,7 +93,7 @@ function learning_focus_childitem_Map(lftype,lfitem,firstselect,secondselect,thi
             case lfitem:
                 $("#"+secondselect+" option").remove();
                 $("#"+thirdselect+" option").remove();
-                $("#"+secondselect).append("<option disabled selected>請選擇</option>");
+                $("#"+secondselect).append("<option disabled selected>請選擇子項</option>");
                 $("#"+thirdselect).append("<option disabled selected>請選擇內容</option>");
                 var array = child_array;
                 $.each(array,function(i,val){
@@ -350,12 +350,12 @@ function selectDefault(){
     $("#core_competency_dimesion_sel").append("<option disabled selected>請選擇總綱核心面向</option>");
     $("#core_competency_item_sel").append("<option disabled selected>請選擇總綱核心項目</option>");
 
-    $("#performancefocus_item").append("<option disabled selected>請選擇</option>");
-    $("#performancefocus_childitem").append("<option disabled selected>請選擇</option>");
+    $("#performancefocus_item").append("<option disabled selected>請選擇項目</option>");
+    $("#performancefocus_childitem").append("<option disabled selected>請選擇子項</option>");
     $("#performancefocus_content").append("<option disabled selected>請選擇內容</option>");
 
-    $("#contentfocus_item").append("<option disabled selected>請選擇</option>");
-    $("#contentfocus_childitem").append("<option disabled selected>請選擇</option>");
+    $("#contentfocus_item").append("<option disabled selected>請選擇課題</option>");
+    $("#contentfocus_childitem").append("<option disabled selected>請選擇子項</option>");
     $("#contentfocus_content").append("<option disabled selected>請選擇內容</option>");
 
     $("#issue_name").append("<option disabled selected>請選擇議題</option>");
