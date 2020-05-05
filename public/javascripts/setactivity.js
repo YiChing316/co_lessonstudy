@@ -19,12 +19,12 @@ function trElement(parentid,num,processtarget,processcontent,processtime,process
                             '</tr>');
 }
 
-function assessmentDiv(td_id,assessmentcontent,tmppath,file){
+function assessmentDiv(td_id,assessmentcontent,tmpmimetype,tmppath,file){
 
     $("#"+td_id).append('<div class="assessmentDiv">'+
                             '<hr>'+
                             '<div class="assessment_content">'+assessmentcontent+'</div>'+
-                            '<div class="assessment_filename text-muted" data-tmppath="'+tmppath+'">'+file+'</div>'+
+                            '<div class="assessment_filename text-muted" data-mimetype="'+tmpmimetype+'" data-tmppath="'+tmppath+'">'+file+'</div>'+
                             '<div class="btn-group">'+
                                 '<input type="button" class="btn btn-sm btn-link assessment_link_edit" value="編輯">'+
                                 '<input type="button" class="btn btn-sm btn-link assessment_link_del" value="刪除">'+
@@ -213,16 +213,20 @@ function addassessmentTd(){
                     }
                     else if(data.msg =="yes"){
                         var filedata = data.filedata;
-                        // console.log(data)
                         //上傳的原始檔名
                         var uploadoriginalname = filedata.originalname;
                         //在暫存區的檔名
                         var uploadfilepath = filedata.path;
+                        //檔案類型
+                        var tmpmimetype = filedata.mimetype;
                         //要出現在assessmentDiv的
                         var filediv = '<i class="fas fa-paperclip mr-1"></i>'+uploadoriginalname;
 
-                        assessmentDiv(td_id,assessmentcontent,uploadfilepath,filediv);
+                        assessmentDiv(td_id,assessmentcontent,tmpmimetype,uploadfilepath,filediv);
                         closeassessmentModal(td_id);
+                    }
+                    else if(data.msg == "isexist"){
+                        alert("已存在相同檔名檔案，請修改檔名後再上傳")
                     }
                 },
                 error: function(){
@@ -242,6 +246,7 @@ function editAssessmentDiv(){
         var filename = $div.find(".assessment_filename").text();
 
         var divindex = $div.index();
+
         var targetid = $div.parent('td').attr('id');
         
         // console.log(filename)
@@ -331,8 +336,9 @@ function saveLocalStorage(divId){
         $($("#"+divId+"Tbody tr")[i]).find('.assessmentDiv').each(function(){
             var assessment_content = $(this).find(".assessment_content").text();
             var originalname = $(this).find(".assessment_filename").text();
+            var tmpmimetype = $(this).find(".assessment_filename").data("mimetype");
             var tmppath = $(this).find(".assessment_filename").data("tmppath");
-            assessmentArray.push({assessment_content:assessment_content,assessment_originalname:originalname,assessment_tmp:tmppath})
+            assessmentArray.push({assessment_content:assessment_content,assessment_originalname:originalname,assessment_tmp:tmppath,assessment_mimetype:tmpmimetype})
         })
 
 
@@ -398,10 +404,10 @@ function setActivityProcess(){
                                 data:data,
                                 success: function(data){
                                     if(data.msg == "ok"){
-                                        assessmentDiv(td_id,content,"",filediv);
+                                        assessmentDiv(td_id,content,"","",filediv);
                                     }
                                     else if(data.msg == "notexist"){
-                                        assessmentDiv(td_id,content,"","");
+                                        assessmentDiv(td_id,content,"","","");
                                     }
                                 },
                                 error: function(){
@@ -410,7 +416,7 @@ function setActivityProcess(){
                             })
                         }
                         else{
-                            assessmentDiv(td_id,content,"","");
+                            assessmentDiv(td_id,content,"","","");
                         }
                         
                         deleteassessment();
@@ -493,7 +499,7 @@ function editActivityModalBtn(){
 function editAssessmentModalBtn(){
     var community_id = $("#community_id").text();
     var targetid = $("#edittargetid").text();
-    var divindex = $("divindex").text();
+    var divindex = $("#divindex").text() -1;
     var fileData = $("#editassessmentFile").prop("files")[0];
 
     var assessmentcontent = $("#editassessmentsummernote").val();
@@ -520,18 +526,20 @@ function editAssessmentModalBtn(){
                     }
                     else if(data.msg =="yes"){
                         var filedata = data.filedata;
-                        //console.log(data)
                         //上傳的原始檔名
                         var uploadoriginalname = filedata.originalname;
                         //在暫存區的檔名
                         var uploadfilepath = filedata.path;
+                        //檔案類型
+                        var tmpmimetype = filedata.mimetype;
                         //要出現在assessmentDiv的
                         var filediv = '<i class="fas fa-paperclip mr-1"></i>'+uploadoriginalname;
 
                         var $div = $("#"+targetid).find(".assessmentDiv:eq("+divindex+")");
                         $div.find("p").html(assessmentcontent);
                         $div.find(".assessment_filename").html(filediv);
-                        $div.find(".assessment_filename").attr("data-tmppath",uploadfilepath)
+                        $div.find(".assessment_filename").attr("data-mimetype",tmpmimetype);
+                        $div.find(".assessment_filename").attr("data-tmppath",uploadfilepath);
 
                         //該活動的id
                         var parentdivid = $("#"+targetid).closest(".card-body").attr('id');

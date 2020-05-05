@@ -134,6 +134,8 @@ module.exports = {
 
     saveActivityFile: function(community_id,lessonplanData){
         var lessonplan_activity_content = lessonplanData.lessonplan_activity_content;
+        var fileData = [];
+        var fileResults;
         return new Promise(function(resolve,reject){
             lessonplan_activity_content = JSON.parse(lessonplan_activity_content);
             var newpath = './public/communityfolder/community_'+community_id+'/communityfile/';
@@ -150,12 +152,20 @@ module.exports = {
                     var assessment_content = assessmentdata[s].assessment_content;
                     var assessment_originalname = assessmentdata[s].assessment_originalname;
                     var assessment_tmp = assessmentdata[s].assessment_tmp;
+                    var assessment_mimetype = assessmentdata[s].assessment_mimetype;
                     if(fs.existsSync(assessment_tmp)){
                         fs.renameSync(assessment_tmp,newpath+assessment_originalname,function(err){
                             if (err) throw err;
                         })
                     }
-                    newasessment_array.push({assessment_content:assessment_content,assessment_originalname:assessment_originalname,assessment_tmp:""}) 
+                    var assessment_data = {
+                        assessment_content:assessment_content,
+                        assessment_originalname:assessment_originalname,
+                        assessment_tmp:"",
+                        assessment_mimetype:assessment_mimetype
+                    };
+                    newasessment_array.push(assessment_data)
+                    fileData.push(assessment_data)
                 }
                 newactivity_array.push({lessonplan_activity_learningtarget:learningtarget,
                                             lessonplan_activity_content:content,
@@ -167,6 +177,57 @@ module.exports = {
             var newString = JSON.stringify(newactivity_array);
             resolve(newString);
         })
+        .then(function(results){
+            fileResults = results;
+            return module.exports.saveFileData(community_id,fileData)
+        })
+        .then(function(results2){
+            return fileResults
+        })
+    },
+
+    //將檔案資料存入資料庫
+    saveFileData: function(community_id,fileData){
+        if(fileData.length >0){
+            return Promise.all(
+                fileData.map(function(data){
+                    return new Promise(function(resolve,reject){
+                        pool.getConnection(function(err,connection){
+                            if(err) return reject(err);
+    
+                            var originalname = data.assessment_originalname;
+                            var filetype = data.assessment_mimetype;
+    
+                            switch(filetype){
+                                case "image/png":
+                                case "image/jpeg":
+                                case "image/gif":
+                                    filetype = "圖片"
+                                    break;
+                                default:
+                                    filetype = "文件"
+                                    break;
+                            }
+            
+                            var sql = {
+                                community_id_community:community_id,
+                                community_file_name:originalname,
+                                community_file_type:filetype
+                            }
+            
+                            connection.query('INSERT INTO `community_file` SET ?',sql,function(err,insertResults,fields){
+                                if(err) return reject(err);
+                                resolve(insertResults);
+                                connection.release();
+                            })
+                        })
+                    })
+                })
+            )
+        }
+        else{
+            return fileData
+        }
     },
 
     saveLessonplanActivityProcess: function(lessonplan_activity_process_id,lessonplan_activity_content,member_id,member_name){
@@ -303,7 +364,7 @@ module.exports = {
         })
     },
 
-    deletLessonplanActivityProcess: function(lessonplanData){
+    deleteLessonplanActivityProcess: function(lessonplanData){
 
         var lessonplan_activity_process_id = lessonplanData.lessonplan_activity_process_id;
         var community_id = lessonplanData.community_id;
@@ -320,6 +381,19 @@ module.exports = {
         })
         .then(function(data){
             return module.exports.selectLessonplanActivityProcess(community_id)
+        })
+    },
+
+    deleteActivityFile: function(community_id,filename){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('DELETE FROM `community_file` WHERE `community_id_community` = ? AND `community_file_name` = ?',[community_id,filename],function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
         })
     }
 }

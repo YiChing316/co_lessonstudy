@@ -236,7 +236,7 @@ router.post('/edit/delete',function(req,res,next){
     else{
         var lessonplanData= req.body;
         
-        lessonplan.deletLessonplanActivityProcess(lessonplanData)
+        lessonplan.deleteLessonplanActivityProcess(lessonplanData)
         .then(function(data){
             if(data){
                 data = JSON.stringify(data)
@@ -260,13 +260,21 @@ var upload = multer({
 
 router.post('/edit/:community_id/uploadfile',upload.single('file'),function(req,res){
     var member_id = req.session.member_id;
+
+    var community_id = req.params.community_id;
+    var originalname = req.file.originalname;
+    var filepath = './public/communityfolder/community_'+community_id+'/communityfile/'+originalname;
     if(!member_id){
         res.json({msg:"no"});
         res.redirect('/member/login');
     }
     else{
-        // console.log(req.file)
-        res.json({msg:"yes",filedata:req.file})
+        if(fs.existsSync(filepath)){
+            res.json({msg:"isexist"})
+        }
+        else{
+            res.json({msg:"yes",filedata:req.file})
+        }
     }
 })
 
@@ -298,6 +306,8 @@ router.post('/edit/:community_id/uploadsummernotefile',upload.array('imageFile',
 
 router.post('/edit/:community_id/deletefile',function(req,res){
     var member_id = req.session.member_id;
+    var community_id = req.params.community_id;
+
     var filename = req.body.filename;
     var filepath = req.body.filepath;
     var path = filepath+filename;
@@ -312,11 +322,14 @@ router.post('/edit/:community_id/deletefile',function(req,res){
                 return res.json({msg:"notsave"})
             }
             else{
-                fs.unlink(path,function(err){
-                    if(err) return console.log(err);
-                    console.log('file deleted successfully');
-                    res.json({msg:"yes"})
-               }); 
+                lessonplan.deleteActivityFile(community_id,filename)
+                .then(function(results){
+                    fs.unlink(path,function(err){
+                        if(err) return console.log(err);
+                        console.log('file deleted successfully');
+                        res.json({msg:"yes"})
+                   });
+                })
             }            
         });
     }
