@@ -13,13 +13,14 @@ module.exports = {
         })
     },
     
-    create: function(community_name,community_key,member_id,member_name){
+    create: function(community_name,community_key,community_intro,member_id,member_name){
         var community_id,communityPath;
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 var sql = {
                     community_name: community_name,
                     community_key: community_key,
+                    community_intro:community_intro,
                     member_id_member: member_id,
                     member_name: member_name
                 }
@@ -120,7 +121,7 @@ module.exports = {
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
-                connection.query('SELECT `community_id`,`community_name`,DATE_FORMAT(`community_createtime`,"%Y/%m/%d %T") AS `community_createtime` FROM `community`',function(err,rows,fields){
+                connection.query('SELECT `community_id`,`community_name`,`community_intro`,DATE_FORMAT(`community_createtime`,"%Y/%m/%d %T") AS `community_createtime` FROM `community`',function(err,rows,fields){
                     if(err) return reject(err);
                     resolve(rows);
                     connection.release();
@@ -135,7 +136,7 @@ module.exports = {
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
-                connection.query('SELECT `community`.community_id,`community`.community_name,DATE_FORMAT(`community`.community_createtime,"%Y/%m/%d %T") AS `community_createtime`,`community_member`.community_member_id,`community_member`.member_name '+
+                connection.query('SELECT `community`.community_id,`community`.community_name,`community`.community_intro,DATE_FORMAT(`community`.community_createtime,"%Y/%m/%d %T") AS `community_createtime`,`community_member`.community_member_id,`community_member`.member_name '+
                                 'FROM `community` INNER JOIN `community_member` ON `community`.community_id=`community_member`.community_id_community '+
                                 'WHERE `community_member`.member_id_member = ?',[member_id],function(err,rows,fields){
                     if(err) return reject(err);

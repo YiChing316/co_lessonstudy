@@ -5,8 +5,11 @@ var memberCommunityData;
 function createCommunity(){
     var community_name = $("#community_name").val();
     var community_key = $("#community_key").val();
+    var community_intro = $("#community_intro").val();
 
-    if(community_name == "" || community_key ==""){
+    console.log(community_intro)
+
+    if(community_name == "" || community_key =="" || community_intro ==""){
         $("#errmsg").show();
         $("#errmsg").html('每隔皆為必填');
     }
@@ -16,7 +19,8 @@ function createCommunity(){
             type: "POST",
             data:{
                 community_name: community_name,
-                community_key:community_key
+                community_key:community_key,
+                community_intro:community_intro
             },
             success: function(data){
                 if(data.msg == 'yes'){
@@ -35,6 +39,13 @@ function createCommunity(){
     }    
 };
 
+function closeAddCommunityModal(){
+    $("#community_name").val("");
+    $("#community_key").val("");
+    $("#community_intro").val("");
+    $("#errmsg").hide();
+}
+
 
 /****處理現有社群********* */
 
@@ -44,7 +55,8 @@ function showAllCommunity(){
     $allCommunityTable.bootstrapTable({
         columns:[
             {title:"社群ID",field:"community_id",visible:false},
-            {title:"社群名稱",field:"community_name",detailView:false},
+            {title:"社群名稱",field:"community_name",detailView:false,width:320},
+            {title:"社群簡介",field:"community_intro",detailView:false,width:500},
             {title:"創立時間",field:"community_createtime",detailView:false},
             {formatter:"joinCommunityFormatter"}
         ],
@@ -126,7 +138,8 @@ function showMemberCommunity(){
         $memberCommunityTable.bootstrapTable({
             columns:[
                 {title:"社群ID",field:"community_id",visible:false},
-                {title:"社群名稱",field:"community_name"},
+                {title:"社群名稱",field:"community_name",width:320},
+                {title:"社群簡介",field:"community_intro",width:500},
                 {title:"創立時間",field:"community_createtime",sortable:true},
                 {formatter:"enterCommunityFormatter",events:"operateEvents"}
             ],

@@ -34,14 +34,15 @@ router.post('/create', function(req, res,next) {
   var member_id = req.session.member_id|| '', 
     member_name =  req.session.member_name || '',
     community_name = req.body.community_name || '',
-    community_key = req.body.community_key || '';
+    community_key = req.body.community_key || '',
+    community_intro = req.body.community_intro || '';
 
     if(!member_id){
       res.redirect('/member/login');
       res.json({msg:'no'});
     }
     else{
-      community.create(community_name,community_key,member_id,member_name)
+      community.create(community_name,community_key,community_intro,member_id,member_name)
       .then(function(results){
         if(results){
           console.log(results)
