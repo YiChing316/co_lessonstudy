@@ -116,6 +116,37 @@ module.exports = {
         })
     },
 
+    sendCommunityApplication: function(community_id,member_id,member_name){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                var sql = {
+                    community_id_community:community_id,
+                    member_id_member:member_id,
+                    member_name:member_name,
+                    community_application_status:'處理中'
+                }
+
+                connection.query('SELECT COUNT(`member_id_member`) AS member_id FROM `community_application` WHERE `community_id_community` =? AND `member_id_member` =?',[community_id,member_id],function(err,countResults,fields){
+                    if(err) return reject(err);
+    
+                    var countNum = countResults[0].COUNTNUM;
+                    if(countNum == 1){
+
+                    }
+                    else{
+                        connection.query('INSERT INTO `community_application` SET ?',sql,function(err,insertResults,fields){
+                            if(err) return reject(err);
+                            resolve(insertResults);
+                            connection.release();
+                        })
+                    }
+                })
+            })
+        })
+    },
+
     //使用DATE_FORMAT(欄位名稱,"%Y/%m/%d %T")select出想要的日期時間格式
     showAllCommunity: function(){
         return new Promise(function(resolve,reject){
@@ -140,7 +171,32 @@ module.exports = {
                                 'FROM `community` INNER JOIN `community_member` ON `community`.community_id=`community_member`.community_id_community '+
                                 'WHERE `community_member`.member_id_member = ?',[member_id],function(err,rows,fields){
                     if(err) return reject(err);
-                    resolve(rows);
+
+                    if(rows.length == 0){
+                        resolve(0)
+                    }
+                    else{
+                        resolve(rows);
+                    }
+                    connection.release();
+                })
+            })
+        })
+    },
+
+    showApplicationCommunity: function(member_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT `community`.community_id,`community`.community_name,`community_application`.member_id_member,`community_application`.member_name,`community_application`.community_application_status FROM `community` INNER JOIN `community_application` ON `community`.community_id=`community_application`.community_id_community WHERE `community_application`.member_id_member = ?',[member_id],function(err,rows,fields){
+                    if(err) return reject(err);
+                    
+                    if(rows.length == 0){
+                        resolve(0)
+                    }
+                    else{
+                        resolve(rows);
+                    }
                     connection.release();
                 })
             })

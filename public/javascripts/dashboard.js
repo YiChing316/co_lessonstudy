@@ -1,5 +1,6 @@
 var allCommunityData;
 var memberCommunityData;
+var applicationCommunityData;
 
 //創建社群
 function createCommunity(){
@@ -96,7 +97,7 @@ function detailFormatter(value, row, index) {
                 '<input class="btn btn-outline-primary" type="button" value="送出" onclick="joinCommunity('+id+')">',
             '</div>',
             '<div class="col-3">',
-                '<p>沒有密碼嗎?<a style="color: #ED557E;">提出申請</a></p>',
+                '<p>沒有密碼嗎?<a href="javascript: void(0)" style="color: #ED557E;" onclick="applicationCommunity('+id+')">提出申請</a></p>',
             '</div>',
         '</div>'
     ].join('')
@@ -166,8 +167,6 @@ window.operateEvents = {
     }  
 }
 
-
-
 /****加入社群ajax************* */
 //根據社群id、密碼，加入社群
 function joinCommunity(id){
@@ -203,14 +202,63 @@ function joinCommunity(id){
 }
 
 
+/*****處理申請社群******************************* */
+function showApplication(){
+    var $applicationTable = $("#applicationCommunityTable");
+    if(applicationCommunityData == 0){
+        $applicationTable.hide();
+        $("#applicationCommunityEmptyMsg").html("您目前尚未申請任何社群");
+    }
+    else{
+        $applicationTable.bootstrapTable({
+            columns:[
+                {title:"社群ID",field:"community_id",visible:false},
+                {title:"社群名稱",field:"community_name"},
+                {title:"申請狀況",field:"community_application_status"}
+            ],
+            theadClasses:'thead-light',
+            pageSize: 10,
+            pagination:true,
+            classes:'table table-bordered'
+        })
+        $applicationTable.bootstrapTable("load",applicationCommunityData);
+    }
+}
+
+/****申請加入社群ajax************* */
+function applicationCommunity(id){
+    $.ajax({
+        url: "/dashboard/application",
+        type: "POST",
+        data:{
+            community_id: id
+        },
+        success: function(data){
+            if(data.msg == 'no'){
+                window.location = "/member/login";
+            }
+            else{
+                alert("已提出申請");
+                window.location.reload();
+            }     
+        },
+        error: function(){
+            alert('失敗');
+        }
+    })
+}
+
 $(function(){
     allCommunityData = JSON.parse($("#allCommunityData").text());
     memberCommunityData = JSON.parse($("#memberCommunityData").text());
+    applicationCommunityData = JSON.parse($("#applicationCommunityData").text());
     $("#allCommunityData").remove();
     $("#memberCommunityData").remove();
+    $("#applicationCommunityData").remove();
 
     showAllCommunity();
     showMemberCommunity();
+    showApplication();
 
     //回到dashboard畫面則清除所有localstorage
     localStorage.clear();

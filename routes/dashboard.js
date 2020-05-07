@@ -6,6 +6,7 @@ router.get('/', function(req, res, next) {
   var member_id = req.session.member_id;
   var member_name = req.session.member_name;
   var allCommunityData,communityNumber;
+  var memberCommunityData,applicationCommunityData;
 
   if(!member_id){
     res.redirect('/member/login');
@@ -18,14 +19,13 @@ router.get('/', function(req, res, next) {
       return community.showMemberCommunity(member_id)
     })
     .then(function(memberResults){
-      if(memberResults.length){
-        var memberCommunityData = JSON.stringify(memberResults);
-          res.render('dashboard', { title: 'dashboard',member_id:member_id,member_name:member_name,allCommunityData:allCommunityData,memberCommunityData:memberCommunityData,communityNumber:communityNumber});
-      }
-      else{
-        var memberCommunityData = 0;
-          res.render('dashboard', { title: 'dashboard',member_id:member_id,member_name:member_name,allCommunityData:allCommunityData,memberCommunityData:memberCommunityData,communityNumber:communityNumber});
-      }
+      memberCommunityData = JSON.stringify(memberResults);
+      return community.showApplicationCommunity(member_id)
+      // res.render('dashboard', { title: 'dashboard',member_id:member_id,member_name:member_name,allCommunityData:allCommunityData,memberCommunityData:memberCommunityData,communityNumber:communityNumber});
+    })
+    .then(function(applicationResults){
+      applicationCommunityData = JSON.stringify(applicationResults);
+      res.render('dashboard', { title: 'dashboard',member_id:member_id,member_name:member_name,allCommunityData:allCommunityData,memberCommunityData:memberCommunityData,communityNumber:communityNumber,applicationCommunityData:applicationCommunityData});
     })
   } 
 });
@@ -88,6 +88,24 @@ router.post('/join', function(req, res,next) {
         }
       })
     }
+});
+
+router.post('/application',function(req,res,next){
+  var member_id = req.session.member_id;
+  var member_name = req.session.member_name;
+
+  if(!member_id){
+    res.redirect('/member/login');
+    res.json({msg:'no'});
+  }
+  else{
+    var community_id = req.body.community_id;
+    community.sendCommunityApplication(community_id,member_id,member_name)
+    .then(function(results){
+      res.json({msg:'yes'})
+    })
+  }
+
 });
 
 module.exports = router;

@@ -19,25 +19,17 @@
             <h1 class="mb-5">加入共備社群</h1>
           </div>
           <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
-              <!-- <div class="form-row">
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="fas fa-search"></i></span>
-                  </div>
-                  <input type="text" class="form-control form-control-lg search-input" id="searchInput" placeholder="搜尋您想找的社群...">
-                </div>
-              </div> -->
-              <hr> 
-              <div class="form-group">
-                <label>想要創立新的共備社群嗎？<a href="" data-toggle="modal" data-target="#creatCommunityModal">前往創立</a></label>
-              </div> 
+            <hr> 
+            <div class="form-group">
+              <label>想要創立新的共備社群嗎？<a href="" data-toggle="modal" data-target="#creatCommunityModal">前往創立</a></label>
+            </div> 
           </div>
         </div>
       </div>
     </header>
       
     <!--Main-->
-    <main role="main" class="container">
+    <main role="main" class="container" style="margin-bottom: 10%;">
       <div class="mx-auto">
         <div class="form-group mt-5">
           <div class="title-bar bg-selfgreen align-items-center">
@@ -55,9 +47,12 @@
           <table id="memberCommunityTable"></table>
         </div>
         <div class="form-group mt-5">
-          <div class="title-bar bg-selfpink">
+          <div class="title-bar bg-selfpink mb-3">
             <h4 class="text-white font-weight-bold pl-3">您正在申請的社群</h4>
           </div>
+          <p id="applicationCommunityData"><%= applicationCommunityData %></p>
+          <p id="applicationCommunityEmptyMsg" class="font-weight-bold text-danger"></p>
+          <table id="applicationCommunityTable"></table>
         </div>
       </div>
     </main>
