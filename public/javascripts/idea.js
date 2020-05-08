@@ -324,17 +324,17 @@ function showReadIdeaContent(ideaData){
 //想法內file呈現
 function showReadIdeaFile(community_id,ideaFileData){
     if(ideaFileData.length > 0){
-        console.log(ideaFileData)
         var path = '/communityfolder/community_'+community_id+'/communityfile/'
         ideaFileData.map(function(data){
             var file_id = data.community_file_id;
             var file_name = data.community_file_name;
             $("#readIdeaFileDiv").append('<li><a href="'+path+file_name+'" download="'+file_name+'" class="mr-2"><i class="fas fa-file-download"> '+file_name+'</i></a></li>');
-            $(".reviseIdeaFile").append('<div class="form-inline mt-2 reviseIdeaFileDiv" data-fileId="'+file_id+'">'+
+            $(".reviseIdeaFile").append('<div class="form-inline mt-2 reviseIdeaFileDiv">'+
                                             '<label>'+file_name+'</label>'+
-                                            '<a class="text-danger ml-2"><i class="fas fa-times"></i></a>'+
+                                            '<a class="text-danger ml-2 deleteIdeaFile" data-filename="'+file_name+'" data-fileid="'+file_id+'"><i class="fas fa-times"></i></a>'+
                                         '</div>');
         })
+        deleteIdeaFile();
     }
 }
 
@@ -358,6 +358,39 @@ function ideaScaffold_Add(){
         var string = "<b><font style='background-color: rgb(255, 231, 206);'>"+scaffoldText+"</font></b>";
         $("#"+textareaId).summernote('pasteHTML', string);
         
+    })
+}
+
+function deleteIdeaFile(){
+    var community_id = $("#community_id").text();
+    $(".deleteIdeaFile").on('click',function(){
+        var file_id = $(this).data("fileid");
+        var filename = $(this).data("filename");
+
+        var data = {
+            file_id:file_id,
+            filepath:'./public/communityfolder/community_'+community_id+'/communityfile/'+filename
+        }
+
+        $(this).parent().remove()
+
+        $.ajax({
+            url: "/lessonplan/idea/"+community_id+"/deletefile",
+            type: "POST",
+            async:false,
+            data:data,
+            success: function(data){
+                if(data.msg == "yes"){
+                    console.log("已刪除");
+                }
+                else if(data.msg == "no"){
+                    window.location = "/member/login";
+                }
+            },
+            error: function(){
+                alert('失敗');
+            } 
+        })
     })
 }
 

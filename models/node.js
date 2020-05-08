@@ -166,5 +166,18 @@ module.exports = {
                 resolve("notexist")
             }
         })
+    },
+
+    deleteIdeaFile: function(file_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('DELETE FROM `community_file` WHERE `community_file_id` = ?',file_id,function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
+        })
     }
 }

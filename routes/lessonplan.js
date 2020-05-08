@@ -424,7 +424,6 @@ router.get('/idea/:community_id/openIdea',function(req,res,next){
     }
 })
 
-
 router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function(req,res){
     var member_id = req.session.member_id;
     var member_name = req.session.member_name;
@@ -467,6 +466,29 @@ router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function
             }
         })
         
+    }
+})
+
+router.post('/idea/:community_id/deletefile',function(req,res){
+    var member_id = req.session.member_id;
+    var community_id = req.params.community_id;
+
+    if(!member_id){
+        res.json({msg:"no"});
+        res.redirect('/member/login');
+    }
+    else{
+        var file_id = req.body.file_id;
+        var filepath = req.body.filepath;
+
+        node.deleteIdeaFile(file_id)
+        .then(function(results){
+            fs.unlink(filepath,function(err){
+                if(err) return console.log(err);
+                console.log('file deleted successfully');
+                res.json({msg:"yes"})
+           });
+        })
     }
 })
 
