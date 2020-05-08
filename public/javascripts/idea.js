@@ -254,7 +254,7 @@ $(function(){
 
 })
 
-/**打開 ideatoolbar新增節點 modal */
+/**打開 ideatoolbar新增節點 modal ***********************************/
 function openIdeaModal(){
     $("#creatIdeaBtn").click(function(){
         $("#createIdeaModel").modal("show");
@@ -292,6 +292,7 @@ function ideaModalCloseBtn(modalid){
     } 
 }
 
+/**修改/閱讀modal **************************************************/
 function showReadIdeaContent(ideaData){
 
     var node_title = ideaData.node_title;
@@ -351,6 +352,8 @@ function changeIdeaTab(title){
     })
 }
 
+
+/**Modal內所需 *****************************************************/
 function ideaScaffold_Add(){
     $(".ideascaffold").click(function(){
         var scaffoldText = $(this).text();
@@ -394,7 +397,7 @@ function deleteIdeaFile(){
     })
 }
 
-/**想法summernote設定 */
+//想法summernote設定
 function ideasummernoteClass(){
     $('.ideasummernote').summernote({
         tabsize: 2,
@@ -451,7 +454,7 @@ function ideasummernoteClass(){
     });
 }
 
-/**想法tag api設定 */
+//想法tag api設定
 function ideatagClass(tag){
     
     $('input[name="tagInputText"]').inputTags({
@@ -470,17 +473,17 @@ function ideatagClass(tag){
     });
 }
 
-/**儲存節點 */
+/**儲存節點 *********************************************************/
 function saveNode(modalId){
+    var community_id = $("#community_id").text();
     switch(modalId){
         case "createIdeaModel":
-            var community_id = $("#community_id").text();
             var node_title = $("#newIdeaTitle").val();
             var idea_content = $("#newIdeaContent").summernote('code');
-            var tagcontent = $("input[name='tagInputText']").val();
-            var node_tagarray = [];
-            node_tagarray.push(tagcontent)
-            var node_tag = node_tagarray.toString();
+            var node_tag = $("input[name='tagInputText']").val();
+            // var node_tagarray = [];
+            // node_tagarray.push(tagcontent)
+            // var node_tag = node_tagarray.toString();
             var fileData = $("#createNewIdeaFile").prop("files");
             var file_length = fileData.length;
 
@@ -519,6 +522,33 @@ function saveNode(modalId){
                         alert('失敗');
                     }
                 })
+            }
+            break;
+        case "readIdeaModal":
+            var node_id = $("#readIdeaNodeid").text();
+            var revise_node_title = $("#reviseIdeaTitle").val();
+            var revise_idea_content = $("#reviseIdeaContent").summernote('code');
+            var revise_tagcontent = $("#reviseIdeaTag").val();
+            var revise_fileData = $("#reviseIdeaFile").prop("files");
+            var revise_file_length = revise_fileData.length;
+
+            console.log(revise_node_title)
+            console.log(revise_idea_content)
+            console.log(revise_tagcontent)
+            console.log(revise_fileData)
+
+            if( revise_node_title == ""){
+                alert("想法標題不可空白!!")
+            }
+            else{
+                var formData2 = new FormData();
+                formData2.append("revise_node_id",node_id);
+                formData2.append("node_title",revise_node_title);
+                formData2.append("idea_content",revise_idea_content);
+                formData2.append("node_tag",revise_tagcontent);
+                for(var s=0;s<revise_file_length;s++){
+                    formData2.append("ideafile",revise_fileData[s])
+                }
             }
             break;
     }
