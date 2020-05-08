@@ -190,12 +190,45 @@ function clickevent(){
     });
 
     network.on("doubleClick", function(params) {
+        var community_id = $("#community_id").text();
         var clickid = params.nodes[0];
-        $("#readIdeaModal").modal("show");
-        $("#readIdeaModal").find("#readIdeaNodeid").text(clickid)
-        // params.event = "[original event]";
-        // document.getElementById("eventSpan").innerHTML =
-        //   "<h2>doubleClick event:</h2>" + JSON.stringify(params, null, 4);
+
+        var data = {
+            node_id:clickid
+        };
+
+        $.ajax({
+            url: "/lessonplan/idea/"+community_id+"/openIdea",
+            type: "GET",
+            async:false,
+            data:data,
+            success: function(data){
+                if(data.msg == "ok"){
+                    var authority = data.authority;
+                    var ideaData = data.ideaData[0];
+                    var ideaFileData = data.ideaFileData;
+
+                    $("#readIdeaModal").modal("show");
+                    $("#readIdeaModal").find("#readIdeaNodeid").text(clickid);
+                    $('#ideaTab a[href="#readmodal"]').tab('show')
+                    //如果為作者可以修改，其他人只能閱讀
+                    if(authority == "revise"){
+                        $('#ideaTab').show(); 
+                    }
+                    else{
+                        $('#ideaTab').hide();
+                    }
+                    showReadIdeaContent(ideaData);
+                    showReadIdeaFile(community_id,ideaFileData);
+                }
+                else{
+                    window.location = "/member/login";
+                }
+            },
+            error: function(){
+                alert('失敗');
+            }
+        })
     });
 }
 
@@ -217,8 +250,11 @@ $(function(){
         $(this).siblings(".custom-file-label").addClass("selected").html(files.join(', '));
     });
 
+    
+
 })
 
+/**打開 ideatoolbar新增節點 modal */
 function openIdeaModal(){
     $("#creatIdeaBtn").click(function(){
         $("#createIdeaModel").modal("show");
@@ -233,16 +269,6 @@ function openIdeaModal(){
     })
 }
 
-function ideaScaffold_Add(){
-    $(".ideascaffold").click(function(){
-        var scaffoldText = $(this).text();
-        var textareaId = $(this).parents(".row").find("textarea").attr("id");
-        var string = "<b><font style='background-color: rgb(255, 231, 206);'>"+scaffoldText+"</font></b>";
-        $("#"+textareaId).summernote('pasteHTML', string);
-        
-    })
-}
-
 function ideaModalCloseBtn(modalid){
     switch(modalid){
         case "createIdeaModel":
@@ -253,9 +279,89 @@ function ideaModalCloseBtn(modalid){
             $("#createIdeaModel").find("input[name='tagInputText']").remove();
             $("#createIdeaModel").find(".inputTags-list").remove();
             break;
+        case "readIdeaModal":
+            $("#reviseIdeaTitle").val("");
+            $("#reviseIdeaContent").summernote("code",'');
+            $(".custom-file-label").removeClass("selected").html("請選擇檔案");
+            $("#reviseIdeaFile").val("");
+            $(".reviseIdeaFile").empty();
+            $("#readIdeaFileDiv").empty();
+            $("#readIdeaModal").find("input[name='tagInputText']").remove();
+            $("#readIdeaModal").find(".inputTags-list").remove();
+            break;
     } 
 }
 
+function showReadIdeaContent(ideaData){
+
+    var node_title = ideaData.node_title;
+    var node_tag = ideaData.node_tag.split(',');
+    var idea_content = ideaData.idea_content;
+
+    changeIdeaTab(node_title);
+
+    //閱讀頁籤
+    $("#readIdeaTag").html('<h4 id="readIdeaTagContent"></h4>')
+    if(node_tag.length >0){
+        node_tag.map(function(data){
+            $("#readIdeaTagContent").append('<span class="badge badge-info mr-2">'+data+'</span>')
+        })
+    }
+    $("#readIdeaModalLabel").html(node_title);
+    $("#readIdeaContent").html(idea_content);
+
+    //修改頁籤
+    $("#readIdeaModal").find(".ideatag").append('<input type="text" class="form-control" name="tagInputText" id="reviseIdeaTag">');
+    ideasummernoteClass();
+    ideatagClass(node_tag);
+    ideaScaffold_Add();
+
+    $("#reviseIdeaTitle").val(node_title);
+    $("#reviseIdeaContent").summernote('code',idea_content);
+
+}
+
+//想法內file呈現
+function showReadIdeaFile(community_id,ideaFileData){
+    if(ideaFileData.length > 0){
+        console.log(ideaFileData)
+        var path = '/communityfolder/community_'+community_id+'/communityfile/'
+        ideaFileData.map(function(data){
+            var file_id = data.community_file_id;
+            var file_name = data.community_file_name;
+            $("#readIdeaFileDiv").append('<li><a href="'+path+file_name+'" download="'+file_name+'" class="mr-2"><i class="fas fa-file-download"> '+file_name+'</i></a></li>');
+            $(".reviseIdeaFile").append('<div class="form-inline mt-2 reviseIdeaFileDiv" data-fileId="'+file_id+'">'+
+                                            '<label>'+file_name+'</label>'+
+                                            '<a class="text-danger ml-2"><i class="fas fa-times"></i></a>'+
+                                        '</div>');
+        })
+    }
+}
+
+function changeIdeaTab(title){
+    $('#ideaTab a').on('shown.bs.tab', function (e) {
+        e.target;
+        var tab_id = $(this).attr('id');
+        if(tab_id == 'read-tab'){
+            $("#readIdeaModalLabel").html(title)
+        }
+        else{
+            $("#readIdeaModalLabel").html('修改想法')
+        } 
+    })
+}
+
+function ideaScaffold_Add(){
+    $(".ideascaffold").click(function(){
+        var scaffoldText = $(this).text();
+        var textareaId = $(this).parents(".row").find("textarea").attr("id");
+        var string = "<b><font style='background-color: rgb(255, 231, 206);'>"+scaffoldText+"</font></b>";
+        $("#"+textareaId).summernote('pasteHTML', string);
+        
+    })
+}
+
+/**想法summernote設定 */
 function ideasummernoteClass(){
     $('.ideasummernote').summernote({
         tabsize: 2,
@@ -312,16 +418,18 @@ function ideasummernoteClass(){
     });
 }
 
-function ideatagClass(){
+/**想法tag api設定 */
+function ideatagClass(tag){
     
     $('input[name="tagInputText"]').inputTags({
         autocomplete: {
             values: ['教案基本資料', '課程學習目標', '學生先備概念', '核心素養', '學習重點','議題融入','教學資源及器材','教學設計理念','活動與評量設計'],
             only: true
         },
+        tags:tag,
         max: 3,
         init: function($elem) {
-            console.log('Event called on plugin init', $elem);
+            // console.log('Event called on plugin init', $elem);
         },
         create: function() {
             //console.log('Tag added !');
@@ -329,6 +437,7 @@ function ideatagClass(){
     });
 }
 
+/**儲存節點 */
 function saveNode(modalId){
     switch(modalId){
         case "createIdeaModel":

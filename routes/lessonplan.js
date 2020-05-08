@@ -393,6 +393,37 @@ router.get('/idea/:community_id', function(req, res, next) {
     }
 });
 
+router.get('/idea/:community_id/openIdea',function(req,res,next){
+    var member_id = req.session.member_id;
+    var member_name = req.session.member_name;
+
+    var community_id = req.params.community_id;
+    var node_id = req.query.node_id
+
+    if(!member_id){
+        res.json({msg:"no"});
+        res.redirect('/member/login');
+    }
+    else{
+        var author,ideaData;
+        node.selectIdeaData(node_id,community_id)
+        .then(function(results){
+            author = results[0].member_id_member;
+            ideaData = results;
+            return node.selectIdeaFile(node_id,community_id)
+        })
+        .then(function(fileResults){
+            var ideaFileData = fileResults;
+            if(author !== member_id){
+                res.json({msg:'ok',authority:'read',ideaData:ideaData,ideaFileData:ideaFileData})
+            }
+            else{
+                res.json({msg:'ok',authority:'revise',ideaData:ideaData,ideaFileData:ideaFileData})
+            }
+        })
+    }
+})
+
 
 router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function(req,res){
     var member_id = req.session.member_id;

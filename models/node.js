@@ -123,6 +123,32 @@ module.exports = {
         })
     },
 
+    selectIdeaData: function(node_id,community_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT `node`.*,`idea`.* FROM `node` INNER JOIN `idea` ON `node`.`node_id`=`idea`.`node_id_node` WHERE `node`.`node_id` = ? AND `node`.`community_id_community`= ?',[node_id,community_id],function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
+        })
+    },
+
+    selectIdeaFile: function(node_id,community_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT * FROM `community_file` WHERE `node_id_node` = ? AND `community_id_community`= ?',[node_id,community_id],function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
+        })
+    },
+
     checkFileExists: function(community_id,fileData){
         return new Promise(function(resolve,reject){
             if(fileData.length >0){

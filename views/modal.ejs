@@ -344,21 +344,76 @@
   </div>
 </div>
 
-<!-- 查看想法Modal -->
+<!-- 閱讀/修改想法Modal -->
 <div class="modal" id="readIdeaModal" tabindex="-1" role="dialog" aria-labelledby="readIdeaModalLabel" aria-hidden="true" data-backdrop="static">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="readIdeaModalLabel">查看想法</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="ideaModalCloseBtn('readIdeaModal')">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        <p id="readIdeaNodeid"></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary">確定</button>
+      <!--閱讀/修改動態頁籤-->
+      <ul class="nav nav-tabs mt-3" role="tablist" id="ideaTab" style="display: none;">
+        <li class="nav-item">
+          <a class="nav-link active" id="read-tab" data-toggle="tab" href="#readmodal" role="tab" aria-controls="readmodal" aria-selected="true">閱讀</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="revise-tab" data-toggle="tab" href="#revisemodal" role="tab" aria-controls="revisemodal" aria-selected="false">修改</a>
+        </li>
+      </ul>
+      <div class="tab-content">
+        <!--閱讀想法內容-->
+        <div class="tab-pane show active" id="readmodal" role="tabpanel" aria-labelledby="read-tab">
+          <div class="modal-body">
+            <p id="readIdeaNodeid" style="display: none;"></p>
+            <div id="readIdeaTag"></div>
+            <div id="readIdeaContent" class="mt-3"></div>
+            <ul id="readIdeaFileDiv" class="nopadding" style="list-style-type: none;"></ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">確定</button>
+          </div>
+        </div>
+        <!--修改想法內容-->
+        <div class="tab-pane" id="revisemodal" role="tabpanel" aria-labelledby="revise-tab">
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="control-label">標題</label>
+              <input type="text" class="form-control" id="reviseIdeaTitle">
+            </div>
+            <div class="form-group ideatag">
+              <label class="col-form-label"><i class="fas fa-tag mr-1"></i>階段Tag</label>
+            </div>
+            <div class="form-group">
+              <div class="row">
+                <div class="col-3">
+                  <div class="btn-group-vertical" role="group">
+                    <button type="button" class="btn btn-outline-primary ideascaffold">我想知道</button>
+                    <button type="button" class="btn btn-outline-primary ideascaffold">我的想法</button>
+                    <button type="button" class="btn btn-outline-primary ideascaffold">我的理論</button>
+                    <button type="button" class="btn btn-outline-primary ideascaffold">新資訊或參考來源</button>
+                    <button type="button" class="btn btn-outline-primary ideascaffold">另一個觀點是</button>
+                    <button type="button" class="btn btn-outline-primary ideascaffold">我覺得更好的想法</button>
+                    <button type="button" class="btn btn-outline-primary ideascaffold">有發展性的想法</button>
+                  </div>
+                </div>
+                <div class="col">
+                  <textarea class="ideasummernote" id="reviseIdeaContent"></textarea>
+                  <div class="custom-file mt-2">
+                    <input type="file" class="custom-file-input" id="reviseIdeaFile" multiple>
+                    <label class="custom-file-label" for="reviseIdeaFile">選擇檔案</label>
+                  </div>
+                  <div class="reviseIdeaFile"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">儲存</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
