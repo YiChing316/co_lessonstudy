@@ -134,7 +134,7 @@ module.exports = {
         } 
     },
 
-    selectNodeData: function(community_id){
+    selectAllNodeData: function(community_id){
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
@@ -147,7 +147,7 @@ module.exports = {
         })
     },
 
-    selectEdgeData: function(community_id){
+    selectAllEdgeData: function(community_id){
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);

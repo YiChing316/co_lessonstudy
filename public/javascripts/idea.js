@@ -152,7 +152,7 @@ function drawNetwork() {
                     newgroup = "rise_above";
                     break;
                 case "vote":
-                    newgroup = "newgroup";
+                    newgroup = "vote";
                     break;
             }
             newNodeArray.push({
@@ -180,6 +180,7 @@ function drawNetwork() {
 
 function clickevent(){
     network.on("click", function(params) {
+        params.event = "[click]";
         //nodeid
         var clickid = params.nodes;
         network.off("beforeDrawing");
@@ -190,45 +191,40 @@ function clickevent(){
     });
 
     network.on("doubleClick", function(params) {
+        params.event = "[doubleClick]";
         var community_id = $("#community_id").text();
         var clickid = params.nodes[0];
 
-        var data = {
-            node_id:clickid
-        };
-
-        $.ajax({
-            url: "/lessonplan/idea/"+community_id+"/openIdea",
-            type: "GET",
-            async:false,
-            data:data,
-            success: function(data){
-                if(data.msg == "ok"){
-                    var authority = data.authority;
-                    var ideaData = data.ideaData[0];
-                    var ideaFileData = data.ideaFileData;
-
-                    $("#readIdeaModal").modal("show");
-                    $("#readIdeaModal").find("#readIdeaNodeid").text(clickid);
-                    $('#ideaTab a[href="#readmodal"]').tab('show')
-                    //如果為作者可以修改，其他人只能閱讀
-                    if(authority == "revise"){
-                        $('#ideaTab').show(); 
-                    }
-                    else{
-                        $('#ideaTab').hide();
-                    }
-                    showReadIdeaContent(ideaData);
-                    showReadIdeaFile(community_id,ideaFileData);
+        if(clickid !== undefined){
+            var data = {
+                node_id:clickid
+            };
+            
+            //獲得click node的資料
+            var clickedNode=nodes.get({
+                filter: function(item){
+                    return (item.id == clickid);
                 }
-                else{
-                    window.location = "/member/login";
-                }
-            },
-            error: function(){
-                alert('失敗');
+            });
+    
+            var node_type = clickedNode[0].group;
+    
+            switch(node_type){
+                case 'rise_above':
+                case 'idea':
+                    openIdeaNode(community_id,data)
+                    break;
+                case 'lessonplan':
+                    console.log(clickedNode)
+                    break;
+                case 'activity':
+                    console.log(clickedNode)
+                    break;
+                case 'vote':
+                    console.log(clickedNode)
+                    break;
             }
-        })
+        }
     });
 }
 
@@ -254,6 +250,40 @@ $(function(){
     
 
 })
+
+function openIdeaNode(community_id,data){
+    $.ajax({
+        url: "/lessonplan/idea/"+community_id+"/openIdea",
+        type: "GET",
+        async:false,
+        data:data,
+        success: function(data){
+            if(data.msg == "ok"){
+                var authority = data.authority;
+                var ideaData = data.ideaData[0];
+                var ideaFileData = data.ideaFileData;
+
+                $("#readIdeaModal").modal("show");
+                $('#ideaTab a[href="#readmodal"]').tab('show')
+                //如果為作者可以修改，其他人只能閱讀
+                if(authority == "revise"){
+                    $('#ideaTab').show(); 
+                }
+                else{
+                    $('#ideaTab').hide();
+                }
+                showReadIdeaContent(ideaData);
+                showReadIdeaFile(community_id,ideaFileData);
+            }
+            else{
+                window.location = "/member/login";
+            }
+        },
+        error: function(){
+            alert('失敗');
+        }
+    })
+}
 
 /**打開 ideatoolbar新增節點 modal ***********************************/
 function openIdeaModal(){
@@ -295,6 +325,7 @@ function ideaModalCloseBtn(modalid){
 /**修改/閱讀modal **************************************************/
 function showReadIdeaContent(ideaData){
 
+    var node_id = ideaData.node_id;
     var node_title = ideaData.node_title;
     var node_tag = ideaData.node_tag.split(',');
     var idea_content = ideaData.idea_content;
@@ -302,6 +333,8 @@ function showReadIdeaContent(ideaData){
     var revise_count = ideaData.node_revised_count;
 
     changeIdeaTab(node_title);
+
+    $("#readIdeaModal").find("#readIdeaNodeid").text(node_id);
 
     //閱讀頁籤
     $("#readIdeaTag").html('<h4 id="readIdeaTagContent"></h4>')

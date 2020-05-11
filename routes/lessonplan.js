@@ -371,11 +371,11 @@ router.get('/idea/:community_id', function(req, res, next) {
         })
         .then(function(activiynamedata){
             lessonplanActivityName = JSON.stringify(activiynamedata)
-            return node.selectNodeData(community_id);
+            return node.selectAllNodeData(community_id);
         })
         .then(function(nodedata){
             nodeData = JSON.stringify(nodedata);
-            return node.selectEdgeData(community_id)
+            return node.selectAllEdgeData(community_id)
         })
         .then(function(edgedata){
             edgeData = JSON.stringify(edgedata);
@@ -516,6 +516,21 @@ router.post('/idea/:community_id/updateIdea',upload.array('ideafile',5),function
                 return res.json({msg:"isexist",checkResults:checkResults})
             }
         })
+    }
+})
+
+router.get('/idea/:community_id/openLessonplanNode',function(req,res,next){
+    var member_id = req.session.member_id;
+    var member_name = req.session.member_name;
+
+    var community_id = req.params.community_id;
+
+    if(!member_id){
+        res.json({msg:"no"});
+        res.redirect('/member/login');
+    }
+    else{
+        
     }
 })
 
