@@ -409,7 +409,12 @@ router.get('/idea/:community_id/openIdea',function(req,res,next){
         node.selectIdeaData(node_id,community_id)
         .then(function(results){
             author = results[0].member_id_member;
+            var read_count = results[0].node_read_count;
+            var node_read_count = read_count+1;
             ideaData = results;
+            return node.updateReadCount(node_id,node_read_count);
+        })
+        .then(function(updateResults){
             return node.selectIdeaFile(node_id,community_id)
         })
         .then(function(fileResults){
@@ -466,6 +471,50 @@ router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function
             }
         })
         
+    }
+})
+
+//更新節點
+router.post('/idea/:community_id/updateIdea',upload.array('ideafile',5),function(req,res){
+    var member_id = req.session.member_id;
+    var member_name = req.session.member_name;
+
+    var community_id = req.params.community_id;
+
+    if(!member_id){
+        res.json({msg:"no"});
+        res.redirect('/member/login');
+    }
+    else{
+        var nodeData = req.body;
+        var fileData = req.files;
+        var node_id = nodeData.revise_node_id;
+        var node_title = nodeData.node_title;
+        var node_tag = nodeData.node_tag;
+        var idea_content = nodeData.idea_content;
+        var nodeResults;
+
+        //檢查是否已有同檔名檔案存在
+        node.checkFileExists(community_id,fileData)
+        .then(function(checkResults){
+            //沒有的話做儲存
+            if(checkResults == "notexist" || checkResults.length == 0){
+                node.updataNode(node_id,node_title,node_tag)
+                .then(function(updateResults){
+                    return node.ideaNode(node_id,idea_content)
+                })
+                .then(function(ideaResults){
+                    return node.saveIdeaFile(community_id,fileData,node_id)
+                })
+                .then(function(fileResults){
+                    return res.json({msg:"ok"})
+                })
+            }
+            //有的話回傳
+            else{
+                return res.json({msg:"isexist",checkResults:checkResults})
+            }
+        })
     }
 })
 

@@ -25,20 +25,56 @@ module.exports = {
         })
     },
 
-    ideaNode: function(node_id,idea_content){
+    updataNode: function(node_id,node_title,node_tag){
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
 
                 var sql = {
-                    node_id_node:node_id,
-                    idea_content:idea_content
+                    node_title:node_title,
+                    node_tag:node_tag
                 }
 
-                connection.query('INSERT INTO `idea` SET ?',sql,function(err,insertResults,fields){
+                connection.query('UPDATE `node` SET ? WHERE `node_id`=?',[sql,node_id],function(err,updateResults,fields){
                     if(err) return reject(err);
-                    resolve(insertResults);
+                    resolve(updateResults);
                     connection.release();
+                })
+            })
+        })
+    },
+
+    ideaNode: function(node_id,idea_content){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                connection.query('SELECT `idea_id` FROM `idea` WHERE `node_id_node` =?',node_id,function(err,countResults,fields){
+                    if(err) return reject(err);
+
+                    //已存在idea內容
+                    if(countResults.length == 1){
+                        var idea_id = countResults[0].idea_id;
+                        connection.query('UPDATE `idea` SET `idea_content`=? WHERE `idea_id`=?',[idea_content,idea_id],function(err,insertResults,fields){
+                            if(err) return reject(err);
+                            resolve(insertResults);
+                            connection.release();
+                        })
+                    }
+                    //不存在idea內容
+                    else{
+
+                        var sql = {
+                            node_id_node:node_id,
+                            idea_content:idea_content
+                        }
+
+                        connection.query('INSERT INTO `idea` SET ?',sql,function(err,insertResults,fields){
+                            if(err) return reject(err);
+                            resolve(insertResults);
+                            connection.release();
+                        })
+                    }
                 })
             })
         })
@@ -143,6 +179,20 @@ module.exports = {
                 connection.query('SELECT * FROM `community_file` WHERE `node_id_node` = ? AND `community_id_community`= ?',[node_id,community_id],function(err,rows,fields){
                     if(err) return reject(err);
                     resolve(rows);
+                    connection.release();
+                })
+            })
+        })
+    },
+
+    updateReadCount: function(node_id,read_count){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                connection.query('UPDATE `node` SET `node_read_count`=? WHERE `node_id`=?',[read_count,node_id],function(err,updateResults,fields){
+                    if(err) return reject(err);
+                    resolve(updateResults);
                     connection.release();
                 })
             })

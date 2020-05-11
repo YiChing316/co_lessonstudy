@@ -235,6 +235,7 @@ function clickevent(){
 $(function(){
 
     drawNetwork();
+    ideaScaffold_Add();
     clickevent();
     openIdeaModal();
 
@@ -261,7 +262,6 @@ function openIdeaModal(){
         $("#createIdeaModel").find(".ideatag").append('<input type="text" class="form-control" name="tagInputText" id="createIdeaTag">');
         ideasummernoteClass();
         ideatagClass();
-        ideaScaffold_Add();
     })
 
     $("#creatVoteBtn").click(function(){
@@ -315,7 +315,6 @@ function showReadIdeaContent(ideaData){
     $("#readIdeaModal").find(".ideatag").append('<input type="text" class="form-control" name="tagInputText" id="reviseIdeaTag">');
     ideasummernoteClass();
     ideatagClass(node_tag);
-    ideaScaffold_Add();
 
     $("#reviseIdeaTitle").val(node_title);
     $("#reviseIdeaContent").summernote('code',idea_content);
@@ -481,9 +480,6 @@ function saveNode(modalId){
             var node_title = $("#newIdeaTitle").val();
             var idea_content = $("#newIdeaContent").summernote('code');
             var node_tag = $("input[name='tagInputText']").val();
-            // var node_tagarray = [];
-            // node_tagarray.push(tagcontent)
-            // var node_tag = node_tagarray.toString();
             var fileData = $("#createNewIdeaFile").prop("files");
             var file_length = fileData.length;
 
@@ -532,23 +528,43 @@ function saveNode(modalId){
             var revise_fileData = $("#reviseIdeaFile").prop("files");
             var revise_file_length = revise_fileData.length;
 
-            console.log(revise_node_title)
-            console.log(revise_idea_content)
-            console.log(revise_tagcontent)
-            console.log(revise_fileData)
-
             if( revise_node_title == ""){
                 alert("想法標題不可空白!!")
             }
             else{
-                var formData2 = new FormData();
-                formData2.append("revise_node_id",node_id);
-                formData2.append("node_title",revise_node_title);
-                formData2.append("idea_content",revise_idea_content);
-                formData2.append("node_tag",revise_tagcontent);
+                var reviseformData = new FormData();
+                reviseformData.append("revise_node_id",node_id);
+                reviseformData.append("node_title",revise_node_title);
+                reviseformData.append("idea_content",revise_idea_content);
+                reviseformData.append("node_tag",revise_tagcontent);
                 for(var s=0;s<revise_file_length;s++){
-                    formData2.append("ideafile",revise_fileData[s])
+                    reviseformData.append("ideafile",revise_fileData[s])
                 }
+
+                $.ajax({
+                    url: "/lessonplan/idea/"+community_id+"/updateIdea",
+                    type: "POST",
+                    async:false,
+                    data:reviseformData,
+                    contentType: false,
+                    processData: false,
+                    success: function(data){
+                        if(data.msg == "no"){
+                            window.location = "/member/login";
+                        }
+                        else if(data.msg =="ok"){
+                            console.log(data)
+                            ideaModalCloseBtn('readIdeaModal');
+                            $("#readIdeaModal").modal("hide");
+                        }
+                        else if(data.msg == "isexist"){
+                            alert(data.checkResults+"\n已存在相同檔名檔案，請修改檔名後再上傳");
+                        }
+                    },
+                    error: function(){
+                        alert('失敗');
+                    }
+                })
             }
             break;
     }
