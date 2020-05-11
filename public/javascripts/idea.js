@@ -251,38 +251,70 @@ $(function(){
 
 })
 
-function openIdeaNode(community_id,data){
+function ajaxGetData(url,data){
+    var results;
     $.ajax({
-        url: "/lessonplan/idea/"+community_id+"/openIdea",
+        url: url,
         type: "GET",
         async:false,
         data:data,
         success: function(data){
-            if(data.msg == "ok"){
-                var authority = data.authority;
-                var ideaData = data.ideaData[0];
-                var ideaFileData = data.ideaFileData;
-
-                $("#readIdeaModal").modal("show");
-                $('#ideaTab a[href="#readmodal"]').tab('show')
-                //如果為作者可以修改，其他人只能閱讀
-                if(authority == "revise"){
-                    $('#ideaTab').show(); 
-                }
-                else{
-                    $('#ideaTab').hide();
-                }
-                showReadIdeaContent(ideaData);
-                showReadIdeaFile(community_id,ideaFileData);
-            }
-            else{
-                window.location = "/member/login";
-            }
+            results = data;
         },
         error: function(){
             alert('失敗');
         }
     })
+    return results
+}
+
+function ajaxPostFormData(url,formdata){
+    var results;
+    $.ajax({
+        url: url,
+        type: "POST",
+        async:false,
+        data:formdata,
+        contentType: false,
+        processData: false,
+        success: function(data){
+            results = data;
+        },
+        error: function(){
+            alert('失敗');
+        }
+    })
+    return results
+}
+
+function openIdeaNode(community_id,data){
+    var url = "/lessonplan/idea/"+community_id+"/openIdea";
+    var results = ajaxGetData(url,data);
+
+    if(results.msg == "ok"){
+        var authority = results.authority;
+        var ideaData = results.ideaData[0];
+        var ideaFileData = results.ideaFileData;
+
+        $("#readIdeaModal").modal("show");
+        $('#ideaTab a[href="#readmodal"]').tab('show')
+        //如果為作者可以修改，其他人只能閱讀
+        if(authority == "revise"){
+            $('#ideaTab').show(); 
+        }
+        else{
+            $('#ideaTab').hide();
+        }
+        showReadIdeaContent(ideaData);
+        showReadIdeaFile(community_id,ideaFileData);
+    }
+    else{
+        window.location = "/member/login";
+    }
+}
+
+function openLessonplanNode(community_id,data){
+    
 }
 
 /**打開 ideatoolbar新增節點 modal ***********************************/
@@ -531,30 +563,20 @@ function saveNode(modalId){
                 for(var i=0;i<file_length;i++){
                     formData.append("ideafile",fileData[i])
                 }
+                
+                var createResults =  ajaxPostFormData("/lessonplan/idea/"+community_id+"/createIdea",formData)
 
-                $.ajax({
-                    url: "/lessonplan/idea/"+community_id+"/createIdea",
-                    type: "POST",
-                    async:false,
-                    data:formData,
-                    contentType: false,
-                    processData: false,
-                    success: function(data){
-                        if(data.msg == "no"){
-                            window.location = "/member/login";
-                        }
-                        else if(data.msg =="ok"){
-                            ideaModalCloseBtn('createIdeaModel');
-                            $("#createIdeaModel").modal("hide");
-                        }
-                        else if(data.msg == "isexist"){
-                            alert(data.checkResults+"\n已存在相同檔名檔案，請修改檔名後再上傳");
-                        }
-                    },
-                    error: function(){
-                        alert('失敗');
-                    }
-                })
+                if(createResults.msg == "no"){
+                    window.location = "/member/login";
+                }
+                else if(createResults.msg =="ok"){
+                    ideaModalCloseBtn('createIdeaModel');
+                    $("#createIdeaModel").modal("hide");
+                }
+                else if(createResults.msg == "isexist"){
+                    alert(createResults.checkResults+"\n已存在相同檔名檔案，請修改檔名後再上傳");
+                }
+
             }
             break;
         case "readIdeaModal":
@@ -580,30 +602,18 @@ function saveNode(modalId){
                     reviseformData.append("ideafile",revise_fileData[s])
                 }
 
-                $.ajax({
-                    url: "/lessonplan/idea/"+community_id+"/updateIdea",
-                    type: "POST",
-                    async:false,
-                    data:reviseformData,
-                    contentType: false,
-                    processData: false,
-                    success: function(data){
-                        if(data.msg == "no"){
-                            window.location = "/member/login";
-                        }
-                        else if(data.msg =="ok"){
-                            console.log(data)
-                            ideaModalCloseBtn('readIdeaModal');
-                            $("#readIdeaModal").modal("hide");
-                        }
-                        else if(data.msg == "isexist"){
-                            alert(data.checkResults+"\n已存在相同檔名檔案，請修改檔名後再上傳");
-                        }
-                    },
-                    error: function(){
-                        alert('失敗');
-                    }
-                })
+                var reviseResults =  ajaxPostFormData("/lessonplan/idea/"+community_id+"/updateIdea",reviseformData)
+
+                if(reviseResults.msg == "no"){
+                    window.location = "/member/login";
+                }
+                else if(reviseResults.msg =="ok"){
+                    ideaModalCloseBtn('readIdeaModal');
+                    $("#readIdeaModal").modal("hide");
+                }
+                else if(reviseResults.msg == "isexist"){
+                    alert(reviseResults.checkResults+"\n已存在相同檔名檔案，請修改檔名後再上傳");
+                }
             }
             break;
     }
