@@ -288,8 +288,8 @@ function ajaxPostFormData(url,formdata){
 }
 
 function openIdeaNode(community_id,data){
-    var url = "/lessonplan/idea/"+community_id+"/openIdea";
-    var results = ajaxGetData(url,data);
+
+    var results = ajaxGetData("/lessonplan/idea/"+community_id+"/openIdea",data);
 
     if(results.msg == "ok"){
         var authority = results.authority;
