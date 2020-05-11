@@ -215,7 +215,7 @@ function clickevent(){
                     openIdeaNode(community_id,data)
                     break;
                 case 'lessonplan':
-                    console.log(clickedNode)
+                    openLessonplanNode(community_id,data)
                     break;
                 case 'activity':
                     console.log(clickedNode)
@@ -314,8 +314,13 @@ function openIdeaNode(community_id,data){
 }
 
 function openLessonplanNode(community_id,data){
-    
-}
+    var results = ajaxGetData("/lessonplan/idea/"+community_id+"/openLessonplanNode",data);
+    if(results.msg == "ok"){
+        var selectResults = results.selectResults;
+    }
+    else{
+        window.location = "/member/login";
+    }
 
 /**打開 ideatoolbar新增節點 modal ***********************************/
 function openIdeaModal(){

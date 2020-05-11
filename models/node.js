@@ -186,6 +186,45 @@ module.exports = {
         })
     },
 
+    selectNodeType: function(node_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT `node_type` FROM `node` WHERE `node_id`= ?',node_id,function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
+        })
+    },
+
+    selectLessonplanNode: function(community_id,node_type){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT `node`.*,`lessonplan`.* FROM `node` INNER JOIN `lessonplan` ON `node`.`community_id_community` = `lessonplan`.`community_id_community` WHERE `lessonplan`.`community_id_community` = ? AND `node`.`node_type` = ?',[community_id,node_type],function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
+        })
+    },
+
+    selectLessonplanStageNode: function(community_id,node_type){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT `node`.*,`lessonplan_stage`.* FROM `node` INNER JOIN `lessonplan_stage` ON `node`.`community_id_community` = `lessonplan_stage`.`community_id_community` WHERE `lessonplan_stage`.`community_id_community` = ? AND `lessonplan_stage`.`lessonplan_stage_type` = ? AND `node`.`node_type` = ?',[community_id,node_type,node_type],function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
+        })
+    },
+
     updateReadCount: function(node_id,read_count){
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){

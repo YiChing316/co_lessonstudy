@@ -398,7 +398,7 @@ router.get('/idea/:community_id/openIdea',function(req,res,next){
     var member_name = req.session.member_name;
 
     var community_id = req.params.community_id;
-    var node_id = req.query.node_id
+    var node_id = req.query.node_id;
 
     if(!member_id){
         res.json({msg:"no"});
@@ -524,13 +524,26 @@ router.get('/idea/:community_id/openLessonplanNode',function(req,res,next){
     var member_name = req.session.member_name;
 
     var community_id = req.params.community_id;
+    var node_id = req.query.node_id
 
     if(!member_id){
         res.json({msg:"no"});
         res.redirect('/member/login');
     }
     else{
-        
+        node.selectNodeType(node_id)
+        .then(function(typeResults){
+            var node_type = typeResults[0].node_type;
+            switch(node_type){
+                case 'lessonplan':
+                    return node.selectLessonplanNode(community_id,node_type)
+                default:
+                    return node.selectLessonplanStageNode(community_id,node_type)
+            }
+        })
+        .then(function(selectResults){
+            return res.json({msg:'ok',selectResults:selectResults})
+        })
     }
 })
 
