@@ -492,6 +492,7 @@ router.post('/idea/:community_id/updateIdea',upload.array('ideafile',5),function
         var node_title = nodeData.node_title;
         var node_tag = nodeData.node_tag;
         var idea_content = nodeData.idea_content;
+        var revise_count = nodeData.revise_count + 1;
         var nodeResults;
 
         //檢查是否已有同檔名檔案存在
@@ -499,7 +500,7 @@ router.post('/idea/:community_id/updateIdea',upload.array('ideafile',5),function
         .then(function(checkResults){
             //沒有的話做儲存
             if(checkResults == "notexist" || checkResults.length == 0){
-                node.updataNode(node_id,node_title,node_tag)
+                node.updataNode(node_id,node_title,node_tag,revise_count)
                 .then(function(updateResults){
                     return node.ideaNode(node_id,idea_content)
                 })

@@ -298,6 +298,8 @@ function showReadIdeaContent(ideaData){
     var node_title = ideaData.node_title;
     var node_tag = ideaData.node_tag.split(',');
     var idea_content = ideaData.idea_content;
+    var read_count = ideaData.node_read_count;
+    var revise_count = ideaData.node_revised_count;
 
     changeIdeaTab(node_title);
 
@@ -309,6 +311,7 @@ function showReadIdeaContent(ideaData){
         })
     }
     $("#readIdeaModalLabel").html(node_title);
+    $(".readCountDiv").html(" "+read_count);
     $("#readIdeaContent").html(idea_content);
 
     //修改頁籤
@@ -316,6 +319,7 @@ function showReadIdeaContent(ideaData){
     ideasummernoteClass();
     ideatagClass(node_tag);
 
+    $("#reviseCountDiv").text(revise_count);
     $("#reviseIdeaTitle").val(node_title);
     $("#reviseIdeaContent").summernote('code',idea_content);
 
@@ -522,6 +526,7 @@ function saveNode(modalId){
             break;
         case "readIdeaModal":
             var node_id = $("#readIdeaNodeid").text();
+            var revise_count = $("#reviseCountDiv").text();
             var revise_node_title = $("#reviseIdeaTitle").val();
             var revise_idea_content = $("#reviseIdeaContent").summernote('code');
             var revise_tagcontent = $("#reviseIdeaTag").val();
@@ -534,6 +539,7 @@ function saveNode(modalId){
             else{
                 var reviseformData = new FormData();
                 reviseformData.append("revise_node_id",node_id);
+                reviseformData.append("revise_count",revise_count);
                 reviseformData.append("node_title",revise_node_title);
                 reviseformData.append("idea_content",revise_idea_content);
                 reviseformData.append("node_tag",revise_tagcontent);

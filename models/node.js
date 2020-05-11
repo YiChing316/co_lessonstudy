@@ -25,14 +25,15 @@ module.exports = {
         })
     },
 
-    updataNode: function(node_id,node_title,node_tag){
+    updataNode: function(node_id,node_title,node_tag,revise_count){
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
 
                 var sql = {
                     node_title:node_title,
-                    node_tag:node_tag
+                    node_tag:node_tag,
+                    node_revised_count:revise_count
                 }
 
                 connection.query('UPDATE `node` SET ? WHERE `node_id`=?',[sql,node_id],function(err,updateResults,fields){
