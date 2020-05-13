@@ -35,14 +35,14 @@
           <div class="title-bar bg-selfgreen align-items-center">
             <h4 class="text-white font-weight-bold pl-3">現有的社群<small class="pl-3">目前共有個<%= communityNumber %>共備社群</small></h4>
           </div>
-          <p id="allCommunityData"><%= allCommunityData %></p>
+          <p id="allCommunityData" style="display: none;"><%= allCommunityData %></p>
           <table id="allCommunityTable"></table>
         </div>
         <div class="form-group mt-5">
           <div class="title-bar bg-selfblue mb-3">
             <h4 class="text-white font-weight-bold pl-3">您已加入的社群</h4>
           </div>
-          <p id="memberCommunityData"><%= memberCommunityData %></p>
+          <p id="memberCommunityData" style="display: none;"><%= memberCommunityData %></p>
           <p id="memberCommunityEmptyMsg" class="font-weight-bold text-danger"></p>
           <table id="memberCommunityTable"></table>
         </div>
@@ -50,7 +50,7 @@
           <div class="title-bar bg-selfpink mb-3">
             <h4 class="text-white font-weight-bold pl-3">您正在申請的社群</h4>
           </div>
-          <p id="applicationCommunityData"><%= applicationCommunityData %></p>
+          <p id="applicationCommunityData" style="display: none;"><%= applicationCommunityData %></p>
           <p id="applicationCommunityEmptyMsg" class="font-weight-bold text-danger"></p>
           <table id="applicationCommunityTable"></table>
         </div>
