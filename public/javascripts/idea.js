@@ -316,11 +316,15 @@ function openIdeaNode(community_id,data){
 function openLessonplanNode(community_id,data){
     var results = ajaxGetData("/lessonplan/idea/"+community_id+"/openLessonplanNode",data);
     if(results.msg == "ok"){
-        var selectResults = results.selectResults;
+        var selectData = results.selectResults[0];
+        $("#lessonplanNodeModal").modal("show");
+        showLessonplanContent(selectData);
     }
     else{
         window.location = "/member/login";
     }
+}
+
 
 /**打開 ideatoolbar新增節點 modal ***********************************/
 function openIdeaModal(){
@@ -355,6 +359,9 @@ function ideaModalCloseBtn(modalid){
             $("#readIdeaFileDiv").empty();
             $("#readIdeaModal").find("input[name='tagInputText']").remove();
             $("#readIdeaModal").find(".inputTags-list").remove();
+            break;
+        case "lessonplanNodeModal":
+            $("#lessonplanNodeTag").empty();
             break;
     } 
 }
@@ -424,6 +431,20 @@ function changeIdeaTab(title){
         } 
     })
 }
+
+
+/**實作節點modal **************************************************/
+function showLessonplanContent(selectData){
+    console.log(selectData);
+    
+    var node_title = selectData.node_title;
+    var node_tag = selectData.node_tag;
+    
+    $("#lessonplanNodeModalLabel").html(node_title);
+    $("#lessonplanNodeTag").html('<h4 id="lessonplanNodeTagContent"></h4>')
+    $("#lessonplanNodeTagContent").append('<span class="badge badge-info mr-2">'+node_tag+'</span>');
+}
+
 
 
 /**Modal內所需 *****************************************************/
