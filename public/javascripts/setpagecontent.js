@@ -2,8 +2,9 @@
 
 var pagecontent_Components = [
     {title:'教案基本資料',id:'lessonplan',collapse:'show'},
+    {title:'課程學習目標',id:'lessonplan_target',collapse:'show'},
     {title:'安排課程單元/活動',id:'lessonplan_unit',collapse:'show'},
-    {title:'課程學習目標',id:'lessonplan_target',collapse:'none'},
+    {title:'學習目標與活動對應表',id:'lessonplan_targetandActivity',collapse:'show'},
     {title:'學生先備概念',id:'lessonplan_studentknowledge',collapse:'none'},
     {title:'總綱核心素養',id:'lessonplan_cirn',collapse:'none'},
     {title:'學習重點',id:'learning_focus',collapse:'none'},
