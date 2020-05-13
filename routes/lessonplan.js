@@ -21,6 +21,7 @@ router.get('/edit/:community_id', function(req, res, next) {
     var issuenameData,issuethemeData,issuecontentData;
     var lessonplanActivityProcessData,lessonplanStageData;
     var lessonplanActivityName;
+    var twowayTableData;
 
     if(!member_id){
         res.redirect('/member/login');
@@ -68,7 +69,8 @@ router.get('/edit/:community_id', function(req, res, next) {
                                                 basicData:'""',
                                                 lessonplanActivityProcessData:'""',
                                                 lessonplanActivityName:'""',
-                                                lessonplanStageData:'""'
+                                                lessonplanStageData:'""',
+                                                twowayTableData:'""'
                                             });
             }
             else{
@@ -141,6 +143,10 @@ router.get('/edit/:community_id', function(req, res, next) {
         .then(function(activiynamedata){
             lessonplanActivityName = JSON.stringify(activiynamedata)
 
+            return lessonplan.selectLessonplanTwoWayTable(community_id)
+        })
+        .then(function(tableResults){
+            twowayTableData = JSON.stringify(tableResults);
             res.render('lessonplanEdit', { title: '教案製作',
                                             mode: 'lessonplanContent',
                                             member_id:member_id,
@@ -162,7 +168,8 @@ router.get('/edit/:community_id', function(req, res, next) {
                                             basicData:basicData,//教案基本資料
                                             lessonplanActivityProcessData:lessonplanActivityProcessData,
                                             lessonplanActivityName:lessonplanActivityName,
-                                            lessonplanStageData:lessonplanStageData
+                                            lessonplanStageData:lessonplanStageData,
+                                            twowayTableData:twowayTableData
                                         });
         })
         .catch(function (err) {console.log(err);});
@@ -221,6 +228,13 @@ router.post('/edit/:community_id/save',function(req,res,next){
                     }
                 })
                 break;
+            case 'lessonplan_twowaytable':
+                lessonplan.saveTwoWayTable(community_id,lessonplanData)
+                .then(function(data){
+                    if(data){
+                        return res.json({msg:'ok'})
+                    }
+                })
         }
 
     }

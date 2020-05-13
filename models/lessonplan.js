@@ -324,6 +324,43 @@ module.exports = {
             return saveResults;
         })
     },
+
+    saveTwoWayTable: function(community_id,lessonplanData){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                var lessonplan_twowaytable_type = lessonplanData.type;
+
+                var sql = {
+                    community_id_community:community_id,
+                    lessonplan_twowaytable_type:lessonplan_twowaytable_type,
+                    lessonplan_twowaytable_content:lessonplanData.content
+                }
+
+                connection.query('SELECT COUNT(`lessonplan_twowaytable_content`) AS COUNTNUM FROM `lessonplan_twowaytable` WHERE `community_id_community` =?  AND `lessonplan_twowaytable_type` =? ',[community_id,lessonplan_twowaytable_type],function(err,countResults,fields){
+                    if(err) return reject(err);
+    
+                    var countNum = countResults[0].COUNTNUM;
+                    
+                    if(countNum == 1){
+                        connection.query('UPDATE `lessonplan_twowaytable` SET ? WHERE `community_id_community` =?  AND `lessonplan_twowaytable_type` =? ',[sql,community_id,lessonplan_twowaytable_type],function(err,updateResults,fields){
+                            if(err) return reject(err);
+                            resolve(updateResults);
+                            connection.release();
+                        })
+                    }
+                    else{
+                        connection.query('INSERT INTO `lessonplan_twowaytable` SET ?',sql,function(err,insertResults,fields){
+                            if(err) return reject(err);
+                            resolve(insertResults);
+                            connection.release();
+                        })
+                    }
+                })
+            })
+        })
+    },
     
     selectLessonplanActivityProcess: function(community_id){
         return new Promise(function(resolve,reject){
@@ -356,6 +393,19 @@ module.exports = {
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
                 connection.query('SELECT * FROM `lessonplan_stage` WHERE `community_id_community`=?',[community_id],function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
+        })
+    },
+
+    selectLessonplanTwoWayTable: function(community_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT * FROM `lessonplan_twowaytable` WHERE `community_id_community`=?',community_id,function(err,rows,fields){
                     if(err) return reject(err);
                     resolve(rows);
                     connection.release();
