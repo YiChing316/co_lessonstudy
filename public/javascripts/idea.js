@@ -140,6 +140,7 @@ function drawNetwork() {
                 case "lessonplan_studentknowledge":
                 case "lessonplan_resource":
                 case "lessonplan_design":
+                case "twowaytable":
                     newgroup = "lessonplan";
                     break;
                 case "activity":
@@ -438,11 +439,15 @@ function showLessonplanContent(selectData){
     console.log(selectData);
     
     var node_title = selectData.node_title;
-    var node_tag = selectData.node_tag;
+    var node_tag = selectData.node_tag.split(',');
     
     $("#lessonplanNodeModalLabel").html(node_title);
     $("#lessonplanNodeTag").html('<h4 id="lessonplanNodeTagContent"></h4>')
-    $("#lessonplanNodeTagContent").append('<span class="badge badge-info mr-2">'+node_tag+'</span>');
+
+    node_tag.map(function(data){
+        $("#lessonplanNodeTagContent").append('<span class="badge badge-info mr-2">'+data+'</span>');
+    })
+    
 }
 
 

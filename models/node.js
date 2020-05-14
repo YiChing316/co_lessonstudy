@@ -212,6 +212,19 @@ module.exports = {
         })
     },
 
+    selectTwoWayTableNode: function(community_id,node_type){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT `node`.*,`lessonplan_twowaytable`.* FROM `node` INNER JOIN `lessonplan_twowaytable` ON `node`.`community_id_community` = `lessonplan_twowaytable`.`community_id_community` WHERE `lessonplan_twowaytable`.`community_id_community` = ? AND `node`.`node_type` = ?',[community_id,node_type],function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
+        })
+    },
+
     selectLessonplanStageNode: function(community_id,node_type){
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
