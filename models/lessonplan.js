@@ -325,7 +325,8 @@ module.exports = {
         })
     },
 
-    saveTwoWayTable: function(community_id,lessonplanData){
+    saveTwoWayTable: function(community_id,lessonplanData,member_id,member_name){
+        var saveResults;
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
@@ -359,6 +360,16 @@ module.exports = {
                     }
                 })
             })
+        })
+        .then(function(results){
+            saveResults = results;
+            var insertid = results.insertId;
+            if(insertid !== 0){
+                return node.createNewNode(community_id,'學習目標與活動對應表','學習目標,活動與評量設計','twowaytable',member_id,member_name)
+            }
+        })
+        .then(function(data){
+            return saveResults;
         })
     },
     

@@ -358,9 +358,7 @@ function setLessonplanTargetandActivityTable(){
         $("#cardidlessonplan_targetandActivity").parent(".row").show();
         $("#lessonplan_targetandActivity").append('<table id="lessonplanTargetandActivityTable" class="table table-bordered">'+
                                                     '<thead class="thead-light text-center">'+
-                                                        '<tr>'+
-                                                            '<th></th>'+
-                                                        '</tr>'+
+                                                        '<tr><th scope="col"></th></tr>'+
                                                     '</thead>'+
                                                     '<tbody></tbody>'+
                                                 '</table>');
@@ -1120,7 +1118,7 @@ function deleteActivityData(){
     isChange = true;
 
     $.ajax({
-        url: "/lessonplan/edit/delete",
+        url: "/lessonplan/edit/"+community_id+"/deleteActivity",
         type: "POST",
         async:false,
         data:data,
@@ -1129,12 +1127,20 @@ function deleteActivityData(){
                 // alert("已刪除");
                 $("#alertModal").modal('hide');
                 $("#"+inputid).closest('tr').remove();
-                var newProcessData = data.selectData;
+                var newProcessData = data.processData;
+                var newNameData = data.nameData;
                 $("#lessonplanActivityProcessData").text(newProcessData);
+                $("#lessonplanActivityName").text(newNameData);
+                activityName = JSON.parse($("#lessonplanActivityName").text());
                 $("#lessonplan_unit").empty();
                 $("#activityDesignUl").empty();
+                $("#sidebarul").empty();
+                $("#lessonplan_targetandActivity").empty();
                 $("#setactivity").find('div').remove();
                 lessonplan_unit_Set();
+                sidebar_Map();
+                setLessonplanTargetandActivityTable();
+                showtwowayTableData();
             }
             else{
                 window.location = "/member/login";

@@ -229,7 +229,7 @@ router.post('/edit/:community_id/save',function(req,res,next){
                 })
                 break;
             case 'lessonplan_twowaytable':
-                lessonplan.saveTwoWayTable(community_id,lessonplanData)
+                lessonplan.saveTwoWayTable(community_id,lessonplanData,member_id,member_name)
                 .then(function(data){
                     if(data){
                         return res.json({msg:'ok'})
@@ -240,8 +240,10 @@ router.post('/edit/:community_id/save',function(req,res,next){
     }
 })
 
-router.post('/edit/delete',function(req,res,next){
+router.post('/edit/:community_id/deleteActivity',function(req,res,next){
     var member_id = req.session.member_id;
+
+    var community_id = req.params.community_id;
     
     if(!member_id){
         res.redirect('/member/login');
@@ -249,13 +251,15 @@ router.post('/edit/delete',function(req,res,next){
     }
     else{
         var lessonplanData= req.body;
-        
+        var processData,nameData;
         lessonplan.deleteLessonplanActivityProcess(lessonplanData)
         .then(function(data){
-            if(data){
-                data = JSON.stringify(data)
-                res.json({msg:"ok",selectData:data});
-            }
+            processData = JSON.stringify(data)
+            return lessonplan.selectLessonplanActivityName(community_id)
+        })
+        .then(function(namedata){
+            nameData = JSON.stringify(namedata)
+            res.json({msg:"ok",processData:processData,nameData:nameData});
         })
     }
     
