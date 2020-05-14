@@ -220,6 +220,25 @@ router.post('/edit/:community_id/save',function(req,res,next){
                     }
                 })
                 break;
+            case 'lessonplan_target':
+                lessonplan.selectLessonplanTarget(community_id)
+                .then(function(results){
+                    if(results.length == 1){
+                        return lessonplan.updateLessonplanTarget(community_id,lessonplanData,member_id,member_name)
+                    }
+                    else{
+                        return lessonplan.insertLessonplanTarget(community_id,lessonplanData,member_id,member_name)
+                    }
+                })
+                .then(function(saveResults){
+                    return lessonplan.selectLessonplanTarget(community_id)
+                })
+                .then(function(selectResults){
+                    if(selectResults){
+                        return res.json({msg:'ok',targetData:selectResults})
+                    }
+                })
+                break;
             case 'lessonplan_stage':
                 lessonplan.saveLessonplanStage(community_id,lessonplanData,member_id,member_name)
                 .then(function(data){

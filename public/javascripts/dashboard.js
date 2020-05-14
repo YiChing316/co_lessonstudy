@@ -156,7 +156,7 @@ function showMemberCommunity(){
 //進入以加入社群btn
 function enterCommunityFormatter(value, row, index) {
     return [
-      '<a class="btn btn-primary enterCommunity" href="javascript:void(0)" title="Remove">進入</a>'
+      '<a class="btn btn-primary enterCommunity" href="javascript:void(0)" title="enter">進入</a>'
     ].join('')
 }
 

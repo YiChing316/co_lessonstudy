@@ -414,7 +414,7 @@ function showLessonplanStageSaveData(){
 
                         $("#lessonplantargetTbody").append('<tr>'+
                                                                 '<th scope="row" title="可上下移動排序">'+listnum+'</th>'+
-                                                                '<td><input type="text" class="form-control" name="lessonplantargercontent" placeholder="請輸入學習目標" value="'+value+'"></td>'+
+                                                                '<td><input type="text" class="form-control" name="lessonplantargercontent" placeholder="請輸入學習目標" value="'+value+'" data-updateaction="update" data-olddata="'+value+'"></td>'+
                                                                 '<td class="lasttd"><button class="btn btn-danger btnDelete"><i class="far fa-trash-alt"></i></button></td>'+
                                                             '</tr>');
                     }
@@ -559,7 +559,7 @@ function addlessonplantargetlist(){
     listnum++;
     $("#lessonplantargetTbody").append('<tr>'+
                                             '<th scope="row" title="可上下移動排序">'+listnum+'</th>'+
-                                            '<td><input type="text" class="form-control" name="lessonplantargercontent" placeholder="請輸入學習目標"></td>'+
+                                            '<td><input type="text" class="form-control" name="lessonplantargercontent" placeholder="請輸入學習目標" data-updateaction="new" data-olddata=""></td>'+
                                             '<td class="lasttd"><button class="btn btn-danger btnDelete"><i class="far fa-trash-alt"></i></button></td>'+
                                         '</tr>');
     deletetableTr('#lessonplantargetTbody');
@@ -606,9 +606,18 @@ function sortByKey(array, key) {
     });
 }
 
-//刪除該table內tbody的tr
+//刪除該table內tbody的tr//目前只用於targettable
 function deletetableTr(tbody){
     $(tbody).on('click','.btnDelete',function(){
+        //抓取最近的input值
+        var $input = $(this).closest('tr').find("input[name='lessonplantargercontent']");
+        var updateaction = $input.data("updateaction");
+        var olddata = $input.data("olddata");
+        //若為資料庫抓出來的資料才需處理delete動作
+        if(updateaction == "update"){
+            updateData.push({olddata:olddata,newdata:"",updateaction:"delete"})
+        }
+
         $(this).closest('tr').remove();
         $(tbody+" tr").each(function(index) {
             $(this).find('th:eq(0)').first().html(index + 1);
@@ -810,6 +819,7 @@ function saveAjax(data){
 }
 
 /*******儲存******************************************** */
+var updateData = [];//放target內容變更用的空array
 
 function saveLessonplanData(divId){
     var community_id = $("#community_id").text();
@@ -901,23 +911,34 @@ function saveLessonplanData(divId){
 
             var editing = $("#lessonplan_target").find(".editing").get().length;
             for(var i=0;i<tr_length;i++){
-                var lessonplantargetcontent = $($("#lessonplantargetTbody tr")[i]).find("input[name='lessonplantargercontent']").val();
                 $($("#lessonplantargetTbody tr")[i]).find("input[name='lessonplantargercontent']").removeClass('editing');
+                var $input = $($("#lessonplantargetTbody tr")[i]).find("input[name='lessonplantargercontent']");
+                var lessonplantargetcontent = $input.val();
+                var updateaction = $input.data("updateaction");
+                var olddata = $input.data("olddata");
                 targetArray.push(lessonplantargetcontent);
+                updateData.push({olddata:olddata,newdata:lessonplantargetcontent,updateaction:updateaction})
             }
             isChange = false;
 
             var targetString = targetArray.toString();
+            var updateString = JSON.stringify(updateData);
             var data= {
-                stage:'lessonplan_stage',
+                stage:'lessonplan_target',
                 lessonplan_stage_type:divId,
-                lessonplan_stage_content:targetString
+                lessonplan_stage_content:targetString,
+                target_update_data:updateString
             }
 
             var targetResults = saveAjax(data);
+            updateData = [];
             if(targetResults.msg == "ok"){
                 alert("儲存成功");
-                window.location = "/lessonplan/edit/"+community_id;
+                var targetData = targetResults.targetData[0].lessonplan_stage_content;
+                targetContent = targetData.split(',');
+                $("#lessonplan_targetandActivity").empty();
+                setLessonplanTargetandActivityTable();
+                
             }
             else{
                 window.location = "/member/login";
