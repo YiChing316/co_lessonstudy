@@ -441,6 +441,9 @@ function openActivityandAssessmentBtn(){
         var parentid = button.data('parentdivid');
         var modal = $(this);
         modal.find('#parentid').text(parentid);
+        var title = $("#header"+parentid).text();
+        activityLearningTarget(title)
+
     })
 
     $("#addassessmentModal").on("show.bs.modal",function(event){
@@ -681,6 +684,26 @@ function assessmentscaffold_Add(){
     })
 }
 
+function activityLearningTarget(title){
+    
+    var lessonplan_twowaytable_content = twowayTableData[0].lessonplan_twowaytable_content;
+    
+    var contentArray = JSON.parse(lessonplan_twowaytable_content);
+
+    if(contentArray.length !== 0){
+        contentArray.map(function(data){
+            var targetname = data.targetName;
+            var activityname = data.activityName;
+            if(title == activityname){
+                $("#addprocessModal").find(".targetCheckbox").append('<div class="custom-control custom-checkbox mb-1">'+
+                                                                        '<input type="checkbox" class="custom-control-input" id="'+targetname+'" name="processTarget" value="'+targetname+'">'+
+                                                                        '<label class="custom-control-label" for="'+targetname+'">'+targetname+'</label>'+
+                                                                    '</div>')
+            }
+        })
+    }
+}
+
 //彈出視窗closebtn的function，清空所有填寫框
 function modalclosebtn(modalid){
     switch (modalid){
@@ -706,6 +729,7 @@ function modalclosebtn(modalid){
             $("#editprocessremark").removeClass("editing");
             $("#editprocesscontent_sel_1").removeClass("editing");
             $("#editprocesscontent_sel_2").removeClass("editing");
+            $(".targetCheckbox").empty();
             isChange = false;
             break;
         case 'addassessmentModal':

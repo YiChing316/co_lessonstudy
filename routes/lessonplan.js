@@ -250,8 +250,11 @@ router.post('/edit/:community_id/save',function(req,res,next){
             case 'lessonplan_twowaytable':
                 lessonplan.saveTwoWayTable(community_id,lessonplanData,member_id,member_name)
                 .then(function(data){
-                    if(data){
-                        return res.json({msg:'ok'})
+                    return lessonplan.selectLessonplanTwoWayTable(community_id)
+                })
+                .then(function(selectdata){
+                    if(selectdata){
+                        return res.json({msg:'ok',tabledata:selectdata})
                     }
                 })
         }

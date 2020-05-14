@@ -969,7 +969,10 @@ function saveLessonplanData(divId){
 
             if(table1Results.msg == "ok"){
                 alert("儲存成功");
-                window.location = "/lessonplan/edit/"+community_id;
+                var tabledata = table1Results.tabledata;
+                var string = JSON.stringify(tabledata)
+                $("#twowayTableData").text(string);
+                showtwowayTableData();
             }
             else{
                 window.location = "/member/login";
