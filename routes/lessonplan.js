@@ -7,7 +7,7 @@ var node = require('../models/node');
 var multer = require('multer');
 var fs = require('fs');
 
-/* GET lessonplan/edit page. */
+/*****實作頁面************************************************************************************ */
 router.get('/edit/:community_id', function(req, res, next) {
     var member_id = req.session.member_id;
     var member_name = req.session.member_name;
@@ -295,6 +295,7 @@ var upload = multer({
     })
   });
 
+//上傳評量檔案，一次只能一個檔案
 router.post('/edit/:community_id/uploadfile',upload.single('file'),function(req,res){
     var member_id = req.session.member_id;
 
@@ -315,6 +316,7 @@ router.post('/edit/:community_id/uploadfile',upload.single('file'),function(req,
     }
 })
 
+//上傳summernote檔案
 router.post('/edit/:community_id/uploadsummernotefile',upload.array('imageFile',5),function(req,res){
     var member_id = req.session.member_id;
     var community_id = req.params.community_id;
@@ -341,6 +343,7 @@ router.post('/edit/:community_id/uploadsummernotefile',upload.array('imageFile',
     }
 })
 
+//實作評量檔案刪除
 router.post('/edit/:community_id/deletefile',function(req,res){
     var member_id = req.session.member_id;
     var community_id = req.params.community_id;
@@ -373,6 +376,7 @@ router.post('/edit/:community_id/deletefile',function(req,res){
  
 })
 
+//確認實作檔案資料是否符合社群資料夾內的檔案
 router.post('/edit/:community_id/checkfile',function(req,res){
     var filepath = req.body.filepath;
     fs.stat(filepath, function (err, stats) {
@@ -387,6 +391,8 @@ router.post('/edit/:community_id/checkfile',function(req,res){
 })
 
 
+
+/*****想法頁面************************************************************************************ */
 router.get('/idea/:community_id', function(req, res, next) {
     var member_id = req.session.member_id;
     var member_name = req.session.member_name;
@@ -430,6 +436,7 @@ router.get('/idea/:community_id', function(req, res, next) {
     }
 });
 
+//打開想法節點
 router.get('/idea/:community_id/openIdea',function(req,res,next){
     var member_id = req.session.member_id;
     var member_name = req.session.member_name;
@@ -466,6 +473,7 @@ router.get('/idea/:community_id/openIdea',function(req,res,next){
     }
 })
 
+//建立想法節點
 router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function(req,res){
     var member_id = req.session.member_id;
     var member_name = req.session.member_name;
@@ -511,7 +519,7 @@ router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function
     }
 })
 
-//更新節點
+//更新想法節點
 router.post('/idea/:community_id/updateIdea',upload.array('ideafile',5),function(req,res){
     var member_id = req.session.member_id;
     var member_name = req.session.member_name;
@@ -556,6 +564,7 @@ router.post('/idea/:community_id/updateIdea',upload.array('ideafile',5),function
     }
 })
 
+//打開實作節點
 router.get('/idea/:community_id/openLessonplanNode',function(req,res,next){
     var member_id = req.session.member_id;
     var member_name = req.session.member_name;
@@ -574,6 +583,8 @@ router.get('/idea/:community_id/openLessonplanNode',function(req,res,next){
             switch(node_type){
                 case 'lessonplan':
                     return node.selectLessonplanNode(community_id,node_type)
+                case 'twowaytable':
+                    return node.selectTwoWayTableNode(community_id,node_type)
                 default:
                     return node.selectLessonplanStageNode(community_id,node_type)
             }
@@ -584,6 +595,7 @@ router.get('/idea/:community_id/openLessonplanNode',function(req,res,next){
     }
 })
 
+//刪除想法節點內檔案
 router.post('/idea/:community_id/deletefile',function(req,res){
     var member_id = req.session.member_id;
     var community_id = req.params.community_id;
