@@ -67,7 +67,12 @@ var lessonplanActivityProcessData;
 function addactivityTr(){
     var parentid = $("#parentid").text();
 
-    var processtarget = $("#processtarget").val();
+    var processtarget = [];
+    // var processtarget = $("#processtarget").val();
+    $("#addprocessModal").find("input[name='processTarget']:checked").each(function(){
+        processtarget.push($(this).val());
+    })
+
     var processcontent = $("#processcontent").val();
     var processtime = $("#processtime").val();
     var processremark = $("#processremark").val();
@@ -94,17 +99,21 @@ function addactivityTr(){
         $("#addprocessModal input[type='text']").val("");
         $("#addprocessModal input[type='number']").val("");
         $("#processalert").hide();
+        $(".targetCheckbox").empty();
 
         saveLocalStorage(parentid);
 
     }  
 }
 
-//編輯流程tr內容，不會影響評量內容
+//編輯流程tr內容，打開編輯modal，不會影響評量內容
 function editActivityTr(){
     $('.activityTbody').on('click','.btnEdit',function(){
         var parentid = $(this).closest('.card-body').attr('id');
         var tbodyid = $(this).closest('tbody').attr('id');
+
+        var title = $("#header"+parentid).text();
+        activityLearningTarget(title)
 
         var row = $(this).closest('tr');
         var lessonplan_activity_learningtarget = row.find("td:eq(0)").text();
@@ -116,7 +125,11 @@ function editActivityTr(){
 
         var $editmodal = $("#editprocessModal");
 
-        $editmodal.find("#editprocesstarget").val(lessonplan_activity_learningtarget);
+        var targetarray = lessonplan_activity_learningtarget.split(',');
+        targetarray.map(function(data){
+             $editmodal.find("input[value='"+data+"']").prop('checked', true);
+        })
+        // $editmodal.find("#editprocesstarget").val(lessonplan_activity_learningtarget);
         $editmodal.find("#editprocesscontent").summernote('code', lessonplan_activity_content);
         $editmodal.find("#editprocesstime").val(lessonplan_activity_time);
         $editmodal.find("#editprocessremark").val(lessonplan_activity_remark);
@@ -462,11 +475,14 @@ function editActivityModalBtn(){
     //eq開始數字為0，但rowIdex是從1開始抓，應該是因為thead內的tr rowinde算0，但這邊是從tbody開始去跑eq故要減1
     var dataindex = $("#dataindex").text()-1;
 
-    var processtarget = $("#editprocesstarget").val();
+    var processtarget = [];
     var processcontent = $("#editprocesscontent").val();
     var processtime = $("#editprocesstime").val();
     var processremark = $("#editprocessremark").val();
     
+    $("#editprocessModal").find("input[name='processTarget']:checked").each(function(){
+        processtarget.push($(this).val());
+    })
 
     if(processcontent == "" || processtime == ""){
         $("#editprocessalert").show();
@@ -493,6 +509,7 @@ function editActivityModalBtn(){
         $("#editprocessModal input[type='text']").val("");
         $("#editprocessModal input[type='number']").val("");
         $("#editprocessalert").hide();
+        $(".targetCheckbox").empty();
 
         saveLocalStorage(parentid);
     }
@@ -699,6 +716,10 @@ function activityLearningTarget(title){
                                                                         '<input type="checkbox" class="custom-control-input" id="'+targetname+'" name="processTarget" value="'+targetname+'">'+
                                                                         '<label class="custom-control-label" for="'+targetname+'">'+targetname+'</label>'+
                                                                     '</div>')
+                $("#editprocessModal").find(".targetCheckbox").append('<div class="custom-control custom-checkbox mb-1">'+
+                                                                    '<input type="checkbox" class="custom-control-input" id="edit'+targetname+'" name="processTarget" value="'+targetname+'">'+
+                                                                    '<label class="custom-control-label" for="edit'+targetname+'">'+targetname+'</label>'+
+                                                                '</div>')
             }
         })
     }
@@ -717,6 +738,7 @@ function modalclosebtn(modalid){
             $("#processremark").removeClass("editing");
             $("#processcontent_sel_1").removeClass("editing");
             $("#processcontent_sel_2").removeClass("editing");
+            $(".targetCheckbox").empty();
             isChange = false;
             break;
         case 'addprocessModal':

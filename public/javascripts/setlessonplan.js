@@ -324,11 +324,11 @@ function activityandAssessmentDesign_Append(id,baseid,activity_name){
                                     '<table class="table table-bordered activitytable mt-3" id="activity_'+id+'Table">'+
                                         '<thead class="thead-light">'+
                                             '<tr>'+
-                                            '<th scope="col">#</th>'+
-                                            '<th scope="col" width="90">學習目標</th>'+
-                                            '<th scope="col" width="350">活動流程</th>'+
+                                            '<th scope="col" width="40">#</th>'+
+                                            '<th scope="col" width="150">學習目標</th>'+
+                                            '<th scope="col" width="450">活動流程</th>'+
                                             '<th scope="col" width="60">時間</th>'+
-                                            '<th scope="col" width="150">評量方式</th>'+
+                                            '<th scope="col" width="200">評量方式</th>'+
                                             '<th scope="col">備註</th>'+
                                             '<th scope="col" width="50"></th>'+
                                             '</tr>'+
@@ -1123,6 +1123,14 @@ function saveActivityProcessData(divId){
 
         isChange = false;
         saveAjax(data);
+
+        var processResults = saveAjax(data);
+        if(processResults.msg == "ok"){
+            alert("儲存成功");
+        }
+        else{
+            window.location = "/member/login";
+        }
 
     }
     else{
