@@ -221,6 +221,7 @@ router.post('/edit/:community_id/save',function(req,res,next){
                 })
                 break;
             case 'lessonplan_target':
+                var targetData,activityData;
                 lessonplan.selectLessonplanTarget(community_id)
                 .then(function(results){
                     if(results.length == 1){
@@ -234,8 +235,13 @@ router.post('/edit/:community_id/save',function(req,res,next){
                     return lessonplan.selectLessonplanTarget(community_id)
                 })
                 .then(function(selectResults){
-                    if(selectResults){
-                        return res.json({msg:'ok',targetData:selectResults})
+                    targetData = selectResults;
+                    return lessonplan.selectLessonplanActivityProcess(community_id)
+                })
+                .then(function(activityResults){
+                    if(activityResults){
+                        activityData = JSON.stringify(activityResults)
+                        return res.json({msg:'ok',targetData:targetData,activityData:activityData})
                     }
                 })
                 break;

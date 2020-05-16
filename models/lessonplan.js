@@ -460,6 +460,13 @@ module.exports = {
             return module.exports.updateTwoWayTableContent(community_id,updateResult,'activity');
         })
         .then(function(data){
+            return module.exports.changeActivityProcessContent(community_id,updateData)
+        })
+        .then(function(activitydata){
+            return module.exports.updateActivityProcessContent(activitydata)
+            // return updateResult;
+        })
+        .then(function(data){
             return updateResult;
         })
     },
@@ -477,6 +484,104 @@ module.exports = {
 
             })
             
+        })
+    },
+
+    updateActivityProcessContent: function(activitydata){
+        var activityArray = JSON.parse(activitydata);
+
+        return Promise.all(
+            activityArray.map(function(data){
+                return new Promise(function(resolve,reject){
+                    pool.getConnection(function(err,connection){
+                        if(err) throw err;
+                        var id = data.id;
+
+                        var sql = {
+                            lessonplan_activity_content: data.lessonplan_activity_content
+                        }
+        
+                        connection.query('UPDATE `lessonplan_activity_process` SET ? WHERE `lessonplan_activity_process_id` = ?',[sql,id],function(err,rows,fields){
+                            if(err) return reject(err);
+                            resolve(rows);
+                            connection.release();
+                        })
+                    })
+                })
+            })
+        )
+    },
+
+    changeActivityProcessContent: function(community_id,updateData){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                connection.query('SELECT `lessonplan_activity_process_id`,`lessonplan_activity_content` FROM `lessonplan_activity_process` WHERE `community_id_community` = ?',community_id,function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
+        })
+        .then(function(selectdata){
+            
+            var activityArray = [];
+
+            selectdata.map(function(data){
+                
+                var id = data.lessonplan_activity_process_id;
+                var activity_content = data.lessonplan_activity_content;
+
+                if(activity_content !== ""){
+                    //活動content處理為array
+                    var contentArray = JSON.parse(activity_content);
+
+                    //新的活動content
+                    var newContentArray = []
+                    contentArray.map(function(contentdata){
+                        var learning_target = contentdata.lessonplan_activity_learningtarget;
+                        var lessonplan_activity_content = contentdata.lessonplan_activity_content;
+                        var lessonplan_activity_time = contentdata.lessonplan_activity_time;
+                        var lessonplan_activity_assessment = contentdata.lessonplan_activity_assessment;
+                        var lessonplan_activity_remark = contentdata.lessonplan_activity_remark;
+
+                        var targetarray = learning_target.split(',');
+                        var newarray = [];
+
+                        targetarray.map(function(targetname){
+                            updateData.map(function(updatedata){
+                                var updateaction = updatedata.updateaction;
+                                var olddata = updatedata.olddata;
+                                var newdata = updatedata.newdata;
+                                //當儲存動作為更新的才會動作
+                                if(updateaction == "update"){
+                                    //與舊資料匹配的進行更新
+                                    if(targetname == olddata){
+                                        targetname = newdata;
+                                        newarray.push(targetname)
+                                    }
+                                }
+                            })
+                        })
+
+                        var targetString = newarray.toString();
+
+                        newContentArray.push({lessonplan_activity_learningtarget:targetString,
+                                                lessonplan_activity_content:lessonplan_activity_content,
+                                                lessonplan_activity_time:lessonplan_activity_time,
+                                                lessonplan_activity_assessment:lessonplan_activity_assessment,
+                                                lessonplan_activity_remark:lessonplan_activity_remark
+                                            })
+                    })
+                    var activityString = JSON.stringify(newContentArray);
+                    activityArray.push({id:id,lessonplan_activity_content:activityString})
+                }
+            })
+
+            var activityString = JSON.stringify(activityArray);
+
+            return activityString
         })
     },
     

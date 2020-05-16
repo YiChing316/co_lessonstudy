@@ -936,9 +936,16 @@ function saveLessonplanData(divId){
             if(targetResults.msg == "ok"){
                 alert("儲存成功");
                 var targetData = targetResults.targetData[0].lessonplan_stage_content;
+                var activityData = targetResults.activityData;
+
                 targetContent = targetData.split(',');
                 $("#lessonplan_targetandActivity").empty();
                 setLessonplanTargetandActivityTable();
+                $("#lessonplanActivityProcessData").text(activityData);
+                $(".activityTbody tr").remove();
+                lessonplanActivityProcessData = $("#lessonplanActivityProcessData").text();
+                lessonplanActivityProcessData = JSON.parse(lessonplanActivityProcessData);
+                setActivityProcess();
                 
             }
             else{
@@ -1174,6 +1181,7 @@ function deleteActivityData(){
                 sidebar_Map();
                 setLessonplanTargetandActivityTable();
                 showtwowayTableData();
+                setActivityProcess();
             }
             else{
                 window.location = "/member/login";
