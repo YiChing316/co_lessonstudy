@@ -324,13 +324,14 @@ function activityandAssessmentDesign_Append(id,baseid,activity_name){
                                     '<table class="table table-bordered activitytable mt-3" id="activity_'+id+'Table">'+
                                         '<thead class="thead-light">'+
                                             '<tr>'+
-                                            '<th scope="col" width="40">#</th>'+
-                                            '<th scope="col" width="150">學習目標</th>'+
-                                            '<th scope="col" width="450">活動流程</th>'+
-                                            '<th scope="col" width="60">時間</th>'+
-                                            '<th scope="col" width="200">評量方式</th>'+
-                                            '<th scope="col">備註</th>'+
-                                            '<th scope="col" width="50"></th>'+
+                                                '<th scope="col" width="40"></th>'+
+                                                '<th scope="col" width="40">#</th>'+
+                                                '<th scope="col" width="150">學習目標</th>'+
+                                                '<th scope="col" width="450">活動流程</th>'+
+                                                '<th scope="col" width="60">時間</th>'+
+                                                '<th scope="col" width="200">評量方式</th>'+
+                                                '<th scope="col">備註</th>'+
+                                                '<th scope="col" width="50"></th>'+
                                             '</tr>'+
                                         '</thead>'+
                                         '<tbody class="activityTbody" id="activity_'+id+'Tbody"></tbody>'+
@@ -419,7 +420,7 @@ function showLessonplanStageSaveData(){
                                                             '</tr>');
                     }
                     deletetableTr('#lessonplantargetTbody');
-                    sorttableTbody('#lessonplantargetTbody');
+                    // sorttableTbody('#lessonplantargetTbody');
 
                     break;
                 case 'core_competency':
@@ -558,12 +559,12 @@ function addlessonplantargetlist(){
     var listnum = $("#lessonplantargetTbody").find("tr").last().children("th").text();
     listnum++;
     $("#lessonplantargetTbody").append('<tr>'+
-                                            '<th scope="row" title="可上下移動排序">'+listnum+'</th>'+
+                                            '<th scope="row">'+listnum+'</th>'+
                                             '<td><input type="text" class="form-control" name="lessonplantargercontent" placeholder="請輸入學習目標" data-updateaction="new" data-olddata=""></td>'+
                                             '<td class="lasttd"><button class="btn btn-danger btnDelete"><i class="far fa-trash-alt"></i></button></td>'+
                                         '</tr>');
     deletetableTr('#lessonplantargetTbody');
-    sorttableTbody('#lessonplantargetTbody');
+    // sorttableTbody('#lessonplantargetTbody');
 }
 
 //新增活動table列表

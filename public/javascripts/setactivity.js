@@ -4,19 +4,23 @@ var assessment_option = ["紙筆測驗","口頭評量","實作能力評量","作
 
 function trElement(parentid,num,processtarget,processcontent,processtime,processremark){
     $("#"+parentid+"Tbody").append('<tr>'+
-                                '<th scope="row">'+num+'</th>'+
-                                '<td>'+processtarget+'</td>'+
-                                '<td>'+processcontent+'</td>'+
-                                '<td>'+processtime+'</td>'+
-                                '<td id="'+parentid+'_assessmentTd_'+num+'">'+
-                                    '<a href="" class="assessment_link font-weight-bolder" class="assessment_link font-weight-bolder" data-toggle="modal" data-target="#addassessmentModal" data-targettr="'+parentid+'_assessmentTd_'+num+'">新增評量方式...</a>'+
-                                '</td>'+
-                                '<td>'+processremark+'</td>'+
-                                '<td>'+
-                                    '<input type="button" class="btn btn-warning mb-1 btnEdit" data-parentdivid="'+parentid+'" value="編輯">'+
-                                    '<input type="button" class="btn btn-danger btnDelete" value="刪除">'+
-                                '</td>'+
-                            '</tr>');
+                                        '<td>'+
+                                            '<a href="javascript:void(0)" class="up"><i class="far fa-arrow-alt-circle-up fa-lg my-2"></i></a>'+
+                                            '<a href="javascript:void(0)" class="down"><i class="far fa-arrow-alt-circle-down fa-lg my-2"></i></a>'+
+                                        '</td>'+
+                                        '<th scope="row">'+num+'</th>'+
+                                        '<td>'+processtarget+'</td>'+
+                                        '<td>'+processcontent+'</td>'+
+                                        '<td>'+processtime+'</td>'+
+                                        '<td id="'+parentid+'_assessmentTd_'+num+'">'+
+                                            '<a href="" class="assessment_link font-weight-bolder" class="assessment_link font-weight-bolder" data-toggle="modal" data-target="#addassessmentModal" data-targettr="'+parentid+'_assessmentTd_'+num+'">新增評量方式...</a>'+
+                                        '</td>'+
+                                        '<td>'+processremark+'</td>'+
+                                        '<td>'+
+                                            '<input type="button" class="btn btn-warning mb-1 btnEdit" data-parentdivid="'+parentid+'" value="編輯">'+
+                                            '<input type="button" class="btn btn-danger btnDelete" value="刪除">'+
+                                        '</td>'+
+                                    '</tr>');
 }
 
 function assessmentDiv(td_id,assessmentcontent,tmpmimetype,tmppath,file){
@@ -42,13 +46,15 @@ $(function(){
     assessmentscaffold_Add();
 
     deleteActivityTableTr();
-    sortActivityTableTbody();
+    // sortActivityTableTbody();
 
     openActivityandAssessmentBtn();
 
     editActivityTr();
 
     deleteeditfile();
+
+    moveTrPosition()
 
     // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function() {
@@ -102,6 +108,7 @@ function addactivityTr(){
         $(".targetCheckbox").empty();
 
         saveLocalStorage(parentid);
+        moveTrPosition()
 
     }  
 }
@@ -116,10 +123,10 @@ function editActivityTr(){
         activityLearningTarget(title)
 
         var row = $(this).closest('tr');
-        var lessonplan_activity_learningtarget = row.find("td:eq(0)").text();
-        var lessonplan_activity_content = row.find("td:eq(1)").html();
-        var lessonplan_activity_time = row.find("td:eq(2)").text();
-        var lessonplan_activity_remark = row.find("td:eq(4)").text();
+        var lessonplan_activity_learningtarget = row.find("td:eq(1)").text();
+        var lessonplan_activity_content = row.find("td:eq(2)").html();
+        var lessonplan_activity_time = row.find("td:eq(3)").text();
+        var lessonplan_activity_remark = row.find("td:eq(5)").text();
 
         var rowindex = row[0].rowIndex;
 
@@ -202,9 +209,10 @@ function addassessmentTd(){
         $("#assessmentalert").html("評量內容為必填");
     }
     else{
+        console.log(fileData)
         //如果沒有附加檔案的話
         if(fileData == undefined){
-            assessmentDiv(td_id,assessmentcontent,"","");
+            assessmentDiv(td_id,assessmentcontent,"","","");
 
             closeassessmentModal(td_id);
         }
@@ -339,10 +347,10 @@ function saveLocalStorage(divId){
 
     for(var i=0;i<tr_length;i++){
 
-        var lessonplan_activity_learningtarget = $($("#"+divId+"Tbody tr")[i]).find("td:eq(0)").text();
-        var lessonplan_activity_content = $($("#"+divId+"Tbody tr")[i]).find("td:eq(1)").html();
-        var lessonplan_activity_time = $($("#"+divId+"Tbody tr")[i]).find("td:eq(2)").text();
-        var lessonplan_activity_remark = $($("#"+divId+"Tbody tr")[i]).find("td:eq(4)").text();
+        var lessonplan_activity_learningtarget = $($("#"+divId+"Tbody tr")[i]).find("td:eq(1)").text();
+        var lessonplan_activity_content = $($("#"+divId+"Tbody tr")[i]).find("td:eq(2)").html();
+        var lessonplan_activity_time = $($("#"+divId+"Tbody tr")[i]).find("td:eq(3)").text();
+        var lessonplan_activity_remark = $($("#"+divId+"Tbody tr")[i]).find("td:eq(5)").text();
 
         var assessmentArray = [];
 
@@ -492,10 +500,10 @@ function editActivityModalBtn(){
         
         var row = $("#"+tbodyid+" tr:eq("+dataindex+")");
 
-        row.find("td:eq(0)").text(processtarget);
-        row.find("td:eq(1)").html(processcontent);
-        row.find("td:eq(2)").text(processtime);
-        row.find("td:eq(4)").text(processremark);
+        row.find("td:eq(1)").text(processtarget);
+        row.find("td:eq(2)").html(processcontent);
+        row.find("td:eq(3)").text(processtime);
+        row.find("td:eq(5)").text(processremark);
 
         $("#editprocesstarget").removeClass("editing");
         $("#editprocesstime").removeClass("editing");
@@ -811,3 +819,16 @@ function resetsummernote(){
     $("#editassessmentsummernote").summernote("code",'');  
 }
 
+function moveTrPosition(){
+    $(".up,.down").click(function(){
+        var row = $(this).parents("tr:first");
+        
+        if ($(this).is(".up")) {
+            row.insertBefore(row.prev());
+        } else {
+            row.insertAfter(row.next());
+        }
+        var parentid = $(this).closest('.card-body').attr('id');
+        saveLocalStorage(parentid);
+    });
+}
