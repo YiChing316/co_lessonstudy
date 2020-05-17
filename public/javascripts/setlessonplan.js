@@ -311,6 +311,7 @@ function stageControl(){
     }
 }
 
+//活動與評量設計內table顯示
 function activityandAssessmentDesign_Append(id,baseid,activity_name){
     var divId = "'activity_"+id+"'";
     var activityDiv = '<div class="row accordion">'+
@@ -389,6 +390,83 @@ function setLessonplanTargetandActivityTable(){
         }
         buttonDiv('lessonplan_targetandActivity');
         showtwowayTableData();
+    }
+}
+
+//顯示學習目標與評量對應表，此程式需先跑過setactivity.js的setActivityProces的()，故放在於setactivity.js執行
+function setLessonplanTargetandAssessmentTable(){
+
+    if(targetContent == undefined || activityName == "" || targetandAssessmentArray.length == 0){
+        $("#cardidlessonplan_targetandAssessment").parent(".row").hide();
+    }
+    else{
+        $("#cardidlessonplan_targetandAssessment").parent(".row").show();
+        $("#lessonplan_targetandAssessment").append('<table id="lessonplanTargetanAssessmentTable" class="table table-bordered">'+
+                                                        '<thead class="thead-light text-center">'+
+                                                        '<tr>'+
+                                                            '<th rowspan="2" colspan="1"></th>'+
+                                                        '</tr>'+
+                                                        '</thead>'+
+                                                        '<tbody> </tbody>'+
+                                                    '</table>'
+                                                    );
+        //顯示學習目標
+        $.each(targetContent,function(i,val){
+            $("#lessonplanTargetanAssessmentTable").find("tbody").append('<tr data-targetname="'+targetContent[i]+'"><td>'+targetContent[i]+'</td></tr>')
+            
+        })
+
+        var activityCounts = {};
+        //計算活動共有幾筆評量
+        $.each(targetandAssessmentArray, function(i,val) {
+            if (!activityCounts.hasOwnProperty(val.lessonplan_activity_name)) {
+                activityCounts[val.lessonplan_activity_name] = 1;
+            } else {
+                activityCounts[val.lessonplan_activity_name]++;
+            }
+        });
+
+        //放置表頭
+        $.each(targetandAssessmentArray,function(i,val){
+            var activityname = val.lessonplan_activity_name;
+            var assessment_content = val.assessment_content;
+            
+            //因為activityname 為 string
+            eval( 'var result = activityCounts.' + activityname )
+            //每個活動只放一次，並依據活動有幾個評量設定colspan數量
+            if($("#lessonplanTargetanAssessmentTable").find("thead tr:first th").text() !== activityname){
+              $("#lessonplanTargetanAssessmentTable").find("thead tr:first").append('<th rowspan="1" colspan="'+result+'">'+activityname+'</th>')
+            }
+            $("#lessonplanTargetanAssessmentTable").find("thead").append('<th>'+assessment_content+'</th>')
+        })
+
+        var tr_length = $("#lessonplanTargetanAssessmentTable").find("tbody tr").length;
+
+        //放置checkbox並直接呈現勾選狀況，為disabled
+        for(var s=0;s<tr_length;s++){
+
+            var tr_index = $($("#lessonplanTargetanAssessmentTable").find("tbody tr")[s]).index();
+            var targetname = $($("#lessonplanTargetanAssessmentTable").find("tbody tr")[s]).data('targetname')
+
+            targetandAssessmentArray.map(function(data){
+                var processtarget = data.processtarget;
+                var lessonplan_activity_name = data.lessonplan_activity_name;
+                var assessment_content = data.assessment_content;
+                var checkboxValue = lessonplan_activity_name+","+assessment_content;
+                var checkid = checkboxValue+tr_index;
+                $("#lessonplanTargetanAssessmentTable").find("tbody tr:eq("+tr_index+")").append(
+                    '<td class="text-center" width="120">'+
+                        '<div class="custom-control custom-checkbox">'+
+                            '<input type="checkbox" class="custom-control-input" id="'+checkid+'" name="targetandassessment" value="'+checkboxValue+'" disabled>'+
+                            '<label class="custom-control-label" for="'+checkid+'"></label>'+
+                        '</div>'+               
+                    '</td>');
+
+                if(processtarget == targetname ){
+                    $($("#lessonplanTargetanAssessmentTable").find("tbody tr")[s]).find("input[value='"+checkboxValue+"']").prop('checked', true);
+                }
+            })
+        }
     }
 }
 

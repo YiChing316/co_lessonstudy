@@ -39,6 +39,7 @@ function assessmentDiv(td_id,assessmentcontent,tmpmimetype,tmppath,file){
 $(function(){
     
     setActivityProcess();
+    setLessonplanTargetandAssessmentTable();
 
     processselect_Set();
     assessment_Set();
@@ -209,7 +210,7 @@ function addassessmentTd(){
         $("#assessmentalert").html("評量內容為必填");
     }
     else{
-        console.log(fileData)
+
         //如果沒有附加檔案的話
         if(fileData == undefined){
             assessmentDiv(td_id,assessmentcontent,"","","");
@@ -378,9 +379,12 @@ function saveLocalStorage(divId){
 
 }
 
+var targetandAssessmentArray = [];
+
 //放入已經儲存活動流程資料
 function setActivityProcess(){
     var community_id = $("#community_id").text();
+
     if( lessonplanActivityProcessData.length !== 0){
         // lessonplanActivityProcessData = JSON.parse(lessonplanActivityProcessData);
 
@@ -389,7 +393,7 @@ function setActivityProcess(){
             var processData = lessonplanActivityProcessData[i];
             var number = i+1;
             var parentid = "activity_"+number;
-
+            var lessonplan_activity_name = processData.lessonplan_activity_name;
             var lessonplan_activity_content = processData.lessonplan_activity_content;
 
             if(lessonplan_activity_content.length !== 0){
@@ -403,9 +407,9 @@ function setActivityProcess(){
                     var processtime = contentData.lessonplan_activity_time;
                     var processremark = contentData.lessonplan_activity_remark;
                     var assessmentArray = contentData.lessonplan_activity_assessment;
-    
+
                     trElement(parentid,num,processtarget,processcontent,processtime,processremark);
-    
+
                     for(var r=0;r<assessmentArray.length;r++){
                         var assessmentData= assessmentArray[r];
                         var td_id = parentid+"_assessmentTd_"+num;
@@ -440,13 +444,13 @@ function setActivityProcess(){
                             assessmentDiv(td_id,content,"","","");
                         }
                         
+                        
+                        targetandAssessmentArray.push({lessonplan_activity_name:lessonplan_activity_name,processtarget:processtarget,assessment_content:assessment_content})
                         deleteassessment();
                         editAssessmentDiv();
                     }
-    
                 }
             }
-
         }  
     }
 }
@@ -711,26 +715,30 @@ function assessmentscaffold_Add(){
 
 //在活動流程modal放入對應的學習目標
 function activityLearningTarget(title){
-    
-    var lessonplan_twowaytable_content = twowayTableData[0].lessonplan_twowaytable_content;
-    
-    var contentArray = JSON.parse(lessonplan_twowaytable_content);
 
-    if(contentArray.length !== 0){
-        contentArray.map(function(data){
-            var targetname = data.targetName;
-            var activityname = data.activityName;
-            if(title == activityname){
-                $("#addprocessModal").find(".targetCheckbox").append('<div class="custom-control custom-checkbox mb-1">'+
-                                                                        '<input type="checkbox" class="custom-control-input" id="'+targetname+'" name="processTarget" value="'+targetname+'">'+
-                                                                        '<label class="custom-control-label" for="'+targetname+'">'+targetname+'</label>'+
+    if(twowayTableData.length !== 0){
+        var lessonplan_twowaytable_content = twowayTableData[0].lessonplan_twowaytable_content;
+        var contentArray = JSON.parse(lessonplan_twowaytable_content);
+
+        if(contentArray.length !== 0){
+            contentArray.map(function(data){
+                var targetname = data.targetName;
+                var activityname = data.activityName;
+                if(title == activityname){
+                    $("#addprocessModal").find(".targetCheckbox").append('<div class="custom-control custom-checkbox mb-1">'+
+                                                                            '<input type="checkbox" class="custom-control-input" id="'+targetname+'" name="processTarget" value="'+targetname+'">'+
+                                                                            '<label class="custom-control-label" for="'+targetname+'">'+targetname+'</label>'+
+                                                                        '</div>')
+                    $("#editprocessModal").find(".targetCheckbox").append('<div class="custom-control custom-checkbox mb-1">'+
+                                                                        '<input type="checkbox" class="custom-control-input" id="edit'+targetname+'" name="processTarget" value="'+targetname+'">'+
+                                                                        '<label class="custom-control-label" for="edit'+targetname+'">'+targetname+'</label>'+
                                                                     '</div>')
-                $("#editprocessModal").find(".targetCheckbox").append('<div class="custom-control custom-checkbox mb-1">'+
-                                                                    '<input type="checkbox" class="custom-control-input" id="edit'+targetname+'" name="processTarget" value="'+targetname+'">'+
-                                                                    '<label class="custom-control-label" for="edit'+targetname+'">'+targetname+'</label>'+
-                                                                '</div>')
-            }
-        })
+                }
+            })
+        }
+    }
+    else{
+        alert("尚未設定學習目標與活動對應表")
     }
 }
 
