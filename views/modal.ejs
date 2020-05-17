@@ -241,7 +241,7 @@
   </div>
 </div>
 
-<!-- 警告Modal -->
+<!-- 刪除活動警告Modal -->
 <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true" data-backdrop="static">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -264,6 +264,31 @@
     </div>
   </div>
 </div>
+
+<!-- 儲存學習目標警告Modal -->
+<div class="modal fade" id="targetalertModal" tabindex="-1" role="dialog" aria-labelledby="targetalertModalLabel" aria-hidden="true" data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-warning">
+        <h5 class="modal-title" id="targetalertModalLabel"><i class="fas fa-exclamation-triangle"></i> 警告</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <b class="targetAlertLabel text-danger"></b>尚未儲存<br>
+        若繼續可能會造成<b class="targetAlertLabel text-danger"></b>資料遺失請問確定要儲存嗎？
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" onclick="saveLearningTarget()">確定儲存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--idea頁面-------------------------------------------------------------------------------------------------------------------->
 
 <!-- 閱讀/修改想法Modal -->
 <div class="modal" id="readIdeaModal" tabindex="-1" role="dialog" aria-labelledby="readIdeaModalLabel" aria-hidden="true" data-backdrop="static">

@@ -709,6 +709,7 @@ function assessmentscaffold_Add(){
     })
 }
 
+//在活動流程modal放入對應的學習目標
 function activityLearningTarget(title){
     
     var lessonplan_twowaytable_content = twowayTableData[0].lessonplan_twowaytable_content;
