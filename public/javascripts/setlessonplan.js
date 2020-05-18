@@ -400,12 +400,14 @@ function setLessonplanTargetandAssessmentTable(){
         $("#cardidlessonplan_targetandAssessment").parent(".row").hide();
     }
     else{
+
         $("#cardidlessonplan_targetandAssessment").parent(".row").show();
         $("#lessonplan_targetandAssessment").append('<table id="lessonplanTargetanAssessmentTable" class="table table-bordered">'+
                                                         '<thead class="thead-light text-center">'+
                                                         '<tr>'+
                                                             '<th rowspan="2" colspan="1"></th>'+
                                                         '</tr>'+
+                                                        '<tr></tr>'+
                                                         '</thead>'+
                                                         '<tbody> </tbody>'+
                                                     '</table>'
@@ -424,20 +426,16 @@ function setLessonplanTargetandAssessmentTable(){
             } else {
                 activityCounts[val.lessonplan_activity_name]++;
             }
+            //在第二層thead放入評量
+            var assessment_content = val.assessment_content;
+            $("#lessonplanTargetanAssessmentTable").find("thead tr:eq(1)").append('<th>'+assessment_content+'</th>')
         });
 
-        //放置表頭
-        $.each(targetandAssessmentArray,function(i,val){
-            var activityname = val.lessonplan_activity_name;
-            var assessment_content = val.assessment_content;
-            
-            //因為activityname 為 string
-            eval( 'var result = activityCounts.' + activityname )
-            //每個活動只放一次，並依據活動有幾個評量設定colspan數量
-            if($("#lessonplanTargetanAssessmentTable").find("thead tr:first th").text() !== activityname){
-              $("#lessonplanTargetanAssessmentTable").find("thead tr:first").append('<th rowspan="1" colspan="'+result+'">'+activityname+'</th>')
-            }
-            $("#lessonplanTargetanAssessmentTable").find("thead").append('<th>'+assessment_content+'</th>')
+        //每個活動只放一次，並依據活動有幾個評量設定colspan數量，在第一層thead
+        Object.entries(activityCounts).map(function(data){
+            var activityName = data[0]
+            var activityNum = data[1]
+            $("#lessonplanTargetanAssessmentTable").find("thead tr:eq(0)").append('<th rowspan="1" colspan="'+activityNum+'">'+activityName+'</th>')
         })
 
         var tr_length = $("#lessonplanTargetanAssessmentTable").find("tbody tr").length;
@@ -461,10 +459,13 @@ function setLessonplanTargetandAssessmentTable(){
                             '<label class="custom-control-label" for="'+checkid+'"></label>'+
                         '</div>'+               
                     '</td>');
+                var targetarray = processtarget.split(',');
 
-                if(processtarget == targetname ){
-                    $($("#lessonplanTargetanAssessmentTable").find("tbody tr")[s]).find("input[value='"+checkboxValue+"']").prop('checked', true);
-                }
+                targetarray.map(function(data){
+                    if(data == targetname ){
+                        $($("#lessonplanTargetanAssessmentTable").find("tbody tr")[s]).find("input[value='"+checkboxValue+"']").prop('checked', true);
+                    }
+                })
             })
         }
     }
@@ -565,6 +566,30 @@ function showtwowayTableData(){
                 $($("#lessonplanTargetandActivityTable").find("tbody tr")[x]).find("input[value='"+activity+"']").prop('checked', true);
               }
             })
+        }
+    }
+}
+
+//儲存活動流程後，重新更新學習目標與評量對應表
+function showtrargetandAssessmentTableData(data){
+    targetandAssessmentArray = [];
+
+    for(var i=0; i<data.length;i++){
+        var processData = data[i];
+        var lessonplan_activity_name = processData.lessonplan_activity_name;
+        var lessonplan_activity_content = processData.lessonplan_activity_content;
+        if(lessonplan_activity_content.length !== 0){
+            lessonplan_activity_content = JSON.parse(lessonplan_activity_content);
+            for(var s=0;s<lessonplan_activity_content.length;s++){
+                var contentData = lessonplan_activity_content[s];
+                var processtarget = contentData.lessonplan_activity_learningtarget;
+                var assessmentArray = contentData.lessonplan_activity_assessment;
+                for(var r=0;r<assessmentArray.length;r++){
+                    var assessmentData= assessmentArray[r];
+                    var assessment_content = assessmentData.assessment_content;
+                    targetandAssessmentArray.push({lessonplan_activity_name:lessonplan_activity_name,processtarget:processtarget,assessment_content:assessment_content})
+                }
+            }
         }
     }
 }
@@ -1244,6 +1269,10 @@ function saveActivityProcessData(divId){
         var processResults = saveAjax(data);
         if(processResults.msg == "ok"){
             alert("儲存成功");
+            var processData = processResults.selectData;
+            showtrargetandAssessmentTableData(processData)
+            $("#lessonplan_targetandAssessment").empty();
+            setLessonplanTargetandAssessmentTable();
         }
         else{
             window.location = "/member/login";

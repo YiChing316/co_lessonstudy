@@ -215,8 +215,11 @@ router.post('/edit/:community_id/save',function(req,res,next){
                     return lessonplan.saveLessonplanActivityProcess(lessonplan_activity_process_id,fileResults,member_id,member_name)
                 })
                 .then(function(data){
-                    if(data){
-                        return res.json({msg:'ok'})
+                    return lessonplan.selectLessonplanActivityProcess(community_id)
+                })
+                .then(function(selectdata){
+                    if(selectdata){
+                        return res.json({msg:'ok',selectData:selectdata})
                     }
                 })
                 break;
