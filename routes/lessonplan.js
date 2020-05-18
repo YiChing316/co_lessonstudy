@@ -266,6 +266,15 @@ router.post('/edit/:community_id/save',function(req,res,next){
                         return res.json({msg:'ok',tabledata:selectdata})
                     }
                 })
+                break;
+            case 'customTag':
+                lessonplan.saveLessonplanprocessCustomModal(community_id,lessonplanData)
+                .then(function(data){
+                    if(data){
+                        return res.json({msg:'ok'})
+                    }
+                })
+                break;
         }
 
     }
@@ -400,6 +409,29 @@ router.post('/edit/:community_id/checkfile',function(req,res){
             res.json({msg:"ok"})
         }            
     });
+})
+
+router.get('/edit/:community_id/getCustomProcessTag',function(req,res){
+    var member_id = req.session.member_id;
+    var member_name = req.session.member_name;
+
+    var community_id = req.params.community_id;
+
+    if(!member_id){
+        res.json({msg:"no"})
+        res.redirect('/member/login');
+    }
+    else{
+        lessonplan.selectLessonplanprocessCustomModal(community_id)
+        .then(function(data){
+            if(data.length == 0){
+                res.json({msg:"ok",selectData:[]})
+            }
+            else{
+                res.json({msg:"ok",selectData:data})
+            }
+        })
+    }
 })
 
 

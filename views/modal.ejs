@@ -65,17 +65,30 @@
                     <select class="form-control bg-light processcontent_sel_1" id="processcontent_sel_1">
                         <option value="1">探究活動模組</option>
                         <option value="2">一般活動模組</option>
+                        <option value="3">自定義活動模組</option>
                     </select>
                   </div>
                   <div class="card-body nopadding-all mt-2">
                     <select class="form-control processcontent_sel_2" id="processcontent_sel_2" size="7"></select>
                   </div>
                 </div>
+                <input type="button" class="customProcessTag btn btn-outline-primary mt-1" value="新增自定義流程模組">
               </div>
               <div class="col">
                 <textarea class="fixsummernote processcontent" id="processcontent"></textarea>
               </div>
             </div>
+          </div>
+          <div class="form-group addCustomProcessTag" style="display: none;">
+            <div class="form-row">
+              <div class="col-10">
+                <label class="control-label"><b>自定義流程模組</b></label>
+              </div>
+              <div class="col float-right">
+                <a class="saveCustomTag float-right" href="javascript:void(0)"><i class="far fa-check-circle">儲存模組</i></a>
+              </div>
+            </div>
+            <!-- <input type="text" class="form-control" name="processTagInput" value="123,456"> -->
           </div>
           <div class="form-group">
             <label class="control-label"><b>時間</b></label>
@@ -124,17 +137,30 @@
                   <select class="form-control bg-light processcontent_sel_1" id="editprocesscontent_sel_1">
                       <option value="1">探究活動模組</option>
                       <option value="2">一般活動模組</option>
+                      <option value="3">自定義活動模組</option>
                   </select>
                 </div>
                 <div class="card-body nopadding-all mt-2">
                   <select class="form-control processcontent_sel_2" id="editprocesscontent_sel_2" size="7"></select>
                 </div>
+                <input type="button" class="customProcessTag btn btn-outline-primary mt-1" value="新增自定義流程模組">
               </div>
             </div>
             <div class="col">
               <textarea class="fixsummernote processcontent" id="editprocesscontent"></textarea>
             </div>
           </div>
+        </div>
+        <div class="form-group addCustomProcessTag" style="display: none;">
+          <div class="form-row">
+            <div class="col-10">
+              <label class="control-label"><b>自定義流程模組</b></label>
+            </div>
+            <div class="col">
+              <a class="saveCustomTag float-right" href="javascript:void(0)"><i class="far fa-check-circle">儲存模組</i></a>
+            </div>
+          </div>
+          <!-- <input type="text" class="form-control" name="processTagInput" value="123,456"> -->
         </div>
         <div class="form-group">
           <label class="control-label"><b>時間</b></label>

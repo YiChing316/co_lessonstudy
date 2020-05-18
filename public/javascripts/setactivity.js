@@ -1,6 +1,7 @@
 var explore_option = ["課前準備","關鍵提問","探究活動","直接觀察","操作觀察","實驗","概念統整與鞏固","課堂結束"];
 var common_option = ["引起動機","發展活動","綜合活動","課堂結束"];
 var assessment_option = ["紙筆測驗","口頭評量","實作能力評量","作品評量","態度評量","課室教學記錄","學習反思札記","同儕互評","學習歷程檔案評量","評量指標"];
+var custom_option;
 
 function trElement(parentid,num,processtarget,processcontent,processtime,processremark){
     $("#"+parentid+"Tbody").append('<tr>'+
@@ -41,7 +42,7 @@ $(function(){
     setActivityProcess();
     setLessonplanTargetandAssessmentTable();
 
-    processselect_Set();
+    
     assessment_Set();
     processscaffold_Add();
     assessmentscaffold_Add();
@@ -55,7 +56,9 @@ $(function(){
 
     deleteeditfile();
 
-    moveTrPosition()
+    moveTrPosition();
+
+    addCustomProcessTag();
 
     // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function() {
@@ -122,6 +125,7 @@ function editActivityTr(){
 
         var title = $("#header"+parentid).text();
         activityLearningTarget(title)
+        selectCustomProcessTag();
 
         var row = $(this).closest('tr');
         var lessonplan_activity_learningtarget = row.find("td:eq(1)").text();
@@ -468,7 +472,7 @@ function openActivityandAssessmentBtn(){
         modal.find('#parentid').text(parentid);
         var title = $("#header"+parentid).text();
         activityLearningTarget(title)
-
+        selectCustomProcessTag();
     })
 
     $("#addassessmentModal").on("show.bs.modal",function(event){
@@ -655,6 +659,8 @@ function deleteeditfile(){
 
 //活動流程內鷹架放入select option
 function processselect_Set(){
+    $(".processcontent_sel_1").val("1").change();
+
     $.each(explore_option, function(i, val) {
         $(".processcontent_sel_2").append($("<option value='" + explore_option[i] + "'>" + explore_option[i] + "</option>"));
     });
@@ -674,6 +680,12 @@ function processselect_Set(){
                 $(".processcontent_sel_2 option").remove();
                 $.each(common_option, function(i, val) {
                     $(".processcontent_sel_2").append($("<option value='" + common_option[i] + "'>" + common_option[i] + "</option>"));
+                });
+                break;
+            case 3:
+                $(".processcontent_sel_2 option").remove();
+                $.each(custom_option, function(i, val) {
+                    $(".processcontent_sel_2").append($("<option value='" + custom_option[i] + "'>" + custom_option[i] + "</option>"));
                 });
                 break;
         }
@@ -742,6 +754,71 @@ function activityLearningTarget(title){
     }
 }
 
+//活動流程modal內放入新增自定義模組
+function addCustomProcessTag(){
+    $(".customProcessTag").click(function(){
+        var modalid = $(this).parents(".modal").attr('id');
+        $(".customProcessTag").attr("disabled",true);
+        $("#"+modalid).find('.addCustomProcessTag').show();
+        $("#"+modalid).find('.addCustomProcessTag').append('<input type="text" class="form-control" name="processTagInput">');
+        processTagClass(custom_option);
+    })
+    
+    $(".saveCustomTag").click(function(){
+        var modalid = $(this).parents(".modal").attr('id');
+        $(".customProcessTag").attr("disabled",false);
+        var customContent = $("input[name='processTagInput']").val();
+        custom_option = customContent.split(',');
+        $("#"+modalid).find('.addCustomProcessTag').hide();
+        $("#"+modalid).find("input[name='processTagInput']").remove();
+        $("#"+modalid).find(".inputTags-list").remove();
+        $(".processcontent_sel_2 option").remove();
+        processselect_Set();
+
+        var data = {
+            stage:'customTag',
+            customContent:customContent
+        }
+        var results = saveAjax(data);
+        if(results.msg == "ok"){
+            // alert("儲存成功");
+        }
+        else{
+            window.location = "/member/login";
+        }
+
+    })
+}
+
+function selectCustomProcessTag(){
+    var community_id = $("#community_id").text();
+    $.ajax({
+        url: "/lessonplan/edit/"+community_id+"/getCustomProcessTag",
+        type: "GET",
+        async:false, //ajax請求結束後才會執行window function
+        data:{community_id:community_id},
+        success: function(data){
+            if(data.msg == "ok"){
+                if(data.selectData.length !== 0){
+                    var selectData = data.selectData[0].lessonplanprocess_custom_modal_content;
+                    var customContent = selectData.split(',')
+                    custom_option = customContent;
+                    processselect_Set();
+                }
+                else{
+                    processselect_Set();
+                }
+            }
+            else{
+                window.location = "/member/login";
+            }
+        },
+        error: function(){
+            alert('失敗');
+        }
+    })
+}
+
 //彈出視窗closebtn的function，清空所有填寫框
 function modalclosebtn(modalid){
     switch (modalid){
@@ -756,6 +833,10 @@ function modalclosebtn(modalid){
             $("#processcontent_sel_1").removeClass("editing");
             $("#processcontent_sel_2").removeClass("editing");
             $(".targetCheckbox").empty();
+            $("#"+modalid).find('.addCustomProcessTag').hide();
+            $("#"+modalid).find("input[name='processTagInput']").remove();
+            $("#"+modalid).find(".inputTags-list").remove();
+            $(".customProcessTag").attr("disabled",false)
             isChange = false;
             break;
         case 'addprocessModal':
@@ -769,6 +850,10 @@ function modalclosebtn(modalid){
             $("#editprocesscontent_sel_1").removeClass("editing");
             $("#editprocesscontent_sel_2").removeClass("editing");
             $(".targetCheckbox").empty();
+            $("#"+modalid).find('.addCustomProcessTag').hide();
+            $("#"+modalid).find("input[name='processTagInput']").remove();
+            $("#"+modalid).find(".inputTags-list").remove();
+            $(".customProcessTag").attr("disabled",false)
             isChange = false;
             break;
         case 'addassessmentModal':
@@ -826,6 +911,16 @@ function closeassessmentModal(td_id){
 function resetsummernote(){
     $("#assessmentsummernote").summernote("code",'');
     $("#editassessmentsummernote").summernote("code",'');  
+}
+
+function processTagClass(tag){
+    $("input[name='processTagInput']").inputTags({
+        max: 12,
+        tags:tag,
+        init: function($elem) {
+            console.log('Event called on plugin init', $elem);
+        }
+    });
 }
 
 function moveTrPosition(){

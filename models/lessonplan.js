@@ -250,6 +250,39 @@ module.exports = {
         })
     },
 
+    saveLessonplanprocessCustomModal: function(community_id,lessonplanData){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                var  sql = {
+                    community_id_community:community_id,
+                    lessonplanprocess_custom_modal_content:lessonplanData.customContent
+                }
+
+                connection.query('SELECT `lessonplanprocess_custom_modal_content` FROM `lessonplanprocess_custom_modal` WHERE `community_id_community`=?',community_id,function(err,selectResults,fields){
+                    if(err) return reject(err);
+
+                    
+                    if(selectResults.length == 1){
+                        connection.query('UPDATE `lessonplanprocess_custom_modal` SET ? WHERE `community_id_community`=?',[sql,community_id],function(err,updateResults,fields){
+                            if(err) return reject(err);
+                            resolve(updateResults);
+                            connection.release();
+                        })
+                    }
+                    else{
+                        connection.query('INSERT INTO `lessonplanprocess_custom_modal` SET ?',sql,function(err,insertResults,fields){
+                            if(err) return reject(err);
+                            resolve(insertResults);
+                            connection.release();
+                        })
+                    }
+                })
+            })
+        })
+    },
+
     saveLessonplanStage: function(community_id,lessonplanData,member_id,member_name){
         var lessonplan_stage_type,saveResults;
         return new Promise(function(resolve,reject){
@@ -642,6 +675,19 @@ module.exports = {
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
                 connection.query('SELECT * FROM `lessonplan_twowaytable` WHERE `community_id_community`=?',community_id,function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
+        })
+    },
+
+    selectLessonplanprocessCustomModal: function(community_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT `lessonplanprocess_custom_modal_content` FROM `lessonplanprocess_custom_modal` WHERE `community_id_community`=?',community_id,function(err,rows,fields){
                     if(err) return reject(err);
                     resolve(rows);
                     connection.release();
