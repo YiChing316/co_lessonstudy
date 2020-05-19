@@ -79,9 +79,30 @@ var nodeOptions = {
 
 var network = new vis.Network(container, nodeData, nodeOptions);
 
+var clickid = [];
+
 //畫上Node標題跟創建人姓名
 function addNodeContent(){
     network.on("beforeDrawing", function (ctx) {
+
+        //畫node被點擊時的背景
+        if(clickid.length >0){
+            $.each(clickid,function(i,val){
+                var id = clickid[i];
+                var nodePosition = network.getPositions([id]);
+                ctx.strokeStyle = "rgba(220, 217, 204, 0.5)";
+                ctx.fillStyle = "rgba(220, 217, 204, 0.5)";
+    
+                ctx.beginPath();
+                //context.arc(x,y,r(半徑),sAngle(起始角),eAngle(結束角),counterclockwise);
+                ctx.arc(nodePosition[id].x,nodePosition[id].y,25,0,2 * Math.PI,false);
+                ctx.closePath();
+    
+                ctx.fill();
+                ctx.stroke();
+            })
+        }
+        
         for(i=0;i<node.length;i++){
             var nodeid = node[i].id;
             var node_title = node[i].node_title;
@@ -101,25 +122,6 @@ function addNodeContent(){
     })
 }
 
-//畫node被點擊時的背景
-function drawClickBackground(nodeIdArray){
-    network.on("beforeDrawing", function(ctx) {
-        $.each(nodeIdArray,function(i,val){
-            var id = nodeIdArray[i];
-            var nodePosition = network.getPositions([id]);
-            ctx.strokeStyle = "rgba(220, 217, 204, 0.5)";
-            ctx.fillStyle = "rgba(220, 217, 204, 0.5)";
-
-            ctx.beginPath();
-            //context.arc(x,y,r(半徑),sAngle(起始角),eAngle(結束角),counterclockwise);
-            ctx.arc(nodePosition[id].x,nodePosition[id].y,25,0,2 * Math.PI,false);
-            ctx.closePath();
-
-            ctx.fill();
-            ctx.stroke();
-        })
-    });
-  }
 
 function drawNetwork() {
 
@@ -183,12 +185,7 @@ function clickevent(){
     network.on("click", function(params) {
         params.event = "[click]";
         //nodeid
-        var clickid = params.nodes;
-        network.off("beforeDrawing");
-        addNodeContent();
-        if(clickid.length > 0){
-            drawClickBackground(clickid);
-        }
+        clickid = params.nodes;
     });
 
     network.on("doubleClick", function(params) {
@@ -227,6 +224,24 @@ function clickevent(){
             }
         }
     });
+
+    network.on("oncontext", function(params) {
+        params.event = "[rightclick]";
+        var rightid = this.getNodeAt(params.pointer.DOM);
+        
+        //如果只右鍵在一個節點上的時候，把右鍵的節點id放入clickid中
+        if(rightid !== undefined && !clickid.includes(rightid)){
+            clickid.push(rightid);
+        }
+
+        var $trigger = $("#ideanetwork");
+        if(clickid.length == 0) {
+            $trigger.contextMenu(false);
+        }
+        else {
+            $trigger.contextMenu(true);
+        }
+    });
 }
 
 $(function(){
@@ -235,8 +250,8 @@ $(function(){
     ideaScaffold_Add();
     clickevent();
     openIdeaModal();
+    setcontextMenu();
 
-    
     // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function() {
         var files = [];
@@ -247,8 +262,6 @@ $(function(){
         // var fileName = $(this).val().split("\\").pop();
         $(this).siblings(".custom-file-label").addClass("selected").html(files.join(', '));
     });
-
-    
 
 })
 
@@ -331,6 +344,10 @@ function openLessonplanNode(community_id,data){
 function openIdeaModal(){
     $("#creatIdeaBtn").click(function(){
         $("#createIdeaModel").modal("show");
+        
+    })
+
+    $('#createIdeaModel').on('show.bs.modal', function () {
         $("#createIdeaModel").find(".ideatag").append('<input type="text" class="form-control" name="tagInputText" id="createIdeaTag">');
         ideasummernoteClass();
         ideatagClass();
@@ -350,6 +367,7 @@ function ideaModalCloseBtn(modalid){
             $("#createNewIdeaFile").val("");
             $("#createIdeaModel").find("input[name='tagInputText']").remove();
             $("#createIdeaModel").find(".inputTags-list").remove();
+            $("#replyNodeId").text("");
             break;
         case "readIdeaModal":
             $("#reviseIdeaTitle").val("");
@@ -366,6 +384,7 @@ function ideaModalCloseBtn(modalid){
             break;
     } 
 }
+
 
 /**修改/閱讀modal **************************************************/
 function showReadIdeaContent(ideaData){
@@ -420,6 +439,7 @@ function showReadIdeaFile(community_id,ideaFileData){
     }
 }
 
+//顯示閱讀或修改畫面tab
 function changeIdeaTab(title){
     $('#ideaTab a').on('shown.bs.tab', function (e) {
         e.target;
@@ -431,6 +451,15 @@ function changeIdeaTab(title){
             $("#readIdeaModalLabel").html('修改想法')
         } 
     })
+}
+
+//閱讀想法內回覆按鈕
+function replyIdea(){
+    var replyNodeId = $("#readIdeaNodeid").text();
+    $("#readIdeaModal").modal("hide");
+    ideaModalCloseBtn("readIdeaModal");
+    $("#createIdeaModel").modal("show");
+    $("#replyNodeId").text(replyNodeId)
 }
 
 
@@ -572,12 +601,39 @@ function ideatagClass(tag){
     });
 }
 
+//右鍵選單設定
+function setcontextMenu(){
+    $.contextMenu({
+        selector: '#ideanetwork', 
+        callback: function(key, options) {
+            var m = "clicked: " + key;
+            window.console && console.log(m) || alert(m); 
+        },
+        items: {
+            "replyIdea": {
+                name: "回覆一般想法",
+                callback: function(itemKey, opt, e) {
+                    $("#replyNodeId").text(clickid)
+                    $("#createIdeaModel").modal("show"); 
+            }},
+            "replyRiseAbove": {name: "提出昇華的想法"}
+        },
+        events:{
+            //右鍵選單關閉時清空clickid array
+            hide: function(opt){
+                clickid = [];
+            }
+        }
+    });
+}
+
 /**儲存節點 *********************************************************/
 function saveNode(modalId){
     var community_id = $("#community_id").text();
     switch(modalId){
         case "createIdeaModel":
             var node_title = $("#newIdeaTitle").val();
+            var replyNodeId = $("#replyNodeId").text();
             var idea_content = $("#newIdeaContent").summernote('code');
             var node_tag = $("input[name='tagInputText']").val();
             var fileData = $("#createNewIdeaFile").prop("files");
@@ -589,6 +645,7 @@ function saveNode(modalId){
             else{
                 var formData = new FormData();
                 formData.append("node_title",node_title);
+                formData.append("replyNodeId",replyNodeId);
                 formData.append("idea_content",idea_content);
                 formData.append("node_tag",node_tag);
                 for(var i=0;i<file_length;i++){

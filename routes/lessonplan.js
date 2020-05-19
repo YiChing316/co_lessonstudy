@@ -532,6 +532,7 @@ router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function
         var nodeData = req.body;
         var fileData = req.files;
         var node_title = nodeData.node_title;
+        var replyNodeId = nodeData.replyNodeId;
         var node_tag = nodeData.node_tag;
         var idea_content = nodeData.idea_content;
         var nodeResults;
@@ -551,6 +552,9 @@ router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function
                     return node.saveIdeaFile(community_id,fileData,node_id)
                 })
                 .then(function(fileResults){
+                    return node.saveEdge(community_id,replyNodeId,node_id)
+                })
+                .then(function(edgeResults){
                     return res.json({msg:"ok",nodeResults:nodeResults})
                 })
             }

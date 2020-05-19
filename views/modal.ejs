@@ -347,6 +347,15 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary">確定</button>
+            <div class="dropdown">
+              <button class="btn btn btn-primary dropdown-toggle" type="button" id="replyMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                回覆
+              </button>
+              <div class="dropdown-menu" aria-labelledby="replyMenuButton">
+                <a class="dropdown-item" href="javascript:void(0)" onclick="replyIdea()">回覆想法</a>
+                <a class="dropdown-item" href="javascript:void(0)">提出昇華的想法</a>
+              </div>
+            </div>
           </div>
         </div>
         <!--修改想法內容-->
@@ -404,6 +413,7 @@
         </button>
       </div>
       <div class="modal-body">
+        <p id="replyNodeId" style="display: none;"></p>
         <div class="form-group">
           <label class="control-label">標題</label>
           <input type="text" class="form-control" id="newIdeaTitle">

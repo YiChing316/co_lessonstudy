@@ -134,6 +134,32 @@ module.exports = {
         } 
     },
 
+    saveEdge: function(community_id,replyNodeId,node_id){
+        var edge_from_array = replyNodeId.split(',');
+
+        return Promise.all(
+            edge_from_array.map(function(edge_from){
+                return new Promise(function(resolve,reject){
+                    pool.getConnection(function(err,connection){
+                        if(err) return reject(err);
+        
+                        var sql = {
+                            community_id_community:community_id,
+                            edge_from:edge_from,
+                            edge_to:node_id
+                        }
+        
+                        connection.query('INSERT INTO `edge` SET ?',sql,function(err,insertResults,fields){
+                            if(err) return reject(err);
+                            resolve(insertResults);
+                            connection.release();
+                        })
+                    })
+                })
+            })
+        )
+    },
+
     selectAllNodeData: function(community_id){
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
