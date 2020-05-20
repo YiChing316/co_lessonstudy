@@ -84,9 +84,10 @@ var clickid = [];
 //畫上Node標題跟創建人姓名
 function addNodeContent(){
     network.on("beforeDrawing", function (ctx) {
-
+        
         //畫node被點擊時的背景
         if(clickid.length >0){
+
             $.each(clickid,function(i,val){
                 var id = clickid[i];
                 var nodePosition = network.getPositions([id]);
@@ -108,16 +109,28 @@ function addNodeContent(){
             var node_title = node[i].node_title;
             var member_name = node[i].member_name;
             var node_createtime = node[i].node_createtime;
+            var node_tag = node[i].node_tag;
+
+            if(node_tag.length > 0){
+                node_tag = "["+node_tag+"]";
+            }
+
+            var titleContent = node_tag+node_title;
+
             var nodePosition = network.getPositions([nodeid]);
             //將文字寫入對應的node節點
             ctx.font = "bold 16px 微軟正黑體";
+            ctx.fillStyle = 'pink';
+            var width = ctx.measureText(node_tag).width;
+            ctx.fillRect(nodePosition[nodeid].x+30, nodePosition[nodeid].y-26,width,"16");
             ctx.fillStyle = 'black';
-            ctx.fillText(node_title, nodePosition[nodeid].x+30, nodePosition[nodeid].y-10);
+            ctx.fillText(titleContent, nodePosition[nodeid].x+30, nodePosition[nodeid].y-10);
             ctx.font = "12px 微軟正黑體";
             ctx.fillStyle = 'gray';
             ctx.fillText(member_name, nodePosition[nodeid].x+30, nodePosition[nodeid].y+10);
             ctx.font = "12px 微軟正黑體";
             ctx.fillText(node_createtime, nodePosition[nodeid].x+30, nodePosition[nodeid].y+30);
+            
         }
     })
 }
@@ -178,7 +191,7 @@ function drawNetwork() {
             edges.update(edge);
         }
     }
-    addNodeContent();
+    
 }
 
 function clickevent(){
@@ -229,8 +242,11 @@ function clickevent(){
         params.event = "[rightclick]";
         var rightid = this.getNodeAt(params.pointer.DOM);
         
-        //如果只右鍵在一個節點上的時候，把右鍵的節點id放入clickid中
-        if(rightid !== undefined && !clickid.includes(rightid)){
+        if(rightid == undefined){
+            clickid = []
+        }
+        //把右鍵的節點id放入clickid中
+        else if(rightid !== undefined && !clickid.includes(rightid)){
             clickid.push(rightid);
         }
 
@@ -241,14 +257,18 @@ function clickevent(){
         else {
             $trigger.contextMenu(true);
         }
+
+        this.redraw();
     });
 }
 
 $(function(){
 
     drawNetwork();
-    ideaScaffold_Add();
+    addNodeContent();
     clickevent();
+
+    ideaScaffold_Add();
     openIdeaModal();
     setcontextMenu();
 
@@ -343,8 +363,9 @@ function openLessonplanNode(community_id,data){
 /**打開 ideatoolbar新增節點 modal ***********************************/
 function openIdeaModal(){
     $("#creatIdeaBtn").click(function(){
+        $("#createIdeaModelTitle").html('新增想法');
+        $("#createIdeaModelTitle").attr("data-nodetype",'idea');
         $("#createIdeaModel").modal("show");
-        
     })
 
     $('#createIdeaModel').on('show.bs.modal', function () {
@@ -454,12 +475,17 @@ function changeIdeaTab(title){
 }
 
 //閱讀想法內回覆按鈕
-function replyIdea(){
+function replyIdea(btnAction){
     var replyNodeId = $("#readIdeaNodeid").text();
     $("#readIdeaModal").modal("hide");
     ideaModalCloseBtn("readIdeaModal");
     $("#createIdeaModel").modal("show");
     $("#replyNodeId").text(replyNodeId)
+
+    if(btnAction == "rise_above"){
+        $("#createIdeaModelTitle").attr("data-nodetype",'rise_above');
+        $("#createIdeaModelTitle").html('提出昇華的想法');
+    }
 }
 
 
@@ -614,9 +640,18 @@ function setcontextMenu(){
                 name: "回覆一般想法",
                 callback: function(itemKey, opt, e) {
                     $("#replyNodeId").text(clickid)
+                    $("#createIdeaModelTitle").html('新增想法');
+                    $("#createIdeaModelTitle").attr("data-nodetype",'idea');
                     $("#createIdeaModel").modal("show"); 
             }},
-            "replyRiseAbove": {name: "提出昇華的想法"}
+            "replyRiseAbove": {
+                name: "提出昇華的想法",
+                callback: function(itemKey, opt, e) {
+                    $("#replyNodeId").text(clickid)
+                    $("#createIdeaModelTitle").html('提出昇華的想法');
+                    $("#createIdeaModelTitle").attr("data-nodetype",'rise_above');
+                    $("#createIdeaModel").modal("show"); 
+        }}
         },
         events:{
             //右鍵選單關閉時清空clickid array
@@ -632,6 +667,7 @@ function saveNode(modalId){
     var community_id = $("#community_id").text();
     switch(modalId){
         case "createIdeaModel":
+            var node_type = $("#createIdeaModelTitle").data('nodetype');
             var node_title = $("#newIdeaTitle").val();
             var replyNodeId = $("#replyNodeId").text();
             var idea_content = $("#newIdeaContent").summernote('code');
@@ -644,6 +680,7 @@ function saveNode(modalId){
             }
             else{
                 var formData = new FormData();
+                formData.append("node_type",node_type);
                 formData.append("node_title",node_title);
                 formData.append("replyNodeId",replyNodeId);
                 formData.append("idea_content",idea_content);

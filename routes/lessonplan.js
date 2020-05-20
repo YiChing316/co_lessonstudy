@@ -531,6 +531,7 @@ router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function
     else{
         var nodeData = req.body;
         var fileData = req.files;
+        var node_type = nodeData.node_type;
         var node_title = nodeData.node_title;
         var replyNodeId = nodeData.replyNodeId;
         var node_tag = nodeData.node_tag;
@@ -542,7 +543,7 @@ router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function
         .then(function(checkResults){
             //沒有的話做儲存
             if(checkResults == "notexist" || checkResults.length == 0){
-                node.createNewNode(community_id,node_title,node_tag,'idea',member_id,member_name)
+                node.createNewNode(community_id,node_title,node_tag,node_type,member_id,member_name)
                 .then(function(data){
                     nodeResults = data;
                     node_id = nodeResults.insertId;
