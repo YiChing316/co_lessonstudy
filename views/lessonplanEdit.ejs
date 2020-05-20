@@ -8,51 +8,53 @@
   </head>
   <body>
     <%- include('layout/navbar2.ejs'); -%>
-    <div class="page-wrapper">
-      <div class="row">
-        <%- include('layout/sidebar.ejs'); -%>
-        <div class="col-10 page-content">
-  
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <nav id="sidebar" class="active fixed-left">
+            <ul class="list-unstyled">
+                <li class="sidebar-header">
+                    <a href="javascript:void(0)" id="sidebarCollapse"><i class="fas fa-align-left"></i></a>
+                </li>
+                <li class="sidebar-menu">
+                    <a href="#sidebarul" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <img src="/images/idea.svg" width="30" height="30" class="d-inline-block">
+                        訂定課程目標
+                    </a>
+                    <ul class="siderul collapse show list-unstyled" id="sidebarul"></ul>
+                </li>
+                <li class="sidebar-menu">
+                    <a href="#activityDesignUl" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <img src="/images/fee.svg" width="30" height="30" class="d-inline-block">活動與評量設計
+                    </a>
+                    <ul class="siderul collapse show list-unstyled" id="activityDesignUl"></ul>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content" class="active">
             <!--實作/想法切換-->
             <div class="row">
-              <div class="mode-switch position-fixed">
-                <div class="btn-group mode-switch-btn" role="group" id="mode_switch">
-                  <input type="button" class="btn btn-success mode_btn" value="教案撰寫" id="edit">
-                  <input type="button" class="btn btn-success mode_btn" value="想法討論" id="idea">
+                <div class="mode-switch position-fixed">
+                  <div class="btn-group mode-switch-btn" role="group" id="mode_switch">
+                    <input type="button" class="btn btn-success mode_btn" value="教案撰寫" id="edit">
+                    <input type="button" class="btn btn-success mode_btn" value="想法討論" id="idea">
+                  </div>
                 </div>
-              </div>
             </div>
             <p id="community_id" style="display: none;"><%= community_id %></p>
             <p id="lessonplanActivityName" style="display: none;"><%= lessonplanActivityName %></p>
-            
-            <% if (mode == "lessonplanContent") { %>
-              <%- include('layout/lessonplanContent.ejs'); -%>
-            <% }else if(mode =="ideaContent"){ %>
-              <%- include('layout/ideaContent.ejs'); -%>
-            <% } %>
-            
-        </div><!--pagecontent end-->
-      </div>
+            <%- include('layout/lessonplanContent.ejs'); -%>
+        </div>
     </div>
     <%- include('modal.ejs'); -%>
-    <script>
-      if("<%= mode %>" == "lessonplanContent"){
-        $("#edit").addClass("active");
-      }
-      else{
-        $("#idea").addClass("active");
-      }
-
-      $(".mode-switch-btn > .mode_btn").click(function(){
-        var id = $(this).attr("id");
-        $(".mode-switch-btn > .mode_btn").removeClass("active");
-        window.location.href = "/lessonplan/"+id+"/<%= community_id %>";
-        $(this).addClass("active");
-      })
-
-      $(".siderul").click(function(){
-        $(this).addClass("active");
-      })
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+                $('#content').toggleClass('active');
+            });
+        });
     </script>
   </body>
 </html>
