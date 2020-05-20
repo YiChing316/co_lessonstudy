@@ -16,7 +16,7 @@ function createCommunity(){
     }
     else{
         $.ajax({
-            url: "/dashboard/create",
+            url: "/community/create",
             type: "POST",
             data:{
                 community_name: community_name,
@@ -173,7 +173,7 @@ function joinCommunity(id){
     var community_key =  $("#community_key_"+id).val();
 
     $.ajax({
-        url: "/dashboard/join",
+        url: "/community/join",
         type: "POST",
         data:{
             community_id: id,
@@ -228,7 +228,7 @@ function showApplication(){
 /****申請加入社群ajax************* */
 function applicationCommunity(id){
     $.ajax({
-        url: "/dashboard/application",
+        url: "/community/application",
         type: "POST",
         data:{
             community_id: id

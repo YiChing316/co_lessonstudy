@@ -94,7 +94,7 @@ function postData(){
                     }
                     else{
                         // alert('登入成功');
-                        window.location.href = '/dashboard';
+                        window.location.href = '/community';
                     }     
                 },
                 error: function(){

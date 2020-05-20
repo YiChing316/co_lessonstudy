@@ -25,7 +25,7 @@ router.get('/', function(req, res, next) {
     })
     .then(function(applicationResults){
       applicationCommunityData = JSON.stringify(applicationResults);
-      res.render('dashboard', { title: 'dashboard',member_id:member_id,member_name:member_name,allCommunityData:allCommunityData,memberCommunityData:memberCommunityData,communityNumber:communityNumber,applicationCommunityData:applicationCommunityData});
+      res.render('community', { title: '社群入口',member_id:member_id,member_name:member_name,allCommunityData:allCommunityData,memberCommunityData:memberCommunityData,communityNumber:communityNumber,applicationCommunityData:applicationCommunityData});
     })
   } 
 });
