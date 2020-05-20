@@ -95,9 +95,9 @@ body{font-family: '微軟正黑體';}
   /* z-index: 1030; */
 }
 
-.page-content{
+/* .page-content{
   margin-left: 17%;
-}
+} */
 
 .page-wrapper {
   margin-top: 56px;
@@ -114,13 +114,22 @@ body{font-family: '微軟正黑體';}
   z-index: 1020;
 }
 
+.mode-switch-btn{
+  left: 40%;
+}
+
+
 .idea-toolbar{
-  height: 80vh;
+  height: auto;
   width: auto;
+  top: 15vh;
+  left: 0;
   position: fixed;
   background-color: rgba(181,221,194,0.8);
-  z-index: 1020;
+  z-index: 1;
   text-align: center;
+  border-radius: 5px;
+  padding: 8px;
 }
 
 .idea-toolbar img{
@@ -130,7 +139,6 @@ body{font-family: '微軟正黑體';}
 .idea-toolbar .idea-tool{
   height: auto;
   display: block;
-  padding: 10px;
 }
 
 .idea-tool:hover{
@@ -153,15 +161,11 @@ body{font-family: '微軟正黑體';}
   background-color: #fff;
 }
 
-.mode-switch-btn{
-  left: 40%;
-}
 
 .content{
   margin-left: 15px;
   margin-right: 15px;
 }
-
 
 /*讓card在col的情況下無左右padding*/
 .nopadding{
@@ -203,8 +207,10 @@ textarea{
 
 #ideanetwork{
   width: 100%;
-  height: 80vh;
+  height: 100vh;
 }
+
+
 
 /*新的右邊選單css*/
 .wrapper {
@@ -320,6 +326,7 @@ a[data-toggle="collapse"] {
   /* padding: 20px; */
   min-height: 100vh;
   transition: all 0.3s;
+  margin-bottom: 50px;
 }
 
 #content.active{

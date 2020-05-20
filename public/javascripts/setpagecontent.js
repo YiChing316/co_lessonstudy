@@ -58,18 +58,18 @@ function sidebar_Map(){
     }   
 };
 
-function sidebarIcon(){
-    $('.siderul').on('hide.bs.collapse', function () {
-        $i = $(this).parent().find('i');
-        $i.removeClass("fa-chevron-circle-up");
-        $i.addClass("fa-chevron-circle-down");
-    })
-    $('.siderul').on('show.bs.collapse', function () {
-        $i = $(this).parent().find('i');
-        $i.removeClass("fa-chevron-circle-down");
-        $i.addClass("fa-chevron-circle-up");
-    })
-}
+// function sidebarIcon(){
+//     $('.siderul').on('hide.bs.collapse', function () {
+//         $i = $(this).parent().find('i');
+//         $i.removeClass("fa-chevron-circle-up");
+//         $i.addClass("fa-chevron-circle-down");
+//     })
+//     $('.siderul').on('show.bs.collapse', function () {
+//         $i = $(this).parent().find('i');
+//         $i.removeClass("fa-chevron-circle-down");
+//         $i.addClass("fa-chevron-circle-up");
+//     })
+// }
 
 $(function(){
     activityName = JSON.parse($("#lessonplanActivityName").text());
@@ -77,5 +77,9 @@ $(function(){
     pagecontent_Map();
     sidebar_Map();
 
-    sidebarIcon();
+    $('.sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+        $('#content').toggleClass('active');
+    });
+    // sidebarIcon();
 });

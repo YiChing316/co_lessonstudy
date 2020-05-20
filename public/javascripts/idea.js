@@ -617,7 +617,7 @@ function ideatagClass(tag){
             only: true
         },
         tags:tag,
-        max: 3,
+        max: 1,
         init: function($elem) {
             // console.log('Event called on plugin init', $elem);
         },

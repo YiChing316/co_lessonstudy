@@ -5,19 +5,27 @@
 <p id="nodeData" style="display: none;"><%= nodeData %></p>
 <p id="edgeData" style="display: none;"><%= edgeData %></p>
 
-<div style="margin-top: 50px;" id="ideacontent">
+<div>
+    <div class="row" style="margin-top: 56px;">
+        <div class="mode-switch position-fixed">
+          <div class="btn-group mode-switch-btn" role="group" id="mode_switch" style="left: 45%;">
+            <input type="button" class="btn btn-success mode_btn" value="教案撰寫" id="edit">
+            <input type="button" class="btn btn-success mode_btn" value="想法討論" id="idea">
+          </div>
+        </div>
+    </div>
+    
+    <div id="ideanetwork"></div>
+    
     <div class="idea-toolbar">
-        <p class="mt-2"><b>新增</b></p>
+        <h5 class="my-2"><b>新增</b></h5>
         <a href="javascript: void(0)" id="creatIdeaBtn" class="idea-tool">
             <img src="/images/idea-btn.svg" alt="新增想法">
             <div class="idea-tooltext">想法</div>
         </a>
-        <a href="javascript: void(0)" id="creatVoteBtn" class="idea-tool">
-            <img class="mt-2" src="/images/vote-btn.svg" alt="新增投票">
-            <div class="idea-tooltext">投票</div>
-        </a>
     </div>
-    <div class="border" id="ideanetwork"></div>
 </div>
+
+
 
 <script src="/javascripts/idea.js"></script>
