@@ -24,7 +24,6 @@
 
         $(".mode-switch-btn > .mode_btn").click(function(){
             var id = $(this).attr("id");
-            $(".mode-switch-btn > .mode_btn").removeClass("active");
             window.location.href = "/lessonplan/"+id+"/<%= community_id %>";
             $(this).toggleClass("active");
         })

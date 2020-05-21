@@ -364,7 +364,7 @@ function selectDefault(){
 }
 
 function coreCardDiv(itemtext,dimesion_description,field_title,field_content){
-    $("#core_competency_body").append('<div class="card">'+
+    $("#core_competency_body").append('<div class="card mt-2">'+
                                             '<div class="card-header">'+
                                                 '<b class="card-title itemtext">'+itemtext+'</b>'+
                                                 '<p class="card-text dimesion_description">'+dimesion_description+'</p>'+                        
@@ -397,3 +397,12 @@ $(function(){
         issuename_Map();
     }
 })
+
+
+//array排序
+function sortByKey(array, key) {
+    return array.sort(function(a, b) {
+        var x = a[key]; var y = b[key];
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    });
+}

@@ -129,7 +129,6 @@ body{font-family: '微軟正黑體';}
   z-index: 1;
   text-align: center;
   border-radius: 5px;
-  padding: 8px;
 }
 
 .idea-toolbar img{
@@ -139,6 +138,7 @@ body{font-family: '微軟正黑體';}
 .idea-toolbar .idea-tool{
   height: auto;
   display: block;
+  padding: 8px;
 }
 
 .idea-tool:hover{

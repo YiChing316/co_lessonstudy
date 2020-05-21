@@ -1,10 +1,18 @@
 /*將lessonplan/edit的頁面框架，以及sidebar內容 map出來 */
+
 var pagecontent_Components = [
-    {title:'教案基本資料',id:'lessonplan_basicdata',collapse:'none'},
-    {title:'學生先備概念',id:'lessonplan_studentknowledge',collapse:'none'},
-    {title:'教學設計理念',id:'lessonplan_design',collapse:'none'},
+    {title:'教案基本資料',id:'lessonplan',collapse:'show'},
     {title:'課程學習目標',id:'lessonplan_target',collapse:'none'},
-    {title:'安排課程單元/活動',id:'lessonplan_unit',collapse:'none'}
+    {title:'安排課程單元/活動',id:'lessonplan_unit',collapse:'none'},
+    {title:'學習目標與活動對應表',id:'lessonplan_targetandActivity',collapse:'none'},
+    {title:'學習目標與評量對應表',id:'lessonplan_targetandAssessment',collapse:'none'},
+    {title:'學生先備概念',id:'lessonplan_studentknowledge',collapse:'none'},
+    {title:'總綱核心素養',id:'lessonplan_cirn',collapse:'none'},
+    {title:'學習重點',id:'learning_focus',collapse:'none'},
+    {title:'議題融入',id:'lessonplan_issue',collapse:'none'},
+    {title:'教學資源及器材',id:'lessonplan_resource',collapse:'none'},
+    {title:'教學設計理念',id:'lessonplan_design',collapse:'none'},
+    {title:'因材網知識節點',id:'lessonplan_adl',collapse:'none'}
 ];
 
 function pagecontent_Map(){
@@ -50,31 +58,28 @@ function sidebar_Map(){
     }   
 };
 
-//側邊選單的錨點定位
-function sidebarClick(){
-    $('.sidebarCollapse').on('click', function () {
-        $('#sidebar').toggleClass('active');
-        $('#content').toggleClass('active');
-    });
-
-    $(".sidebarlink").on('click', function(event) {
-        //若未減去cardheaderHeight會無法蓋到每階段的標題
-        //因為原本($(".card-header").height()*2)會被想法實作切換擋住故改為($(".card-header").height()*4)
-        var cardheaderHeight = $(".card-header").height()*4.5;
-        if (this.hash !== "") {
-          event.preventDefault();//防止連結打開url，preventDefault()為阻止element發生默認行為，例如點擊submit時阻止表單提交
-          var hash = this.hash;
-          $('html, body').animate({
-            scrollTop: $(hash).offset().top - cardheaderHeight
-          }, 1000);
-        }
-    });
-};
+// function sidebarIcon(){
+//     $('.siderul').on('hide.bs.collapse', function () {
+//         $i = $(this).parent().find('i');
+//         $i.removeClass("fa-chevron-circle-up");
+//         $i.addClass("fa-chevron-circle-down");
+//     })
+//     $('.siderul').on('show.bs.collapse', function () {
+//         $i = $(this).parent().find('i');
+//         $i.removeClass("fa-chevron-circle-down");
+//         $i.addClass("fa-chevron-circle-up");
+//     })
+// }
 
 $(function(){
     activityName = JSON.parse($("#lessonplanActivityName").text());
 
     pagecontent_Map();
     sidebar_Map();
-    sidebarClick();
+
+    $('.sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+        $('#content').toggleClass('active');
+    });
+    // sidebarIcon();
 });
