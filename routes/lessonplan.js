@@ -537,6 +537,7 @@ router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function
         var node_tag = nodeData.node_tag;
         var idea_content = nodeData.idea_content;
         var nodeResults;
+        var insertnodeData,insertedgeData;
 
         //檢查是否已有同檔名檔案存在
         node.checkFileExists(community_id,fileData)
@@ -556,7 +557,15 @@ router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function
                     return node.saveEdge(community_id,replyNodeId,node_id)
                 })
                 .then(function(edgeResults){
-                    return res.json({msg:"ok",nodeResults:nodeResults})
+                    return node.selectThisNode(community_id,node_id)
+                })
+                .then(function(selectNodedata){
+                    insertnodeData = selectNodedata;
+                    return node.selectThisEdge(community_id,node_id)
+                })
+                .then(function(selectEdgedata){
+                    insertedgeData = selectEdgedata;
+                    return res.json({msg:"ok",insertnodeData:insertnodeData,insertedgeData:insertedgeData})
                 })
             }
             //有的話回傳
@@ -664,6 +673,24 @@ router.post('/idea/:community_id/deletefile',function(req,res){
                 console.log('file deleted successfully');
                 res.json({msg:"yes"})
            });
+        })
+    }
+})
+
+router.post('/idea/:community_id/updateNodePosition',function(req,res){
+    var member_id = req.session.member_id;
+    var community_id = req.params.community_id;
+
+    if(!member_id){
+        res.json({msg:"no"});
+        res.redirect('/member/login');
+    }
+    else{
+        var updateData = req.body.updateData;
+        node.updateNodePosition(community_id,updateData)
+        .then(function(data){
+            console.log(data)
+            res.json({msg:"ok",results:data});
         })
     }
 })

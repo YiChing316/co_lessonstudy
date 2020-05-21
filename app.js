@@ -10,6 +10,38 @@ var communityRouter = require('./routes/community');
 var lessonplanRouter = require('./routes/lessonplan');
 
 var app = express();
+var server = require('http').Server(app);
+
+server.listen(8000,function(){
+  console.log("server listening on port 8000");
+})
+var io = require('socket.io')(server);
+
+io.on('connection', function(socket){
+
+  socket.on('join community',function(data){
+    console.log("進入社群"+data);
+    var roomName = "community_"+data;
+    socket.join(roomName);
+    socket.nsp.to(roomName).emit('test','hi');
+  })
+
+  socket.on('add node',function(data){
+    var roomName = "community_"+data.community_id;
+    socket.nsp.to(roomName).emit('update node data',data.nodeData);
+  })
+
+  socket.on('add edge',function(data){
+    var roomName = "community_"+data.community_id;
+    socket.nsp.to(roomName).emit('update edge data',data.edgeData);
+  })
+
+  socket.on('drag node',function(data){
+    var roomName = "community_"+data.community_id;
+    socket.nsp.to(roomName).emit('update drag data',data.nodeData);
+  })
+
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

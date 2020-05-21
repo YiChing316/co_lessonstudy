@@ -1,20 +1,6 @@
 var nodes = new vis.DataSet();
 var edges = new vis.DataSet();
 
-// var node = [
-//     {id: 1, group:'idea', node_content: "Node 1", node_text: '111'},
-//     {id: 2, group:'rise_above', node_content: "Node 2", node_text: '111'},
-//     {id: 3, group:'vote', node_content: "Node 3", node_text: '111'},
-//     {id: 4, group:'idea', node_content: "Node 4", node_text: '111'},
-//     {id: 5, group:'vote', node_content: "Node 5", node_text: '111'}
-// ];
-
-// var edge = [
-//     {from: 1, to: 3},
-//     {from: 1, to: 2},
-//     {from: 2, to: 4},
-//     {from: 2, to: 5}
-// ]
 var node;
 var edge;
 
@@ -81,65 +67,7 @@ var network = new vis.Network(container, nodeData, nodeOptions);
 
 var clickid = [];
 
-//畫上Node標題跟創建人姓名
-function addNodeContent(){
-    network.on("beforeDrawing", function (ctx) {
-        
-        //畫node被點擊時的背景
-        if(clickid.length >0){
-
-            $.each(clickid,function(i,val){
-                var id = clickid[i];
-                var nodePosition = network.getPositions([id]);
-                ctx.strokeStyle = "rgba(220, 217, 204, 0.5)";
-                ctx.fillStyle = "rgba(220, 217, 204, 0.5)";
-    
-                ctx.beginPath();
-                //context.arc(x,y,r(半徑),sAngle(起始角),eAngle(結束角),counterclockwise);
-                ctx.arc(nodePosition[id].x,nodePosition[id].y,25,0,2 * Math.PI,false);
-                ctx.closePath();
-    
-                ctx.fill();
-                ctx.stroke();
-            })
-        }
-        
-        for(i=0;i<node.length;i++){
-            var nodeid = node[i].id;
-            var node_title = node[i].node_title;
-            var member_name = node[i].member_name;
-            var node_createtime = node[i].node_createtime;
-            var node_tag = node[i].node_tag;
-
-            if(node_tag.length > 0){
-                node_tag = "["+node_tag+"]";
-            }
-
-            var titleContent = node_tag+node_title;
-
-            var nodePosition = network.getPositions([nodeid]);
-            //將文字寫入對應的node節點
-            ctx.font = "bold 16px 微軟正黑體";
-            ctx.fillStyle = 'pink';
-            var width = ctx.measureText(node_tag).width;
-            ctx.fillRect(nodePosition[nodeid].x+30, nodePosition[nodeid].y-26,width,"16");
-            ctx.fillStyle = 'black';
-            ctx.fillText(titleContent, nodePosition[nodeid].x+30, nodePosition[nodeid].y-10);
-            ctx.font = "12px 微軟正黑體";
-            ctx.fillStyle = 'gray';
-            ctx.fillText(member_name, nodePosition[nodeid].x+30, nodePosition[nodeid].y+10);
-            ctx.font = "12px 微軟正黑體";
-            ctx.fillText(node_createtime, nodePosition[nodeid].x+30, nodePosition[nodeid].y+30);
-            
-        }
-    })
-}
-
-
-function drawNetwork() {
-
-    node = JSON.parse($("#nodeData").text());
-    edge = JSON.parse($("#edgeData").text());
+function drawNodeNetwork(node) {
     var newNodeArray =[];
 
     if(node.length > 0){
@@ -186,12 +114,13 @@ function drawNetwork() {
             })
         })
         nodes.update(newNodeArray);
-
-        if(edge.length > 0){
-            edges.update(edge);
-        }
     }
-    
+}
+
+function drawEdgeNetwork(edge) {
+    if(edge.length > 0){
+        edges.update(edge);
+    }
 }
 
 function clickevent(){
@@ -260,12 +189,67 @@ function clickevent(){
 
         this.redraw();
     });
+
+    network.on("dragEnd", function(params) {
+        params.event = "[dragEnd]";
+        var drag_array = [];
+        var dragid = params.nodes;
+        var drag_position = network.getPositions(dragid);
+        for(node in drag_position){
+
+            drag_array.push({node_id:node,node_x:drag_position[node].x,node_y:drag_position[node].y})
+
+            var string = JSON.stringify(drag_array);
+            var community_id = $("#community_id").text();
+            $.ajax({
+                url: '/lessonplan/idea/'+community_id+'/updateNodePosition',
+                type: "POST",
+                async:false,
+                data:{updateData:string},
+                success: function(data){
+                    if(data.msg == "ok"){
+                        var results = data.results;
+                        socket.emit('drag node',{community_id:community_id,nodeData:results})
+                    }
+                    else{
+                        window.location = "/member/login";
+                    }
+                },
+                error: function(){
+                    alert('失敗');
+                }
+            })
+        }
+    });
 }
+var socket = io();
 
 $(function(){
+    //發送訊息，經過 事件 傳送 object
+    socket.emit('join community',$("#community_id").text());
+    //接收
+    socket.on('test',function(data){
+        console.log(data)
+    });
 
-    drawNetwork();
-    addNodeContent();
+    socket.on('update node data',function(data){
+        drawNodeNetwork(data);
+    })
+
+    socket.on('update edge data',function(data){
+        drawEdgeNetwork(data);
+    })
+
+    socket.on('update drag data',function(data){
+        drawNodeNetwork(data);
+    })
+
+    node = JSON.parse($("#nodeData").text());
+    edge = JSON.parse($("#edgeData").text());
+
+    drawNodeNetwork(node);
+    drawEdgeNetwork(edge);
+
     clickevent();
 
     ideaScaffold_Add();
@@ -278,10 +262,57 @@ $(function(){
         for (var i = 0; i < $(this)[0].files.length; i++) {
             files.push($(this)[0].files[i].name);
         }
-        // $(this).next('.custom-file-label').html(files.join(', '));
-        // var fileName = $(this).val().split("\\").pop();
         $(this).siblings(".custom-file-label").addClass("selected").html(files.join(', '));
     });
+
+    //畫上Node標題跟創建人姓名
+    network.on("beforeDrawing", function (ctx) {
+        //畫node被點擊時的背景
+        if(clickid.length >0){
+            $.each(clickid,function(i,val){
+                var id = clickid[i];
+                var nodePosition = network.getPositions([id]);
+                ctx.strokeStyle = "rgba(220, 217, 204, 0.5)";
+                ctx.fillStyle = "rgba(220, 217, 204, 0.5)";
+    
+                ctx.beginPath();
+                //context.arc(x,y,r(半徑),sAngle(起始角),eAngle(結束角),counterclockwise);
+                ctx.arc(nodePosition[id].x,nodePosition[id].y,25,0,2 * Math.PI,false);
+                ctx.closePath();
+    
+                ctx.fill();
+                ctx.stroke();
+            })
+        }
+        
+        nodes.forEach(function(data) {
+            var nodeid = data.id;
+            var node_title = data.node_title;
+            var member_name = data.member_name;
+            var node_createtime = data.node_createtime;
+            var node_tag = data.node_tag;
+
+            if(node_tag.length > 0){
+                node_tag = "["+node_tag+"]";
+            }
+
+            var titleContent = node_tag+node_title;
+
+            var nodePosition = network.getPositions([nodeid]);
+            //將文字寫入對應的node節點
+            ctx.font = "bold 16px 微軟正黑體";
+            ctx.fillStyle = 'pink';
+            var width = ctx.measureText(node_tag).width;
+            ctx.fillRect(nodePosition[nodeid].x+30, nodePosition[nodeid].y-26,width,"16");
+            ctx.fillStyle = 'black';
+            ctx.fillText(titleContent, nodePosition[nodeid].x+30, nodePosition[nodeid].y-10);
+            ctx.font = "12px 微軟正黑體";
+            ctx.fillStyle = 'gray';
+            ctx.fillText(member_name, nodePosition[nodeid].x+30, nodePosition[nodeid].y+10);
+            ctx.font = "12px 微軟正黑體";
+            ctx.fillText(node_createtime, nodePosition[nodeid].x+30, nodePosition[nodeid].y+30);
+        });
+    })
 
 })
 
@@ -697,6 +728,14 @@ function saveNode(modalId){
                 else if(createResults.msg =="ok"){
                     ideaModalCloseBtn('createIdeaModel');
                     $("#createIdeaModel").modal("hide");
+                    var nodeData = createResults.insertnodeData;
+                    var edgeData = createResults.insertedgeData;
+                    console.log(nodeData)
+                    console.log(edgeData)
+                    socket.emit('add node',{community_id:community_id,nodeData:nodeData})
+                    if(edgeData.length > 0){
+                        socket.emit('add edge',{community_id:community_id,edgeData:edgeData})
+                    }
                 }
                 else if(createResults.msg == "isexist"){
                     alert(createResults.checkResults+"\n已存在相同檔名檔案，請修改檔名後再上傳");

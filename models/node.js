@@ -135,29 +135,59 @@ module.exports = {
     },
 
     saveEdge: function(community_id,replyNodeId,node_id){
-        var edge_from_array = replyNodeId.split(',');
-
-        return Promise.all(
-            edge_from_array.map(function(edge_from){
-                return new Promise(function(resolve,reject){
-                    pool.getConnection(function(err,connection){
-                        if(err) return reject(err);
-        
-                        var sql = {
-                            community_id_community:community_id,
-                            edge_from:edge_from,
-                            edge_to:node_id
-                        }
-        
-                        connection.query('INSERT INTO `edge` SET ?',sql,function(err,insertResults,fields){
+        if(replyNodeId !== ""){
+            var edge_from_array = replyNodeId.split(',');
+            return Promise.all(
+                edge_from_array.map(function(edge_from){
+                    return new Promise(function(resolve,reject){
+                        pool.getConnection(function(err,connection){
                             if(err) return reject(err);
-                            resolve(insertResults);
-                            connection.release();
+            
+                            var sql = {
+                                community_id_community:community_id,
+                                edge_from:edge_from,
+                                edge_to:node_id
+                            }
+            
+                            connection.query('INSERT INTO `edge` SET ?',sql,function(err,insertResults,fields){
+                                if(err) return reject(err);
+                                resolve(insertResults);
+                                connection.release();
+                            })
                         })
                     })
                 })
+            )
+        }
+        else{
+            return replyNodeId
+        }
+    },
+
+    selectThisNode: function(community_id,node_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT `node_id` AS "id",`member_id_member`, `member_name`, `node_title`, `node_tag`, `node_type` AS "group", `node_x` AS "x", `node_y` AS "y", `node_revised_count`, `node_read_count`, DATE_FORMAT(`node_createtime`,"%Y/%m/%d %T") AS "node_createtime" FROM `node` WHERE `community_id_community`=? AND `node_id`=?',[community_id,node_id],function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
             })
-        )
+        })
+    },
+
+    selectThisEdge: function(community_id,node_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT `edge_id` AS "id", `edge_from` AS "from", `edge_to` AS "to" FROM `edge` WHERE `community_id_community`=? AND `edge_to`=?',[community_id,node_id],function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
+        })
     },
 
     selectAllNodeData: function(community_id){
@@ -261,6 +291,33 @@ module.exports = {
                     connection.release();
                 })
             })
+        })
+    },
+
+    updateNodePosition: function(community_id,updateData){
+        var updatearray = JSON.parse(updateData);
+
+        var node_id = updatearray[0].node_id;
+        var node_x = updatearray[0].node_x;
+        var node_y = updatearray[0].node_y;
+
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                var sql = {
+                    node_x:node_x,
+                    node_y:node_y
+                }
+
+                connection.query('UPDATE `node` SET ? WHERE `node_id`=?',[sql,node_id],function(err,insertResults,fields){
+                    if(err) return reject(err);
+                    resolve(insertResults);
+                    connection.release();
+                })
+            })
+        })
+        .then(function(data){
+            return module.exports.selectThisNode(community_id,node_id)
         })
     },
 
