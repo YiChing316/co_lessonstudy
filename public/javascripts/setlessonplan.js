@@ -1127,12 +1127,12 @@ function saveLearningTarget(){
 
         targetContent = targetData.split(',');
         $("#lessonplan_targetandActivity").empty();
-        // setLessonplanTargetandActivityTable();
+        setLessonplanTargetandActivityTable();
         $("#lessonplanActivityProcessData").text(activityData);
         $(".activityTbody tr").remove();
         lessonplanActivityProcessData = $("#lessonplanActivityProcessData").text();
         lessonplanActivityProcessData = JSON.parse(lessonplanActivityProcessData);
-        // setActivityProcess();
+        setActivityProcess();
         
     }
     else{

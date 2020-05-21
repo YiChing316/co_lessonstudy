@@ -1,0 +1,402 @@
+body{font-family: '微軟正黑體';}
+
+/* .wrapper {
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100%;
+  padding: 5%;
+} */
+
+.title-bar{
+  align-items: center;
+  width: 100%;
+  height: 60px;
+  padding-top: 15px;
+}
+
+.bg-selfgreen{
+  background-color: #71C1B4;
+}
+
+.bg-selfblue{
+  background-color: #065B80;
+}
+
+.bg-selfpink{
+  background-color: #ED557E;
+}
+
+.bg-1{
+  background-color: #F16C84;
+}
+.bg-2{
+  background-color: #BF214B;
+}
+.bg-4{
+  background-color: #0E6973;
+}
+.bg-5{
+  background-color: #F29F05;
+}
+.bg-6{
+  background-color: #F2B705;
+}
+
+/*雙向細目表button*/
+.btn-circle{
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 35px;
+  font-size: 24px;
+  line-height: 1.33;
+  position: fixed;
+  z-index: 1035;
+  right: 2%;
+  bottom: 2%;
+  color: #FFF;
+}
+
+.btn-circle:hover{
+  background-color: white;
+  color: #065B80;
+  border-color: #065B80;
+  border-width:medium;
+}
+
+/*側邊欄*/
+/* .sidebar-nav{
+  top: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: white;
+  width: 100%;
+  margin-top: 55px;
+  margin-bottom: 45px;
+}
+
+.sidebar-nav li {
+  text-indent: 20px;
+  line-height: 40px;
+}
+
+.sidebar-nav .leave{
+  background: #247CA1;
+}
+
+.sidebar-nav li a {
+  color: white;
+  display: block;
+  text-decoration: none;
+}
+
+.sidebar-nav li a:hover {
+  background: #065071;
+  color: white;
+  text-decoration: none;
+}
+
+.sidebar-nav li ul{
+  list-style-type: none;
+  padding-left: 30px;
+  padding-right: 5px;
+}
+
+.sidebar-nav li a:active, .sidebar-nav li a:focus {
+  text-decoration: none;
+  background: #065071;
+} */
+
+.fixed-left{
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  top: 55px;
+  /* z-index: 1030; */
+}
+
+/* .page-content{
+  margin-left: 17%;
+} */
+
+/* .page-wrapper {
+  margin-top: 56px;
+  margin-left: 22px;
+  margin-right: 22px;
+} */
+
+/*實作、想法畫面切換button*/
+.mode-switch{
+  height: 50px;
+  width: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background-color: #fff;
+  z-index: 1020;
+}
+
+.mode-switch-btn{
+  left: 40%;
+}
+
+/*想法畫面toolbar*/
+.idea-toolbar{
+  height: auto;
+  width: auto;
+  top: 15vh;
+  left: 0;
+  position: fixed;
+  background-color: rgba(181,221,194,0.8);
+  z-index: 1;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.idea-toolbar img{
+  width: 2vw;
+}
+
+.idea-toolbar .idea-tool{
+  height: auto;
+  display: block;
+  padding: 8px;
+}
+
+.idea-tool:hover{
+  background-color: rgba(113, 193, 180, 0.5);
+  text-decoration: none;
+}
+
+.idea-tooltext{
+  margin-top: 2px;
+  text-decoration: none;
+  color: black;
+}
+
+/*實作畫面儲存button背景*/
+.btn-bg{
+  height: 50px;
+  width: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background-color: #fff;
+}
+
+
+/* .content{
+  margin-left: 15px;
+  margin-right: 15px;
+} */
+
+/*讓card在col的情況下無左右padding*/
+.nopadding{
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.nopadding-right{
+  padding-right: 0;
+}
+
+.nopadding-all{
+  padding: 0;
+}
+
+/*活動與評量設計內card-body預設高度*/
+#setactivity{
+  min-height: 20vh;
+}
+
+.assessment_link{
+  color: #065B80;
+  text-decoration: underline;
+}
+
+.assessment_link_del{
+  color: #ED557E;
+  text-decoration: underline;
+}
+
+.assessment_link_del:hover{
+  color: crimson;
+  text-decoration: underline;
+}
+
+textarea{
+  resize: none;
+}
+
+#ideanetwork{
+  width: 100%;
+  height: 100vh;
+}
+
+
+
+/*新的右邊選單css*/
+.wrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+#sidebar {
+  min-width: 250px;
+  max-width: 250px;
+  background: #065B80;
+  color: white;
+  transition: all 0.3s;
+}
+
+#sidebar.active {
+  min-width: 70px;
+  max-width: 70px;
+  text-align: center;
+}
+
+#sidebar ul li a {
+  text-align: left;
+}
+
+#sidebar.active ul li a {
+  padding: 20px 10px;
+  text-align: center;
+  font-size: 0.85em;
+}
+
+#sidebar.active ul li a i {
+  margin-right: 0;
+  display: block;
+  font-size: 1.8em;
+  margin-bottom: 5px;
+  text-decoration: none;
+}
+
+#sidebar.active ul ul a {
+  padding: 10px !important;
+}
+
+#sidebar.active .dropdown-toggle::after {
+  top: auto;
+  bottom: 10px;
+  right: 50%;
+  -webkit-transform: translateX(50%);
+  -ms-transform: translateX(50%);
+  transform: translateX(50%);
+}
+
+#sidebar.active .sidebar-menu{
+  display: none;
+}
+
+#sidebar ul li a {
+  padding: 10px;
+  font-size: 1.1em;
+  display: block;
+  color: white;
+  text-decoration: none;
+}
+
+#sidebar ul li a:hover{
+  text-decoration: none;
+}
+
+#sidebar ul li a:hover,#sidebar .sidebar-menu a:focus {
+  background: #065071;
+  color: white;
+  text-decoration: none;
+}
+
+#sidebar ul li a i {
+  margin-right: 10px;
+}
+
+#sidebar ul li.active>a,
+a[aria-expanded="true"]{
+  color: #fff;
+  background: #065B80;
+}
+
+a[data-toggle="collapse"] {
+  position: relative;
+}
+
+#sidebar .dropdown-toggle::after {
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+}
+
+#sidebar ul ul a {
+  font-size: 1.0em !important;
+  padding-left: 40px !important;
+  background: #065B80;
+}
+
+/* ---------------------------------------------------
+  CONTENT STYLE
+----------------------------------------------------- */
+
+#content {
+  width: 100%;
+  margin-top: 56px;
+  margin-left: 250px;
+  padding-left: 15px;
+  padding-right: 15px;
+  /* padding: 20px; */
+  min-height: 100vh;
+  transition: all 0.3s;
+  margin-bottom: 50px;
+}
+
+#content.active{
+  margin-left: 70px;
+}
+
+/* ---------------------------------------------------
+  MEDIAQUERIES
+----------------------------------------------------- */
+
+@media (max-width: 768px) {
+  #sidebar {
+      min-width: 70px;
+      max-width: 70px;
+      text-align: center;
+      margin-left: -80px !important;
+  }
+  #sidebar.active .dropdown-toggle::after {
+      top: auto;
+      bottom: 10px;
+      right: 50%;
+      -webkit-transform: translateX(50%);
+      -ms-transform: translateX(50%);
+      transform: translateX(50%);
+  }
+  #sidebar.active {
+      margin-left: 0 !important;
+  }
+  #sidebar ul li a {
+      padding: 20px 10px;
+  }
+  #sidebar ul li a span {
+      font-size: 0.85em;
+  }
+  #sidebar ul li a i {
+      margin-right: 0;
+      display: block;
+  }
+  #sidebar ul ul a {
+      padding: 10px !important;
+  }
+  #sidebar ul li a i {
+      font-size: 1.3em;
+  }
+  #sidebar {
+      margin-left: 0;
+  }
+  #sidebarCollapse span {
+      display: none;
+  }
+}
