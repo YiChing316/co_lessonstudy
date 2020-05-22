@@ -1,5 +1,0 @@
-SELECT `learning_focus_type`,`learning_focus_item` FROM `learning_focus` WHERE `learning_focus_field`='自然' AND `learning_focus_stage`='第二學習階段(Ⅱ)' GROUP BY `learning_focus_item`
-
-
-SELECT `learning_focus_type`,`learning_focus_item`,`learning_focus_childitem` FROM `learning_focus` WHERE `learning_focus_field`='自然' AND `learning_focus_stage`='第二學習階段(Ⅱ)' GROUP BY `learning_focus_childitem`
-
