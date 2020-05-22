@@ -41,6 +41,11 @@ io.on('connection', function(socket){
     socket.nsp.to(roomName).emit('update drag data',data.nodeData);
   })
 
+  socket.on('revise node',function(data){
+    var roomName = "community_"+data.community_id;
+    socket.nsp.to(roomName).emit('update node data',data.updateNodeData);
+  })
+
 });
 
 // view engine setup

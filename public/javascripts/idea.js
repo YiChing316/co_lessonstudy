@@ -774,6 +774,9 @@ function saveNode(modalId){
                 else if(reviseResults.msg =="ok"){
                     ideaModalCloseBtn('readIdeaModal');
                     $("#readIdeaModal").modal("hide");
+                    var updateNodeData = reviseResults.updatenodeData;
+                    console.log(updateNodeData)
+                    socket.emit('revise node',{community_id:community_id,updateNodeData:updateNodeData})
                 }
                 else if(reviseResults.msg == "isexist"){
                     alert(reviseResults.checkResults+"\n已存在相同檔名檔案，請修改檔名後再上傳");

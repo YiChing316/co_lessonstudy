@@ -611,7 +611,10 @@ router.post('/idea/:community_id/updateIdea',upload.array('ideafile',5),function
                     return node.saveIdeaFile(community_id,fileData,node_id)
                 })
                 .then(function(fileResults){
-                    return res.json({msg:"ok"})
+                    return node.selectThisNode(community_id,node_id)
+                })
+                .then(function(selectNodedata){
+                    return res.json({msg:"ok",updatenodeData:selectNodedata})
                 })
             }
             //有的話回傳
@@ -689,7 +692,6 @@ router.post('/idea/:community_id/updateNodePosition',function(req,res){
         var updateData = req.body.updateData;
         node.updateNodePosition(community_id,updateData)
         .then(function(data){
-            console.log(data)
             res.json({msg:"ok",results:data});
         })
     }

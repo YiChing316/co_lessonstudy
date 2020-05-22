@@ -168,7 +168,7 @@ module.exports = {
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
-                connection.query('SELECT `node_id` AS "id",`member_id_member`, `member_name`, `node_title`, `node_tag`, `node_type` AS "group", `node_x` AS "x", `node_y` AS "y", `node_revised_count`, `node_read_count`, DATE_FORMAT(`node_createtime`,"%Y/%m/%d %T") AS "node_createtime" FROM `node` WHERE `community_id_community`=? AND `node_id`=?',[community_id,node_id],function(err,rows,fields){
+                connection.query('SELECT `node_id` AS "id",`member_id_member`, `member_name`, `node_title`, `node_tag`, `node_type` AS "group", `node_x` AS "x", `node_y` AS "y", `node_revised_count`, `node_read_count`, DATE_FORMAT(`node_createtime`,"%Y/%m/%d %H:%i") AS "node_createtime" FROM `node` WHERE `community_id_community`=? AND `node_id`=?',[community_id,node_id],function(err,rows,fields){
                     if(err) return reject(err);
                     resolve(rows);
                     connection.release();
@@ -194,7 +194,7 @@ module.exports = {
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
-                connection.query('SELECT `node_id` AS "id",`member_id_member`, `member_name`, `node_title`, `node_tag`, `node_type` AS "group", `node_x` AS "x", `node_y` AS "y", `node_revised_count`, `node_read_count`, DATE_FORMAT(`node_createtime`,"%Y/%m/%d %T") AS "node_createtime" FROM `node` WHERE `community_id_community`=?',community_id,function(err,rows,fields){
+                connection.query('SELECT `node_id` AS "id",`member_id_member`, `member_name`, `node_title`, `node_tag`, `node_type` AS "group", `node_x` AS "x", `node_y` AS "y", `node_revised_count`, `node_read_count`, DATE_FORMAT(`node_createtime`,"%Y/%m/%d %H:%i") AS "node_createtime" FROM `node` WHERE `community_id_community`=?',community_id,function(err,rows,fields){
                     if(err) return reject(err);
                     resolve(rows);
                     connection.release();
