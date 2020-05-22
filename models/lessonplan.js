@@ -27,7 +27,6 @@ module.exports = {
     },
 
     saveLessonplan: function(community_id,lessonplanData,member_id,member_name){
-        var saveResults;
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
@@ -66,70 +65,50 @@ module.exports = {
             })
         })
         .then(function(results){
-            saveResults = results;
-            var insertid = results.insertId;
-            if(insertid !== 0){
-                return node.createNewNode(community_id,'教案基本資料','教案基本資料','lessonplan',member_id,member_name)
-            }
-        })
-        .then(function(data){
-            return saveResults;
+            return results;
         })
     },
 
     saveUnitandActivity: function(community_id,lessonplanData,member_id,member_name){
-        var activityArray = JSON.parse(lessonplanData.lessonplan_activity_name);
+        var tableContent = JSON.parse(lessonplanData.tableContent);
 
-        return Promise.all(
-            activityArray.map(function(data){
-                var activity_name,saveResults;
-                return new Promise(function(resolve,reject){
-                    pool.getConnection(function(err,connection){
-                        if(err) throw err;
-                        var saveaction = data.saveaction;
-                        var baseid = data.baseid;
-                        activity_name = data.name;
-    
-                        var sql = {
-                            community_id_community:community_id,
-                            lessonplan_unit_name:lessonplanData.lessonplan_unit_name,
-                            lessonplan_activity_name:activity_name,
-                            member_id_member:member_id,
-                            member_name:member_name
-                        }
-    
-                        //為新值，insert
-                        if(saveaction == "new"){
-                            if(err) throw err;
-                            connection.query('INSERT INTO `lessonplan_activity_process` SET ?',sql,function(err,rows,fields){
-                                if(err) throw err;
-                                resolve(rows)
-                                connection.release();
-                            })
-                        }
-                        //舊值，擁有baseid，根據baseid進行update
-                        else if(saveaction == "update"){
-                            if(err) throw err;
-                            connection.query('UPDATE `lessonplan_activity_process` SET ? WHERE `lessonplan_activity_process_id` = ?',[sql,baseid],function(err,rows,fields){
-                                if(err) throw err;
-                                resolve(rows)
-                                connection.release();
-                            })
-                        }
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                var baseid = lessonplanData.baseid;
+
+                var  sql = {
+                    community_id_community:community_id,
+                    lessonplan_unit_name:lessonplanData.lessonplan_unit_name,
+                    lessonplan_activity_name:lessonplanData.lessonplan_activity_name,
+                    member_id_member:member_id,
+                    member_name:member_name
+                }
+
+                if(baseid == ""){
+                    connection.query('INSERT INTO `lessonplan_activity_process` SET ?',sql,function(err,insertResults,fields){
+                        if(err) return reject(err);
+                        resolve(insertResults);
+                        connection.release();
                     })
-                })
-                .then(function(results){
-                    saveResults = results;
-                    var insertid = results.insertId;
-                    if(insertid !== 0){
-                        return node.createNewNode(community_id,activity_name,'活動與評量設計','activity',member_id,member_name)
-                    }
-                })
-                .then(function(data){
-                    return saveResults;
-                })
+                }
+                else{
+                    connection.query('UPDATE `lessonplan_activity_process` SET ? WHERE `lessonplan_activity_process_id` = ?',[sql,baseid],function(err,updateResults,fields){
+                        if(err) return reject(err);
+                        resolve(updateResults);
+                        connection.release();
+                    })
+                } 
             })
-        )  
+        })
+        .then(function(activitydata){
+            if(tableContent.length !== 0){
+                return module.exports.saveTwoWayTable(community_id,'activity',tableContent,member_id,member_name)
+            }
+            else{
+                return activitydata
+            }
+        })
     },
 
     saveActivityFile: function(community_id,lessonplanData){
@@ -188,6 +167,7 @@ module.exports = {
 
     //將檔案資料存入資料庫
     saveFileData: function(community_id,fileData){
+        console.log(fileData)
         if(fileData.length >0){
             return Promise.all(
                 fileData.map(function(data){
@@ -321,64 +301,29 @@ module.exports = {
             })
         })
         .then(function(results){
-            saveResults = results;
-            var insertid = results.insertId;
-            var stage_name;
-            if(insertid !== 0){
-
-                switch(lessonplan_stage_type){
-                    case "lessonplan_target":
-                        stage_name = "課程學習目標";
-                        break;
-                    case "core_competency":
-                        stage_name = "總綱核心素養";
-                        break;
-                    case "learning_focus":
-                        stage_name = "學習重點";
-                        break;
-                    case "learning_issue":
-                        stage_name = "議題融入";
-                        break;
-                    case "lessonplan_studentknowledge":
-                        stage_name = "學生先備知識";
-                        break;
-                    case "lessonplan_resource":
-                        stage_name = "教學資源及器材";
-                        break;
-                    case "lessonplan_design":
-                        stage_name = "教學設計理念";
-                        break;
-                }
-
-                return node.createNewNode(community_id,stage_name,stage_name,lessonplan_stage_type,member_id,member_name)
-            }
-        })
-        .then(function(data){
             return saveResults;
         })
     },
 
-    saveTwoWayTable: function(community_id,lessonplanData,member_id,member_name){
-        var saveResults;
+    saveTwoWayTable: function(community_id,table_type,tableContent,member_id,member_name){
+
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
 
-                var lessonplan_twowaytable_type = lessonplanData.type;
-
                 var sql = {
                     community_id_community:community_id,
-                    lessonplan_twowaytable_type:lessonplan_twowaytable_type,
-                    lessonplan_twowaytable_content:lessonplanData.content
+                    lessonplan_twowaytable_type:table_type,
+                    lessonplan_twowaytable_content:tableContent
                 }
 
-                connection.query('SELECT COUNT(`lessonplan_twowaytable_content`) AS COUNTNUM FROM `lessonplan_twowaytable` WHERE `community_id_community` =?  AND `lessonplan_twowaytable_type` =? ',[community_id,lessonplan_twowaytable_type],function(err,countResults,fields){
+                connection.query('SELECT COUNT(`lessonplan_twowaytable_content`) AS COUNTNUM FROM `lessonplan_twowaytable` WHERE `community_id_community` =?  AND `lessonplan_twowaytable_type` =? ',[community_id,table_type],function(err,countResults,fields){
                     if(err) return reject(err);
     
                     var countNum = countResults[0].COUNTNUM;
                     
                     if(countNum == 1){
-                        connection.query('UPDATE `lessonplan_twowaytable` SET ? WHERE `community_id_community` =?  AND `lessonplan_twowaytable_type` =? ',[sql,community_id,lessonplan_twowaytable_type],function(err,updateResults,fields){
+                        connection.query('UPDATE `lessonplan_twowaytable` SET ? WHERE `community_id_community` =?  AND `lessonplan_twowaytable_type` =? ',[sql,community_id,table_type],function(err,updateResults,fields){
                             if(err) return reject(err);
                             resolve(updateResults);
                             connection.release();
@@ -395,14 +340,7 @@ module.exports = {
             })
         })
         .then(function(results){
-            saveResults = results;
-            var insertid = results.insertId;
-            if(insertid !== 0){
-                return node.createNewNode(community_id,'學習目標與活動對應表','學習目標,活動與評量設計','twowaytable',member_id,member_name)
-            }
-        })
-        .then(function(data){
-            return saveResults;
+            return results;
         })
     },
 
@@ -465,32 +403,36 @@ module.exports = {
             return module.exports.selectLessonplanTwoWayTable(community_id)
         })
         .then(function(tableresult){
-            var twowaytable_content = tableresult[0].lessonplan_twowaytable_content;
-            var content = JSON.parse(twowaytable_content)
-            
-            var newarray = [];
 
-            //修改學習目標與活動對應表中有使用到的學習目標
-            content.map(function(contentdata){
-                var targetName = contentdata.targetName;
-                var activityName = contentdata.activityName;
+            if(tableresult.length > 0){
+                var twowaytable_content = tableresult[0].lessonplan_twowaytable_content;
+                var content = JSON.parse(twowaytable_content)
+                
+                var newarray = [];
 
-                updateData.map(function(updatedata){
-                    var updateaction = updatedata.updateaction;
-                    var olddata = updatedata.olddata;
-                    var newdata = updatedata.newdata;
-                    //當儲存動作為更新的才會動作
-                    if(updateaction == "update"){
-                        //與舊資料匹配的進行更新
-                        if(targetName == olddata){
-                            targetName = newdata;
-                            newarray.push({targetName:targetName,activityName:activityName})
+                //修改學習目標與活動對應表中有使用到的學習目標
+                content.map(function(contentdata){
+                    var targetName = contentdata.targetName;
+                    var activityName = contentdata.activityName;
+
+                    updateData.map(function(updatedata){
+                        var updateaction = updatedata.updateaction;
+                        var olddata = updatedata.olddata;
+                        var newdata = updatedata.newdata;
+                        //當儲存動作為更新的才會動作
+                        if(updateaction == "update"){
+                            //與舊資料匹配的進行更新
+                            if(targetName == olddata){
+                                targetName = newdata;
+                                newarray.push({targetName:targetName,activityName:activityName})
+                            }
                         }
-                    }
+                    })
                 })
-            })
-            updateResult = JSON.stringify(newarray);
-            return module.exports.updateTwoWayTableContent(community_id,updateResult,'activity');
+                updateResult = JSON.stringify(newarray);
+                return module.exports.updateTwoWayTableContent(community_id,updateResult,'activity');
+            }
+            
         })
         .then(function(data){
             return module.exports.changeActivityProcessContent(community_id,updateData)
@@ -615,6 +557,19 @@ module.exports = {
             var activityString = JSON.stringify(activityArray);
 
             return activityString
+        })
+    },
+
+    selecThisActivity: function(lessonplan_activity_process_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT * FROM `lessonplan_activity_process` WHERE `lessonplan_activity_process_id`=?',lessonplan_activity_process_id,function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
         })
     },
     

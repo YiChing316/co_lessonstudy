@@ -730,8 +730,6 @@ function saveNode(modalId){
                     $("#createIdeaModel").modal("hide");
                     var nodeData = createResults.insertnodeData;
                     var edgeData = createResults.insertedgeData;
-                    console.log(nodeData)
-                    console.log(edgeData)
                     socket.emit('add node',{community_id:community_id,nodeData:nodeData})
                     if(edgeData.length > 0){
                         socket.emit('add edge',{community_id:community_id,edgeData:edgeData})
@@ -775,7 +773,6 @@ function saveNode(modalId){
                     ideaModalCloseBtn('readIdeaModal');
                     $("#readIdeaModal").modal("hide");
                     var updateNodeData = reviseResults.updatenodeData;
-                    console.log(updateNodeData)
                     socket.emit('revise node',{community_id:community_id,updateNodeData:updateNodeData})
                 }
                 else if(reviseResults.msg == "isexist"){

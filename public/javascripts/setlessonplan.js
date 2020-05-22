@@ -222,7 +222,7 @@ function addlessonplantargetlist(){
     // sorttableTbody('#lessonplantargetTbody');
 }
 
-var targetContent;
+var targetContent = [];
 
 //呈現儲存於lessonplan_stage資料庫中資料
 function showLessonplanStageSaveData(){
@@ -530,72 +530,10 @@ function addUnitActivitylist(){
     deleteUnittableTr();
 }
 
-//刪除單元活動tabletr
-function deleteUnittableTr(){
-    $('#unitActivityTbody').on('click','.btnDelete',function(){
-        var inputid = $(this).closest('tr').find('.activityList').attr('id');
-        var baseid = $("#"+inputid).data("baseid");
-        var saveaction = $("#"+inputid).data("saveaction");
-        
-        //若為已儲存的tr跳出警示窗，Model內會影響到資料庫
-        if(saveaction == "update"){
-            $("#alertModal").modal("show");
-            $("#alertModal").find("#inputid").text(inputid);
-            $("#alertModal").find("#deleteid").text(baseid);
-        }
-        //若為新增的則直接刪除不影響資料庫
-        else if(saveaction =="new"){
-            $(this).closest('tr').remove();
-            $("#unitActivityTbody tr").each(function(index) {
-                $(this).find('th:eq(0)').first().html(index + 1);
-            });
-        }
-    });
-}
-
-//活動與評量設計內table顯示
-function activityandAssessmentDesign_Append(id,baseid,activity_name){
-    var divId = "'activity_"+id+"'";
-    var activityDiv = '<div class="row accordion">'+
-                            '<div class="card col-9 nopadding" id="cardidactivity_'+id+'">'+
-                                '<h5 class="card-header bg-white font-weight-bolder shadow-sm" id="headeractivity_'+id+'" data-toggle="collapse" data-target=".activity_'+id+'">'+activity_name+''+
-                                    '<span class="float-right"><i class="fa fa-angle-up" id="activity_'+id+'icon"></i></span>'+
-                                '</h5>'+
-                                '<div class="card-body collapse show activity_'+id+'" id="activity_'+id+'">'+
-                                    '<p class="lessonplan_activity_process_id" style="display:none">'+baseid+'</p>'+
-                                    '<button class="btn btn-outline-info" data-toggle="modal" data-target="#addprocessModal" data-parentdivid="activity_'+id+'"><i class="fas fa-plus"></i> 新增活動流程</button>'+
-                                    '<table class="table table-bordered activitytable mt-3" id="activity_'+id+'Table">'+
-                                        '<thead class="thead-light">'+
-                                            '<tr>'+
-                                                '<th scope="col" width="40"></th>'+
-                                                '<th scope="col" width="40">#</th>'+
-                                                '<th scope="col" width="150">學習目標</th>'+
-                                                '<th scope="col" width="450">活動流程</th>'+
-                                                '<th scope="col" width="60">時間</th>'+
-                                                '<th scope="col" width="200">評量方式</th>'+
-                                                '<th scope="col">備註</th>'+
-                                                '<th scope="col" width="50"></th>'+
-                                            '</tr>'+
-                                        '</thead>'+
-                                        '<tbody class="activityTbody" id="activity_'+id+'Tbody"></tbody>'+
-                                    '</table>'+
-                                '</div>'+
-                                '<div class="card-footer collapse show text-right activity_'+id+'">'+
-                                    '<input type="button" class="btn btn-primary" value="儲存" onclick="saveActivityProcessData('+divId+')">'+
-                                '</div>'+
-                            '</div>'+
-                            '<div class="card col nopadding">'+
-                                '<h5 class="card-header bg-selfgreen font-weight-bolder">團隊想法</h5>'+
-                                '<div class="card-body collapse"></div>'+
-                            '</div>'+
-                        '</div>';
-    $("#setactivity").append(activityDiv);
-}
-
 var isChange = false;
 $(function(){
     basicData = JSON.parse($("#basicData").text());
-    lessonplanActivityProcessData = $("#lessonplanActivityProcessData").text();
+    twowayTableData = JSON.parse($("#twowayTableData").text());
 
     setLessonplanBasicData();
     lessonplan_Map();
@@ -603,8 +541,6 @@ $(function(){
     lessonplanstage_Map();
     lessonplantarget_Append();
     showLessonplanStageSaveData();
-
-    lessonplan_unit_Set()
 
     //判斷畫面上是否有物件有更動，但未儲存
     $("input,textarea,select").change(function () {
@@ -629,7 +565,7 @@ $(function(){
         }
     })
 
-    collapseControl();
+    
     summernoteClass();
 })
 
@@ -652,24 +588,6 @@ function deletetableTr(tbody){
             $(this).find('th:eq(0)').first().html(index + 1);
         });
         isChange = true;
-    });
-}
-
-//摺疊icon變化
-function collapseControl(){
-    //class摺疊執行完後更改圖形
-    $(".collapse").on('show.bs.collapse', function(){
-        $i = $(this).closest('.card').children().children().children();
-        var id = $i.attr('id');
-        $('#'+id).removeClass('fa fa-angle-down');
-        $('#'+id).addClass("fa fa-angle-up");
-    });
-    $(".collapse").on('hide.bs.collapse', function(){
-        //$(this)為card-body，需更改同父內三層的i的class
-        $i = $(this).closest('.card').children().children().children();
-        var id = $i.attr('id');
-        $('#'+id).removeClass('fa fa-angle-up');
-        $('#'+id).addClass("fa fa-angle-down");
     });
 }
 
@@ -867,39 +785,50 @@ function saveLessonplanData(divId){
                 }
             }
             break;
-        case 'lessonplan_unit':
+        case 'creatActivityModal':
+        case 'editActivityModal':
 
-            var lessonplan_unit_name = $("#unitName").val();
-            var lessonplan_activity_name = [];
-            $(".activityList").each(function() {
-                var activity_name = $(this).val();
-                var saveaction = $(this).data("saveaction");
-                var baseid = $(this).data("baseid")
-                lessonplan_activity_name.push({name:activity_name,saveaction:saveaction,baseid:baseid});
-            });          
-            var activityString = JSON.stringify(lessonplan_activity_name);
-            var data = {
-                        stage:divId,
-                        lessonplan_unit_name:lessonplan_unit_name,
-                        lessonplan_activity_name:activityString
-                    };
+            var lessonplan_unit_name = $("#"+divId).find(".unitName").val();
+            var lessonplan_activity_name = $("#"+divId).find(".activityName").val();
+            var baseid = $("#"+divId).find(".activityid").text();
 
-            var editing = $("#lessonplan_unit").find(".editing").get().length;
-
-            for(var i=0;i<editing;i++){
-                $($("#lessonplan_unit").find(".editing")[i]).removeClass("editing");
-            }
-            isChange = false;
-
-            var unitResults = saveAjax(data);
-            if(unitResults.msg == "ok"){
-                alert("儲存成功");
-                window.location = "/lessonplan/edit/"+community_id;
+            if(lessonplan_unit_name == "" || lessonplan_activity_name == ""){
+                $("#"+divId).find(".alert").show();
             }
             else{
-                window.location = "/member/login";
-            }
+                var targetandActivityArray = []
+                $("#"+divId+" input[name='targetandactivity']:checked").each(function(){
+                    var targetName = $(this).val();
+                    targetandActivityArray.push({targetName:targetName,activityName:lessonplan_activity_name})
+                })
 
+                var tableContent = JSON.stringify(targetandActivityArray);
+
+                var data = {
+                    stage:divId,
+                    baseid:baseid,
+                    lessonplan_unit_name:lessonplan_unit_name,
+                    lessonplan_activity_name:lessonplan_activity_name,
+                    tableContent:tableContent
+                };
+
+                isChange = false;
+                $("#"+divId).find(".unitName").removeClass("editing");
+                var lessonplan_activity_name = $("#"+divId).find(".activityName").removeClass("editing");
+                    
+                console.log($("#creatActivityModal").find(".editing").get())
+                console.log(data)
+
+                var unitResults = saveAjax(data);
+                if(unitResults.msg == "ok"){
+                    alert("儲存成功");
+                    window.location = "/lessonplan/edit/"+community_id;
+                }
+                else{
+                    window.location = "/member/login";
+                }
+
+            }
             break;
         case 'lessonplan_target':
 
@@ -931,40 +860,40 @@ function saveLessonplanData(divId){
             }
 
             break;
-        case 'lessonplan_targetandActivity':
-            var targetandActivityArray = []
+        // case 'lessonplan_targetandActivity':
+        //     var targetandActivityArray = []
 
-            $("input[name='targetandactivity']:checked").each(function(){
-                var targetName = $(this).parents('tr').data('targetname')
-                var activityName = $(this).val();
-                targetandActivityArray.push({targetName:targetName,activityName:activityName})
-            })
-            $("input[name='targetandactivity']").removeClass("editing");
+        //     $("input[name='targetandactivity']:checked").each(function(){
+        //         var targetName = $(this).parents('tr').data('targetname')
+        //         var activityName = $(this).val();
+        //         targetandActivityArray.push({targetName:targetName,activityName:activityName})
+        //     })
+        //     $("input[name='targetandactivity']").removeClass("editing");
 
-            var tableContent = JSON.stringify(targetandActivityArray);
+        //     var tableContent = JSON.stringify(targetandActivityArray);
 
-            isChange = false;
+        //     isChange = false;
 
-            var data = {
-                stage:'lessonplan_twowaytable',
-                type:'activity',
-                content:tableContent
-            }
+        //     var data = {
+        //         stage:'lessonplan_twowaytable',
+        //         type:'activity',
+        //         content:tableContent
+        //     }
 
-            var table1Results = saveAjax(data);
+        //     var table1Results = saveAjax(data);
 
-            if(table1Results.msg == "ok"){
-                alert("儲存成功");
-                var tabledata = table1Results.tabledata;
-                var string = JSON.stringify(tabledata)
-                $("#twowayTableData").text(string);
-                showtwowayTableData();
-            }
-            else{
-                window.location = "/member/login";
-            }
+        //     if(table1Results.msg == "ok"){
+        //         alert("儲存成功");
+        //         var tabledata = table1Results.tabledata;
+        //         var string = JSON.stringify(tabledata)
+        //         $("#twowayTableData").text(string);
+        //         showtwowayTableData();
+        //     }
+        //     else{
+        //         window.location = "/member/login";
+        //     }
 
-            break;
+        //     break;
         case 'cirn_form1':
             var coreArray = [];
             var $card = $("#core_competency_body").find('.card');
@@ -1125,14 +1054,14 @@ function saveLearningTarget(){
         var targetData = targetResults.targetData[0].lessonplan_stage_content;
         var activityData = targetResults.activityData;
 
-        targetContent = targetData.split(',');
-        $("#lessonplan_targetandActivity").empty();
-        setLessonplanTargetandActivityTable();
-        $("#lessonplanActivityProcessData").text(activityData);
-        $(".activityTbody tr").remove();
-        lessonplanActivityProcessData = $("#lessonplanActivityProcessData").text();
-        lessonplanActivityProcessData = JSON.parse(lessonplanActivityProcessData);
-        setActivityProcess();
+        // targetContent = targetData.split(',');
+        // $("#lessonplan_targetandActivity").empty();
+        // setLessonplanTargetandActivityTable();
+        // $("#lessonplanActivityProcessData").text(activityData);
+        // $(".activityTbody tr").remove();
+        // lessonplanActivityProcessData = $("#lessonplanActivityProcessData").text();
+        // lessonplanActivityProcessData = JSON.parse(lessonplanActivityProcessData);
+        // setActivityProcess();
         
     }
     else{
@@ -1156,15 +1085,14 @@ function saveActivityProcessData(divId){
         localStorage.removeItem(divId);
 
         isChange = false;
-        saveAjax(data);
 
         var processResults = saveAjax(data);
         if(processResults.msg == "ok"){
             alert("儲存成功");
-            var processData = processResults.selectData;
-            showtrargetandAssessmentTableData(processData)
-            $("#lessonplan_targetandAssessment").empty();
-            setLessonplanTargetandAssessmentTable();
+            // var processData = processResults.selectData;
+            // showtrargetandAssessmentTableData(processData)
+            // $("#lessonplan_targetandAssessment").empty();
+            // setLessonplanTargetandAssessmentTable();
         }
         else{
             window.location = "/member/login";
@@ -1175,50 +1103,4 @@ function saveActivityProcessData(divId){
         alert('目前沒有資料可以儲存');
     }
     
-}
-
-function deleteActivityData(){
-    var community_id = $("#community_id").text();
-    var lessonplan_activity_process_id = $("#deleteid").text();
-    var inputid = $("#inputid").text();
-    var data = {
-        community_id:community_id,
-        lessonplan_activity_process_id:lessonplan_activity_process_id
-    }
-    isChange = true;
-
-    $.ajax({
-        url: "/lessonplan/edit/"+community_id+"/deleteActivity",
-        type: "POST",
-        async:false,
-        data:data,
-        success: function(data){
-            if(data.msg == "ok"){
-                // alert("已刪除");
-                $("#alertModal").modal('hide');
-                $("#"+inputid).closest('tr').remove();
-                var newProcessData = data.processData;
-                var newNameData = data.nameData;
-                $("#lessonplanActivityProcessData").text(newProcessData);
-                $("#lessonplanActivityName").text(newNameData);
-                activityName = JSON.parse($("#lessonplanActivityName").text());
-                $("#lessonplan_unit").empty();
-                $("#activityDesignUl").empty();
-                $("#sidebarul").empty();
-                $("#lessonplan_targetandActivity").empty();
-                $("#setactivity").find('div').remove();
-                lessonplan_unit_Set();
-                sidebar_Map();
-                setLessonplanTargetandActivityTable();
-                showtwowayTableData();
-                setActivityProcess();
-            }
-            else{
-                window.location = "/member/login";
-            }
-        },
-        error: function(){
-            alert('失敗');
-        }
-    })
 }

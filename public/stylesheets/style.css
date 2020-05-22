@@ -17,7 +17,7 @@ background-color: #065B80;
 }
 
 .bg-1{
-        background-color: #F16C84;
+    background-color: #F16C84;
 }
 .bg-2{
     background-color: #BF214B;
@@ -31,6 +31,22 @@ background-color: #065B80;
 .bg-6{
     background-color: #F2B705;
 }
+
+.btn-add-activity{
+    color: #ED557E;
+    border-color: #ED557E;
+}
+
+.btn-add-activity.focus,
+.btn-add-activity:focus {
+  box-shadow: 0 0 0 0.2rem rgba(237, 85, 126,0.5);
+}
+
+.btn-add-activity:hover {
+    color: #fff;
+    background-color: #ED557E;
+    border-color: rgb(237, 85, 126);
+  }
 
 /*置左*/
 .fixed-left{

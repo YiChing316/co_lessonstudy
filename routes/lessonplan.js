@@ -37,13 +37,33 @@ router.get('/edit/:community_id', function(req, res, next) {
         })
         .then(function(data){
             if(data.isExisted == true){
-                //檢查是否已有儲存過年級版本
-                return lessonplan.checklessonplandata(community_id)
+                return lessonplan.selectLessonplanActivityProcess(community_id)
             }
             else{
                 //如果community_id為使用者無加入的社群則會被退回dashboard頁面
                 res.redirect('/dashboard');
             }
+        })
+        .then(function(processdata){
+            lessonplanActivityProcessData = JSON.stringify(processdata);
+
+            return lessonplan.selectLessonplanStageData(community_id)
+        })
+        .then(function(stagedata){
+            lessonplanStageData = JSON.stringify(stagedata);
+
+            return lessonplan.selectLessonplanActivityName(community_id)
+        })
+        .then(function(activiynamedata){
+            lessonplanActivityName = JSON.stringify(activiynamedata)
+
+            return lessonplan.selectLessonplanTwoWayTable(community_id)
+        })
+        .then(function(tableResults){
+            twowayTableData = JSON.stringify(tableResults);
+
+            //檢查是否已有儲存過年級版本
+            return lessonplan.checklessonplandata(community_id)
         })
         .then(function(checkdata){
             //沒有儲存過基本資料資料
@@ -67,10 +87,10 @@ router.get('/edit/:community_id', function(req, res, next) {
                                                 issuethemeData:'""',
                                                 issuecontentData:'""',
                                                 basicData:'""',
-                                                lessonplanActivityProcessData:'""',
-                                                lessonplanActivityName:'""',
-                                                lessonplanStageData:'""',
-                                                twowayTableData:'""'
+                                                lessonplanActivityProcessData:lessonplanActivityProcessData,
+                                                lessonplanActivityName:lessonplanActivityName,
+                                                lessonplanStageData:lessonplanStageData,
+                                                twowayTableData:twowayTableData
                                             });
             }
             else{
@@ -127,26 +147,6 @@ router.get('/edit/:community_id', function(req, res, next) {
         })
         .then(function(issuecontentdata){
             issuecontentData = JSON.stringify(issuecontentdata);
-
-            return lessonplan.selectLessonplanActivityProcess(community_id)
-        })
-        .then(function(processdata){
-            lessonplanActivityProcessData = JSON.stringify(processdata);
-
-            return lessonplan.selectLessonplanStageData(community_id)
-        })
-        .then(function(stagedata){
-            lessonplanStageData = JSON.stringify(stagedata);
-
-            return lessonplan.selectLessonplanActivityName(community_id)
-        })
-        .then(function(activiynamedata){
-            lessonplanActivityName = JSON.stringify(activiynamedata)
-
-            return lessonplan.selectLessonplanTwoWayTable(community_id)
-        })
-        .then(function(tableResults){
-            twowayTableData = JSON.stringify(tableResults);
             res.render('lessonplanEdit', { title: '教案製作',
                                             mode: 'lessonplanContent',
                                             member_id:member_id,
@@ -200,7 +200,8 @@ router.post('/edit/:community_id/save',function(req,res,next){
                     }
                 })
                 break;
-            case 'lessonplan_unit':
+            case 'creatActivityModal':
+            case 'editActivityModal':
                 lessonplan.saveUnitandActivity(community_id,lessonplanData,member_id,member_name)
                 .then(function(data){
                     if(data){

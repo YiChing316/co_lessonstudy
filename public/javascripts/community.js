@@ -8,8 +8,6 @@ function createCommunity(){
     var community_key = $("#community_key").val();
     var community_intro = $("#community_intro").val();
 
-    console.log(community_intro)
-
     if(community_name == "" || community_key =="" || community_intro ==""){
         $("#errmsg").show();
         $("#errmsg").html('每隔皆為必填');
@@ -27,7 +25,6 @@ function createCommunity(){
                 if(data.msg == 'yes'){
                     alert('新增成功');
                     window.location.href = '/lessonplan/edit/'+data.community_id;
-                    // window.location.reload();
                 }
                 else{
                     window.location = "/member/login";

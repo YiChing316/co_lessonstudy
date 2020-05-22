@@ -1,10 +1,9 @@
 /*將lessonplan/edit的頁面框架，以及sidebar內容 map出來 */
 var pagecontent_Components = [
-    {title:'教案基本資料',id:'lessonplan_basicdata',collapse:'show'},
+    {title:'教案基本資料',id:'lessonplan_basicdata',collapse:'none'},
     {title:'學生先備概念',id:'lessonplan_studentknowledge',collapse:'none'},
     {title:'教學設計理念',id:'lessonplan_design',collapse:'none'},
-    {title:'課程學習目標',id:'lessonplan_target',collapse:'none'},
-    {title:'安排課程單元/活動',id:'lessonplan_unit',collapse:'none'}
+    {title:'課程學習目標',id:'lessonplan_target',collapse:'none'}
 ];
 
 function pagecontent_Map(){

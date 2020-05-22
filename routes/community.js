@@ -45,7 +45,6 @@ router.post('/create', function(req, res,next) {
       community.create(community_name,community_key,community_intro,member_id,member_name)
       .then(function(results){
         if(results){
-          console.log(results)
           res.json({msg:'yes',community_id:results});
         }
       })

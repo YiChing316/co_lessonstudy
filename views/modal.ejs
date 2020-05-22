@@ -38,6 +38,81 @@
   </div>
 </div>
 
+<!-- 新增單元/活動 -->
+<div class="modal fade" id="creatActivityModal" tabindex="-1" role="dialog" aria-labelledby="creatActivityModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-selfblue text-white">
+        <h5 class="modal-title" data-saveaction="new" data-baseid="" id="creatActivityModalLabel">新增活動</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span class="text-white" aria-hidden="true" onclick="modalclosebtn('creatActivityModal')">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="activityid" style="display: none;"></p>
+        <div class="alert alert-danger" role="alert" id="creatActivityAlert" style="display: none;">單元及活動為必填</div>
+        <div class="form-group row">
+          <label class="control-label col-sm-2">單元名稱</label>
+          <div class="col-sm-10">
+              <input type="text" class="form-control unitName" id="unitName" placeholder="請輸入單元名稱">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="control-label col-sm-2">活動名稱</label>
+          <div class="col-sm-10">
+              <input type="text" class="form-control activityName" id="activityName" placeholder="請輸入活動名稱">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="control-label col-sm-2">學習目標</label>
+          <div class="col-sm-10 targetCheckbox"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input type="button" value="新增" class="btn btn-primary" onclick="saveLessonplanData('creatActivityModal')">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 編輯單元/活動 -->
+<div class="modal fade" id="editActivityModal" tabindex="-1" role="dialog" aria-labelledby="editActivityModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-selfblue text-white">
+        <h5 class="modal-title" data-saveaction="new" data-baseid="" id="editActivityModalLabel">編輯活動</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span class="text-white" aria-hidden="true" onclick="modalclosebtn('editActivityModal')">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-danger" role="alert" id="editActivityAlert" style="display: none;">單元及活動為必填</div>
+        <p class="activityid" id="editactivityid" style="display: none;"></p>
+        <div class="form-group row">
+          <label class="control-label col-sm-2">單元名稱</label>
+          <div class="col-sm-10">
+              <input type="text" class="form-control unitName" id="editunitName" placeholder="請輸入單元名稱">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="control-label col-sm-2">活動名稱</label>
+          <div class="col-sm-10">
+              <input type="text" class="form-control activityName" id="editactivityName" placeholder="請輸入活動名稱">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="control-label col-sm-2">學習目標</label>
+          <div class="col-sm-10 targetCheckbox"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input type="button" value="刪除" class="btn btn-danger" onclick="deleteActivityCard()">
+        <input type="button" value="儲存" class="btn btn-primary" onclick="saveLessonplanData('editActivityModal')">
+      </div>
+    </div>
+  </div>
+</div>
+
 <!--新增活動流程-->
 <div class="modal fade" id="addprocessModal" tabindex="-1" role="dialog" aria-labelledby="addprocessModalLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
