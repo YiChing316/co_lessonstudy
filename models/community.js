@@ -152,7 +152,7 @@ module.exports = {
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
-                connection.query('SELECT `community_id`,`community_name`,`community_intro`,DATE_FORMAT(`community_createtime`,"%Y/%m/%d %T") AS `community_createtime` FROM `community`',function(err,rows,fields){
+                connection.query('SELECT `community_id`,`community_name`,`community_intro`,DATE_FORMAT(`community_createtime`,"%Y/%m/%d %H:%i") AS `community_createtime` FROM `community`',function(err,rows,fields){
                     if(err) return reject(err);
                     resolve(rows);
                     connection.release();
@@ -167,7 +167,7 @@ module.exports = {
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
-                connection.query('SELECT `community`.community_id,`community`.community_name,`community`.community_intro,DATE_FORMAT(`community`.community_createtime,"%Y/%m/%d %T") AS `community_createtime`,`community_member`.community_member_id,`community_member`.member_name '+
+                connection.query('SELECT `community`.community_id,`community`.community_name,`community`.community_intro,DATE_FORMAT(`community`.community_createtime,"%Y/%m/%d %H:%i") AS `community_createtime`,`community_member`.community_member_id,`community_member`.member_name '+
                                 'FROM `community` INNER JOIN `community_member` ON `community`.community_id=`community_member`.community_id_community '+
                                 'WHERE `community_member`.member_id_member = ?',[member_id],function(err,rows,fields){
                     if(err) return reject(err);
