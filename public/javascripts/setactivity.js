@@ -203,6 +203,7 @@ function editActivityCard(){
         var activity_name = $("#"+parnetid).find(".card-header").data("activityname");
         var lessonplan_activity_process_id = $("#"+parnetid).find(".lessonplan_activity_process_id").text();
         $("#editActivityModal").modal("show");
+        $("#editactivitycardid").text(parnetid);
         $("#editunitName").val(unit_name)
         $("#editactivityName").val(activity_name)
         $("#editactivityid").text(lessonplan_activity_process_id)
@@ -212,9 +213,60 @@ function editActivityCard(){
 //開啟編輯活動後，刪除
 function deleteActivityCard(){
     var baseid = $("#editactivityid").text();
+    var activitycardid = $("#editactivitycardid").text();
     $("#editActivityModal").modal("hide");
     $("#alertModal").modal("show");
     $("#alertModal").find("#deleteid").text(baseid);
+    $("#alertModal").find("#deletecardid").text(activitycardid);
+}
+
+//刪除活動
+function deleteActivityData(){
+    var community_id = $("#community_id").text();
+    var lessonplan_activity_process_id = $("#deleteid").text();
+    var deletecardid = $("#deletecardid").text();
+
+    var data = {
+        community_id:community_id,
+        lessonplan_activity_process_id:lessonplan_activity_process_id
+    }
+
+    isChange = true;
+
+    $.ajax({
+        url: "/lessonplan/edit/"+community_id+"/deleteActivity",
+        type: "POST",
+        async:false,
+        data:data,
+        success: function(data){
+            if(data.msg == "ok"){
+                // alert("已刪除");
+                $("#alertModal").modal('hide');
+                var newProcessData = data.processData;
+                var newNameData = data.nameData;
+                $("#lessonplanActivityProcessData").text(newProcessData);
+                $("#lessonplanActivityName").text(newNameData);
+                activityName = JSON.parse($("#lessonplanActivityName").text());
+                $("#activityDesignUl").empty();
+                $("#sidebarul").empty();
+                sidebar_Map();
+                $("#"+deletecardid).parent().remove();
+                // $("#lessonplan_targetandActivity").empty();
+                // $("#setactivity").find('div').remove();
+                // setActivityCard();
+                // setActivityProcess();
+                // setLessonplanTargetandActivityTable();
+                // showtwowayTableData();
+                setActivityProcess();
+            }
+            else{
+                window.location = "/member/login";
+            }
+        },
+        error: function(){
+            alert('失敗');
+        }
+    })
 }
 
 var processArray = [];
@@ -1048,52 +1100,4 @@ function collapseControl(){
         $('#'+id).removeClass('fa fa-angle-up');
         $('#'+id).addClass("fa fa-angle-down");
     });
-}
-
-//刪除活動
-function deleteActivityData(){
-    var community_id = $("#community_id").text();
-    var lessonplan_activity_process_id = $("#deleteid").text();
-
-    var data = {
-        community_id:community_id,
-        lessonplan_activity_process_id:lessonplan_activity_process_id
-    }
-
-    isChange = true;
-
-    $.ajax({
-        url: "/lessonplan/edit/"+community_id+"/deleteActivity",
-        type: "POST",
-        async:false,
-        data:data,
-        success: function(data){
-            if(data.msg == "ok"){
-                // alert("已刪除");
-                $("#alertModal").modal('hide');
-
-                var newProcessData = data.processData;
-                var newNameData = data.nameData;
-                $("#lessonplanActivityProcessData").text(newProcessData);
-                $("#lessonplanActivityName").text(newNameData);
-                activityName = JSON.parse($("#lessonplanActivityName").text());
-                $("#activityDesignUl").empty();
-                $("#sidebarul").empty();
-                $("#lessonplan_targetandActivity").empty();
-                $("#setactivity").find('div').remove();
-                sidebar_Map();
-                setActivityCard();
-                setActivityProcess();
-                // setLessonplanTargetandActivityTable();
-                // showtwowayTableData();
-                setActivityProcess();
-            }
-            else{
-                window.location = "/member/login";
-            }
-        },
-        error: function(){
-            alert('失敗');
-        }
-    })
 }
