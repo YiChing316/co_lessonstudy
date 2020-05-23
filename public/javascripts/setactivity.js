@@ -44,7 +44,7 @@ function activityandAssessmentDesign_Append(id,baseid,unit_name,activity_name,ti
                             '<div class="card col-9 nopadding" id="cardidactivity_'+id+'">'+
                                 '<h5 class="card-header bg-white font-weight-bolder shadow-sm" id="headeractivity_'+id+'" data-toggle="collapse" data-target=".activity_'+id+'" data-unitname="'+unit_name+'" data-activityname="'+activity_name+'">'+title+''+
                                     '<a href="javascript:void(0)" class="editActivity ml-2" style="color: #ED557E"><i class="far fa-edit"></i></a>'+
-                                    '<span class="float-right"><i class="fa fa-angle-up" id="activity_'+id+'icon"></i></span>'+
+                                    '<span class="float-right"><i class="fa fa-angle-up collapseicon" id="activity_'+id+'icon"></i></span>'+
                                 '</h5>'+
                                 '<div class="card-body collapse show activity_'+id+'" id="activity_'+id+'">'+
                                     '<p class="lessonplan_activity_process_id" style="display:none">'+baseid+'</p>'+
@@ -94,6 +94,7 @@ function setActivityCard(){
             activityandAssessmentDesign_Append(listnum,baseid,unit_name,activity_name,unit_name+"-"+activity_name);
         }
     }
+    collapseControl();
 }
 
 var targetandAssessmentArray = [];
@@ -214,7 +215,7 @@ function editActivityCard(){
 function deleteActivityCard(){
     var baseid = $("#editactivityid").text();
     var activitycardid = $("#editactivitycardid").text();
-    $("#editActivityModal").modal("hide");
+    // $("#editActivityModal").modal("hide");
     $("#alertModal").modal("show");
     $("#alertModal").find("#deleteid").text(baseid);
     $("#alertModal").find("#deletecardid").text(activitycardid);
@@ -1087,16 +1088,14 @@ function moveTrPosition(){
 //摺疊icon變化
 function collapseControl(){
     //class摺疊執行完後更改圖形
-    $(".collapse").on('show.bs.collapse', function(){
-        $i = $(this).closest('.card').children().children().children();
-        var id = $i.attr('id');
+    $(".card-body .collapse").on('show.bs.collapse', function(){
+        var id = $(this).closest('.card').find(".collapseicon").attr('id')
         $('#'+id).removeClass('fa fa-angle-down');
         $('#'+id).addClass("fa fa-angle-up");
     });
-    $(".collapse").on('hide.bs.collapse', function(){
+    $(".card-body .collapse").on('hide.bs.collapse', function(){
         //$(this)為card-body，需更改同父內三層的i的class
-        $i = $(this).closest('.card').children().children().children();
-        var id = $i.attr('id');
+        var id = $(this).closest('.card').find(".collapseicon").attr('id')
         $('#'+id).removeClass('fa fa-angle-up');
         $('#'+id).addClass("fa fa-angle-down");
     });

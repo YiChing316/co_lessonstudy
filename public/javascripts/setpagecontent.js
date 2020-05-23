@@ -1,6 +1,6 @@
 /*將lessonplan/edit的頁面框架，以及sidebar內容 map出來 */
 var pagecontent_Components = [
-    {title:'教案基本資料',id:'lessonplan_basicdata',collapse:'none'},
+    {title:'教案基本資料',id:'lessonplan_basicdata',collapse:'show'},
     {title:'學生先備概念',id:'lessonplan_studentknowledge',collapse:'none'},
     {title:'教學設計理念',id:'lessonplan_design',collapse:'none'},
     {title:'課程學習目標',id:'lessonplan_target',collapse:'none'}
@@ -12,7 +12,7 @@ function pagecontent_Map(){
                         "<div class='card col-9 nopadding' id='cardid"+data.id+"'>"+
                             "<h5 class='card-header bg-white font-weight-bolder shadow-sm' id='header"+data.id+"' data-toggle='collapse' data-target='#"+data.id+"'>"+data.title+
                                 "<span class='float-right'>"+
-                                    "<i id='"+data.id+"icon' aria-hidden='true'></i>"+
+                                    "<i id='"+data.id+"icon' class='collapseicon' aria-hidden='true'></i>"+
                                 "</span>"+
                             "</h5>"+
                             "<div class='card-body collapse' id='"+data.id+"'></div>"+

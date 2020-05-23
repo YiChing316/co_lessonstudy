@@ -7,6 +7,13 @@ var lessonplan_Component = [
     {name:'授課時間',id:'lessonplan_time',type:'other',parentDiv:'lessonplan'}
 ];
 
+var lessonplanbasic_Component = [
+    {name:'核心素養',id:'cirn_form1'},
+    {name:'學習重點',id:'learning_focus'},
+    {name:'議題融入',id:'lessonplan_issue'},
+    {name:'教學資源及器材',id:'lessonplan_resource'}
+];
+
 //會使用到編輯器的位置
 var lessonplanstage_Component = [
     {id:'lessonplan_studentknowledge',createDiv:'lessonplan_studentknowledgeTextarea'},
@@ -86,11 +93,17 @@ var lessonplanActivityProcessData;
 
 //放置在教案基本資料內的div
 function setLessonplanBasicData(){
-    $("#lessonplan_basicdata").append("<div id='lessonplan'></div>")
-    $("#lessonplan_basicdata").append("<div id='cirn_form1'><hr><h5 class='font-weight-bolder'>核心素養</h5></div>")
-    $("#lessonplan_basicdata").append("<div id='learning_focus'><hr><h5 class='font-weight-bolder'>學習重點</h5></div>")
-    $("#lessonplan_basicdata").append("<div id='lessonplan_issue'><hr><h5 class='font-weight-bolder'>議題融入</h5></div>")
-    $("#lessonplan_basicdata").append("<div id='lessonplan_resource'><hr><h5 class='font-weight-bolder'>教學資源及器材</h5></div>")
+    $("#lessonplan_basicdata").append("<div id='lessonplan'></div>");
+    $("#lessonplan_basicdata").append('<span>此教案是否需要進行議題融入？</span>'+
+                                        '<input type="checkbox" data-toggle="toggle" id="toggle-demo" data-size="sm">');
+    lessonplanbasic_Component.map(function(data){
+        $("#lessonplan_basicdata").append("<div class='basic_body'>"+
+                                            "<hr><h5 data-toggle='collapse' data-target='#"+data.id+"'><i class='far fa-plus-square mr-1' id='"+data.id+"icon'></i><b>"+data.name+"</b></h5>"+
+                                            "<h6 class='card-subtitle mb-2 text-danger'>(請先完成領域、版本以及學習階段的設定)</h6>"+
+                                            "<div class='collapse' id='"+data.id+"'></div>"+
+                                        "</div>");
+    })
+    $("#lessonplan_issue").parent().hide();
 }
 //放入lessonplan div
 function lessonplan_Map(){
@@ -466,69 +479,20 @@ function showtrargetandAssessmentTableData(data){
     }
 }
 
-var unitData,activityData;
 var course_field_info,course_grade_info;
-
-function lessonplan_unit_Set(){
-    var lessonplan_version = $("#lessonplan_version :selected").val();
-
-    $("#lessonplan_unit").append('<div class="form-group row">'+
-                                    '<label class="control-label col-sm-2">單元名稱</label>'+
-                                    '<div class="col-sm-10">'+
-                                        '<input type="text" class="form-control" id="unitName" placeholder="請輸入單元名稱">'+
-                                    '</div>'+
-                                '</div>'+
-                                '<button id="addtargetlist" class="btn btn-outline-info" onclick="addUnitActivitylist()"><i class="fas fa-plus"></i> 新增活動</button>'+
-                                '<table class="table table-bordered w-auto mt-3" id="unitActivityTable">'+
-                                    '<thead class="thead-light">'+
-                                        '<tr>'+
-                                        '<th scope="col">#</th>'+
-                                        '<th scope="col" class="col-sm-6">活動名稱</th>'+
-                                        '<th scope="col" width="10%"></th>'+
-                                        '</tr>'+
-                                    '</thead>'+
-                                    '<tbody id="unitActivityTbody"></tbody>'+
-                                '</table>');
-
-    buttonDiv('lessonplan_unit');
-
-    if(lessonplanActivityProcessData.length !== 0){
-        lessonplanActivityProcessData = $("#lessonplanActivityProcessData").text();
-        lessonplanActivityProcessData = JSON.parse(lessonplanActivityProcessData);
-
-        for(var i=0;i<lessonplanActivityProcessData.length;i++){
-            var processData = lessonplanActivityProcessData[i];
-            var baseid = processData.lessonplan_activity_process_id;
-            var unit_name = processData.lessonplan_unit_name;
-            var activity_name = processData.lessonplan_activity_name;
-            
-            var listnum = i+1;
-
-            $("#unitActivityTbody").append('<tr class="appendTr">'+
-                                                '<th scope="row">'+listnum+'</th>'+
-                                                '<td><input type="text" class="form-control activityList" id="lessonplan_unit_activity_'+listnum+'" placeholder="請輸入活動名稱" data-saveaction="update" data-baseid="'+baseid+'" value="'+activity_name+'"></td>'+
-                                                '<td class="lasttd"><button class="btn btn-danger btnDelete"><i class="far fa-trash-alt"></i></button></td>'+
-                                            '</tr>');
-            activityandAssessmentDesign_Append(listnum,baseid,activity_name);
-        }
-
-        $("#unitName").val(unit_name);
-        deleteUnittableTr();
+function stageControl(){
+    course_field_info = $("#course_field_info").text();
+    course_grade_info = $("#course_grade_info").text();
+    if(course_field_info == "" || course_grade_info == ""){
+        $(".basic_body *").prop("disabled",true);
+        // console.log($(".basic_body ").find(".card-subtitle"))
     }
- 
+    else{
+        $(".basic_body *").prop("disabled",false);
+        $(".basic_body ").find(".card-subtitle").hide();
+    }
 }
 
-//新增活動table列表
-function addUnitActivitylist(){
-    var listnum = $("#unitActivityTbody").find("tr").last().children("th").text();
-    listnum++;
-    $("#unitActivityTbody").append('<tr class="appendTr">'+
-                                        '<th scope="row">'+listnum+'</th>'+
-                                        '<td><input type="text" class="form-control activityList" id="lessonplan_unit_activity_'+listnum+'" placeholder="請輸入活動名稱" data-saveaction="new" data-baseid=""></td>'+
-                                        '<td class="lasttd"><button class="btn btn-danger btnDelete"><i class="far fa-trash-alt"></i></button></td>'+
-                                    '</tr>');
-    deleteUnittableTr();
-}
 
 var isChange = false;
 $(function(){
@@ -541,6 +505,7 @@ $(function(){
     lessonplanstage_Map();
     lessonplantarget_Append();
     showLessonplanStageSaveData();
+    stageControl();
 
     //判斷畫面上是否有物件有更動，但未儲存
     $("input,textarea,select").change(function () {
@@ -565,7 +530,32 @@ $(function(){
         }
     })
 
-    
+    //lessonplan_basic內折疊的icon變化
+    $(".basic_body .collapse").on('show.bs.collapse', function(){
+        var id = $(this).parent().find("i").attr("id")
+        $('#'+id).removeClass('far fa-plus-square');
+        $('#'+id).addClass("far fa-minus-square");
+    });
+    $(".basic_body .collapse").on('hide.bs.collapse', function(){
+        var id = $(this).parent().find("i").attr("id");
+        $('#'+id).removeClass('far fa-minus-square');
+        $('#'+id).addClass("far fa-plus-square");
+    });
+
+    $("#toggle-demo").bootstrapToggle({
+        on:"是",
+        off:"否"
+    });
+    $('#toggle-demo').change(function() {
+        var state = $(this).prop('checked');
+        if(state == false){
+            $("#lessonplan_issue").parent().hide();
+        }
+        else{
+            $("#lessonplan_issue").parent().show();
+        }
+    })
+
     summernoteClass();
 })
 
