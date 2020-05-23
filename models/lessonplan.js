@@ -70,12 +70,12 @@ module.exports = {
     },
 
     saveUnitandActivity: function(community_id,lessonplanData,member_id,member_name){
-        var tableContent = JSON.parse(lessonplanData.tableContent);
-
+        var tableContent = lessonplanData.tableContent;
+        var baseid,process_id;
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
-                var baseid = lessonplanData.baseid;
+                baseid = lessonplanData.baseid;
 
                 var  sql = {
                     community_id_community:community_id,
@@ -102,11 +102,25 @@ module.exports = {
             })
         })
         .then(function(activitydata){
+            process_id = activitydata.insertId;
             if(tableContent.length !== 0){
                 return module.exports.saveTwoWayTable(community_id,'activity',tableContent,member_id,member_name)
             }
             else{
-                return activitydata
+                if(process_id !== 0){
+                    return process_id
+                }
+                else{
+                    return baseid
+                }
+            }
+        })
+        .then(function(tabledata){
+            if(process_id !== 0){
+                return process_id
+            }
+            else{
+                return baseid
             }
         })
     },
@@ -317,13 +331,49 @@ module.exports = {
                     lessonplan_twowaytable_content:tableContent
                 }
 
-                connection.query('SELECT COUNT(`lessonplan_twowaytable_content`) AS COUNTNUM FROM `lessonplan_twowaytable` WHERE `community_id_community` =?  AND `lessonplan_twowaytable_type` =? ',[community_id,table_type],function(err,countResults,fields){
+                connection.query('SELECT `lessonplan_twowaytable_content` FROM `lessonplan_twowaytable` WHERE `community_id_community` =?  AND `lessonplan_twowaytable_type` =? ',[community_id,table_type],function(err,selectResults,fields){
                     if(err) return reject(err);
-    
-                    var countNum = countResults[0].COUNTNUM;
                     
-                    if(countNum == 1){
-                        connection.query('UPDATE `lessonplan_twowaytable` SET ? WHERE `community_id_community` =?  AND `lessonplan_twowaytable_type` =? ',[sql,community_id,table_type],function(err,updateResults,fields){
+                    if(selectResults.length == 1){
+                        var result = selectResults[0].lessonplan_twowaytable_content;
+                        var selectArray = JSON.parse(result);
+                        var tableArray = JSON.parse(tableContent);
+                        var newArray = [];
+                        var originalval;
+
+                        console.log("1")
+                        console.log(tableArray)
+                        console.log("2")
+                        console.log(selectArray)
+
+                        tableArray.forEach(function(val){
+                            var contentTarget = val.targetName;
+                            var contentActivity = val.activityName;
+                            
+                            selectArray.forEach(function(selectval){
+                                originalval = selectval;
+                                var targetName = selectval.targetName;
+                                var activityName = selectval.activityName;
+                               
+                                if(activityName == contentActivity){
+                                    if(contentTarget !== targetName){
+                                        console.log("sameactivity")
+                                        newArray.push(val)
+                                    }
+                                }
+                                else{
+                                    if(contentTarget !== targetName){
+                                        console.log("diffactivity")
+                                        newArray.push(val)
+                                    }
+                                }
+                            }) 
+                        });
+                        newArray.push(originalval)
+                        console.log(newArray)
+                        var newtableContent = JSON.stringify(newArray)
+
+                        connection.query('UPDATE `lessonplan_twowaytable` SET `lessonplan_twowaytable_content`=? WHERE `community_id_community`=? AND `lessonplan_twowaytable_type`=?',[newtableContent,community_id,table_type],function(err,updateResults,fields){
                             if(err) return reject(err);
                             resolve(updateResults);
                             connection.release();
@@ -365,9 +415,6 @@ module.exports = {
                     connection.release();
                 })
             })
-        })
-        .then(function(results){
-            return node.createNewNode(community_id,"課程學習目標","課程學習目標",lessonplan_stage_type,member_id,member_name)
         })
     },
 

@@ -204,8 +204,11 @@ router.post('/edit/:community_id/save',function(req,res,next){
             case 'editActivityModal':
                 lessonplan.saveUnitandActivity(community_id,lessonplanData,member_id,member_name)
                 .then(function(data){
-                    if(data){
-                        return res.json({msg:'ok'})
+                    return lessonplan.selectLessonplanTwoWayTable(community_id)
+                })
+                .then(function(tabledata){
+                    if(tabledata){
+                        return res.json({msg:'ok',tabledata:tabledata})
                     }
                 })
                 break;
@@ -216,6 +219,7 @@ router.post('/edit/:community_id/save',function(req,res,next){
                     return lessonplan.saveLessonplanActivityProcess(lessonplan_activity_process_id,fileResults,member_id,member_name)
                 })
                 .then(function(data){
+                    console.log(data)
                     return lessonplan.selectLessonplanActivityProcess(community_id)
                 })
                 .then(function(selectdata){
