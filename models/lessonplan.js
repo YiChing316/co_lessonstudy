@@ -156,7 +156,7 @@ module.exports = {
                                         })
                 })
                 var activityString = JSON.stringify(newProcessArray);
-                updateArray.push({id:baseid,lessonplan_activity_content:activityString})
+                updateArray.push({id:baseid,lessonplan_activity_content:activityString,lessonplan_activity_target:tableContent})
                 var updateString = JSON.stringify(updateArray)
                 return module.exports.updateActivityProcessContent(updateString)
             }
@@ -222,7 +222,6 @@ module.exports = {
 
     //將檔案資料存入資料庫
     saveFileData: function(community_id,fileData){
-        console.log(fileData)
         if(fileData.length >0){
             return Promise.all(
                 fileData.map(function(data){
@@ -232,7 +231,7 @@ module.exports = {
     
                             var originalname = data.assessment_originalname;
                             var filetype = data.assessment_mimetype;
-    
+
                             switch(filetype){
                                 case "image/png":
                                 case "image/jpeg":
@@ -243,18 +242,30 @@ module.exports = {
                                     filetype = "文件"
                                     break;
                             }
-            
-                            var sql = {
-                                community_id_community:community_id,
-                                community_file_name:originalname,
-                                community_file_type:filetype
+
+                            if(originalname !== ""){
+                                var sql = {
+                                    community_id_community:community_id,
+                                    community_file_name:originalname,
+                                    community_file_type:filetype
+                                }
+
+                                connection.query('SELECT * FROM `community_file` WHERE `community_id_community` = ? AND `community_file_name` = ?',[community_id,originalname],function(err,selectResults,fields){
+                                    if(err) return reject(err);
+                                    
+                                    if(selectResults.length !== 1){
+                                        connection.query('INSERT INTO `community_file` SET ?',sql,function(err,insertResults,fields){
+                                            if(err) return reject(err);
+                                            resolve(insertResults);
+                                            connection.release();
+                                        })
+                                    }
+                                    else resolve(fileData);
+                                })
                             }
-            
-                            connection.query('INSERT INTO `community_file` SET ?',sql,function(err,insertResults,fields){
-                                if(err) return reject(err);
-                                resolve(insertResults);
-                                connection.release();
-                            })
+                            else{
+                                resolve(fileData);
+                            }
                         })
                     })
                 })
@@ -360,95 +371,6 @@ module.exports = {
         })
     },
 
-    saveTwoWayTable: function(community_id,table_type,tableContent,member_id,member_name){
-
-        return new Promise(function(resolve,reject){
-            pool.getConnection(function(err,connection){
-                if(err) return reject(err);
-
-                var sql = {
-                    community_id_community:community_id,
-                    lessonplan_twowaytable_type:table_type,
-                    lessonplan_twowaytable_content:tableContent
-                }
-
-                connection.query('SELECT `lessonplan_twowaytable_content` FROM `lessonplan_twowaytable` WHERE `community_id_community` =?  AND `lessonplan_twowaytable_type` =? ',[community_id,table_type],function(err,selectResults,fields){
-                    if(err) return reject(err);
-                    
-                    if(selectResults.length == 1){
-                        var result = selectResults[0].lessonplan_twowaytable_content;
-                        var selectArray = JSON.parse(result);
-                        var tableArray = JSON.parse(tableContent);
-                        var newArray = [];
-
-                        console.log(tableArray)
-                        console.log(selectArray)
-
-                        newArray = selectArray.concat(tableArray);
-
-                        // allstudents = Object.values(tableArray.concat(selectArray).reduce((r,o) => {
-                        //     console.log(r)
-                        //     console.log(o)
-                        //     r[o.targetName] = o;
-                        //     return r;
-                        // },{}));
-                        // tableArray.forEach(function(val){
-                        //     var contentTarget = val.targetName;
-                        //     var contentActivity = val.activityName;
-                        //     // console.log("1")
-                        //     // console.log(val)
-                            
-                        //     selectArray.forEach(function(selectval){
-                        //         originalval = selectval;
-                        //         // console.log("2")
-                        //         // console.log(selectval)
-                        //         var targetName = selectval.targetName;
-                        //         var activityName = selectval.activityName;
-
-                        //         if(activityName == contentActivity){
-                        //             if(targetName !== contentTarget){
-                        //                 console.log("sameAdT")
-                        //                 console.log(val)
-                        //             }
-                        //             else{
-                        //                 console.log("sameAsameT")
-                        //                 console.log(selectval)
-                        //             }
-                        //         }
-                        //         else{
-                        //             console.log("dAdT")
-                        //             console.log(selectval)
-                        //         }
-
-                        //     }) 
-                        // });
-
-                        console.log(newArray)
-                        var newtableContent = JSON.stringify(newArray)
-
-                        resolve(selectResults);
-
-                        // connection.query('UPDATE `lessonplan_twowaytable` SET `lessonplan_twowaytable_content`=? WHERE `community_id_community`=? AND `lessonplan_twowaytable_type`=?',[newtableContent,community_id,table_type],function(err,updateResults,fields){
-                        //     if(err) return reject(err);
-                        //     resolve(updateResults);
-                        //     connection.release();
-                        // })
-                    }
-                    else{
-                        connection.query('INSERT INTO `lessonplan_twowaytable` SET ?',sql,function(err,insertResults,fields){
-                            if(err) return reject(err);
-                            resolve(insertResults);
-                            connection.release();
-                        })
-                    }
-                })
-            })
-        })
-        .then(function(results){
-            return results;
-        })
-    },
-
     insertLessonplanTarget: function(community_id,lessonplanData,member_id,member_name){
         var lessonplan_stage_type = lessonplanData.lessonplan_stage_type;
 
@@ -501,41 +423,6 @@ module.exports = {
             })
             
         })
-        // .then(function(results){
-        //     return module.exports.selectLessonplanTwoWayTable(community_id)
-        // })
-        // .then(function(tableresult){
-
-        //     if(tableresult.length > 0){
-        //         var twowaytable_content = tableresult[0].lessonplan_twowaytable_content;
-        //         var content = JSON.parse(twowaytable_content)
-                
-        //         var newarray = [];
-
-        //         //修改學習目標與活動對應表中有使用到的學習目標
-        //         content.map(function(contentdata){
-        //             var targetName = contentdata.targetName;
-        //             var activityName = contentdata.activityName;
-
-        //             updateData.map(function(updatedata){
-        //                 var updateaction = updatedata.updateaction;
-        //                 var olddata = updatedata.olddata;
-        //                 var newdata = updatedata.newdata;
-        //                 //當儲存動作為更新的才會動作
-        //                 if(updateaction == "update"){
-        //                     //與舊資料匹配的進行更新
-        //                     if(targetName == olddata){
-        //                         targetName = newdata;
-        //                         newarray.push({targetName:targetName,activityName:activityName})
-        //                     }
-        //                 }
-        //             })
-        //         })
-        //         updateResult = JSON.stringify(newarray);
-        //         return module.exports.updateTwoWayTableContent(community_id,updateResult,'activity');
-        //     }
-            
-        // })
         .then(function(data){
             return module.exports.changeActivityProcessContent(community_id,updateData)
         })
@@ -545,22 +432,6 @@ module.exports = {
         })
         .then(function(data){
             return updateResult;
-        })
-    },
-
-    updateTwoWayTableContent: function(community_id,tableContent,type){
-        return new Promise(function(resolve,reject){
-            pool.getConnection(function(err,connection){
-                if(err) return reject(err);
-
-                connection.query('UPDATE `lessonplan_twowaytable` SET `lessonplan_twowaytable_content`= ? WHERE `community_id_community`=? AND `lessonplan_twowaytable_type` =?',[tableContent,community_id,type],function(err,updateResults,fields){
-                    if(err) return reject(err);
-                    resolve(updateResults);
-                    connection.release();
-                })
-
-            })
-            
         })
     },
 
@@ -575,7 +446,8 @@ module.exports = {
                         var id = data.id;
 
                         var sql = {
-                            lessonplan_activity_content: data.lessonplan_activity_content
+                            lessonplan_activity_content: data.lessonplan_activity_content,
+                            lessonplan_activity_target:data.lessonplan_activity_target
                         }
         
                         connection.query('UPDATE `lessonplan_activity_process` SET ? WHERE `lessonplan_activity_process_id` = ?',[sql,id],function(err,rows,fields){
@@ -594,7 +466,7 @@ module.exports = {
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
 
-                connection.query('SELECT `lessonplan_activity_process_id`,`lessonplan_activity_content` FROM `lessonplan_activity_process` WHERE `community_id_community` = ?',community_id,function(err,rows,fields){
+                connection.query('SELECT `lessonplan_activity_process_id`,`lessonplan_activity_content`,`lessonplan_activity_target` FROM `lessonplan_activity_process` WHERE `community_id_community` = ?',community_id,function(err,rows,fields){
                     if(err) return reject(err);
                     resolve(rows);
                     connection.release();
@@ -609,7 +481,30 @@ module.exports = {
                 
                 var id = data.lessonplan_activity_process_id;
                 var activity_content = data.lessonplan_activity_content;
+                var activity_target = data.lessonplan_activity_target;
 
+                var newActivityTarget = [];
+                if(activity_target !== ""){
+                    var activity_targetArray = activity_target.split(',');
+                    activity_targetArray.map(function(origindata){
+                        updateData.map(function(updatedata){
+                            var updateaction = updatedata.updateaction;
+                            var olddata = updatedata.olddata;
+                            var newdata = updatedata.newdata;
+                            //當儲存動作為更新的才會動作
+                            if(updateaction == "update"){
+                                //與舊資料匹配的進行更新
+                                if(origindata == olddata){
+                                    origindata = newdata;
+                                    newActivityTarget.push(origindata)
+                                }
+                            }
+                        })
+                    })
+                }
+                var newActivityTargetString = newActivityTarget.toString();
+
+                var contentString;
                 if(activity_content !== ""){
                     //活動content處理為array
                     var contentArray = JSON.parse(activity_content);
@@ -651,11 +546,13 @@ module.exports = {
                                                 lessonplan_activity_remark:lessonplan_activity_remark
                                             })
                     })
-                    var activityString = JSON.stringify(newContentArray);
-                    activityArray.push({id:id,lessonplan_activity_content:activityString})
+                    contentString = JSON.stringify(newContentArray);
+                    // activityArray.push({id:id,lessonplan_activity_content:activityString})
                 }
-            })
 
+                activityArray.push({id:id,lessonplan_activity_content:contentString,lessonplan_activity_target:newActivityTargetString})
+            })
+            // console.log(activityArray)
             var activityString = JSON.stringify(activityArray);
 
             return activityString
@@ -719,19 +616,6 @@ module.exports = {
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
                 connection.query('SELECT `lessonplan_stage_content` FROM `lessonplan_stage` WHERE `community_id_community` = ? AND `lessonplan_stage_type` = "lessonplan_target"',community_id,function(err,rows,fields){
-                    if(err) return reject(err);
-                    resolve(rows);
-                    connection.release();
-                })
-            })
-        })
-    },
-    
-    selectLessonplanTwoWayTable: function(community_id){
-        return new Promise(function(resolve,reject){
-            pool.getConnection(function(err,connection){
-                if(err) return reject(err);
-                connection.query('SELECT * FROM `lessonplan_twowaytable` WHERE `community_id_community`=?',community_id,function(err,rows,fields){
                     if(err) return reject(err);
                     resolve(rows);
                     connection.release();

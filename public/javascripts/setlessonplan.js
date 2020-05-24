@@ -257,7 +257,7 @@ function showLessonplanStageSaveData(){
                         var value = targetContent[s];
 
                         $("#lessonplantargetTbody").append('<tr>'+
-                                                                '<th scope="row" title="可上下移動排序">'+listnum+'</th>'+
+                                                                '<th scope="row">'+listnum+'</th>'+
                                                                 '<td><input type="text" class="form-control" name="lessonplantargercontent" placeholder="請輸入學習目標" value="'+value+'" data-updateaction="update" data-olddata="'+value+'"></td>'+
                                                                 '<td class="lasttd"><button class="btn btn-danger btnDelete"><i class="far fa-trash-alt"></i></button></td>'+
                                                             '</tr>');
@@ -328,7 +328,6 @@ function stageControl(){
 var isChange = false;
 $(function(){
     basicData = JSON.parse($("#basicData").text());
-    // twowayTableData = JSON.parse($("#twowayTableData").text());
 
     setLessonplanBasicData();
     lessonplan_Map();
@@ -359,6 +358,7 @@ $(function(){
         if (isChange || $(".editing").get().length > 0 || localStorage.length > 0) {
             console.log(isChange)
             console.log($(".editing").get())
+            console.log(localStorage.length )
             return '資料尚未存檔，確定是否要離開？';
         }
     })
@@ -671,6 +671,8 @@ function saveLessonplanData(divId){
                         //在此function處理table呈現，以及該活動評量與學習目標對應資料
                         setOneCardActivityProcess(selectData,baseid,parnetid)
                         setActivityandTargetData(selectData)
+                        console.log(twowayTableData)
+                        console.log(targetandAssessmentArray)
                     }
                 }
                 else{
@@ -709,40 +711,6 @@ function saveLessonplanData(divId){
             }
 
             break;
-        // case 'lessonplan_targetandActivity':
-        //     var targetandActivityArray = []
-
-        //     $("input[name='targetandactivity']:checked").each(function(){
-        //         var targetName = $(this).parents('tr').data('targetname')
-        //         var activityName = $(this).val();
-        //         targetandActivityArray.push({targetName:targetName,activityName:activityName})
-        //     })
-        //     $("input[name='targetandactivity']").removeClass("editing");
-
-        //     var tableContent = JSON.stringify(targetandActivityArray);
-
-        //     isChange = false;
-
-        //     var data = {
-        //         stage:'lessonplan_twowaytable',
-        //         type:'activity',
-        //         content:tableContent
-        //     }
-
-        //     var table1Results = saveAjax(data);
-
-        //     if(table1Results.msg == "ok"){
-        //         alert("儲存成功");
-        //         var tabledata = table1Results.tabledata;
-        //         var string = JSON.stringify(tabledata)
-        //         $("#twowayTableData").text(string);
-        //         showtwowayTableData();
-        //     }
-        //     else{
-        //         window.location = "/member/login";
-        //     }
-
-        //     break;
         case 'cirn_form1':
             var coreArray = [];
             var $card = $("#core_competency_body").find('.card');
@@ -904,14 +872,24 @@ function saveLearningTarget(){
         var activityData = targetResults.activityData;
 
         targetContent = targetData.split(',');
-        // $("#lessonplan_targetandActivity").empty();
-        // setLessonplanTargetandActivityTable();
+        $("#lessonplantargetTbody").empty();
+
+        for(var s=0;s<targetContent.length;s++){
+            var listnum = s+1;
+            var value = targetContent[s];
+
+            $("#lessonplantargetTbody").append('<tr>'+
+                                                    '<th scope="row">'+listnum+'</th>'+
+                                                    '<td><input type="text" class="form-control" name="lessonplantargercontent" placeholder="請輸入學習目標" value="'+value+'" data-updateaction="update" data-olddata="'+value+'"></td>'+
+                                                    '<td class="lasttd"><button class="btn btn-danger btnDelete"><i class="far fa-trash-alt"></i></button></td>'+
+                                                '</tr>');
+        }
+        deletetableTr('#lessonplantargetTbody');
         $("#lessonplanActivityProcessData").text(activityData);
         $(".activityTbody tr").remove();
         lessonplanActivityProcessData = $("#lessonplanActivityProcessData").text();
         lessonplanActivityProcessData = JSON.parse(lessonplanActivityProcessData);
         setActivityProcess();
-        
     }
     else{
         window.location = "/member/login";
@@ -921,6 +899,7 @@ function saveLearningTarget(){
 function saveActivityProcessData(divId){
     
     var lessonplan_activity_process_id = $("#"+divId).find(".lessonplan_activity_process_id").text();
+    var lessonplan_activity_name = $("#header"+divId).data("activityname");
 
     var activityContentString = localStorage.getItem(divId);
 
@@ -940,8 +919,24 @@ function saveActivityProcessData(divId){
             alert("儲存成功");
             var processData = processResults.selectData;
             showtrargetandAssessmentTableData(processData)
-            // $("#lessonplan_targetandAssessment").empty();
-            // setLessonplanTargetandAssessmentTable();
+
+            var newAssessmentArray = [];
+            targetandAssessmentArray.forEach(function(val){
+                //將不屬於此活動的評量對應資料先push進新array
+                if(val.lessonplan_activity_name !== lessonplan_activity_name){
+                    newAssessmentArray.push(val)
+                }
+            })
+            //取代舊有的評量對用array
+            targetandAssessmentArray = newAssessmentArray;
+
+            $("#"+divId+"Table Tbody").empty();
+            //在此function處理table呈現，以及該活動評量與學習目標對應資料
+            setOneCardActivityProcess(processData,lessonplan_activity_process_id,divId)
+            setActivityandTargetData(processData)
+            console.log(twowayTableData)
+            console.log(targetandAssessmentArray)
+
         }
         else{
             window.location = "/member/login";

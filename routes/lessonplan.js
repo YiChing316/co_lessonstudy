@@ -57,11 +57,6 @@ router.get('/edit/:community_id', function(req, res, next) {
         .then(function(activiynamedata){
             lessonplanActivityName = JSON.stringify(activiynamedata)
 
-            return lessonplan.selectLessonplanTwoWayTable(community_id)
-        })
-        .then(function(tableResults){
-            twowayTableData = JSON.stringify(tableResults);
-
             //檢查是否已有儲存過年級版本
             return lessonplan.checklessonplandata(community_id)
         })
@@ -89,8 +84,7 @@ router.get('/edit/:community_id', function(req, res, next) {
                                                 basicData:'""',
                                                 lessonplanActivityProcessData:lessonplanActivityProcessData,
                                                 lessonplanActivityName:lessonplanActivityName,
-                                                lessonplanStageData:lessonplanStageData,
-                                                twowayTableData:twowayTableData
+                                                lessonplanStageData:lessonplanStageData
                                             });
             }
             else{
@@ -168,8 +162,7 @@ router.get('/edit/:community_id', function(req, res, next) {
                                             basicData:basicData,//教案基本資料
                                             lessonplanActivityProcessData:lessonplanActivityProcessData,
                                             lessonplanActivityName:lessonplanActivityName,
-                                            lessonplanStageData:lessonplanStageData,
-                                            twowayTableData:twowayTableData
+                                            lessonplanStageData:lessonplanStageData
                                         });
         })
         .catch(function (err) {console.log(err);});
@@ -231,7 +224,7 @@ router.post('/edit/:community_id/save',function(req,res,next){
                     return lessonplan.saveLessonplanActivityProcess(lessonplan_activity_process_id,fileResults,member_id,member_name)
                 })
                 .then(function(data){
-                    console.log(data)
+                    // console.log(data)
                     return lessonplan.selectLessonplanActivityProcess(community_id)
                 })
                 .then(function(selectdata){
@@ -270,17 +263,6 @@ router.post('/edit/:community_id/save',function(req,res,next){
                 .then(function(data){
                     if(data){
                         return res.json({msg:'ok'})
-                    }
-                })
-                break;
-            case 'lessonplan_twowaytable':
-                lessonplan.saveTwoWayTable(community_id,lessonplanData,member_id,member_name)
-                .then(function(data){
-                    return lessonplan.selectLessonplanTwoWayTable(community_id)
-                })
-                .then(function(selectdata){
-                    if(selectdata){
-                        return res.json({msg:'ok',tabledata:selectdata})
                     }
                 })
                 break;

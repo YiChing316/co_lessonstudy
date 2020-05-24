@@ -175,6 +175,7 @@ function setActivityProcess(){
             }
         }
     }
+    console.log(twowayTableData)
 }
 
 //編輯活動內容時，重新呈現該table內容，用於儲存編輯活動內容時
@@ -193,6 +194,8 @@ function setOneCardActivityProcess(selectdata,baseid,parentid){
 
 //呈現每個table內資料，獨立出來讓不同function皆可使用
 function setLessonplanActivityContent(parentid,lessonplan_activity_name,lessonplan_activity_content){
+    var community_id = $("#community_id").text();
+
     if(lessonplan_activity_content !== ""){
         lessonplan_activity_content = JSON.parse(lessonplan_activity_content);
 
@@ -219,6 +222,7 @@ function setLessonplanActivityContent(parentid,lessonplan_activity_name,lessonpl
                 }
                 //要出現在assessmentDiv的
                 if(assessment_originalname !== ""){
+
                     $.ajax({
                         url: "/lessonplan/edit/"+community_id+"/checkfile",
                         type: "POST",
@@ -226,9 +230,11 @@ function setLessonplanActivityContent(parentid,lessonplan_activity_name,lessonpl
                         data:data,
                         success: function(data){
                             if(data.msg == "ok"){
+
                                 assessmentDiv(td_id,content,"","",filediv);
                             }
                             else if(data.msg == "notexist"){
+
                                 assessmentDiv(td_id,content,"","","");
                             }
                         },
@@ -284,9 +290,22 @@ $(function(){
     editActivityTr();
     deleteeditfile();
 
-    moveTrPosition();
+    // moveTrPosition();
     addCustomProcessTag();
     collapseControl();
+
+    $(".up,.down").click(function(){
+        var row = $(this).parents("tr:first");
+        
+        if ($(this).is(".up")) {
+            row.insertBefore(row.prev());
+        } else {
+            row.insertAfter(row.next());
+        }
+        var parentid = $(this).closest('.card-body').attr('id');
+        console.log(parentid)
+        saveLocalStorage(parentid);
+    });
     
 })
 
@@ -405,6 +424,7 @@ function addactivityTr(){
         $("#processtime").removeClass("editing");
         $("#processremark").removeClass("editing");
         $("#processcontent_sel_1").removeClass("editing");
+        $("#editprocesscontent_sel_1").removeClass("editing");
         $("#processcontent_sel_2").removeClass("editing");
         isChange = false;
 
@@ -605,30 +625,32 @@ function deleteassessment(){
         $(this).closest(".assessmentDiv").remove();
         var $div = $(this).closest(".assessmentDiv");
         var filename = $div.find(".assessment_filename").text();
-        var data = {
-            filename:filename,
-            filepath:'./public/communityfolder/community_'+community_id+'/communityfile/'
-        }
-        $.ajax({
-            url: "/lessonplan/edit/"+community_id+"/deletefile",
-            type: "POST",
-            async:false,
-            data:data,
-            success: function(data){
-                if(data.msg == "yes"){
-                    console.log("已刪除");
-                }
-                else if(data.msg == "notsave"){
-                    console.log("未儲存");
-                }
-                else if(data.msg == "no"){
-                    window.location = "/member/login";
-                }
-            },
-            error: function(){
-                alert('失敗');
+        if(filename !== ""){
+            var data = {
+                filename:filename,
+                filepath:'./public/communityfolder/community_'+community_id+'/communityfile/'
             }
-        })
+            $.ajax({
+                url: "/lessonplan/edit/"+community_id+"/deletefile",
+                type: "POST",
+                async:false,
+                data:data,
+                success: function(data){
+                    if(data.msg == "yes"){
+                        console.log("已刪除");
+                    }
+                    else if(data.msg == "notsave"){
+                        console.log("未儲存");
+                    }
+                    else if(data.msg == "no"){
+                        window.location = "/member/login";
+                    }
+                },
+                error: function(){
+                    alert('失敗');
+                }
+            })
+        }
         saveLocalStorage(parentid);
     });
 }
@@ -691,171 +713,173 @@ function saveLocalStorage(divId){
 /***學習目標與活動、評量對應表************************************************* */
 function openTwoWayTableModal(){
     $("#twowaytableModal").modal("show");
-    // setLessonplanTargetandActivityTable();
-    // setLessonplanTargetandAssessmentTable();
+    setLessonplanTargetandActivityTable();
+    setLessonplanTargetandAssessmentTable();
 }
 
 //顯示學習目標與活動對應表
-// function setLessonplanTargetandActivityTable(){
-//     //須要先有學習目標以及活動名稱才會出現
-//     if(targetContent == undefined || activityName == ""){
+function setLessonplanTargetandActivityTable(){
+    //須要先有學習目標以及活動名稱才會出現
+    if(targetContent == undefined || activityName == "" || twowayTableData.length == 0){
+        $("#lessonplan_targetandActivity").append('<p class="text-danger">尚未設定任何資料</p>')
+    }
+    else{
+        $("#lessonplan_targetandActivity").append('<table id="lessonplanTargetandActivityTable" class="table table-bordered">'+
+                                                    '<thead class="thead-light text-center">'+
+                                                        '<tr><th scope="col"></th></tr>'+
+                                                    '</thead>'+
+                                                    '<tbody></tbody>'+
+                                                '</table>');
 
-//     }
-//     else{
-//         $("#lessonplan_targetandActivity").append('<table id="lessonplanTargetandActivityTable" class="table table-bordered">'+
-//                                                     '<thead class="thead-light text-center">'+
-//                                                         '<tr><th scope="col"></th></tr>'+
-//                                                     '</thead>'+
-//                                                     '<tbody></tbody>'+
-//                                                 '</table>');
+        $.each(targetContent,function(i,val){
+            $("#lessonplanTargetandActivityTable").find("tbody").append('<tr data-targetname="'+targetContent[i]+'"><td>'+targetContent[i]+'</td></tr>')
+        })
+        $.each(activityName,function(i,val){
+            var name = activityName[i].lessonplan_activity_name;
+            $("#lessonplanTargetandActivityTable").find("thead tr").append('<th scope="col">'+name+'</th>');
+        })
 
-//         $.each(targetContent,function(i,val){
-//             $("#lessonplanTargetandActivityTable").find("tbody").append('<tr data-targetname="'+targetContent[i]+'"><td>'+targetContent[i]+'</td></tr>')
-//         })
-//         $.each(activityName,function(i,val){
-//             var name = activityName[i].lessonplan_activity_name;
-//             $("#lessonplanTargetandActivityTable").find("thead tr").append('<th scope="col">'+name+'</th>');
-//         })
-
-//         var tr_length = $("#lessonplanTargetandActivityTable").find("tbody tr").length;
-//         for(var s=0;s<tr_length;s++){
-//             var tr_index = $($("#lessonplanTargetandActivityTable").find("tbody tr")[s]).index();
-//             $.each(activityName,function(i,val){
-//                 var name = activityName[i].lessonplan_activity_name;
-//                 var checkid = name+tr_index;
-//                 $("#lessonplanTargetandActivityTable").find("tbody tr:eq("+tr_index+")").append(
-//                     '<td class="text-center" width="120">'+
-//                         '<div class="custom-control custom-checkbox">'+
-//                             '<input type="checkbox" class="custom-control-input" id="'+checkid+'" name="targetandactivity" value="'+name+'" disabled>'+
-//                             '<label class="custom-control-label" for="'+checkid+'"></label>'+
-//                         '</div>'+               
-//                     '</td>');
-//             })
-//         }
-//         showtwowayTableData();
-//     }
-// }
+        var tr_length = $("#lessonplanTargetandActivityTable").find("tbody tr").length;
+        for(var s=0;s<tr_length;s++){
+            var tr_index = $($("#lessonplanTargetandActivityTable").find("tbody tr")[s]).index();
+            $.each(activityName,function(i,val){
+                var name = activityName[i].lessonplan_activity_name;
+                var checkid = name+tr_index;
+                $("#lessonplanTargetandActivityTable").find("tbody tr:eq("+tr_index+")").append(
+                    '<td class="text-center" width="120">'+
+                        '<div class="custom-control custom-checkbox">'+
+                            '<input type="checkbox" class="custom-control-input" id="'+checkid+'" name="targetandactivity" value="'+name+'" disabled>'+
+                            '<label class="custom-control-label" for="'+checkid+'"></label>'+
+                        '</div>'+               
+                    '</td>');
+            })
+        }
+        showtwowayTableData();
+    }
+}
 
 //顯示學習目標與評量對應表，此程式需先跑過setactivity.js的setActivityProces的()，故放在於setactivity.js執行
-// function setLessonplanTargetandAssessmentTable(){
+function setLessonplanTargetandAssessmentTable(){
 
-//     if(targetContent == undefined || activityName == "" || targetandAssessmentArray.length == 0){
+    console.log(targetandAssessmentArray)
 
-//     }
-//     else{
-//         $("#lessonplan_targetandAssessment").append('<table id="lessonplanTargetanAssessmentTable" class="table table-bordered">'+
-//                                                         '<thead class="thead-light text-center">'+
-//                                                         '<tr>'+
-//                                                             '<th rowspan="2" colspan="1"></th>'+
-//                                                         '</tr>'+
-//                                                         '<tr></tr>'+
-//                                                         '</thead>'+
-//                                                         '<tbody> </tbody>'+
-//                                                     '</table>'
-//                                                     );
-//         //顯示學習目標
-//         $.each(targetContent,function(i,val){
-//             $("#lessonplanTargetanAssessmentTable").find("tbody").append('<tr data-targetname="'+targetContent[i]+'"><td>'+targetContent[i]+'</td></tr>')
+    if(targetContent == undefined || activityName == "" || targetandAssessmentArray.length == 0){
+        $("#lessonplan_targetandAssessment").append('<p class="text-danger">尚未設定任何資料</p>')
+    }
+    else{
+        $("#lessonplan_targetandAssessment").append('<table id="lessonplanTargetanAssessmentTable" class="table table-bordered">'+
+                                                        '<thead class="thead-light text-center">'+
+                                                        '<tr>'+
+                                                            '<th rowspan="2" colspan="1"></th>'+
+                                                        '</tr>'+
+                                                        '<tr></tr>'+
+                                                        '</thead>'+
+                                                        '<tbody> </tbody>'+
+                                                    '</table>'
+                                                    );
+        //顯示學習目標
+        $.each(targetContent,function(i,val){
+            $("#lessonplanTargetanAssessmentTable").find("tbody").append('<tr data-targetname="'+targetContent[i]+'"><td>'+targetContent[i]+'</td></tr>')
             
-//         })
+        })
 
-//         var activityCounts = {};
-//         //計算活動共有幾筆評量
-//         $.each(targetandAssessmentArray, function(i,val) {
-//             if (!activityCounts.hasOwnProperty(val.lessonplan_activity_name)) {
-//                 activityCounts[val.lessonplan_activity_name] = 1;
-//             } else {
-//                 activityCounts[val.lessonplan_activity_name]++;
-//             }
-//             //在第二層thead放入評量
-//             var assessment_content = val.assessment_content;
-//             $("#lessonplanTargetanAssessmentTable").find("thead tr:eq(1)").append('<th>'+assessment_content+'</th>')
-//         });
+        var activityCounts = {};
+        //計算活動共有幾筆評量
+        $.each(targetandAssessmentArray, function(i,val) {
+            if (!activityCounts.hasOwnProperty(val.lessonplan_activity_name)) {
+                activityCounts[val.lessonplan_activity_name] = 1;
+            } else {
+                activityCounts[val.lessonplan_activity_name]++;
+            }
+            //在第二層thead放入評量
+            var assessment_content = val.assessment_content;
+            $("#lessonplanTargetanAssessmentTable").find("thead tr:eq(1)").append('<th>'+assessment_content+'</th>')
+        });
 
-//         //每個活動只放一次，並依據活動有幾個評量設定colspan數量，在第一層thead
-//         Object.entries(activityCounts).map(function(data){
-//             var activityName = data[0]
-//             var activityNum = data[1]
-//             $("#lessonplanTargetanAssessmentTable").find("thead tr:eq(0)").append('<th rowspan="1" colspan="'+activityNum+'">'+activityName+'</th>')
-//         })
+        //每個活動只放一次，並依據活動有幾個評量設定colspan數量，在第一層thead
+        Object.entries(activityCounts).map(function(data){
+            var activityName = data[0]
+            var activityNum = data[1]
+            $("#lessonplanTargetanAssessmentTable").find("thead tr:eq(0)").append('<th rowspan="1" colspan="'+activityNum+'">'+activityName+'</th>')
+        })
 
-//         var tr_length = $("#lessonplanTargetanAssessmentTable").find("tbody tr").length;
+        var tr_length = $("#lessonplanTargetanAssessmentTable").find("tbody tr").length;
 
-//         //放置checkbox並直接呈現勾選狀況，為disabled
-//         for(var s=0;s<tr_length;s++){
+        //放置checkbox並直接呈現勾選狀況，為disabled
+        for(var s=0;s<tr_length;s++){
 
-//             var tr_index = $($("#lessonplanTargetanAssessmentTable").find("tbody tr")[s]).index();
-//             var targetname = $($("#lessonplanTargetanAssessmentTable").find("tbody tr")[s]).data('targetname')
+            var tr_index = $($("#lessonplanTargetanAssessmentTable").find("tbody tr")[s]).index();
+            var targetname = $($("#lessonplanTargetanAssessmentTable").find("tbody tr")[s]).data('targetname')
 
-//             targetandAssessmentArray.map(function(data){
-//                 var processtarget = data.processtarget;
-//                 var lessonplan_activity_name = data.lessonplan_activity_name;
-//                 var assessment_content = data.assessment_content;
-//                 var checkboxValue = lessonplan_activity_name+","+assessment_content;
-//                 var checkid = checkboxValue+tr_index;
-//                 $("#lessonplanTargetanAssessmentTable").find("tbody tr:eq("+tr_index+")").append(
-//                     '<td class="text-center" width="120">'+
-//                         '<div class="custom-control custom-checkbox">'+
-//                             '<input type="checkbox" class="custom-control-input" id="'+checkid+'" name="targetandassessment" value="'+checkboxValue+'" disabled>'+
-//                             '<label class="custom-control-label" for="'+checkid+'"></label>'+
-//                         '</div>'+               
-//                     '</td>');
-//                 var targetarray = processtarget.split(',');
+            targetandAssessmentArray.map(function(data){
+                var processtarget = data.processtarget;
+                var lessonplan_activity_name = data.lessonplan_activity_name;
+                var assessment_content = data.assessment_content;
+                var checkboxValue = lessonplan_activity_name+","+assessment_content;
+                var checkid = checkboxValue+tr_index;
+                $("#lessonplanTargetanAssessmentTable").find("tbody tr:eq("+tr_index+")").append(
+                    '<td class="text-center" width="120">'+
+                        '<div class="custom-control custom-checkbox">'+
+                            '<input type="checkbox" class="custom-control-input" id="'+checkid+'" name="targetandassessment" value="'+checkboxValue+'" disabled>'+
+                            '<label class="custom-control-label" for="'+checkid+'"></label>'+
+                        '</div>'+               
+                    '</td>');
+                var targetarray = processtarget.split(',');
 
-//                 targetarray.map(function(data){
-//                     if(data == targetname ){
-//                         $($("#lessonplanTargetanAssessmentTable").find("tbody tr")[s]).find("input[value='"+checkboxValue+"']").prop('checked', true);
-//                     }
-//                 })
-//             })
-//         }
-//     }
-// }
+                targetarray.map(function(data){
+                    if(data == targetname ){
+                        $($("#lessonplanTargetanAssessmentTable").find("tbody tr")[s]).find("input[value='"+checkboxValue+"']").prop('checked', true);
+                    }
+                })
+            })
+        }
+    }
+}
 
-//呈現學習目標與活動對應表內容
-// function showtwowayTableData(){
-//     twowayTableData = JSON.parse($("#twowayTableData").text());
+// 呈現學習目標與活動對應表內容
+function showtwowayTableData(){
+    // twowayTableData = JSON.parse($("#twowayTableData").text());
 
-//     if(twowayTableData.length !== 0){
-//         var results = JSON.parse(twowayTableData[0].lessonplan_twowaytable_content);
+    if(twowayTableData.length !== 0){
+        // var results = JSON.parse(twowayTableData[0].lessonplan_twowaytable_content);
 
-//         var tr_length = $("#lessonplanTargetandActivityTable").find("tbody tr").length;
+        var tr_length = $("#lessonplanTargetandActivityTable").find("tbody tr").length;
 
-//         for(var x=0;x<tr_length;x++){
-//             var data = $($("#lessonplanTargetandActivityTable").find("tbody tr")[x]).data('targetname')
-//             $.each(results,function(i,val){
-//               var target = results[i].targetName;
-//               var activity = results[i].activityName;
-//               if(target == data){
-//                 $($("#lessonplanTargetandActivityTable").find("tbody tr")[x]).find("input[value='"+activity+"']").prop('checked', true);
-//               }
-//             })
-//         }
-//     }  
-// }
+        for(var x=0;x<tr_length;x++){
+            var data = $($("#lessonplanTargetandActivityTable").find("tbody tr")[x]).data('targetname')
+            $.each(twowayTableData,function(i,val){
+              var target = twowayTableData[i].targetName;
+              var activity = twowayTableData[i].activityName;
+              if(target == data){
+                $($("#lessonplanTargetandActivityTable").find("tbody tr")[x]).find("input[value='"+activity+"']").prop('checked', true);
+              }
+            })
+        }
+    }  
+}
 
 //儲存活動流程後，重新更新學習目標與評量對應表
-// function showtrargetandAssessmentTableData(data){
-//     targetandAssessmentArray = [];
-//     for(var i=0; i<data.length;i++){
-//         var processData = data[i];
-//         var lessonplan_activity_name = processData.lessonplan_activity_name;
-//         var lessonplan_activity_content = processData.lessonplan_activity_content;
-//         if(lessonplan_activity_content.length !== 0){
-//             lessonplan_activity_content = JSON.parse(lessonplan_activity_content);
-//             for(var s=0;s<lessonplan_activity_content.length;s++){
-//                 var contentData = lessonplan_activity_content[s];
-//                 var processtarget = contentData.lessonplan_activity_learningtarget;
-//                 var assessmentArray = contentData.lessonplan_activity_assessment;
-//                 for(var r=0;r<assessmentArray.length;r++){
-//                     var assessmentData= assessmentArray[r];
-//                     var assessment_content = assessmentData.assessment_content;
-//                     targetandAssessmentArray.push({lessonplan_activity_name:lessonplan_activity_name,processtarget:processtarget,assessment_content:assessment_content})
-//                 }
-//             }
-//         }
-//     }
-// }
+function showtrargetandAssessmentTableData(data){
+    targetandAssessmentArray = [];
+    for(var i=0; i<data.length;i++){
+        var processData = data[i];
+        var lessonplan_activity_name = processData.lessonplan_activity_name;
+        var lessonplan_activity_content = processData.lessonplan_activity_content;
+        if(lessonplan_activity_content.length !== 0){
+            lessonplan_activity_content = JSON.parse(lessonplan_activity_content);
+            for(var s=0;s<lessonplan_activity_content.length;s++){
+                var contentData = lessonplan_activity_content[s];
+                var processtarget = contentData.lessonplan_activity_learningtarget;
+                var assessmentArray = contentData.lessonplan_activity_assessment;
+                for(var r=0;r<assessmentArray.length;r++){
+                    var assessmentData= assessmentArray[r];
+                    var assessment_content = assessmentData.assessment_content;
+                    targetandAssessmentArray.push({lessonplan_activity_name:lessonplan_activity_name,processtarget:processtarget,assessment_content:assessment_content})
+                }
+            }
+        }
+    }
+}
 
 /*****活動與評量的modal相關js******************************************************* */
 //打開新增活動、新增活動流程以及評量modal會發生的事情
@@ -930,6 +954,7 @@ function editActivityModalBtn(){
         $("#editprocesstarget").removeClass("editing");
         $("#editprocesstime").removeClass("editing");
         $("#editprocessremark").removeClass("editing");
+        $("#processcontent_sel_1").removeClass("editing");
         $("#editprocesscontent_sel_1").removeClass("editing");
         $("#editprocesscontent_sel_2").removeClass("editing");
         isChange = false;
@@ -1144,19 +1169,19 @@ function activityLearningTarget(modalid,title){
     // console.log(title)
     if(twowayTableData.length !== 0){
         console.log(twowayTableData)
+        $("#"+modalid).find(".targetCheckbox").empty();
         twowayTableData.map(function(data){
             var targetname = data.targetName;
             var activityname = data.activityName;
             if(title == activityname){
-                $("#"+modalid).find(".alertP").hide();
                 $("#"+modalid).find(".targetCheckbox").append('<div class="custom-control custom-checkbox mb-1">'+
                                                                         '<input type="checkbox" class="custom-control-input" id="'+targetname+'" name="processTarget" value="'+targetname+'">'+
                                                                         '<label class="custom-control-label" for="'+targetname+'">'+targetname+'</label>'+
                                                                     '</div>')
             }
-            else{
-                $("#"+modalid).find(".alertP").show();
-            }
+            // else{
+            //     $("#"+modalid).find(".targetCheckbox").html('<p class="alertP text-danger">尚未設定此活動所需的學習目標</p>');
+            // }
         })
     }
     else{
