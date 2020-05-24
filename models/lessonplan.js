@@ -69,9 +69,36 @@ module.exports = {
         })
     },
 
-    saveUnitandActivity: function(community_id,lessonplanData,member_id,member_name){
+    insertUnitandActivity: function(community_id,lessonplanData,member_id,member_name){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                var  sql = {
+                    community_id_community:community_id,
+                    lessonplan_unit_name:lessonplanData.lessonplan_unit_name,
+                    lessonplan_activity_name:lessonplanData.lessonplan_activity_name,
+                    lessonplan_activity_target:lessonplanData.tableContent,
+                    member_id_member:member_id,
+                    member_name:member_name
+                }
+
+                connection.query('INSERT INTO `lessonplan_activity_process` SET ?',sql,function(err,insertResults,fields){
+                    if(err) return reject(err);
+                    resolve(insertResults);
+                    connection.release();
+                })
+            })
+        })
+        .then(function(activitydata){
+            var process_id = activitydata.insertId;
+            return process_id
+        })
+    },
+
+    updateUnitandActivity: function(community_id,lessonplanData,member_id,member_name){
         var tableContent = lessonplanData.tableContent;
-        var baseid,process_id;
+        var baseid;
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
@@ -81,43 +108,57 @@ module.exports = {
                     community_id_community:community_id,
                     lessonplan_unit_name:lessonplanData.lessonplan_unit_name,
                     lessonplan_activity_name:lessonplanData.lessonplan_activity_name,
+                    lessonplan_activity_target:tableContent,
                     member_id_member:member_id,
                     member_name:member_name
                 }
 
-                if(baseid == ""){
-                    connection.query('INSERT INTO `lessonplan_activity_process` SET ?',sql,function(err,insertResults,fields){
-                        if(err) return reject(err);
-                        resolve(insertResults);
-                        connection.release();
-                    })
-                }
-                else{
-                    connection.query('UPDATE `lessonplan_activity_process` SET ? WHERE `lessonplan_activity_process_id` = ?',[sql,baseid],function(err,updateResults,fields){
-                        if(err) return reject(err);
-                        resolve(updateResults);
-                        connection.release();
-                    })
-                } 
+                connection.query('UPDATE `lessonplan_activity_process` SET ? WHERE `lessonplan_activity_process_id` = ?',[sql,baseid],function(err,updateResults,fields){
+                    if(err) return reject(err);
+                    resolve(updateResults);
+                    connection.release();
+                })
             })
         })
         .then(function(activitydata){
-            process_id = activitydata.insertId;
-            if(tableContent.length !== 0){
-                return module.exports.saveTwoWayTable(community_id,'activity',tableContent,member_id,member_name)
-            }
-            else{
-                if(process_id !== 0){
-                    return process_id
-                }
-                else{
-                    return baseid
-                }
-            }
+            return module.exports.selecThisActivity(baseid)
         })
-        .then(function(tabledata){
-            if(process_id !== 0){
-                return process_id
+        .then(function(selectData){
+            var processContent = selectData[0].	lessonplan_activity_content;
+            if( processContent !== ""){
+                var processArray = JSON.parse(processContent);
+                var tableArray = tableContent.split(',');
+                var updateArray = [];
+                //新的活動content
+                var newProcessArray = []
+                processArray.map(function(processdata){
+                    var learning_target = processdata.lessonplan_activity_learningtarget;
+                    var lessonplan_activity_content = processdata.lessonplan_activity_content;
+                    var lessonplan_activity_time = processdata.lessonplan_activity_time;
+                    var lessonplan_activity_assessment = processdata.lessonplan_activity_assessment;
+                    var lessonplan_activity_remark = processdata.lessonplan_activity_remark;
+
+                    var newtargetarray = [];
+                    var targetarray = learning_target.split(',');
+                    tableArray.map(function(newtarget){
+                        targetarray.map(function(targetname){
+                            if(targetname == newtarget){
+                                newtargetarray.push(targetname)
+                            }
+                        })
+                    })
+                    var newtargetstring = newtargetarray.toString();
+                    newProcessArray.push({lessonplan_activity_learningtarget:newtargetstring,
+                                            lessonplan_activity_content:lessonplan_activity_content,
+                                            lessonplan_activity_time:lessonplan_activity_time,
+                                            lessonplan_activity_assessment:lessonplan_activity_assessment,
+                                            lessonplan_activity_remark:lessonplan_activity_remark
+                                        })
+                })
+                var activityString = JSON.stringify(newProcessArray);
+                updateArray.push({id:baseid,lessonplan_activity_content:activityString})
+                var updateString = JSON.stringify(updateArray)
+                return module.exports.updateActivityProcessContent(updateString)
             }
             else{
                 return baseid
@@ -339,45 +380,59 @@ module.exports = {
                         var selectArray = JSON.parse(result);
                         var tableArray = JSON.parse(tableContent);
                         var newArray = [];
-                        var originalval;
 
-                        console.log("1")
                         console.log(tableArray)
-                        console.log("2")
                         console.log(selectArray)
 
-                        tableArray.forEach(function(val){
-                            var contentTarget = val.targetName;
-                            var contentActivity = val.activityName;
+                        newArray = selectArray.concat(tableArray);
+
+                        // allstudents = Object.values(tableArray.concat(selectArray).reduce((r,o) => {
+                        //     console.log(r)
+                        //     console.log(o)
+                        //     r[o.targetName] = o;
+                        //     return r;
+                        // },{}));
+                        // tableArray.forEach(function(val){
+                        //     var contentTarget = val.targetName;
+                        //     var contentActivity = val.activityName;
+                        //     // console.log("1")
+                        //     // console.log(val)
                             
-                            selectArray.forEach(function(selectval){
-                                originalval = selectval;
-                                var targetName = selectval.targetName;
-                                var activityName = selectval.activityName;
-                               
-                                if(activityName == contentActivity){
-                                    if(contentTarget !== targetName){
-                                        console.log("sameactivity")
-                                        newArray.push(val)
-                                    }
-                                }
-                                else{
-                                    if(contentTarget !== targetName){
-                                        console.log("diffactivity")
-                                        newArray.push(val)
-                                    }
-                                }
-                            }) 
-                        });
-                        newArray.push(originalval)
+                        //     selectArray.forEach(function(selectval){
+                        //         originalval = selectval;
+                        //         // console.log("2")
+                        //         // console.log(selectval)
+                        //         var targetName = selectval.targetName;
+                        //         var activityName = selectval.activityName;
+
+                        //         if(activityName == contentActivity){
+                        //             if(targetName !== contentTarget){
+                        //                 console.log("sameAdT")
+                        //                 console.log(val)
+                        //             }
+                        //             else{
+                        //                 console.log("sameAsameT")
+                        //                 console.log(selectval)
+                        //             }
+                        //         }
+                        //         else{
+                        //             console.log("dAdT")
+                        //             console.log(selectval)
+                        //         }
+
+                        //     }) 
+                        // });
+
                         console.log(newArray)
                         var newtableContent = JSON.stringify(newArray)
 
-                        connection.query('UPDATE `lessonplan_twowaytable` SET `lessonplan_twowaytable_content`=? WHERE `community_id_community`=? AND `lessonplan_twowaytable_type`=?',[newtableContent,community_id,table_type],function(err,updateResults,fields){
-                            if(err) return reject(err);
-                            resolve(updateResults);
-                            connection.release();
-                        })
+                        resolve(selectResults);
+
+                        // connection.query('UPDATE `lessonplan_twowaytable` SET `lessonplan_twowaytable_content`=? WHERE `community_id_community`=? AND `lessonplan_twowaytable_type`=?',[newtableContent,community_id,table_type],function(err,updateResults,fields){
+                        //     if(err) return reject(err);
+                        //     resolve(updateResults);
+                        //     connection.release();
+                        // })
                     }
                     else{
                         connection.query('INSERT INTO `lessonplan_twowaytable` SET ?',sql,function(err,insertResults,fields){
@@ -446,41 +501,41 @@ module.exports = {
             })
             
         })
-        .then(function(results){
-            return module.exports.selectLessonplanTwoWayTable(community_id)
-        })
-        .then(function(tableresult){
+        // .then(function(results){
+        //     return module.exports.selectLessonplanTwoWayTable(community_id)
+        // })
+        // .then(function(tableresult){
 
-            if(tableresult.length > 0){
-                var twowaytable_content = tableresult[0].lessonplan_twowaytable_content;
-                var content = JSON.parse(twowaytable_content)
+        //     if(tableresult.length > 0){
+        //         var twowaytable_content = tableresult[0].lessonplan_twowaytable_content;
+        //         var content = JSON.parse(twowaytable_content)
                 
-                var newarray = [];
+        //         var newarray = [];
 
-                //修改學習目標與活動對應表中有使用到的學習目標
-                content.map(function(contentdata){
-                    var targetName = contentdata.targetName;
-                    var activityName = contentdata.activityName;
+        //         //修改學習目標與活動對應表中有使用到的學習目標
+        //         content.map(function(contentdata){
+        //             var targetName = contentdata.targetName;
+        //             var activityName = contentdata.activityName;
 
-                    updateData.map(function(updatedata){
-                        var updateaction = updatedata.updateaction;
-                        var olddata = updatedata.olddata;
-                        var newdata = updatedata.newdata;
-                        //當儲存動作為更新的才會動作
-                        if(updateaction == "update"){
-                            //與舊資料匹配的進行更新
-                            if(targetName == olddata){
-                                targetName = newdata;
-                                newarray.push({targetName:targetName,activityName:activityName})
-                            }
-                        }
-                    })
-                })
-                updateResult = JSON.stringify(newarray);
-                return module.exports.updateTwoWayTableContent(community_id,updateResult,'activity');
-            }
+        //             updateData.map(function(updatedata){
+        //                 var updateaction = updatedata.updateaction;
+        //                 var olddata = updatedata.olddata;
+        //                 var newdata = updatedata.newdata;
+        //                 //當儲存動作為更新的才會動作
+        //                 if(updateaction == "update"){
+        //                     //與舊資料匹配的進行更新
+        //                     if(targetName == olddata){
+        //                         targetName = newdata;
+        //                         newarray.push({targetName:targetName,activityName:activityName})
+        //                     }
+        //                 }
+        //             })
+        //         })
+        //         updateResult = JSON.stringify(newarray);
+        //         return module.exports.updateTwoWayTableContent(community_id,updateResult,'activity');
+        //     }
             
-        })
+        // })
         .then(function(data){
             return module.exports.changeActivityProcessContent(community_id,updateData)
         })

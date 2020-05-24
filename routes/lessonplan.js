@@ -202,15 +202,27 @@ router.post('/edit/:community_id/save',function(req,res,next){
                 break;
             case 'creatActivityModal':
             case 'editActivityModal':
-                lessonplan.saveUnitandActivity(community_id,lessonplanData,member_id,member_name)
-                .then(function(data){
-                    return lessonplan.selectLessonplanTwoWayTable(community_id)
-                })
-                .then(function(tabledata){
-                    if(tabledata){
-                        return res.json({msg:'ok',tabledata:tabledata})
-                    }
-                })
+                var baseid = lessonplanData.baseid;
+
+                if(baseid == ""){
+                    lessonplan.insertUnitandActivity(community_id,lessonplanData,member_id,member_name)
+                    .then(function(data){
+                        if(data){
+                            return res.json({msg:'ok'})
+                        }
+                    })
+                }
+                else{
+                    lessonplan.updateUnitandActivity(community_id,lessonplanData,member_id,member_name)
+                   .then(function(data){
+                        return lessonplan.selectLessonplanActivityProcess(community_id)
+                    })
+                    .then(function(processdata){
+                        if(processdata){
+                            return res.json({msg:'ok',selectData:processdata})
+                        }
+                    })
+                }
                 break;
             case 'activiy_process':
                 var lessonplan_activity_process_id = lessonplanData.lessonplan_activity_process_id;
