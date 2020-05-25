@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <%- include('layout/bootstrap.ejs'); -%>
+        <script src="/javascripts/resource.js"></script>
+        <link href="/stylesheets/style.css" rel="stylesheet">
+        <title><%= title %></title>
+    </head>
+    <body>
+        <%- include('layout/navbar2.ejs'); -%>
+        <p id="personalData" style="display: none;"><%= personalData %></p>
+        <p id="communityData" style="display: none;"><%= communityData %></p>
+        <div style="margin-top: 56px; padding:1%">
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header bg-selfblue text-white"><i class="fas fa-user"></i> 個人資源</div>
+                        <div class="card-body" style="height: 80vh;">
+                            <table id="personalResourseTable"></table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header bg-selfblue text-white"><i class="fas fa-users"></i> 社群資源</div>
+                        <div class="card-body" style="height: 80vh;">
+                            <table id="communityResourseTable"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        $(".navbar").find("li .resource").toggleClass("active");
+        $(".navbar").find("li .resource").toggleClass("disabledNav");
+    </script>
+</html>
