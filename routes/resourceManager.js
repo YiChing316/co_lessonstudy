@@ -27,7 +27,7 @@ router.get('/:community_id', function(req, res, next) {
         })
         .then(function(communitydata){
             communityData = JSON.stringify(communitydata);
-            res.render('resource', { title: '資源管理',
+            res.render('resourceManager', { title: '資源管理',
                                     community_id:community_id,
                                     community_name:community_name,
                                     member_id:member_id,

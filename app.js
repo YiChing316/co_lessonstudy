@@ -8,7 +8,7 @@ var indexRouter = require('./routes/index');
 var memberRouter = require('./routes/member');
 var communityRouter = require('./routes/community');
 var lessonplanRouter = require('./routes/lessonplan');
-var resourceRouter = require('./routes/resource');
+var resourceRouter = require('./routes/resourceManager');
 
 var app = express();
 var server = require('http').Server(app);
@@ -78,7 +78,7 @@ app.use('/', indexRouter);
 app.use('/member', memberRouter);
 app.use('/community', communityRouter);
 app.use('/lessonplan', lessonplanRouter);
-app.use('/resource', resourceRouter);
+app.use('/resourceManager', resourceRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
