@@ -639,18 +639,7 @@ router.get('/idea/:community_id/openLessonplanNode',function(req,res,next){
         res.redirect('/member/login');
     }
     else{
-        node.selectNodeType(node_id)
-        .then(function(typeResults){
-            var node_type = typeResults[0].node_type;
-            switch(node_type){
-                case 'lessonplan':
-                    return node.selectLessonplanNode(community_id,node_type)
-                case 'twowaytable':
-                    return node.selectTwoWayTableNode(community_id,node_type)
-                default:
-                    return node.selectLessonplanStageNode(community_id,node_type)
-            }
-        })
+        node.selectThisNode(community_id,node_id)
         .then(function(selectResults){
             return res.json({msg:'ok',selectResults:selectResults})
         })

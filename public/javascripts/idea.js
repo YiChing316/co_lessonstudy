@@ -257,6 +257,8 @@ $(function(){
     openIdeaModal();
     setcontextMenu();
 
+    replyIdea();
+
     // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function() {
         var files = [];
@@ -394,8 +396,35 @@ function openLessonplanNode(community_id,data){
     var results = ajaxGetData("/lessonplan/idea/"+community_id+"/openLessonplanNode",data);
     if(results.msg == "ok"){
         var selectData = results.selectResults[0];
+        var node_title = selectData.node_title;
+        var bodyContent;
         $("#lessonplanNodeModal").modal("show");
-        showLessonplanContent(selectData);
+        $("#lessonplanNodeModalLabel").html(node_title);
+        $("#lessonplanNodeModal").find(".readNodeid").text(selectData.id);
+        switch (node_title){
+            case '教案基本資料':
+                bodyContent = '<p>此部分包含了</p>'+
+                                '<p><i class="fas fa-dot-circle"></i> 此教案所針對的課程領域、使用版本、學習階段等</p>'+
+                                '<p><i class="fas fa-dot-circle"></i> 課綱提供的對應核心素養、學習重點</p>'+
+                                '<p><i class="fas fa-dot-circle"></i> 此教案會需要的教學資源及器材</p>';
+                break;
+            case '學生先備概念':
+                bodyContent = '<p>請想想</p>'+
+                                '<p><i class="fas fa-dot-circle"></i> 為了達成課程目標，你的學生需要什麼樣的學習經驗？</p>'+
+                                '<p><i class="fas fa-dot-circle"></i> 上述的學習體驗需要藉由什麼樣的活動來達成？教師做什麼？學生做什麼？</p>';
+                break;
+            case '教學設計理念':
+                bodyContent = '<p>請想想</p>'+
+                                '<p><i class="fas fa-dot-circle"></i> 此教案所使用的教學策略以及要提供給學生什麼樣的教學活動</p>';
+                break;
+            case '課程學習目標':
+                bodyContent = '<p>請想想</p>'+
+                                '<p><i class="fas fa-dot-circle"></i> 你的學生原來狀態（能力、知識、態度等）為何？</p>'+
+                                '<p><i class="fas fa-dot-circle"></i> 透過這堂課，學生能夠有哪些的成長？</p>';
+                break;
+        }
+        $("#nodeTip").html(bodyContent);
+        // showLessonplanContent(selectData);
     }
     else{
         window.location = "/member/login";
@@ -444,7 +473,7 @@ function ideaModalCloseBtn(modalid){
             $("#readIdeaModal").find(".inputTags-list").remove();
             break;
         case "lessonplanNodeModal":
-            $("#lessonplanNodeTag").empty();
+            $("#nodeTip").empty();
             break;
     } 
 }
@@ -462,7 +491,7 @@ function showReadIdeaContent(ideaData){
 
     changeIdeaTab(node_title);
 
-    $("#readIdeaModal").find("#readIdeaNodeid").text(node_id);
+    $("#readIdeaModal").find(".readNodeid").text(node_id);
 
     //閱讀頁籤
     $("#readIdeaTag").html('<h4 id="readIdeaTagContent"></h4>')
@@ -517,36 +546,48 @@ function changeIdeaTab(title){
     })
 }
 
-//閱讀想法內回覆按鈕
-function replyIdea(btnAction){
-    var replyNodeId = $("#readIdeaNodeid").text();
-    $("#readIdeaModal").modal("hide");
-    ideaModalCloseBtn("readIdeaModal");
-    $("#createIdeaModel").modal("show");
-    $("#replyNodeId").text(replyNodeId)
+//閱讀節點內回覆按鈕
+function replyIdea(){
+    $(".replyideabtn").click(function(){
+        var modalid = $(this).parents(".modal").attr("id");
+        var replyNodeId = $("#"+modalid).find(".readNodeid").text();
+        var btnAction = $(this).data("type");
 
-    if(btnAction == "rise_above"){
-        $("#createIdeaModelTitle").attr("data-nodetype",'rise_above');
-        $("#createIdeaModelTitle").html('提出昇華的想法');
-    }
+        $("#"+modalid).modal("hide");
+        ideaModalCloseBtn(modalid);
+        $("#createIdeaModel").modal("show");
+        $("#replyNodeId").text(replyNodeId)
+
+        if(btnAction == "rise_above"){
+            $("#createIdeaModelTitle").attr("data-nodetype",'rise_above');
+            $("#createIdeaModelTitle").html('提出昇華的想法');
+        }
+        else{
+            $("#createIdeaModelTitle").attr("data-nodetype",'idea');
+            $("#createIdeaModelTitle").html('新增想法');
+        }
+        // console.log(modalid)
+        // console.log($(this).data("type"))
+        // console.log($("#"+modalid).find(".readNodeid").text())
+    })
 }
 
 
 /**實作節點modal **************************************************/
-function showLessonplanContent(selectData){
-    console.log(selectData);
+// function showLessonplanContent(selectData){
+//     console.log(selectData);
     
-    var node_title = selectData.node_title;
-    var node_tag = selectData.node_tag.split(',');
+//     var node_title = selectData.node_title;
+//     var node_tag = selectData.node_tag.split(',');
     
-    $("#lessonplanNodeModalLabel").html(node_title);
-    $("#lessonplanNodeTag").html('<h4 id="lessonplanNodeTagContent"></h4>')
+//     $("#lessonplanNodeModalLabel").html(node_title);
+//     $("#lessonplanNodeTag").html('<h4 id="lessonplanNodeTagContent"></h4>')
 
-    node_tag.map(function(data){
-        $("#lessonplanNodeTagContent").append('<span class="badge badge-info mr-2">'+data+'</span>');
-    })
+//     node_tag.map(function(data){
+//         $("#lessonplanNodeTagContent").append('<span class="badge badge-info mr-2">'+data+'</span>');
+//     })
     
-}
+// }
 
 
 
@@ -660,7 +701,7 @@ function ideatagClass(tag){
     
     $('input[name="tagInputText"]').inputTags({
         autocomplete: {
-            values: ['教案基本資料', '課程學習目標', '學生先備概念', '核心素養', '學習重點','議題融入','教學資源及器材','教學設計理念','活動與評量設計'],
+            values: ['教案基本資料', '課程學習目標', '學生先備概念','教學設計理念','活動與評量設計'],
             only: true
         },
         tags:tag,

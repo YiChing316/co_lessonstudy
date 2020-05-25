@@ -442,7 +442,7 @@
         <!--閱讀想法內容-->
         <div class="tab-pane show active" id="readmodal" role="tabpanel" aria-labelledby="read-tab">
           <div class="modal-body">
-            <p id="readIdeaNodeid" style="display: none;"></p>
+            <p class="readNodeid" style="display: none;"></p>
             <div class="text-right"><i class="fas fa-eye readCountDiv"></i></div>
             <div id="readIdeaTag"></div>
             <div id="readIdeaContent" class="mt-3"></div>
@@ -455,8 +455,8 @@
                 回覆
               </button>
               <div class="dropdown-menu" aria-labelledby="replyMenuButton">
-                <a class="dropdown-item" href="javascript:void(0)" onclick="replyIdea('idea')">回覆想法</a>
-                <a class="dropdown-item" href="javascript:void(0)" onclick="replyIdea('rise_above')">提出昇華的想法</a>
+                <a class="dropdown-item replyideabtn" data-type="idea" href="javascript:void(0)">回覆想法</a>
+                <a class="dropdown-item replyideabtn" data-type="rise_above" href="javascript:void(0)">提出昇華的想法</a>
               </div>
             </div>
           </div>
@@ -587,10 +587,19 @@
         </button>
       </div>
       <div class="modal-body">
-        <div id="lessonplanNodeTag"></div>
+        <p class="readNodeid" style="display: none;"></p>
+        <div id="nodeTip"></div>
       </div>
       <div class="modal-footer">
-        <input type="button" value="確定" class="btn btn-primary">
+        <div class="dropdown">
+          <button class="btn btn btn-primary dropdown-toggle" type="button" id="replyMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            回覆
+          </button>
+          <div class="dropdown-menu" aria-labelledby="replyMenuButton">
+            <a class="dropdown-item replyideabtn" data-type="idea" href="javascript:void(0)">回覆想法</a>
+            <a class="dropdown-item replyideabtn" data-type="rise_above" href="javascript:void(0)">提出昇華的想法</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
