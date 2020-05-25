@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var community = require('../models/community');
+var node = require('../models/node');
 
 router.get('/', function(req, res, next) {
   var member_id = req.session.member_id;
@@ -45,6 +46,17 @@ router.post('/create', function(req, res,next) {
       community.create(community_name,community_key,community_intro,member_id,member_name)
       .then(function(results){
         if(results){
+          //新增社群時，先建立四個階段的引導Node
+          var lessonplan_node = [
+            {community_id:results,node_title:'教案基本資料',node_type:'lessonplan'},
+            {community_id:results,node_title:'學生先備概念',node_type:'lessonplan'},
+            {community_id:results,node_title:'教學設計理念',node_type:'lessonplan'},
+            {community_id:results,node_title:'課程學習目標',node_type:'lessonplan'}
+          ]
+
+          lessonplan_node.forEach(function(val){
+            return node.createNewNode(val.community_id,val.node_title,'',val.node_type,0,member_id,member_name)
+          })
           res.json({msg:'yes',community_id:results});
         }
       })
