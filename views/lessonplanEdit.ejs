@@ -27,6 +27,9 @@
             window.location.href = "/lessonplan/"+id+"/<%= community_id %>";
             $(this).toggleClass("active");
         })
+        console.log($(".navbar").find("li .lessonplan"))
+        $(".navbar").find("li .lessonplan").toggleClass("active");
+        $(".navbar").find("li .lessonplan").toggleClass("disabledNav");
     </script>
   </body>
 </html>

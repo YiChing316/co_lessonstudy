@@ -75,6 +75,10 @@ textarea{
     resize: none;
 }
 
+.disabledNav{
+    pointer-events: none;
+}
+
 /*******社群入口*******/
 /*community 頁面的table上標題*/
 .title-bar{
@@ -323,7 +327,11 @@ MEDIAQUERIES
 
 #ideanetwork{
     width: 100%;
-    height: 100vh; 
+    height: 100vh;
+}
+
+#ideanetwork .vis-network{
+    outline: none;
 }
 
 /*想法畫面toolbar*/
