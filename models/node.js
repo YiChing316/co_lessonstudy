@@ -83,7 +83,7 @@ module.exports = {
         })
     },
 
-    saveIdeaFile: function(community_id,fileData,node_id){
+    saveIdeaFile: function(community_id,fileData,node_id,member_id,member_name){
         if(fileData.length >0){
             console.log("檔案數量:"+fileData.length)
             return Promise.all(
@@ -117,7 +117,9 @@ module.exports = {
                                 community_id_community:community_id,
                                 node_id_node:node_id,
                                 community_file_name:originalname,
-                                community_file_type:filetype
+                                community_file_type:filetype,
+                                member_id_member:member_id,
+                                member_name:member_name
                             }
             
                             connection.query('INSERT INTO `community_file` SET ?',sql,function(err,insertResults,fields){

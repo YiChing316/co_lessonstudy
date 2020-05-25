@@ -166,7 +166,7 @@ module.exports = {
         })
     },
 
-    saveActivityFile: function(community_id,lessonplanData){
+    saveActivityFile: function(community_id,lessonplanData,member_id,member_name){
         var lessonplan_activity_content = lessonplanData.lessonplan_activity_content;
         var fileData = [];
         var fileResults;
@@ -213,7 +213,7 @@ module.exports = {
         })
         .then(function(results){
             fileResults = results;
-            return module.exports.saveFileData(community_id,fileData)
+            return module.exports.saveFileData(community_id,fileData,member_id,member_name)
         })
         .then(function(results2){
             return fileResults
@@ -221,7 +221,7 @@ module.exports = {
     },
 
     //將檔案資料存入資料庫
-    saveFileData: function(community_id,fileData){
+    saveFileData: function(community_id,fileData,member_id,member_name){
         if(fileData.length >0){
             return Promise.all(
                 fileData.map(function(data){
@@ -247,7 +247,9 @@ module.exports = {
                                 var sql = {
                                     community_id_community:community_id,
                                     community_file_name:originalname,
-                                    community_file_type:filetype
+                                    community_file_type:filetype,
+                                    member_id_member:member_id,
+                                    member_name:member_name
                                 }
 
                                 connection.query('SELECT * FROM `community_file` WHERE `community_id_community` = ? AND `community_file_name` = ?',[community_id,originalname],function(err,selectResults,fields){

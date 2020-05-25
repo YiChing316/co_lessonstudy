@@ -219,7 +219,7 @@ router.post('/edit/:community_id/save',function(req,res,next){
                 break;
             case 'activiy_process':
                 var lessonplan_activity_process_id = lessonplanData.lessonplan_activity_process_id;
-                lessonplan.saveActivityFile(community_id,lessonplanData)
+                lessonplan.saveActivityFile(community_id,lessonplanData,member_id,member_name)
                 .then(function(fileResults){
                     return lessonplan.saveLessonplanActivityProcess(lessonplan_activity_process_id,fileResults,member_id,member_name)
                 })
@@ -551,7 +551,7 @@ router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function
                     return node.ideaNode(node_id,idea_content)
                 })
                 .then(function(ideaResults){
-                    return node.saveIdeaFile(community_id,fileData,node_id)
+                    return node.saveIdeaFile(community_id,fileData,node_id,member_id,member_name)
                 })
                 .then(function(fileResults){
                     return node.saveEdge(community_id,replyNodeId,node_id)
@@ -609,7 +609,7 @@ router.post('/idea/:community_id/updateIdea',upload.array('ideafile',5),function
                     return node.ideaNode(node_id,idea_content)
                 })
                 .then(function(ideaResults){
-                    return node.saveIdeaFile(community_id,fileData,node_id)
+                    return node.saveIdeaFile(community_id,fileData,node_id,member_id,member_name)
                 })
                 .then(function(fileResults){
                     return node.selectThisNode(community_id,node_id)
