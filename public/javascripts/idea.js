@@ -108,6 +108,7 @@ function drawNodeNetwork(node) {
                 node_tag:val.node_tag,
                 x:val.x,
                 y:val.y,
+                node_file_count:val.node_file_count,
                 node_revised_count:val.node_revised_count,
                 node_read_count:val.node_read_count,
                 node_createtime:val.node_createtime
@@ -291,6 +292,7 @@ $(function(){
             var member_name = data.member_name;
             var node_createtime = data.node_createtime;
             var node_tag = data.node_tag;
+            var node_file_count = data.node_file_count;
 
             if(node_tag.length > 0){
                 node_tag = "["+node_tag+"]";
@@ -306,11 +308,21 @@ $(function(){
             ctx.fillRect(nodePosition[nodeid].x+30, nodePosition[nodeid].y-26,width,"16");
             ctx.fillStyle = 'black';
             ctx.fillText(titleContent, nodePosition[nodeid].x+30, nodePosition[nodeid].y-10);
-            ctx.font = "12px 微軟正黑體";
             ctx.fillStyle = 'gray';
-            ctx.fillText(member_name, nodePosition[nodeid].x+30, nodePosition[nodeid].y+10);
-            ctx.font = "12px 微軟正黑體";
-            ctx.fillText(node_createtime, nodePosition[nodeid].x+30, nodePosition[nodeid].y+30);
+            if(node_file_count > 0){
+                ctx.font='900 12px "Font Awesome 5 Free"';
+                ctx.fillText('\uf0c6', nodePosition[nodeid].x+30, nodePosition[nodeid].y+10);
+                ctx.font = "12px 微軟正黑體";
+                ctx.fillText(member_name, nodePosition[nodeid].x+45, nodePosition[nodeid].y+10);
+                ctx.font = "12px 微軟正黑體";
+                ctx.fillText(node_createtime, nodePosition[nodeid].x+45, nodePosition[nodeid].y+30);
+            }
+            else{
+                ctx.font = "12px 微軟正黑體";
+                ctx.fillText(member_name, nodePosition[nodeid].x+30, nodePosition[nodeid].y+10);
+                ctx.font = "12px 微軟正黑體";
+                ctx.fillText(node_createtime, nodePosition[nodeid].x+30, nodePosition[nodeid].y+30);
+            }
         });
     })
 
@@ -552,12 +564,14 @@ function ideaScaffold_Add(){
 function deleteIdeaFile(){
     var community_id = $("#community_id").text();
     $(".deleteIdeaFile").on('click',function(){
+        var node_id = $("#readIdeaNodeid").text();
         var file_id = $(this).data("fileid");
         var filename = $(this).data("filename");
 
         var data = {
             file_id:file_id,
-            filepath:'./public/communityfolder/community_'+community_id+'/communityfile/'+filename
+            filepath:'./public/communityfolder/community_'+community_id+'/communityfile/'+filename,
+            node_id:node_id
         }
 
         $(this).parent().remove()
@@ -570,6 +584,8 @@ function deleteIdeaFile(){
             success: function(data){
                 if(data.msg == "yes"){
                     console.log("已刪除");
+                    var updateNodeData = data.results;
+                    socket.emit('delete file',{community_id:community_id,updateNodeData:updateNodeData})
                 }
                 else if(data.msg == "no"){
                     window.location = "/member/login";
@@ -716,6 +732,8 @@ function saveNode(modalId){
                 formData.append("replyNodeId",replyNodeId);
                 formData.append("idea_content",idea_content);
                 formData.append("node_tag",node_tag);
+                formData.append("node_file_count",file_length);
+
                 for(var i=0;i<file_length;i++){
                     formData.append("ideafile",fileData[i])
                 }
@@ -748,7 +766,10 @@ function saveNode(modalId){
             var revise_idea_content = $("#reviseIdeaContent").summernote('code');
             var revise_tagcontent = $("#reviseIdeaTag").val();
             var revise_fileData = $("#reviseIdeaFile").prop("files");
+            var fileDiv_length = $(".reviseIdeaFileDiv").length;
+
             var revise_file_length = revise_fileData.length;
+            var node_file_count = fileDiv_length+revise_file_length;
 
             if( revise_node_title == ""){
                 alert("想法標題不可空白!!")
@@ -760,6 +781,7 @@ function saveNode(modalId){
                 reviseformData.append("node_title",revise_node_title);
                 reviseformData.append("idea_content",revise_idea_content);
                 reviseformData.append("node_tag",revise_tagcontent);
+                reviseformData.append("node_file_count",node_file_count);
                 for(var s=0;s<revise_file_length;s++){
                     reviseformData.append("ideafile",revise_fileData[s])
                 }

@@ -2,7 +2,7 @@ var pool = require('./connectMysql');
 var fs = require('fs');
 
 module.exports = {
-    createNewNode: function(community_id,node_title,node_tag,node_type,member_id,member_name){
+    createNewNode: function(community_id,node_title,node_tag,node_type,node_file_count,member_id,member_name){
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
@@ -13,7 +13,8 @@ module.exports = {
                     member_name:member_name,
                     node_title:node_title,
                     node_tag:node_tag,
-                    node_type:node_type
+                    node_type:node_type,
+                    node_file_count:node_file_count
                 }
 
                 connection.query('INSERT INTO `node` SET ?',sql,function(err,insertResults,fields){
@@ -25,7 +26,7 @@ module.exports = {
         })
     },
 
-    updataNode: function(node_id,node_title,node_tag,revise_count){
+    updataNode: function(node_id,node_title,node_tag,node_file_count,revise_count){
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
@@ -33,6 +34,7 @@ module.exports = {
                 var sql = {
                     node_title:node_title,
                     node_tag:node_tag,
+                    node_file_count:node_file_count,
                     node_revised_count:revise_count
                 }
 
@@ -168,7 +170,7 @@ module.exports = {
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
-                connection.query('SELECT `node_id` AS "id",`member_id_member`, `member_name`, `node_title`, `node_tag`, `node_type` AS "group", `node_x` AS "x", `node_y` AS "y", `node_revised_count`, `node_read_count`, DATE_FORMAT(`node_createtime`,"%Y/%m/%d %H:%i") AS "node_createtime" FROM `node` WHERE `community_id_community`=? AND `node_id`=?',[community_id,node_id],function(err,rows,fields){
+                connection.query('SELECT `node_id` AS "id",`member_id_member`, `member_name`, `node_title`, `node_tag`, `node_type` AS "group", `node_x` AS "x", `node_y` AS "y", `node_revised_count`, `node_read_count`, DATE_FORMAT(`node_createtime`,"%Y/%m/%d %H:%i") AS "node_createtime", `node_file_count` FROM `node` WHERE `community_id_community`=? AND `node_id`=?',[community_id,node_id],function(err,rows,fields){
                     if(err) return reject(err);
                     resolve(rows);
                     connection.release();
@@ -194,7 +196,7 @@ module.exports = {
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
-                connection.query('SELECT `node_id` AS "id",`member_id_member`, `member_name`, `node_title`, `node_tag`, `node_type` AS "group", `node_x` AS "x", `node_y` AS "y", `node_revised_count`, `node_read_count`, DATE_FORMAT(`node_createtime`,"%Y/%m/%d %H:%i") AS "node_createtime" FROM `node` WHERE `community_id_community`=?',community_id,function(err,rows,fields){
+                connection.query('SELECT `node_id` AS "id",`member_id_member`, `member_name`, `node_title`, `node_tag`, `node_type` AS "group", `node_x` AS "x", `node_y` AS "y", `node_revised_count`, `node_read_count`, DATE_FORMAT(`node_createtime`,"%Y/%m/%d %H:%i") AS "node_createtime", `node_file_count` FROM `node` WHERE `community_id_community`=?',community_id,function(err,rows,fields){
                     if(err) return reject(err);
                     resolve(rows);
                     connection.release();
@@ -332,6 +334,23 @@ module.exports = {
                     connection.release();
                 })
             })
+        })
+    },
+
+    updatFileCount: function(node_id,file_count,community_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                connection.query('UPDATE `node` SET `node_file_count`=? WHERE `node_id`=?',[file_count,node_id],function(err,updateResults,fields){
+                    if(err) return reject(err);
+                    resolve(updateResults);
+                    connection.release();
+                })
+            })
+        })
+        .then(function(data){
+            return module.exports.selectThisNode(community_id,node_id)
         })
     },
 

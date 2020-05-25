@@ -534,6 +534,7 @@ router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function
         var node_title = nodeData.node_title;
         var replyNodeId = nodeData.replyNodeId;
         var node_tag = nodeData.node_tag;
+        var node_file_count = nodeData.node_file_count;
         var idea_content = nodeData.idea_content;
         var nodeResults;
         var insertnodeData,insertedgeData;
@@ -543,7 +544,7 @@ router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function
         .then(function(checkResults){
             //沒有的話做儲存
             if(checkResults == "notexist" || checkResults.length == 0){
-                node.createNewNode(community_id,node_title,node_tag,node_type,member_id,member_name)
+                node.createNewNode(community_id,node_title,node_tag,node_type,node_file_count,member_id,member_name)
                 .then(function(data){
                     nodeResults = data;
                     node_id = nodeResults.insertId;
@@ -594,6 +595,7 @@ router.post('/idea/:community_id/updateIdea',upload.array('ideafile',5),function
         var node_title = nodeData.node_title;
         var node_tag = nodeData.node_tag;
         var idea_content = nodeData.idea_content;
+        var node_file_count = nodeData.node_file_count;
         var revise_count = nodeData.revise_count + 1;
         var nodeResults;
 
@@ -602,7 +604,7 @@ router.post('/idea/:community_id/updateIdea',upload.array('ideafile',5),function
         .then(function(checkResults){
             //沒有的話做儲存
             if(checkResults == "notexist" || checkResults.length == 0){
-                node.updataNode(node_id,node_title,node_tag,revise_count)
+                node.updataNode(node_id,node_title,node_tag,node_file_count,revise_count)
                 .then(function(updateResults){
                     return node.ideaNode(node_id,idea_content)
                 })
@@ -667,14 +669,26 @@ router.post('/idea/:community_id/deletefile',function(req,res){
     else{
         var file_id = req.body.file_id;
         var filepath = req.body.filepath;
+        var node_id = req.body.node_id;
 
         node.deleteIdeaFile(file_id)
         .then(function(results){
             fs.unlink(filepath,function(err){
                 if(err) return console.log(err);
                 console.log('file deleted successfully');
-                res.json({msg:"yes"})
+                // res.json({msg:"yes"})
            });
+           return node.selectThisNode(community_id,node_id)
+        })
+        .then(function(nodedata){
+            var node_file_count = nodedata[0].node_file_count;
+            if(node_file_count !== 0){
+                node_file_count = node_file_count -1;
+                return node.updatFileCount(node_id,node_file_count,community_id)
+            }
+        })
+        .then(function(selectdata){
+            res.json({msg:"yes",results:selectdata})
         })
     }
 })
