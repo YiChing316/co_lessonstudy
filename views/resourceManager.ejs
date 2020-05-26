@@ -8,6 +8,8 @@
     </head>
     <body>
         <%- include('layout/navbar2.ejs'); -%>
+        <p id="member_id" style="display: none;"><%= member_id %></p>
+        <p id="community_id" style="display: none;"><%= community_id %></p>
         <p id="personalData" style="display: none;"><%= personalData %></p>
         <p id="communityData" style="display: none;"><%= communityData %></p>
         <div style="margin-top: 56px; padding:1%">
@@ -16,6 +18,8 @@
                     <div class="card">
                         <div class="card-header bg-selfblue text-white"><i class="fas fa-user"></i> 個人資源</div>
                         <div class="card-body" style="height: 80vh;">
+                            <input type="button" class="btn uploadFileBtn" data-character="personal" value="上傳個人檔案">
+                            <input type="button" class="btn uploadLinkBtn" data-character="personal" value="上傳個人連結">
                             <table id="personalResourseTable"></table>
                         </div>
                     </div>
@@ -24,10 +28,109 @@
                     <div class="card">
                         <div class="card-header bg-selfblue text-white"><i class="fas fa-users"></i> 社群資源</div>
                         <div class="card-body" style="height: 80vh;">
+                            <input type="button" class="btn uploadFileBtn" data-character="community" value="上傳社群檔案">
+                            <input type="button" class="btn uploadLinkBtn" data-character="community" value="上傳社群連結">
                             <table id="communityResourseTable"></table>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!--檢視檔案-->
+        <div class="modal" id="viewFileModal" tabindex="-1" role="dialog" aria-labelledby="viewFileModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="viewFileModalLabel"></h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body"></div>
+              </div>
+            </div>
+        </div>
+
+        <!--上傳檔案-->
+        <div class="modal" id="uploadFileModal" tabindex="-1" role="dialog" aria-labelledby="uploadFileModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header bg-selfblue text-white">
+                  <h5 class="modal-title" id="uploadFileModalLabel"></h5>
+                  <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <p class="characterDiv"></p>
+                    <div class="custom-file mt-2">
+                        <input type="file" class="custom-file-input" id="resourceFile" multiple>
+                        <label class="custom-file-label" for="resourceFile">選擇檔案</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-primary uploadBtn" data-uploadtype="file" value="上傳">
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <!--上傳連結-->
+        <div class="modal" id="uploadLinkModal" tabindex="-1" role="dialog" aria-labelledby="uploadLinkModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header bg-selfblue text-white">
+                  <h5 class="modal-title" id="uploadLinkModalLabel"></h5>
+                  <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <p class="characterDiv"></p>
+                    <div class="form-group">
+                        <label for="resourceLinkName">網站名稱</label>
+                        <input type="text" class="form-control" id="resourceLinkName">
+                    </div>
+                    <div class="form-group">
+                        <label for="resourceLink">網址</label>
+                        <input type="text" class="form-control" id="resourceLink">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-primary uploadBtn" data-uploadtype="link" value="上傳">
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <!--刪除檔案提醒-->
+        <div class="modal" id="deleteWarningModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                    <div class="alertBody"></div>
+                    <div class="float-right">
+                        <input type="button" class="btn btn-secondary" data-dismiss="modal" value="取消">
+                        <input type="button" class="btn btn-danger deleteFile" data-dismiss="modal" value="確定刪除">
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <!--分享檔案提醒-->
+        <div class="modal" id="shareWarningModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                    <div class="alertBody"></div>
+                    <div class="float-right">
+                        <input type="button" class="btn btn-secondary" data-dismiss="modal" value="取消">
+                        <input type="button" class="btn btn-danger shareFile" data-dismiss="modal" value="確定分享">
+                    </div>
+                </div>
+              </div>
             </div>
         </div>
     </body>

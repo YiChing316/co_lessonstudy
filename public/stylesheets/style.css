@@ -5,11 +5,11 @@ body{font-family: '微軟正黑體';}
 
 /*基礎顏色設定*/
 .bg-selfgreen{
-        background-color: #71C1B4;
+    background-color: #71C1B4;
 }
 
 .bg-selfblue{
-background-color: #065B80;
+    background-color: #065B80;
 }
 
 .bg-selfpink{
@@ -30,6 +30,10 @@ background-color: #065B80;
 }
 .bg-6{
     background-color: #F2B705;
+}
+
+.bg-7{
+    background-color: #B5DDC2;
 }
 
 .btn-add-activity{
@@ -366,4 +370,27 @@ MEDIAQUERIES
     margin-top: 2px;
     text-decoration: none;
     color: black;
+}
+
+/*******資源管理*******/
+.uploadFileBtn{
+    background-color: #71C1B4;
+    color: white;
+}
+
+.uploadFileBtn:hover{
+    color: #71C1B4;
+    background-color: white;
+    border-color: #71C1B4;
+}
+
+.uploadLinkBtn{
+    color: #71C1B4;
+    background-color: white;
+    border-color: #B5DDC2;
+}
+
+.uploadLinkBtn:hover{
+    background-color: #B5DDC2;
+    color: white;
 }
