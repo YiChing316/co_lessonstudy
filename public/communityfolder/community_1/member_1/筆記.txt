@@ -1,0 +1,5 @@
+**從單元活動表中select出已選好的領域、版本、年級所包含的單元資料
+SELECT `course_field`,`course_version`,`course_grade`,`course_semester`,`course_unit_name` FROM `course` WHERE `course_field` = '自然' AND `course_version`='南一' AND `course_grade`='3年級' GROUP BY `course_unit_name`
+
+-->可獲得單元array
+

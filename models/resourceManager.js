@@ -181,13 +181,24 @@ module.exports = {
         }
     },
 
-    shareResource: function(community_id,type,community_file_id,community_file_name,member_id){
+    shareResource: function(community_id,type,chageShareMode,community_file_id,community_file_name,member_id){
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
 
                 if(type == "file"){
-                    var oldpath = './public/communityfolder/community_'+community_id+'/member_'+member_id+'/'+community_file_name;
-                    var newpath = './public/communityfolder/community_'+community_id+'/communityfile/'+community_file_name;
+                    var oldpath,newpath;
+                    //收回分享
+                    if(chageShareMode == 1){
+                        console.log("收回")
+                        oldpath = './public/communityfolder/community_'+community_id+'/communityfile/'+community_file_name;
+                        newpath = './public/communityfolder/community_'+community_id+'/member_'+member_id+'/'+community_file_name;
+                    }
+                    //分享
+                    else{
+                        console.log("分享")
+                        oldpath = './public/communityfolder/community_'+community_id+'/member_'+member_id+'/'+community_file_name;
+                        newpath = './public/communityfolder/community_'+community_id+'/communityfile/'+community_file_name;
+                    }
 
                     if(fs.existsSync(oldpath)){
                         fs.renameSync(oldpath,newpath,function(err){
@@ -196,7 +207,45 @@ module.exports = {
                     }
                 }
 
-                connection.query('UPDATE `community_file` SET `community_file_share`= 0 WHERE `community_file_id` = ?',community_file_id,function(err,rows,fields){
+                connection.query('UPDATE `community_file` SET `community_file_share`= ? WHERE `community_file_id` = ?',[chageShareMode,community_file_id],function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
+        })
+        .then(function(data){
+            return module.exports.selectThisResource(community_file_id)
+        })
+    },
+
+    editFileName: function(community_id,fileData,member_id){
+        var community_file_id = fileData.community_file_id;
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                
+                var newName = fileData.newName;
+                var oldName = fileData.oldName;
+                var community_file_share = fileData.community_file_share;
+                var path;
+
+                if(community_file_share == "1"){
+                    path = './public/communityfolder/community_'+community_id+'/member_'+member_id+'/';
+                }
+                else{
+                    path = './public/communityfolder/community_'+community_id+'/communityfile/';
+                }
+
+                var oldpath = path+oldName;
+                var newpath = path+newName;
+
+                if(fs.existsSync(oldpath)){
+                    fs.renameSync(oldpath,newpath,function(err){
+                        if (err) throw err;
+                    })
+                }
+
+                connection.query('UPDATE `community_file` SET `community_file_name`= ? WHERE `community_file_id` = ?',[newName,community_file_id],function(err,rows,fields){
                     if(err) return reject(err);
                     resolve(rows);
                     connection.release();

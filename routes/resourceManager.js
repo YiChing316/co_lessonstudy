@@ -131,6 +131,38 @@ router.post('/:community_id/deleteResource',function(req,res){
     }
 })
 
+router.post('/:community_id/shareCheck',function(req,res){
+    var community_id = req.params.community_id;
+    var member_id = req.session.member_id;
+    var member_name = req.session.member_name;
+
+    if(!member_id){
+        res.json({msg:"no"});
+        res.redirect('/member/login');
+    }
+    else{
+        var community_file_share = req.body.community_file_share;
+        var fileData = JSON.parse(req.body.fileData) ;
+
+        if(community_file_share == 1){
+            community_file_share = 0
+        }
+        else{
+            community_file_share = 1
+        }
+
+        resourceManager.checkFileExists(community_id,fileData,community_file_share,member_id)
+        .then(function(checkResults){
+            if(checkResults.length !== 0){
+                res.json({msg:"isexist",checkResults:checkResults})
+            }
+            else{
+                res.json({msg:"ok"})
+            }
+        })
+    }
+})
+
 router.post('/:community_id/shareResource',function(req,res){
     var community_id = req.params.community_id;
     var member_id = req.session.member_id;
@@ -144,8 +176,27 @@ router.post('/:community_id/shareResource',function(req,res){
         var type = req.body.type;
         var community_file_id = req.body.community_file_id;
         var community_file_name = req.body.community_file_name;
+        var chageShareMode =  parseInt(req.body.chageShareMode);
 
-        resourceManager.shareResource(community_id,type,community_file_id,community_file_name,member_id)
+        resourceManager.shareResource(community_id,type,chageShareMode,community_file_id,community_file_name,member_id)
+        .then(function(selectdata){
+            return res.json({msg:"ok",selectData:selectdata})
+        })
+    }
+})
+
+router.post('/:community_id/editFileName',function(req,res){
+    var community_id = req.params.community_id;
+    var member_id = req.session.member_id;
+    var member_name = req.session.member_name;
+
+    if(!member_id){
+        res.json({msg:"no"});
+        res.redirect('/member/login');
+    }
+    else{
+        var fileData = req.body;
+        resourceManager.editFileName(community_id,fileData,member_id)
         .then(function(selectdata){
             return res.json({msg:"ok",selectData:selectdata})
         })

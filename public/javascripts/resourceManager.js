@@ -15,6 +15,7 @@ $(function(){
     uploadEvents();
     deletePersonalResource();
     shareResource();
+    editFileName();
 
     $communityResourseTable.bootstrapTable("load",communityData);
     $personalResourceTable.bootstrapTable("load",personalData);
@@ -22,6 +23,7 @@ $(function(){
     $(".modal").on("hidden.bs.modal",function(e){
         $(this).find("input[type='file'],input[type='text']").val("");
         $(this).find(".custom-file-label").text("選擇檔案");
+        $(this).find(".alert").hide();
     })
 
 })
@@ -97,7 +99,7 @@ function cancelShareFormatter(value,row,index){
 
     if(row.member_id_member == member_id){
         if(file_belong == -2 ){
-            cancelShare = '<a class="cancelShare text-danger mr-1" href="javascript:void(0)" title="取消分享"><i class="fas fa-reply"></i></a>';
+            cancelShare = '<a class="share text-danger mr-1" href="javascript:void(0)" title="取消分享"><i class="fas fa-reply"></i></a>';
         }
     }
     return cancelShare
@@ -152,12 +154,27 @@ window.operateEvents = {
     'click .share': function(e, value, row, index){
         var file_id = row.community_file_id;
         var file_name = row.community_file_name;
-        if( row.community_file_type == "連結"){
-            file_name = row.community_file_name.split(",")[0]
+        var file_share = row.community_file_share;
+        var fileData = [{originalname:file_name}];
+        if( row.community_file_type !== "連結"){
+            var data = {
+                community_file_share:file_share,
+                fileData:JSON.stringify(fileData)
+            }
+            var checkResults = ajaxPostData('/resourceManager/'+community_id+'/shareCheck',data);
+            if(checkResults.msg == "no"){
+                window.location = "/member/login";
+            }
+            else if(checkResults.msg == "isexist"){
+                setEditFileNameModal(row,index)
+            }
+            else{
+                setShareWarningModal(row);
+            }
         }
-        var alertDiv = '<p id="shareFileId" style="display:none">'+file_id+'</p><h5>是否要分享此資源(<span id="shareFileName" data-filetype="'+row.community_file_type+'">'+file_name+'</span>)？</h5>';
-        $("#shareWarningModal .modal-body .alertBody").html(alertDiv);
-        $("#shareWarningModal").modal("show");
+        else{
+            setShareWarningModal(row);
+        }
     }
 }
 
@@ -182,6 +199,47 @@ function setViewModal(fileData){
         downloadLink += '<iframe src="'+ path +'" height="500px" width="100%"></iframe>';
     }
     return downloadLink;
+}
+
+//設定提醒分享或提醒收回的modal內容
+function setShareWarningModal(fileData){
+    var file_id = fileData.community_file_id;
+    var file_name = fileData.community_file_name;
+    var file_share = fileData.community_file_share;
+    var alertDiv,btnvalue;
+
+    if( fileData.community_file_type == "連結"){
+        file_name = file_name.split(",")[0];
+    }
+    
+    if(file_share == 0){
+        alertDiv = '<p id="shareFileId" style="display:none">'+file_id+'</p><h5>是否要收回此資源分享(<span id="shareFileName" data-change="1" data-filetype="'+fileData.community_file_type+'">'+file_name+'</span>)？</h5>';
+        btnvalue = '確定收回';
+    }
+    else{
+        alertDiv = '<p id="shareFileId" style="display:none">'+file_id+'</p><h5>是否要分享此資源(<span id="shareFileName" data-change="0" data-filetype="'+fileData.community_file_type+'">'+file_name+'</span>)？</h5>';
+        btnvalue = '確定分享';
+    }
+    
+    $("#shareWarningModal .modal-body .alertBody").html(alertDiv);
+    $("#shareWarningModal .modal-body .shareFile").val(btnvalue);
+    $("#shareWarningModal").modal("show");
+}
+
+//設定修改檔案名稱modal內容
+function setEditFileNameModal(fileData,index){
+    var file_id = fileData.community_file_id;
+    var file_name = fileData.community_file_name;
+    var file_share = fileData.community_file_share;
+    var fileNameArray = file_name.split('.');
+    fileNameArray.pop();//去除副檔名
+    var originalname = fileNameArray.toString();
+    $("#editFileindex").text(index);
+    $("#editFileId").text(file_id);
+    $("#editFileName").val(originalname);
+    $("#editFileName").attr("data-sharemode",file_share);
+    $("#editFileName").attr("data-oldname",file_name);
+    $("#editFileNameModal").modal("show");
 }
 
 //點擊上傳檔案以及連結btn
@@ -380,17 +438,19 @@ function shareResource(){
         var community_file_id = $("#shareFileId").text();
         var community_file_name = $("#shareFileName").text();
         var type = $("#shareFileName").data("filetype");
+        var chageShareMode = $("#shareFileName").data("change");
 
-        if(type == "連結"){
-            type == "link"
+        if(type !== "連結"){
+            type = "file"
         }
         else{
-            type == "file"
+            type = "link"
         }
 
         var data = {
             community_file_id:community_file_id,
             community_file_name:community_file_name,
+            chageShareMode:chageShareMode,
             type:type
         }
 
@@ -403,9 +463,72 @@ function shareResource(){
         }
         else if(shareResults.msg == "ok"){
             var selectData = shareResults.selectData[0];
-            $personalResourceTable.bootstrapTable('remove',{field:'community_file_id',values:[id]});
-            $communityResourseTable.bootstrapTable('append',selectData);
+            if(selectData.community_file_share == 1){
+                $communityResourseTable.bootstrapTable('remove',{field:'community_file_id',values:[id]});
+                $personalResourceTable.bootstrapTable('append',selectData);
+            }
+            else{
+                $personalResourceTable.bootstrapTable('remove',{field:'community_file_id',values:[id]});
+                $communityResourseTable.bootstrapTable('append',selectData);
+            }
         }
+    })
+}
 
+//分享時有檔名相同，修改檔案動作
+function editFileName(){
+    $(".saveEditBtn").click(function(){
+        var index = $("#editFileindex").text();
+        var file_id = $("#editFileId").text();
+        var newName = $("#editFileName").val();
+        var oldName = $("#editFileName").data("oldname");
+        var file_share = $("#editFileName").data("sharemode");
+
+        var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+        //判斷是否有特殊字元
+        if(format.test(newName)){
+            console.log('有特殊字元')
+            $("#editFileNameModal .modal-body .alert").show();
+        } 
+        else{
+            var fileNameArray = oldName.split('.');
+            var file_format = fileNameArray[fileNameArray.length -1];
+            newName = newName+"."+file_format;
+
+            var data = {
+                community_file_id:file_id,
+                newName:newName,
+                oldName:oldName,
+                community_file_share:file_share
+            }
+
+            index = parseInt(index)
+
+            var editResults = ajaxPostData('/resourceManager/'+community_id+'/editFileName',data);
+
+            if(editResults.msg == "no"){
+                window.location = "/member/login";
+            }
+            else if(editResults.msg == "ok"){
+                $("#editFileNameModal").modal("hide");
+                var selectData = editResults.selectData[0];
+                if(selectData.community_file_share == 1){
+                    $personalResourceTable.bootstrapTable('updateRow', {
+                        index: index,
+                        row: {
+                        community_file_name: selectData.community_file_name
+                        }
+                    })
+                }
+                else{
+                    $communityResourseTable.bootstrapTable('updateRow', {
+                        index: index,
+                        row: {
+                        community_file_name: selectData.community_file_name
+                        }
+                    })
+                }
+            }
+        }
     })
 }
