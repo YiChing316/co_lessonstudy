@@ -40,7 +40,7 @@ function showPersonalResource(){
             {formatter:"personalOperateFormatter",events:"operateEvents",width:90}
         ],
         theadClasses:'thead-light',
-        pageSize: 8,
+        pageSize: 5,
         pagination:true,
         search:true,
         classes:'table table-bordered'
@@ -62,7 +62,7 @@ function showCommunityResource(){
             {formatter:"communityOperateFormatter",events:"operateEvents",width:40}
         ],
         theadClasses:'thead-light',
-        pageSize: 8,
+        pageSize: 5,
         pagination:true,
         search:true,
         classes:'table table-bordered'
