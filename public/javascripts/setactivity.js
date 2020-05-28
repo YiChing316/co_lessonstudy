@@ -734,6 +734,7 @@ function setLessonplanTargetandActivityTable(){
         $.each(targetContent,function(i,val){
             $("#lessonplanTargetandActivityTable").find("tbody").append('<tr data-targetname="'+targetContent[i]+'"><td>'+targetContent[i]+'</td></tr>')
         })
+        console.log(activityName)
         $.each(activityName,function(i,val){
             var name = activityName[i].lessonplan_activity_name;
             $("#lessonplanTargetandActivityTable").find("thead tr").append('<th scope="col">'+name+'</th>');
@@ -842,7 +843,7 @@ function showtwowayTableData(){
 
     if(twowayTableData.length !== 0){
         // var results = JSON.parse(twowayTableData[0].lessonplan_twowaytable_content);
-
+        console.log(twowayTableData)
         var tr_length = $("#lessonplanTargetandActivityTable").find("tbody tr").length;
 
         for(var x=0;x<tr_length;x++){

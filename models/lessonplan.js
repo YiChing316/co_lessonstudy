@@ -69,7 +69,7 @@ module.exports = {
         })
     },
 
-    insertUnitandActivity: function(community_id,lessonplanData,member_id,member_name){
+    insertUnitandActivity: function(community_id,lessonplanData,node_id,member_id,member_name){
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
@@ -79,6 +79,7 @@ module.exports = {
                     lessonplan_unit_name:lessonplanData.lessonplan_unit_name,
                     lessonplan_activity_name:lessonplanData.lessonplan_activity_name,
                     lessonplan_activity_target:lessonplanData.tableContent,
+                    node_id_node:node_id,
                     member_id_member:member_id,
                     member_name:member_name
                 }

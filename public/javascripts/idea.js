@@ -159,10 +159,7 @@ function clickevent(){
                     openLessonplanNode(community_id,data)
                     break;
                 case 'activity':
-                    console.log(clickedNode)
-                    break;
-                case 'vote':
-                    console.log(clickedNode)
+                    openActivityNode(community_id,data)
                     break;
             }
         }
@@ -431,6 +428,31 @@ function openLessonplanNode(community_id,data){
     }
 }
 
+function openActivityNode(community_id,data){
+    var results = ajaxGetData("/lessonplan/idea/"+community_id+"/openActivityNode",data);
+
+    if(results.msg == "no"){
+
+    }
+    else{
+        var nodeData = results.nodeData[0];
+        var node_title = nodeData.node_title;
+        var activity_target = nodeData.lessonplan_activity_target;
+        var targetArray = activity_target.split(',');
+        var bodyContent = '<p>此活動包含的學習目標有</p><div class="activityTargetDiv"></div>'+
+                            '<p>此部分須規劃活動內容以及內容其對應的評量</p>'+
+                            '<img src="/images/activitytip.png" width="800">';
+        $("#lessonplanNodeModal").modal("show");
+        $("#lessonplanNodeModalLabel").html(node_title);
+        $("#lessonplanNodeModal").find(".readNodeid").text(nodeData.node_id);
+        $("#nodeTip").html(bodyContent);
+
+        targetArray.forEach(function(target){
+            $("#lessonplanNodeModal .activityTargetDiv").append('<p><i class="fas fa-dot-circle mr-1 text-danger"></i>'+target+'</p>');
+        })
+        
+    }
+}
 
 /**打開 ideatoolbar新增節點 modal ***********************************/
 function openIdeaModal(){

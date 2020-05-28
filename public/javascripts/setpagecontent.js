@@ -72,7 +72,6 @@ function sidebarClick(){
 
 $(function(){
     activityName = JSON.parse($("#lessonplanActivityName").text());
-
     pagecontent_Map();
     sidebar_Map();
     sidebarClick();

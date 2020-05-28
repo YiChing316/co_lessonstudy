@@ -195,13 +195,26 @@ router.post('/edit/:community_id/save',function(req,res,next){
                 break;
             case 'creatActivityModal':
             case 'editActivityModal':
+                var node_id,process_id,selectnodedata;
                 var baseid = lessonplanData.baseid;
-
+                var lessonplan_activity_name = lessonplanData.lessonplan_activity_name;
                 if(baseid == ""){
-                    lessonplan.insertUnitandActivity(community_id,lessonplanData,member_id,member_name)
+                    node.createNewNode(community_id,lessonplan_activity_name,'','activity',0,member_id,member_name)
+                    .then(function(nodedata){
+                        node_id = nodedata.insertId;
+                        return lessonplan.insertUnitandActivity(community_id,lessonplanData,node_id,member_id,member_name)
+                    })
                     .then(function(data){
-                        if(data){
-                            return res.json({msg:'ok'})
+                        process_id = data;
+                        return node.selectThisNode(community_id,node_id)
+                    })
+                    .then(function(selectdata){
+                        selectnodedata = selectdata;
+                        return lessonplan.selectLessonplanActivityName(community_id)
+                    })
+                    .then(function(namedata){
+                        if(namedata){
+                            return res.json({msg:'ok',process_id:process_id,selectnodeData:selectnodedata,activityNameData:namedata})
                         }
                     })
                 }
@@ -642,6 +655,25 @@ router.get('/idea/:community_id/openLessonplanNode',function(req,res,next){
         node.selectThisNode(community_id,node_id)
         .then(function(selectResults){
             return res.json({msg:'ok',selectResults:selectResults})
+        })
+    }
+})
+
+router.get('/idea/:community_id/openActivityNode',function(req,res,next){
+    var member_id = req.session.member_id;
+    var member_name = req.session.member_name;
+
+    var community_id = req.params.community_id;
+    var node_id = req.query.node_id;
+
+    if(!member_id){
+        res.json({msg:"no"});
+        res.redirect('/member/login');
+    }
+    else{
+        node.selectActivityNode(node_id)
+        .then(function(data){
+            res.json({msg:'ok',nodeData:data})
         })
     }
 })

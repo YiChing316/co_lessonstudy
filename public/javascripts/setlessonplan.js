@@ -324,10 +324,14 @@ function stageControl(){
     }
 }
 
+var socket = io();
 
 var isChange = false;
 $(function(){
     basicData = JSON.parse($("#basicData").text());
+
+    //發送訊息，經過 事件 傳送 object
+    socket.emit('join community',$("#community_id").text());
 
     setLessonplanBasicData();
     lessonplan_Map();
@@ -560,7 +564,6 @@ function saveAjax(data){
 //設定課程目標內所有savebutton動作
 function saveLessonplanData(divId){
     var community_id = $("#community_id").text();
-
     switch(divId){
         case 'lessonplan':
             var lessonplan_intro = $("#lessonplan_intro").val();
@@ -620,9 +623,11 @@ function saveLessonplanData(divId){
                 $("#"+divId).find(".alert").show();
             }
             else{
+                var newtwowayData = []
                 var targetandActivityArray = []
                 $("#"+divId+" input[name='targetandactivity']:checked").each(function(){
                     var targetName = $(this).val();
+                    newtwowayData.push({targetName:targetName,activityName:lessonplan_activity_name})
                     targetandActivityArray.push(targetName)
                 })
 
@@ -650,6 +655,17 @@ function saveLessonplanData(divId){
                     $("#"+divId).modal('hide');
                     modalclosebtn(divId);
                     if( divId == 'creatActivityModal'){
+                        // var id = $(".activityRow").length + 1;
+                        // var process_id = unitResults.process_id;
+                        // var cardtitle = lessonplan_unit_name+"-"+lessonplan_activity_name;
+                        // var selectNodeData = unitResults.selectnodeData;
+                        // if(newtwowayData.length !== 0){
+                        //     newtwowayData.forEach(function(data){
+                        //         twowayTableData.push(data)
+                        //     })
+                        // }
+                        // activityandAssessmentDesign_Append(id,process_id,lessonplan_unit_name,lessonplan_activity_name,cardtitle);
+                        socket.emit('create activity',{community_id:community_id,selectData:selectNodeData})
                         window.location = "/lessonplan/edit/"+community_id;
                     }
                     else{
