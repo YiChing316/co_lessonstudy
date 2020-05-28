@@ -734,7 +734,6 @@ function setLessonplanTargetandActivityTable(){
         $.each(targetContent,function(i,val){
             $("#lessonplanTargetandActivityTable").find("tbody").append('<tr data-targetname="'+targetContent[i]+'"><td>'+targetContent[i]+'</td></tr>')
         })
-        console.log(activityName)
         $.each(activityName,function(i,val){
             var name = activityName[i].lessonplan_activity_name;
             $("#lessonplanTargetandActivityTable").find("thead tr").append('<th scope="col">'+name+'</th>');
@@ -762,7 +761,7 @@ function setLessonplanTargetandActivityTable(){
 //顯示學習目標與評量對應表，此程式需先跑過setactivity.js的setActivityProces的()，故放在於setactivity.js執行
 function setLessonplanTargetandAssessmentTable(){
 
-    console.log(targetandAssessmentArray)
+    // console.log(targetandAssessmentArray)
 
     if(targetContent == undefined || activityName == "" || targetandAssessmentArray.length == 0){
         $("#lessonplan_targetandAssessment").append('<p class="text-danger">尚未設定任何資料</p>')
@@ -843,7 +842,7 @@ function showtwowayTableData(){
 
     if(twowayTableData.length !== 0){
         // var results = JSON.parse(twowayTableData[0].lessonplan_twowaytable_content);
-        console.log(twowayTableData)
+        // console.log(twowayTableData)
         var tr_length = $("#lessonplanTargetandActivityTable").find("tbody tr").length;
 
         for(var x=0;x<tr_length;x++){

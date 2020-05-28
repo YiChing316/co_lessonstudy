@@ -655,18 +655,14 @@ function saveLessonplanData(divId){
                     $("#"+divId).modal('hide');
                     modalclosebtn(divId);
                     if( divId == 'creatActivityModal'){
-                        // var id = $(".activityRow").length + 1;
-                        // var process_id = unitResults.process_id;
-                        // var cardtitle = lessonplan_unit_name+"-"+lessonplan_activity_name;
-                        // var selectNodeData = unitResults.selectnodeData;
-                        // if(newtwowayData.length !== 0){
-                        //     newtwowayData.forEach(function(data){
-                        //         twowayTableData.push(data)
-                        //     })
-                        // }
-                        // activityandAssessmentDesign_Append(id,process_id,lessonplan_unit_name,lessonplan_activity_name,cardtitle);
+                        var id = $(".activityRow").length + 1;
+                        var process_id = unitResults.process_id;
+                        var cardtitle = lessonplan_unit_name+"-"+lessonplan_activity_name;
+                        var selectNodeData = unitResults.selectnodeData;
+                        activityandAssessmentDesign_Append(id,process_id,lessonplan_unit_name,lessonplan_activity_name,cardtitle);
+                        resetActivityName(lessonplan_activity_name)
                         socket.emit('create activity',{community_id:community_id,selectData:selectNodeData})
-                        window.location = "/lessonplan/edit/"+community_id;
+                        //window.location = "/lessonplan/edit/"+community_id;
                     }
                     else{
                         var selectData = unitResults.selectData;
@@ -963,4 +959,11 @@ function saveActivityProcessData(divId){
         alert('目前沒有資料可以儲存');
     }
     
+}
+
+function resetActivityName(lessonplan_activity_name){
+    activityName.push({lessonplan_activity_name:lessonplan_activity_name})
+    $("#sidebarul").empty();
+    $("#activityDesignUl").empty();
+    sidebar_Map();
 }
