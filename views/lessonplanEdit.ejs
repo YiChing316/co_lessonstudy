@@ -8,11 +8,27 @@
   <body>
     <p id="community_id" style="display: none;"><%= community_id %></p>
     <%- include('layout/navbar2.ejs'); -%>
-    <% if (mode == "lessonplanContent") { %>
-        <%- include('layout/lessonplanContent.ejs'); -%>
-    <% }else if(mode =="ideaContent"){ %>
-        <%- include('layout/ideaContent.ejs'); -%>
-    <% } %>
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <nav id="sidebar" class="fixed-left">
+            <ul class="list-unstyled">
+                <li class="sidebar-header">
+                <div class="btn-group mode-switch-btn" role="group" id="mode_switch">
+                    <input type="button" class="btn mode_btn" value="教案撰寫" id="edit">
+                    <input type="button" class="btn mode_btn" value="想法討論" id="idea">
+                </div>
+                    <!-- <a href="javascript:void(0)" class="sidebarCollapse"><i class="fas fa-align-justify"></i></a> -->
+                </li>
+            </ul>
+        </nav>
+        <div id="content">
+            <% if (mode == "lessonplanContent") { %>
+                <%- include('layout/lessonplanContent.ejs'); -%>
+            <% }else if(mode =="ideaContent"){ %>
+                <%- include('layout/ideaContent.ejs'); -%>
+            <% } %>
+        </div>
+    </div>
     <%- include('modal.ejs'); -%>
     <script type="text/javascript">
         if("<%= mode %>" == "lessonplanContent"){

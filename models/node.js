@@ -285,6 +285,23 @@ module.exports = {
             return module.exports.selectThisNode(community_id,node_id)
         })
     },
+    
+    updateDeleteActivityNodeType: function(community_id,node_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                connection.query('UPDATE `node` SET `node_type`="deleteactivity" WHERE `node_id`=?',node_id,function(err,insertResults,fields){
+                    if(err) return reject(err);
+                    resolve(insertResults);
+                    connection.release();
+                })
+            })
+        })
+        .then(function(data){
+            return module.exports.selectThisNode(community_id,node_id)
+        })
+    },
 
     updateReadCount: function(node_id,read_count){
         return new Promise(function(resolve,reject){

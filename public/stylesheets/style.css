@@ -293,7 +293,28 @@ MEDIAQUERIES
 }
   
 .mode-switch-btn{
-    left: 40%;
+    left: 15%;
+    margin-top: 15px;
+    margin-bottom: 12px;
+}
+
+.mode_btn{
+    color: #FFF;
+    border-color: #FFF;
+    background-color: #065B80;
+}
+
+.mode_btn:not(:disabled):not(.disabled).active,
+.mode_btn:not(:disabled):not(.disabled):active{
+    color: #065B80;
+    border-color: #FFF;
+    background-color: #FFF;
+}
+
+.mode_btn:hover{
+    color: #065B80;
+    border-color: #FFF;
+    background-color: #FFF;
 }
 
 /*實作畫面儲存button背景*/
@@ -342,8 +363,8 @@ MEDIAQUERIES
 .idea-toolbar{
     height: auto;
     width: auto;
-    top: 15vh;
-    left: 0;
+    top: 71px;
+    /* left: 0; */
     position: fixed;
     background-color: rgba(181,221,194,0.8);
     z-index: 1;

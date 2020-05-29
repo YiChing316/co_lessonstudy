@@ -26,9 +26,9 @@ var nodeOptions = {
             shape: 'image',
             image: '/images/riseabovenode.svg'
         },
-        vote:{
+        deleteactivity:{
             shape: 'image',
-            image: '/images/vote.svg'
+            image: '/images/deleteactivitynode.svg'
         },
         lessonplan:{
             shape: 'image',
@@ -89,14 +89,14 @@ function drawNodeNetwork(node) {
                 case "activity":
                     newgroup = "activity";
                     break;
+                case "deleteactivity":
+                    newgroup = "deleteactivity";
+                    break;
                 case "idea":
                     newgroup = "idea";
                     break;
                 case "rise_above":
                     newgroup = "rise_above";
-                    break;
-                case "vote":
-                    newgroup = "vote";
                     break;
             }
             newNodeArray.push({
@@ -160,6 +160,9 @@ function clickevent(){
                     break;
                 case 'activity':
                     openActivityNode(community_id,data)
+                    break;
+                case "deleteactivity":
+                    alert("此活動已刪除");
                     break;
             }
         }

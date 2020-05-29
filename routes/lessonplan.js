@@ -303,15 +303,24 @@ router.post('/edit/:community_id/deleteActivity',function(req,res,next){
     }
     else{
         var lessonplanData= req.body;
-        var processData,nameData;
-        lessonplan.deleteLessonplanActivityProcess(lessonplanData)
+        var lessonplan_activity_process_id = lessonplanData.lessonplan_activity_process_id;
+        var nodeData,processData,nameData;
+        lessonplan.selecThisActivity(lessonplan_activity_process_id)
+        .then(function(seletedata){
+            var node_id = seletedata[0].node_id_node;
+            return node.updateDeleteActivityNodeType(community_id,node_id)
+        })
+        .then(function(nodedata){
+            nodeData = nodedata;
+            return lessonplan.deleteLessonplanActivityProcess(lessonplanData)
+        })
         .then(function(data){
             processData = JSON.stringify(data)
             return lessonplan.selectLessonplanActivityName(community_id)
         })
         .then(function(namedata){
             nameData = JSON.stringify(namedata)
-            res.json({msg:"ok",processData:processData,nameData:nameData});
+            res.json({msg:"ok",processData:processData,nameData:nameData,nodeData:nodeData});
         })
     }
     

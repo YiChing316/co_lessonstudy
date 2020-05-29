@@ -75,6 +75,7 @@ function activityandAssessmentDesign_Append(id,baseid,unit_name,activity_name,ti
                             '</div>'+
                         '</div>';
     $("#setactivity").append(activityDiv);
+    editActivityCard();
 }
 
 var lessonplanActivityProcessData;
@@ -277,7 +278,7 @@ $(function(){
     
     setActivityCard();
     setActivityProcess();
-    editActivityCard();
+    //editActivityCard();
 
     openActivityandAssessmentBtn();
 
@@ -321,6 +322,7 @@ function editActivityCard(){
         $("#editunitName").val(unit_name)
         $("#editactivityName").val(activity_name)
         $("#editactivityid").text(lessonplan_activity_process_id)
+        console.log(twowayTableData)
         //顯示該活動所選取的學習目標
         if(twowayTableData.length !== 0){
             // var results = JSON.parse(twowayTableData[0].lessonplan_twowaytable_content);
@@ -338,7 +340,7 @@ function editActivityCard(){
 //開啟編輯活動後，刪除
 function deleteActivityCard(){
     var baseid = $("#editactivityid").text();
-    var activitycardid = $("#editactivitycardid").text();
+    var activitycardid = $("#parentCardId").text();
     // $("#editActivityModal").modal("hide");
     $("#alertModal").modal("show");
     $("#alertModal").find("#deleteid").text(baseid);
@@ -356,7 +358,7 @@ function deleteActivityData(){
         lessonplan_activity_process_id:lessonplan_activity_process_id
     }
 
-    isChange = true;
+    isChange = false;
 
     $.ajax({
         url: "/lessonplan/edit/"+community_id+"/deleteActivity",
@@ -369,6 +371,7 @@ function deleteActivityData(){
                 $("#alertModal").modal('hide');
                 var newProcessData = data.processData;
                 var newNameData = data.nameData;
+                var nodeData = data.nodeData;
                 $("#lessonplanActivityProcessData").text(newProcessData);
                 $("#lessonplanActivityName").text(newNameData);
                 activityName = JSON.parse($("#lessonplanActivityName").text());
@@ -376,6 +379,7 @@ function deleteActivityData(){
                 $("#sidebarul").empty();
                 sidebar_Map();
                 $("#"+deletecardid).parent().remove();
+                $("#editActivityModal").modal("hide");
                 // $("#lessonplan_targetandActivity").empty();
                 // $("#setactivity").find('div').remove();
                 // setActivityCard();
@@ -383,6 +387,7 @@ function deleteActivityData(){
                 // setLessonplanTargetandActivityTable();
                 // showtwowayTableData();
                 setActivityProcess();
+                socket.emit('delete activity',{community_id:community_id,nodeData:nodeData})
             }
             else{
                 window.location = "/member/login";
@@ -755,13 +760,14 @@ function setLessonplanTargetandActivityTable(){
             })
         }
         showtwowayTableData();
+        console.log(twowayTableData)
     }
 }
 
 //顯示學習目標與評量對應表，此程式需先跑過setactivity.js的setActivityProces的()，故放在於setactivity.js執行
 function setLessonplanTargetandAssessmentTable(){
 
-    // console.log(targetandAssessmentArray)
+    console.log(targetandAssessmentArray)
 
     if(targetContent == undefined || activityName == "" || targetandAssessmentArray.length == 0){
         $("#lessonplan_targetandAssessment").append('<p class="text-danger">尚未設定任何資料</p>')

@@ -48,14 +48,19 @@ router.post('/create', function(req, res,next) {
         if(results){
           //新增社群時，先建立四個階段的引導Node
           var lessonplan_node = [
-            {community_id:results,node_title:'教案基本資料',node_type:'lessonplan'},
-            {community_id:results,node_title:'學生先備概念',node_type:'lessonplan'},
-            {community_id:results,node_title:'教學設計理念',node_type:'lessonplan'},
-            {community_id:results,node_title:'課程學習目標',node_type:'lessonplan'}
+            {community_id:results,node_title:'教案基本資料',node_type:'lessonplan',node_x:-262,node_y:-55},
+            {community_id:results,node_title:'學生先備概念',node_type:'lessonplan',node_x:47,node_y:84},
+            {community_id:results,node_title:'教學設計理念',node_type:'lessonplan',node_x:189,node_y:-189},
+            {community_id:results,node_title:'課程學習目標',node_type:'lessonplan',node_x:-73,node_y:-280}
           ]
-
+          
           lessonplan_node.forEach(function(val){
             return node.createNewNode(val.community_id,val.node_title,'',val.node_type,0,member_id,member_name)
+            .then(function(data){
+              var node_id = data.insertId;
+              var updateData = JSON.stringify([{node_id:node_id,node_x:val.node_x,node_y:val.node_y}]);
+              return node.updateNodePosition(results,updateData)
+            })
           })
           res.json({msg:'yes',community_id:results});
         }

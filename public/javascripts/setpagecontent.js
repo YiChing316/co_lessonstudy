@@ -18,7 +18,7 @@ function pagecontent_Map(){
                             "<div class='card-body collapse' id='"+data.id+"'></div>"+
                         "</div>"+
                         "<div class='card col-3 nopadding'>"+
-                            "<h5 class='card-header bg-selfgreen font-weight-bolder'>團隊想法</h5>"+
+                            "<h5 class='card-header bg-selfgreen font-weight-bolder'>想法收斂結果</h5>"+
                             "<div class='card-body collapse'></div>"+
                         "</div>"+
                     "</div>";
@@ -36,6 +36,26 @@ function pagecontent_Map(){
 
 var activityName;
 
+function setSideBar(){
+    $("#sidebar .list-unstyled").append('<li class="sidebar-menu">'+
+                                            '<a href="#sidebarul" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">'+
+                                                '<img src="/images/one.svg" width="25" height="25" class="d-inline-block mr-1">訂定課程目標'+
+                                            '</a>'+
+                                            '<ul class="siderul collapse show list-unstyled" id="sidebarul"></ul>'+
+                                        '</li>'+
+                                        '<li class="sidebar-menu">'+
+                                            '<a href="#activityDesignUl" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">'+
+                                                '<img src="/images/two.svg" width="25" height="25" class="d-inline-block mr-1">活動與評量設計'+
+                                            '</a>'+
+                                            '<ul class="siderul collapse show list-unstyled" id="activityDesignUl"></ul>'+
+                                        '</li>'+
+                                        '<li class="sidebar-menu">'+
+                                            '<a href="javascript:void(0)" aria-expanded="false">'+
+                                                '<img src="/images/three.svg" width="25" height="25" class="d-inline-block mr-1">教案總覽'+
+                                            '</a>'+
+                                        '</li>');
+}
+
 function sidebar_Map(){
     pagecontent_Components.map(function(data){
         $("#sidebarul").append('<li><a href="#cardid'+data.id+'" class="sidebarlink">'+data.title+'</a></li>');
@@ -46,7 +66,9 @@ function sidebar_Map(){
             var id = i+1;
             $("#activityDesignUl").append('<li><a href="#cardidactivity_'+id+'" class="sidebarlink">'+activityName[i].lessonplan_activity_name+'</a></li>');
         })
-    }   
+    }
+    
+    sidebarClick();
 };
 
 //側邊選單的錨點定位
@@ -59,7 +81,7 @@ function sidebarClick(){
     $(".sidebarlink").on('click', function(event) {
         //若未減去cardheaderHeight會無法蓋到每階段的標題
         //因為原本($(".card-header").height()*2)會被想法實作切換擋住故改為($(".card-header").height()*4)
-        var cardheaderHeight = $(".card-header").height()*4.5;
+        var cardheaderHeight = $(".card-header").height()*3;
         if (this.hash !== "") {
           event.preventDefault();//防止連結打開url，preventDefault()為阻止element發生默認行為，例如點擊submit時阻止表單提交
           var hash = this.hash;
@@ -73,6 +95,6 @@ function sidebarClick(){
 $(function(){
     activityName = JSON.parse($("#lessonplanActivityName").text());
     pagecontent_Map();
+    setSideBar();
     sidebar_Map();
-    sidebarClick();
 });

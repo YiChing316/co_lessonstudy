@@ -630,7 +630,7 @@ function saveLessonplanData(divId){
                     newtwowayData.push({targetName:targetName,activityName:lessonplan_activity_name})
                     targetandActivityArray.push(targetName)
                 })
-
+                console.log(newtwowayData)
                 var tableContent = targetandActivityArray.toString();
 
                 var data = {
@@ -660,7 +660,7 @@ function saveLessonplanData(divId){
                         var cardtitle = lessonplan_unit_name+"-"+lessonplan_activity_name;
                         var selectNodeData = unitResults.selectnodeData;
                         activityandAssessmentDesign_Append(id,process_id,lessonplan_unit_name,lessonplan_activity_name,cardtitle);
-                        resetActivityName(lessonplan_activity_name)
+                        resetActivityNameandTargetArray(lessonplan_activity_name,newtwowayData)
                         socket.emit('create activity',{community_id:community_id,selectData:selectNodeData})
                         //window.location = "/lessonplan/edit/"+community_id;
                     }
@@ -961,9 +961,12 @@ function saveActivityProcessData(divId){
     
 }
 
-function resetActivityName(lessonplan_activity_name){
+function resetActivityNameandTargetArray(lessonplan_activity_name,newtwowayData){
     activityName.push({lessonplan_activity_name:lessonplan_activity_name})
     $("#sidebarul").empty();
     $("#activityDesignUl").empty();
     sidebar_Map();
+    newtwowayData.forEach(function(data){
+        twowayTableData.push(data)
+    });
 }

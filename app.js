@@ -9,7 +9,6 @@ var memberRouter = require('./routes/member');
 var communityRouter = require('./routes/community');
 var lessonplanRouter = require('./routes/lessonplan');
 var resourceRouter = require('./routes/resourceManager');
-var convergenceRouter = require('./routes/convergenceTool');
 
 var app = express();
 var server = require('http').Server(app);
@@ -58,10 +57,10 @@ io.on('connection', function(socket){
     socket.nsp.to(roomName).emit('update node data',data.selectData);
   })
 
-  // socket.on('edit summernote',function(data){
-  //   var roomName = "community_"+data.community_id;
-  //   socket.nsp.to(roomName).emit('update summernoteContent',data.contentData);
-  // })
+  socket.on('delete activity',function(data){
+    var roomName = "community_"+data.community_id;
+    socket.nsp.to(roomName).emit('update node data',data.nodeData);
+  })
 
 });
 
@@ -90,7 +89,6 @@ app.use('/member', memberRouter);
 app.use('/community', communityRouter);
 app.use('/lessonplan', lessonplanRouter);
 app.use('/resourceManager', resourceRouter);
-app.use('/convergenceTool',convergenceRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
