@@ -203,7 +203,7 @@ function clickevent(){
             var string = JSON.stringify(drag_array);
             var community_id = $("#community_id").text();
             $.ajax({
-                url: '/lessonplan/idea/'+community_id+'/updateNodePosition',
+                url: '/lessonplan/idea/'+community_id+'/divergence/updateNodePosition',
                 type: "POST",
                 async:false,
                 data:{updateData:string},
@@ -328,6 +328,19 @@ $(function(){
         });
     })
 
+    var community_id = $("#community_id").text();
+    $("#sidebar .list-unstyled").append('<li class="sidebar-menu">'+
+                                            '<a href="javascript:void(0)" class="onpage disabledNav" aria-expanded="false">'+
+                                                '<img src="/images/one.svg" width="25" height="25" class="d-inline-block mr-1">想法發散'+
+                                            '</a>'+
+                                        '</li>'+
+                                        '<li class="sidebar-menu">'+
+                                            '<a href="/lessonplan/idea/'+community_id+'/convergence" aria-expanded="false">'+
+                                                '<img src="/images/two.svg" width="25" height="25" class="d-inline-block mr-1">想法收斂'+
+                                            '</a>'+
+                                        '</li>');
+
+    $('html, body').css('overflowY', 'hidden'); 
 })
 
 function ajaxGetData(url,data){
@@ -368,7 +381,7 @@ function ajaxPostFormData(url,formdata){
 
 function openIdeaNode(community_id,data){
 
-    var results = ajaxGetData("/lessonplan/idea/"+community_id+"/openIdea",data);
+    var results = ajaxGetData("/lessonplan/idea/"+community_id+"/divergence/openIdea",data);
 
     if(results.msg == "ok"){
         var authority = results.authority;
@@ -393,7 +406,7 @@ function openIdeaNode(community_id,data){
 }
 
 function openLessonplanNode(community_id,data){
-    var results = ajaxGetData("/lessonplan/idea/"+community_id+"/openLessonplanNode",data);
+    var results = ajaxGetData("/lessonplan/idea/"+community_id+"/divergence/openLessonplanNode",data);
     if(results.msg == "ok"){
         var selectData = results.selectResults[0];
         var node_title = selectData.node_title;
@@ -432,7 +445,7 @@ function openLessonplanNode(community_id,data){
 }
 
 function openActivityNode(community_id,data){
-    var results = ajaxGetData("/lessonplan/idea/"+community_id+"/openActivityNode",data);
+    var results = ajaxGetData("/lessonplan/idea/"+community_id+"/divergence/openActivityNode",data);
 
     if(results.msg == "no"){
 
@@ -643,7 +656,7 @@ function deleteIdeaFile(){
         $(this).parent().remove()
 
         $.ajax({
-            url: "/lessonplan/idea/"+community_id+"/deletefile",
+            url: "/lessonplan/idea/"+community_id+"/divergence/deletefile",
             type: "POST",
             async:false,
             data:data,
@@ -804,7 +817,7 @@ function saveNode(modalId){
                     formData.append("ideafile",fileData[i])
                 }
                 
-                var createResults =  ajaxPostFormData("/lessonplan/idea/"+community_id+"/createIdea",formData)
+                var createResults =  ajaxPostFormData("/lessonplan/idea/"+community_id+"/divergence/createIdea",formData)
 
                 if(createResults.msg == "no"){
                     window.location = "/member/login";
@@ -852,7 +865,7 @@ function saveNode(modalId){
                     reviseformData.append("ideafile",revise_fileData[s])
                 }
 
-                var reviseResults =  ajaxPostFormData("/lessonplan/idea/"+community_id+"/updateIdea",reviseformData)
+                var reviseResults =  ajaxPostFormData("/lessonplan/idea/"+community_id+"/divergence/updateIdea",reviseformData)
 
                 if(reviseResults.msg == "no"){
                     window.location = "/member/login";

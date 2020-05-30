@@ -3,19 +3,15 @@
 
 <p id="nodeData" style="display: none;"><%= nodeData %></p>
 <p id="edgeData" style="display: none;"><%= edgeData %></p>
+    
+<div id="ideanetwork" style="outline:none"></div>
 
-<div>
-    
-    <div id="ideanetwork" style="outline:none"></div>
-    
-    <div class="idea-toolbar">
-        <a href="javascript: void(0)" id="creatIdeaBtn" class="idea-tool">
-            <img src="/images/idea-btn.svg" alt="新增想法">
-            <div class="idea-tooltext">新增想法</div>
-        </a>
-    </div>
+<div class="idea-toolbar">
+    <a href="javascript: void(0)" id="creatIdeaBtn" class="idea-tool">
+        <img src="/images/idea-btn.svg" alt="新增想法">
+        <div class="idea-tooltext">新增想法</div>
+    </a>
 </div>
-
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/javascripts/idea.js"></script>

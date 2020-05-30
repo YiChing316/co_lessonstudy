@@ -75,12 +75,26 @@ body{font-family: '微軟正黑體';}
     padding: 0;
 }
 
+.padding-sm{
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+}
+
+.card-body-padding{
+    padding: 0.5em;
+}
+
 textarea{
     resize: none;
 }
 
 .disabledNav{
     pointer-events: none;
+}
+
+.hr-margin-sm{
+    margin-top: 0;
+    margin-bottom: 0.5em;
 }
 
 /*******社群入口*******/
@@ -162,7 +176,13 @@ textarea{
     text-decoration: none;
 }
   
-#sidebar ul li a:hover,#sidebar .sidebar-menu a:focus {
+#sidebar ul li a:hover,#sidebar .sidebar-menu a:focus{
+    background: #065071;
+    color: white;
+    text-decoration: none;
+}
+
+#sidebar ul li .onpage{
     background: #065071;
     color: white;
     text-decoration: none;
@@ -312,9 +332,9 @@ MEDIAQUERIES
 }
 
 .mode_btn:hover{
-    color: #065B80;
+    color: #FFF;
     border-color: #FFF;
-    background-color: #FFF;
+    background-color: rgb(14, 123, 170);
 }
 
 /*實作畫面儲存button背景*/
@@ -414,4 +434,16 @@ MEDIAQUERIES
 .uploadLinkBtn:hover{
     background-color: #B5DDC2;
     color: white;
+}
+
+.idealist .fas {
+    transition: .3s transform ease-in-out;
+}
+.idealist .collapsed .fas {
+    transform: rotate(90deg);
+}
+
+.convergenceCard{
+    min-height: 80vh;
+    max-height: 80vh;
 }

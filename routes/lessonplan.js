@@ -458,14 +458,13 @@ router.get('/edit/:community_id/getCustomProcessTag',function(req,res){
 
 
 /*****想法頁面************************************************************************************ */
-router.get('/idea/:community_id', function(req, res, next) {
+router.get('/idea/:community_id/divergence', function(req, res, next) {
     var member_id = req.session.member_id;
     var member_name = req.session.member_name;
 
     var community_id = req.params.community_id;
 
     var community_name;
-    var lessonplanActivityName;
     var nodeData,edgeData;
 
     if(!member_id){
@@ -475,11 +474,7 @@ router.get('/idea/:community_id', function(req, res, next) {
         community.selectCommunityName(community_id)//get communityname end
         .then(function(communitydata){
             community_name = communitydata[0].community_name;
-            return lessonplan.selectLessonplanActivityName(community_id)
-        })
-        .then(function(activiynamedata){
-            lessonplanActivityName = JSON.stringify(activiynamedata)
-            return node.selectAllNodeData(community_id);
+            return node.selectAllNodeData(community_id)
         })
         .then(function(nodedata){
             nodeData = JSON.stringify(nodedata);
@@ -493,7 +488,6 @@ router.get('/idea/:community_id', function(req, res, next) {
                                             community_name:community_name,
                                             member_id:member_id,
                                             member_name:member_name,
-                                            lessonplanActivityName:lessonplanActivityName,
                                             nodeData:nodeData,
                                             edgeData:edgeData
                                         });
@@ -502,7 +496,7 @@ router.get('/idea/:community_id', function(req, res, next) {
 });
 
 //打開想法節點
-router.get('/idea/:community_id/openIdea',function(req,res,next){
+router.get('/idea/:community_id/divergence/openIdea',function(req,res,next){
     var member_id = req.session.member_id;
     var member_name = req.session.member_name;
 
@@ -539,7 +533,7 @@ router.get('/idea/:community_id/openIdea',function(req,res,next){
 })
 
 //建立想法節點
-router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function(req,res){
+router.post('/idea/:community_id/divergence/createIdea',upload.array('ideafile',5),function(req,res){
     var member_id = req.session.member_id;
     var member_name = req.session.member_name;
 
@@ -600,7 +594,7 @@ router.post('/idea/:community_id/createIdea',upload.array('ideafile',5),function
 })
 
 //更新想法節點
-router.post('/idea/:community_id/updateIdea',upload.array('ideafile',5),function(req,res){
+router.post('/idea/:community_id/divergence/updateIdea',upload.array('ideafile',5),function(req,res){
     var member_id = req.session.member_id;
     var member_name = req.session.member_name;
 
@@ -649,7 +643,7 @@ router.post('/idea/:community_id/updateIdea',upload.array('ideafile',5),function
 })
 
 //打開實作節點
-router.get('/idea/:community_id/openLessonplanNode',function(req,res,next){
+router.get('/idea/:community_id/divergence/openLessonplanNode',function(req,res,next){
     var member_id = req.session.member_id;
     var member_name = req.session.member_name;
 
@@ -668,7 +662,7 @@ router.get('/idea/:community_id/openLessonplanNode',function(req,res,next){
     }
 })
 
-router.get('/idea/:community_id/openActivityNode',function(req,res,next){
+router.get('/idea/:community_id/divergence/openActivityNode',function(req,res,next){
     var member_id = req.session.member_id;
     var member_name = req.session.member_name;
 
@@ -688,7 +682,7 @@ router.get('/idea/:community_id/openActivityNode',function(req,res,next){
 })
 
 //刪除想法節點內檔案
-router.post('/idea/:community_id/deletefile',function(req,res){
+router.post('/idea/:community_id/divergence/deletefile',function(req,res){
     var member_id = req.session.member_id;
     var community_id = req.params.community_id;
 
@@ -723,7 +717,7 @@ router.post('/idea/:community_id/deletefile',function(req,res){
     }
 })
 
-router.post('/idea/:community_id/updateNodePosition',function(req,res){
+router.post('/idea/:community_id/divergence/updateNodePosition',function(req,res){
     var member_id = req.session.member_id;
     var community_id = req.params.community_id;
 
@@ -739,5 +733,33 @@ router.post('/idea/:community_id/updateNodePosition',function(req,res){
         })
     }
 })
+
+/*****收斂頁面************************************************************************************ */
+router.get('/idea/:community_id/convergence', function(req, res, next) {
+    var member_id = req.session.member_id;
+    var member_name = req.session.member_name;
+
+    var community_id = req.params.community_id;
+
+    var community_name;
+
+    if(!member_id){
+        res.redirect('/member/login');
+    }
+    else{
+        community.selectCommunityName(community_id)//get communityname end
+        .then(function(communitydata){
+            community_name = communitydata[0].community_name;
+            res.render('lessonplanEdit', { title: '想法收斂',
+                                            mode: 'convergenceContent',
+                                            community_id:community_id,
+                                            community_name:community_name,
+                                            member_id:member_id,
+                                            member_name:member_name
+                                        });
+        })
+
+    }
+});
 
 module.exports = router;

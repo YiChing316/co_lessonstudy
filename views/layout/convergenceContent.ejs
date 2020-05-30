@@ -1,0 +1,57 @@
+<div style="margin-top: 12px;">
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">選擇要收斂想法的標籤</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4 padding-sm">
+            <div class="card convergenceCard">
+                <div class="card-header bg-selfgreen"><i class="far fa-lightbulb mr-1"></i>想法列表</div>
+                <div class="card-body nopadding-all" style="overflow-y: auto;">
+                    <div class="card idealist">
+                        <p class="card-header collapsed" data-toggle="collapse" data-target="#collapseOne">想法標題<i class="fas fa-chevron-down float-right"></i></p>
+                        <div  id="collapseOne" class="collapse">
+                            <div class="card-body">想法內容</div>
+                            <div class="card-footer">作者</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col padding-sm">
+            <div class="card convergenceCard">
+                <div class="card-header bg-7"><i class="fas fa-clipboard mr-1"></i>收斂空間</div>
+                <div class="card-body card-body-padding" style="overflow-y: auto;">
+                    <div>
+                        <textarea class="convergencesummernote" id="convergenceTextarea"></textarea>
+                        <div class="btn-bg">
+                            <input type="button" class="btn btn-primary btn-sm float-right my-1" value="更新收斂結果">
+                        </div>
+                    </div>
+                    <hr class="hr-margin-sm">
+                    <div>
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label nopadding-right">討論留言</label>
+                                    <div class="col-sm">
+                                      <input type="text" class="form-control">
+                                    </div>
+                                    <div class="col-sm-1 nopadding">
+                                      <button type="button" class="btn btn-primary mb-2">送出</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <table id="convergenceMessageTable"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/javascripts/convergence.js"></script>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('layout/bootstrap.ejs'); -%>
+    <link href="/stylesheets/style.css" rel="stylesheet">
+    <title><%= title %></title>
+  </head>
+  <body>
+    <p id="community_id" style="display: none;"><%= community_id %></p>
+    <%- include('layout/navbar2.ejs'); -%>
+    <% if (mode == "lessonplanContent") { %>
+        <%- include('layout/lessonplanContent.ejs'); -%>
+    <% }else if(mode =="ideaContent"){ %>
+        <%- include('layout/ideaContent.ejs'); -%>
+    <% } %>
+    <%- include('modal.ejs'); -%>
+    <script type="text/javascript">
+        if("<%= mode %>" == "lessonplanContent"){
+            $("#edit").toggleClass("active");
+        }
+        else{
+            $("#idea").toggleClass("active");
+        }
+
+        $(".mode-switch-btn > .mode_btn").click(function(){
+            var id = $(this).attr("id");
+            window.location.href = "/lessonplan/"+id+"/<%= community_id %>";
+            $(this).toggleClass("active");
+        })
+        $(".navbar").find("li .lessonplan").toggleClass("active");
+        $(".navbar").find("li .lessonplan").toggleClass("disabledNav");
+    </script>
+  </body>
+</html>

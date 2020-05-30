@@ -26,6 +26,8 @@
                 <%- include('layout/lessonplanContent.ejs'); -%>
             <% }else if(mode =="ideaContent"){ %>
                 <%- include('layout/ideaContent.ejs'); -%>
+            <% }else if(mode =="convergenceContent"){ %>
+                <%- include('layout/convergenceContent.ejs'); -%>
             <% } %>
         </div>
     </div>
@@ -33,15 +35,22 @@
     <script type="text/javascript">
         if("<%= mode %>" == "lessonplanContent"){
             $("#edit").toggleClass("active");
+            $("#edit").toggleClass("disabledNav");
         }
         else{
             $("#idea").toggleClass("active");
+            $("#idea").toggleClass("disabledNav");
         }
 
         $(".mode-switch-btn > .mode_btn").click(function(){
             var id = $(this).attr("id");
-            window.location.href = "/lessonplan/"+id+"/<%= community_id %>";
             $(this).toggleClass("active");
+            if( id == "edit"){
+                window.location.href = "/lessonplan/"+id+"/<%= community_id %>";
+            }
+            else{
+                window.location.href = "/lessonplan/"+id+"/<%= community_id %>/divergence";
+            }
         })
         $(".navbar").find("li .lessonplan").toggleClass("active");
         $(".navbar").find("li .lessonplan").toggleClass("disabledNav");
