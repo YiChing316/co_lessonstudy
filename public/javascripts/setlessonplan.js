@@ -1,6 +1,7 @@
 /*將教案實作的內容以模組方式append出來 */
 var lessonplan_Component = [
     {name:'教案簡介',id:'lessonplan_intro',type:'textarea',parentDiv:'lessonplan'},
+    {name:'單元名稱',id:'lessonplan_unit_name',type:'text',parentDiv:'lessonplan'},
     {name:'課程領域',id:'lessonplan_field',type:'select',parentDiv:'lessonplan'},
     {name:'使用版本',id:'lessonplan_version',type:'select',parentDiv:'lessonplan'},
     {name:'學習階段',id:'lessonplan_grade',type:'select',parentDiv:'lessonplan'},
@@ -35,6 +36,15 @@ function textareaDiv(componentname,componentid,parentDiv){
                                 '<label class="control-label col-sm-2">'+componentname+'</label>'+
                                 '<div class="col-sm-10">'+
                                 '<textarea id="'+componentid+'" class="form-control" rows="10"></textarea>'+
+                                '</div>'+
+                            '</div>');
+};
+
+function textDiv(componentname,componentid,parentDiv){
+    $('#'+parentDiv).append('<div class="form-group row">'+
+                                '<label class="control-label col-sm-2">'+componentname+'</label>'+
+                                '<div class="col-sm-10">'+
+                                '<input id="'+componentid+'" class="form-control">'+
                                 '</div>'+
                             '</div>');
 };
@@ -82,13 +92,9 @@ function threeselecDiv(labelname,firstselid,secondselid,threeselid,bodyname,pare
                             '</div>');
 }
 
-function alertStageDiv(parentDiv){
-    $('#'+parentDiv).append('<small><b class="text-danger">(請先完成領域、版本以及學習階段的設定)</b></small>');
-}
-
 
 /*****************append元件 *****************************************************************************/
-var basicData,lessonplanUnitActivityData;
+var basicData;
 var lessonplanActivityProcessData;
 
 //放置在教案基本資料內的div
@@ -109,6 +115,7 @@ function setLessonplanBasicData(){
 function lessonplan_Map(){
     if(basicData.length !== 0){
         var lessonplan_intro = basicData.lessonplan_intro;
+        var lessonplan_unit_name = basicData.lessonplan_unit_name;
         var lessonplan_field = basicData.lessonplan_field;
         var lessonplan_version = basicData.lessonplan_version;
         var lessonplan_grade = basicData.lessonplan_grade;
@@ -121,6 +128,10 @@ function lessonplan_Map(){
         if(data.type == 'textarea'){
             textareaDiv(data.name,data.id,data.parentDiv);
             $("#"+data.id).val(lessonplan_intro);
+        }
+        else if(data.type == "text"){
+            textDiv(data.name,data.id,data.parentDiv);
+            $("#"+data.id).val(lessonplan_unit_name);
         }
         else if(data.type == 'select'){
             if(data.id == 'lessonplan_field'){
@@ -567,6 +578,7 @@ function saveLessonplanData(divId){
     switch(divId){
         case 'lessonplan':
             var lessonplan_intro = $("#lessonplan_intro").val();
+            var lessonplan_unit_name = $("#lessonplan_unit_name").val();
             var lessonplan_field = [];
             $("input[name='fieldbox']:checked").each(function(){
                 lessonplan_field.push($(this).val());
@@ -582,6 +594,7 @@ function saveLessonplanData(divId){
             var data = {
                 stage:divId,
                 lessonplan_intro:lessonplan_intro,
+                lessonplan_unit_name:lessonplan_unit_name,
                 lessonplan_field:fieldString,
                 lessonplan_version:lessonplan_version,
                 lessonplan_grade:lessonplan_grade,
@@ -614,12 +627,11 @@ function saveLessonplanData(divId){
         case 'creatActivityModal':
         case 'editActivityModal':
 
-            var lessonplan_unit_name = $("#"+divId).find(".unitName").val();
             var lessonplan_activity_name = $("#"+divId).find(".activityName").val();
             var baseid = $("#"+divId).find(".activityid").text();
             var editparentCardId = $("#parentCardId").text();
 
-            if(lessonplan_unit_name == "" || lessonplan_activity_name == ""){
+            if(lessonplan_activity_name == ""){
                 $("#"+divId).find(".alert").show();
             }
             else{
@@ -636,36 +648,33 @@ function saveLessonplanData(divId){
                 var data = {
                     stage:divId,
                     baseid:baseid,
-                    lessonplan_unit_name:lessonplan_unit_name,
                     lessonplan_activity_name:lessonplan_activity_name,
                     tableContent:tableContent
                 };
 
                 isChange = false;
-                $("#"+divId).find(".unitName").removeClass("editing");
                 $("#"+divId).find(".activityName").removeClass("editing");
                 $("#"+divId).find("input[name='targetandactivity']").removeClass("editing");
 
                 // console.log($("#creatActivityModal").find(".editing").get())
 
-                var unitResults = saveAjax(data);
-                if(unitResults.msg == "ok"){
+                var activityResults = saveAjax(data);
+                if(activityResults.msg == "ok"){
                     alert("儲存成功");
 
                     $("#"+divId).modal('hide');
                     modalclosebtn(divId);
                     if( divId == 'creatActivityModal'){
                         var id = $(".activityRow").length + 1;
-                        var process_id = unitResults.process_id;
-                        var cardtitle = lessonplan_unit_name+"-"+lessonplan_activity_name;
-                        var selectNodeData = unitResults.selectnodeData;
-                        activityandAssessmentDesign_Append(id,process_id,lessonplan_unit_name,lessonplan_activity_name,cardtitle);
+                        var process_id = activityResults.process_id;
+                        var selectNodeData = activityResults.selectnodeData;
+                        activityandAssessmentDesign_Append(id,process_id,lessonplan_activity_name);
                         resetActivityNameandTargetArray(lessonplan_activity_name,newtwowayData)
                         socket.emit('create activity',{community_id:community_id,selectData:selectNodeData})
                         //window.location = "/lessonplan/edit/"+community_id;
                     }
                     else{
-                        var selectData = unitResults.selectData;
+                        var selectData = activityResults.selectData;
 
                         var parnetid = $("#"+editparentCardId).find(".card-body").attr("id");
                         $("#"+parnetid+"Table Tbody").empty();

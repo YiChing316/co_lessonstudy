@@ -3,13 +3,13 @@ var common_option = ["引起動機","發展活動","綜合活動","課堂結束"
 var assessment_option = ["紙筆測驗","口頭評量","實作能力評量","作品評量","態度評量","課室教學記錄","學習反思札記","同儕互評","學習歷程檔案評量","評量指標"];
 var custom_option;
 
-function trElement(parentid,num,processtarget,processcontent,processtime,processremark){
+function trElement(parentid,activitynumber,num,processtarget,processcontent,processtime,processremark){
     $("#"+parentid+"Tbody").append('<tr>'+
                                         '<td>'+
                                             '<a href="javascript:void(0)" class="up"><i class="far fa-arrow-alt-circle-up fa-lg my-2"></i></a>'+
                                             '<a href="javascript:void(0)" class="down"><i class="far fa-arrow-alt-circle-down fa-lg my-2"></i></a>'+
                                         '</td>'+
-                                        '<th scope="row">'+num+'</th>'+
+                                        '<th scope="row">'+activitynumber+'-'+num+'</th>'+
                                         '<td>'+processtarget+'</td>'+
                                         '<td>'+processcontent+'</td>'+
                                         '<td>'+processtime+'</td>'+
@@ -38,32 +38,33 @@ function assessmentDiv(td_id,assessmentcontent,tmpmimetype,tmppath,file){
 }
 
 //活動與評量設計內table顯示
-function activityandAssessmentDesign_Append(id,baseid,unit_name,activity_name,title){
+function activityandAssessmentDesign_Append(id,baseid,activity_name){
     var divId = "'activity_"+id+"'";
     var activityDiv = '<div class="row accordion activityRow">'+
                             '<div class="card col-9 nopadding" id="cardidactivity_'+id+'">'+
-                                '<h5 class="card-header bg-white font-weight-bolder shadow-sm" id="headeractivity_'+id+'" data-toggle="collapse" data-target=".activity_'+id+'" data-unitname="'+unit_name+'" data-activityname="'+activity_name+'">'+title+''+
+                                '<h5 class="card-header bg-white font-weight-bolder shadow-sm" id="headeractivity_'+id+'" data-toggle="collapse" data-target=".activity_'+id+'" data-activityname="'+activity_name+'">活動'+id+"-"+activity_name+''+
                                     '<a href="javascript:void(0)" class="editActivity ml-2" style="color: #ED557E"><i class="far fa-edit"></i></a>'+
                                     '<span class="float-right"><i class="fa fa-angle-up collapseicon" id="activity_'+id+'icon"></i></span>'+
                                 '</h5>'+
-                                '<div class="card-body collapse show activity_'+id+'" id="activity_'+id+'">'+
+                                '<div class="card-body collapse show activity_'+id+'" data-activitynumber="'+id+'" id="activity_'+id+'">'+
                                     '<p class="lessonplan_activity_process_id" style="display:none">'+baseid+'</p>'+
-                                    '<button class="btn btn-outline-info" data-toggle="modal" data-target="#addprocessModal" data-parentdivid="activity_'+id+'"><i class="fas fa-plus"></i> 新增活動流程</button>'+
+                                    
                                     '<table class="table table-bordered activitytable mt-3" id="activity_'+id+'Table">'+
                                         '<thead class="thead-light">'+
                                             '<tr>'+
                                                 '<th scope="col" width="40"></th>'+
-                                                '<th scope="col" width="40">#</th>'+
-                                                '<th scope="col" width="150">學習目標</th>'+
-                                                '<th scope="col" width="450">活動流程</th>'+
-                                                '<th scope="col" width="60">時間</th>'+
-                                                '<th scope="col" width="200">評量方式</th>'+
+                                                '<th scope="col" width="60">#</th>'+
+                                                '<th scope="col" width="120">學習目標</th>'+
+                                                '<th scope="col" width="300">活動流程</th>'+
+                                                '<th scope="col" width="50">時間</th>'+
+                                                '<th scope="col" width="150">評量方式</th>'+
                                                 '<th scope="col">備註</th>'+
                                                 '<th scope="col" width="50"></th>'+
                                             '</tr>'+
                                         '</thead>'+
                                         '<tbody class="activityTbody" id="activity_'+id+'Tbody"></tbody>'+
                                     '</table>'+
+                                    '<button class="btn btn-outline-info" data-toggle="modal" data-target="#addprocessModal" data-parentdivid="activity_'+id+'"><i class="fas fa-plus"></i> 新增活動流程</button>'+
                                 '</div>'+
                                 '<div class="card-footer collapse show text-right activity_'+id+'">'+
                                     '<input type="button" class="btn btn-primary" value="儲存" onclick="saveActivityProcessData('+divId+')">'+
@@ -88,11 +89,10 @@ function setActivityCard(){
         for(i in lessonplanActivityProcessData){
             var processData = lessonplanActivityProcessData[i];
             var baseid = processData.lessonplan_activity_process_id;
-            var unit_name = processData.lessonplan_unit_name;
             var activity_name = processData.lessonplan_activity_name;
             
             var listnum = parseInt(i)+1;
-            activityandAssessmentDesign_Append(listnum,baseid,unit_name,activity_name,unit_name+"-"+activity_name);
+            activityandAssessmentDesign_Append(listnum,baseid,activity_name);
         }
     }
     collapseControl();
@@ -120,59 +120,7 @@ function setActivityProcess(){
             var lessonplan_activity_content = processData.lessonplan_activity_content;
 
             if(lessonplan_activity_content.length !== 0){
-                setLessonplanActivityContent(parentid,lessonplan_activity_name,lessonplan_activity_content);
-                // lessonplan_activity_content = JSON.parse(lessonplan_activity_content);
-
-                /*for(var s=0;s<lessonplan_activity_content.length;s++){
-                    var contentData = lessonplan_activity_content[s];
-                    var num = s+1;
-                    var processtarget = contentData.lessonplan_activity_learningtarget;
-                    var processcontent = contentData.lessonplan_activity_content;
-                    var processtime = contentData.lessonplan_activity_time;
-                    var processremark = contentData.lessonplan_activity_remark;
-                    var assessmentArray = contentData.lessonplan_activity_assessment;
-
-                    trElement(parentid,num,processtarget,processcontent,processtime,processremark);
-
-                    for(var r=0;r<assessmentArray.length;r++){
-                        var assessmentData= assessmentArray[r];
-                        var td_id = parentid+"_assessmentTd_"+num;
-                        var assessment_content = assessmentData.assessment_content;
-                        var assessment_originalname = assessmentData.assessment_originalname;
-                        var content = "<p>"+assessment_content+"</p>";
-                        var filediv = '<i class="fas fa-paperclip mr-1"></i>'+assessment_originalname;
-                        var data = {
-                            filepath:'./public/communityfolder/community_'+community_id+'/communityfile/'+assessment_originalname
-                        }
-                        //要出現在assessmentDiv的
-                        if(assessment_originalname !== ""){
-                            $.ajax({
-                                url: "/lessonplan/edit/"+community_id+"/checkfile",
-                                type: "POST",
-                                async:false,
-                                data:data,
-                                success: function(data){
-                                    if(data.msg == "ok"){
-                                        assessmentDiv(td_id,content,"","",filediv);
-                                    }
-                                    else if(data.msg == "notexist"){
-                                        assessmentDiv(td_id,content,"","","");
-                                    }
-                                },
-                                error: function(){
-                                    alert('失敗');
-                                }
-                            })
-                        }
-                        else{
-                            assessmentDiv(td_id,content,"","","");
-                        }
-                        
-                        targetandAssessmentArray.push({lessonplan_activity_name:lessonplan_activity_name,processtarget:processtarget,assessment_content:assessment_content})
-                        deleteassessment();
-                        editAssessmentDiv();
-                    }
-                }*/
+                setLessonplanActivityContent(parentid,number,lessonplan_activity_name,lessonplan_activity_content);
             }
         }
     }
@@ -187,14 +135,16 @@ function setOneCardActivityProcess(selectdata,baseid,parentid){
         var lessonplan_activity_name = processData.lessonplan_activity_name;
         if (lessonplan_activity_process_id == baseid){
             var lessonplan_activity_content = processData.lessonplan_activity_content;
+            var nameArray = parentid.split("_");
+            var activitynumber = nameArray[1];
 
-            setLessonplanActivityContent(parentid,lessonplan_activity_name,lessonplan_activity_content)
+            setLessonplanActivityContent(parentid,activitynumber,lessonplan_activity_name,lessonplan_activity_content)
         }
     }
 }
 
 //呈現每個table內資料，獨立出來讓不同function皆可使用
-function setLessonplanActivityContent(parentid,lessonplan_activity_name,lessonplan_activity_content){
+function setLessonplanActivityContent(parentid,activitynumber,lessonplan_activity_name,lessonplan_activity_content){
     var community_id = $("#community_id").text();
 
     if(lessonplan_activity_content !== ""){
@@ -209,7 +159,7 @@ function setLessonplanActivityContent(parentid,lessonplan_activity_name,lessonpl
             var processremark = contentData.lessonplan_activity_remark;
             var assessmentArray = contentData.lessonplan_activity_assessment;
 
-            trElement(parentid,num,processtarget,processcontent,processtime,processremark);
+            trElement(parentid,activitynumber,num,processtarget,processcontent,processtime,processremark);
 
             for(var r=0;r<assessmentArray.length;r++){
                 var assessmentData= assessmentArray[r];
@@ -291,22 +241,9 @@ $(function(){
     editActivityTr();
     deleteeditfile();
 
-    // moveTrPosition();
+    moveTrPosition();
     addCustomProcessTag();
     collapseControl();
-
-    $(".up,.down").click(function(){
-        var row = $(this).parents("tr:first");
-        
-        if ($(this).is(".up")) {
-            row.insertBefore(row.prev());
-        } else {
-            row.insertAfter(row.next());
-        }
-        var parentid = $(this).closest('.card-body').attr('id');
-        console.log(parentid)
-        saveLocalStorage(parentid);
-    });
     
 })
 
@@ -314,12 +251,10 @@ function editActivityCard(){
     $(".editActivity").click(function(e){
         e.stopPropagation(); 
         var parnetid = $(this).parents(".card").attr("id");
-        var unit_name = $("#"+parnetid).find(".card-header").data("unitname");
         var activity_name = $("#"+parnetid).find(".card-header").data("activityname");
         var lessonplan_activity_process_id = $("#"+parnetid).find(".lessonplan_activity_process_id").text();
         $("#editActivityModal").modal("show");
         $("#parentCardId").text(parnetid);
-        $("#editunitName").val(unit_name)
         $("#editactivityName").val(activity_name)
         $("#editactivityid").text(lessonplan_activity_process_id)
         console.log(twowayTableData)
@@ -380,12 +315,6 @@ function deleteActivityData(){
                 sidebar_Map();
                 $("#"+deletecardid).parent().remove();
                 $("#editActivityModal").modal("hide");
-                // $("#lessonplan_targetandActivity").empty();
-                // $("#setactivity").find('div').remove();
-                // setActivityCard();
-                // setActivityProcess();
-                // setLessonplanTargetandActivityTable();
-                // showtwowayTableData();
                 setActivityProcess();
                 socket.emit('delete activity',{community_id:community_id,nodeData:nodeData})
             }
@@ -415,6 +344,7 @@ function addactivityTr(){
     var processtime = $("#processtime").val();
     var processremark = $("#processremark").val();
     
+    var activitynumber = $("#"+parentid).data("activitynumber")
     var num = $("#"+parentid+"Tbody tr").length+1;
 
     if(processcontent == "" || processtime == ""){
@@ -423,7 +353,7 @@ function addactivityTr(){
     }
     else{
         //活動編號根據所在的位置id
-        trElement(parentid,num,processtarget,processcontent,processtime,processremark);
+        trElement(parentid,activitynumber,num,processtarget,processcontent,processtime,processremark);
 
         $("#processtarget").removeClass("editing");
         $("#processtime").removeClass("editing");
@@ -521,8 +451,13 @@ function deleteActivityTableTr(){
             }
         })
         $(this).closest('tr').remove();
+
+        var activitynumber = $("#"+parentid).data("activitynumber");
+        //移動流程順序時，編號也進行更新
         $("#"+parentid+"Tbody tr").each(function(index) {
-            $(this).find('th:eq(0)').first().html(index + 1);
+            index = index + 1;
+            var num = index.toString()
+            $(this).find('th:eq(0)').first().html(activitynumber+"-"+num);
         });
 
         saveLocalStorage(parentid);
@@ -752,7 +687,7 @@ function setLessonplanTargetandActivityTable(){
                 var checkid = name+tr_index;
                 $("#lessonplanTargetandActivityTable").find("tbody tr:eq("+tr_index+")").append(
                     '<td class="text-center" width="120">'+
-                        '<div class="custom-control custom-checkbox">'+
+                        '<div class="custom-control custom-checkbox" style="display:none;">'+
                             '<input type="checkbox" class="custom-control-input" id="'+checkid+'" name="targetandactivity" value="'+name+'" disabled>'+
                             '<label class="custom-control-label" for="'+checkid+'"></label>'+
                         '</div>'+               
@@ -825,7 +760,7 @@ function setLessonplanTargetandAssessmentTable(){
                 var checkid = checkboxValue+tr_index;
                 $("#lessonplanTargetanAssessmentTable").find("tbody tr:eq("+tr_index+")").append(
                     '<td class="text-center" width="120">'+
-                        '<div class="custom-control custom-checkbox">'+
+                        '<div class="custom-control custom-checkbox" style="display:none;">'+
                             '<input type="checkbox" class="custom-control-input" id="'+checkid+'" name="targetandassessment" value="'+checkboxValue+'" disabled>'+
                             '<label class="custom-control-label" for="'+checkid+'"></label>'+
                         '</div>'+               
@@ -834,7 +769,9 @@ function setLessonplanTargetandAssessmentTable(){
 
                 targetarray.map(function(data){
                     if(data == targetname ){
-                        $($("#lessonplanTargetanAssessmentTable").find("tbody tr")[s]).find("input[value='"+checkboxValue+"']").prop('checked', true);
+                        var $td = $($("#lessonplanTargetanAssessmentTable").find("tbody tr")[s]).find("input[value='"+checkboxValue+"']").parents("td");
+                         $td.append('<i class="fas fa-check"></i>');
+                        //$($("#lessonplanTargetanAssessmentTable").find("tbody tr")[s]).find("input[value='"+checkboxValue+"']").prop('checked', true);
                     }
                 })
             })
@@ -857,7 +794,9 @@ function showtwowayTableData(){
               var target = twowayTableData[i].targetName;
               var activity = twowayTableData[i].activityName;
               if(target == data){
-                $($("#lessonplanTargetandActivityTable").find("tbody tr")[x]).find("input[value='"+activity+"']").prop('checked', true);
+                  var $td = $($("#lessonplanTargetandActivityTable").find("tbody tr")[x]).find("input[value='"+activity+"']").parents("td");
+                  $td.append('<i class="fas fa-check"></i>');
+                //$($("#lessonplanTargetandActivityTable").find("tbody tr")[x]).find("input[value='"+activity+"']").prop('checked', true);
               }
             })
         }
@@ -1265,7 +1204,6 @@ function modalclosebtn(modalid){
     switch (modalid){
         case 'creatActivityModal':
         case 'editActivityModal':
-            $("#"+modalid).find(".unitName").val("");
             $("#"+modalid).find(".activityName").val("");
             $("#"+modalid).find(".targetCheckbox").empty();
             $("#"+modalid).find(".alert").hide();
@@ -1374,12 +1312,20 @@ function processTagClass(tag){
 function moveTrPosition(){
     $(".up,.down").click(function(){
         var row = $(this).parents("tr:first");
+        var tbodyId = $(this).parents("tbody").attr("id");
+        var activitynumber = $(this).parents(".card-body").data("activitynumber");
         
         if ($(this).is(".up")) {
             row.insertBefore(row.prev());
         } else {
             row.insertAfter(row.next());
         }
+        //移動流程順序時，編號也進行更新
+        $("#"+tbodyId+" tr").each(function(index) {
+            index = index + 1;
+            var num = index.toString()
+            $(this).find('th:eq(0)').first().html(activitynumber+"-"+num);
+        });
         var parentid = $(this).closest('.card-body').attr('id');
         saveLocalStorage(parentid);
     });

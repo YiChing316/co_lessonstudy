@@ -34,6 +34,7 @@ module.exports = {
                 var  sql = {
                     community_id_community:community_id,
                     lessonplan_intro:lessonplanData.lessonplan_intro,
+                    lessonplan_unit_name:lessonplanData.lessonplan_unit_name,
                     lessonplan_field:lessonplanData.lessonplan_field,
                     lessonplan_version:lessonplanData.lessonplan_version,
                     lessonplan_grade:lessonplanData.lessonplan_grade,
@@ -69,14 +70,13 @@ module.exports = {
         })
     },
 
-    insertUnitandActivity: function(community_id,lessonplanData,node_id,member_id,member_name){
+    insertActivity: function(community_id,lessonplanData,node_id,member_id,member_name){
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
 
                 var  sql = {
                     community_id_community:community_id,
-                    lessonplan_unit_name:lessonplanData.lessonplan_unit_name,
                     lessonplan_activity_name:lessonplanData.lessonplan_activity_name,
                     lessonplan_activity_target:lessonplanData.tableContent,
                     node_id_node:node_id,
@@ -97,7 +97,7 @@ module.exports = {
         })
     },
 
-    updateUnitandActivity: function(community_id,lessonplanData,member_id,member_name){
+    updateActivity: function(community_id,lessonplanData,member_id,member_name){
         var tableContent = lessonplanData.tableContent;
         var baseid;
         return new Promise(function(resolve,reject){
@@ -107,7 +107,6 @@ module.exports = {
 
                 var  sql = {
                     community_id_community:community_id,
-                    lessonplan_unit_name:lessonplanData.lessonplan_unit_name,
                     lessonplan_activity_name:lessonplanData.lessonplan_activity_name,
                     lessonplan_activity_target:tableContent,
                     member_id_member:member_id,

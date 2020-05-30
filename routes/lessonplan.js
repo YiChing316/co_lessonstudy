@@ -202,7 +202,7 @@ router.post('/edit/:community_id/save',function(req,res,next){
                     node.createNewNode(community_id,lessonplan_activity_name,'','activity',0,member_id,member_name)
                     .then(function(nodedata){
                         node_id = nodedata.insertId;
-                        return lessonplan.insertUnitandActivity(community_id,lessonplanData,node_id,member_id,member_name)
+                        return lessonplan.insertActivity(community_id,lessonplanData,node_id,member_id,member_name)
                     })
                     .then(function(data){
                         process_id = data;
@@ -219,7 +219,7 @@ router.post('/edit/:community_id/save',function(req,res,next){
                     })
                 }
                 else{
-                    lessonplan.updateUnitandActivity(community_id,lessonplanData,member_id,member_name)
+                    lessonplan.updateActivity(community_id,lessonplanData,member_id,member_name)
                    .then(function(data){
                         return lessonplan.selectLessonplanActivityProcess(community_id)
                     })
