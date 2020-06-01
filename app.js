@@ -67,6 +67,16 @@ io.on('connection', function(socket){
     socket.nsp.to(roomName).emit('update tag',data.community_tag);
   })
 
+  socket.on('save convergenceTextarea',function(data){
+    var roomName = "community_"+data.community_id;
+    socket.nsp.to(roomName).emit('update convergenceData',data.updateData);
+  })
+
+  socket.on('send message',function(data){
+    var roomName = "community_"+data.community_id;
+    socket.nsp.to(roomName).emit('update message',data.insertData);
+  })
+
 });
 
 // view engine setup

@@ -1,46 +1,49 @@
+<p id="community_tag" style="display: none;"><%= community_tag %></p>
+
 <div style="margin-top: 12px;">
-    <div class="form-group row">
+    <div class="form-group row padding-sm">
         <label class="col-sm-2 col-form-label">選擇要收斂想法的標籤</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control">
+        <div class="col-sm-9">
+            <select id="convergenceTag" class="form-control"></select>
+        </div>
+        <div class="col-sm-1 nopadding">
+            <input type="button" class="btn btn-outline-info float-right selectNodeTag" value="送出" style="margin-right: 0.5em;">
         </div>
     </div>
     <div class="row">
+        <!--想法列表-->
         <div class="col-4 padding-sm">
-            <div class="card convergenceCard">
-                <div class="card-header bg-selfgreen"><i class="far fa-lightbulb mr-1"></i>想法列表</div>
-                <div class="card-body nopadding-all" style="overflow-y: auto;">
-                    <div class="card idealist">
-                        <p class="card-header collapsed" data-toggle="collapse" data-target="#collapseOne">想法標題<i class="fas fa-chevron-down float-right"></i></p>
-                        <div  id="collapseOne" class="collapse">
-                            <div class="card-body">想法內容</div>
-                            <div class="card-footer">作者</div>
-                        </div>
-                    </div>
-                </div>
+            <div class="card convergenceCard" id="convergenceIdeaList">
+                <div class="card-header bg-selfgreen"><i class="far fa-lightbulb mr-1"></i><span class="cardheaderTagName"></span>想法列表</div>
+                <div class="card-body nopadding-all" id="ideaListCardBody" style="overflow-y: auto;"></div>
             </div>
         </div>
+        <!--收斂空間-->
         <div class="col padding-sm">
-            <div class="card convergenceCard">
-                <div class="card-header bg-7"><i class="fas fa-clipboard mr-1"></i>收斂空間</div>
+            <div class="card convergenceCard" id="convergenceSpace">
+                <div class="card-header bg-7"><i class="fas fa-clipboard mr-1"></i><span class="cardheaderTagName"></span>收斂空間</div>
                 <div class="card-body card-body-padding" style="overflow-y: auto;">
                     <div>
                         <textarea class="convergencesummernote" id="convergenceTextarea"></textarea>
                         <div class="btn-bg">
-                            <input type="button" class="btn btn-primary btn-sm float-right my-1" value="更新收斂結果">
+                            <div class="float-right">
+                                <input type="button" class="btn btn-primary btn-sm my-1 saveResults" data-action="save" value="儲存">
+                                <input type="button" class="btn btn-primary btn-sm my-1 saveResults" data-action="createNode" value="產生收斂結果">
+                            </div>
                         </div>
                     </div>
                     <hr class="hr-margin-sm">
                     <div>
                         <div class="card mb-2">
                             <div class="card-body">
-                                <div class="form-group row">
+                                <div class="form-group row" style="margin-bottom: 0;">
                                     <label class="col-sm-2 col-form-label nopadding-right">討論留言</label>
                                     <div class="col-sm">
-                                      <input type="text" class="form-control">
+                                      <input type="text" id="messageContentInput" class="form-control">
+                                      <small class="text-muted">最多可輸入200字</small>
                                     </div>
                                     <div class="col-sm-1 nopadding">
-                                      <button type="button" class="btn btn-primary mb-2">送出</button>
+                                        <input type="button" class="btn btn-outline-info float-right sendMessage" value="送出">
                                     </div>
                                 </div>
                             </div>

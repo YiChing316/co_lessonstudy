@@ -436,6 +436,10 @@ MEDIAQUERIES
     color: white;
 }
 
+.idealist .card-header{
+    padding:.50rem 1.25rem;
+}
+
 .idealist .fas {
     transition: .3s transform ease-in-out;
 }

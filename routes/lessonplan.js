@@ -4,6 +4,7 @@ var community = require('../models/community');
 var clsresource = require('../models/clsresource');
 var lessonplan = require('../models/lessonplan');
 var node = require('../models/node');
+var convergence = require('../models/convergence');
 var multer = require('multer');
 var fs = require('fs');
 
@@ -802,6 +803,7 @@ router.get('/idea/:community_id/convergence', function(req, res, next) {
     var community_id = req.params.community_id;
 
     var community_name;
+    var tagData;
 
     if(!member_id){
         res.redirect('/member/login');
@@ -810,16 +812,93 @@ router.get('/idea/:community_id/convergence', function(req, res, next) {
         community.selectCommunityName(community_id)//get communityname end
         .then(function(communitydata){
             community_name = communitydata[0].community_name;
+            return community.selectCommunityTag(community_id)
+        })
+        .then(function(tagdata){
+            tagData = tagdata[0].community_tag;
             res.render('lessonplanEdit', { title: '想法收斂',
                                             mode: 'convergenceContent',
                                             community_id:community_id,
                                             community_name:community_name,
                                             member_id:member_id,
-                                            member_name:member_name
+                                            member_name:member_name,
+                                            community_tag:tagData
                                         });
         })
 
     }
 });
+
+router.get('/idea/:community_id/convergence/selectThisTagNode', function(req, res, next) {
+    var member_id = req.session.member_id;
+    var member_name = req.session.member_name;
+
+    var community_id = req.params.community_id;
+    var node_tag = req.query.node_tag;
+
+    var convergenceData,messageData,convergence_id;
+
+    if(!member_id){
+        res.json({msg:'no'});
+        res.redirect('/member/login');
+    }
+    else{
+        convergence.selectThisTagConvergence(community_id,node_tag,member_id,member_name)
+        .then(function(selectdata){
+            convergenceData = selectdata;
+            convergence_id = convergenceData[0].convergence_id;
+            return convergence.selectThisTagMessage(convergence_id)
+        })
+        .then(function(messagedata){
+            messageData = messagedata;
+            return convergence.selectThisTagNode(community_id,node_tag)
+        })
+        .then(function(nodedata){
+            res.json({msg:'ok',nodeData:nodedata,convergenceData:convergenceData,messageData:messageData})
+        })
+    }
+})
+
+router.post('/idea/:community_id/convergence/saveConvergence', function(req, res, next){
+    var member_id = req.session.member_id;
+    var member_name = req.session.member_name;
+
+    var community_id = req.params.community_id;
+
+    if(!member_id){
+        res.json({msg:'no'});
+        res.redirect('/member/login');
+    }
+    else{
+        var convergence_id = req.body.convergence_id;
+        var convergence_content = req.body.convergence_content;
+        var convergence_ref_node = req.body.convergence_ref_node;
+        convergence.saveConvergenceContent(convergence_id,convergence_content,convergence_ref_node,member_id,member_name)
+        .then(function(data){
+            return res.json({msg:'ok',updateData:data});
+        })
+    }
+})
+
+router.post('/idea/:community_id/convergence/sendMessage', function(req, res, next){
+    var member_id = req.session.member_id;
+    var member_name = req.session.member_name;
+
+    var community_id = req.params.community_id;
+
+    if(!member_id){
+        res.json({msg:'no'});
+        res.redirect('/member/login');
+    }
+    else{
+        var convergence_id = req.body.convergence_id;
+        var convergence_tag = req.body.convergence_tag;
+        var message_content = req.body.message_content;
+        convergence.sendMessageContent(convergence_id,convergence_tag,message_content,member_id,member_name)
+        .then(function(insertdata){
+            return res.json({msg:'ok',insertData:insertdata});
+        })
+    }
+})
 
 module.exports = router;
