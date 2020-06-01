@@ -668,22 +668,15 @@ function saveLessonplanData(divId){
                         var id = $(".activityRow").length + 1;
                         var process_id = activityResults.process_id;
                         var selectNodeData = activityResults.selectnodeData;
-                        var community_tag = activityResults.tagData[0].community_tag.split(',');
                         activityandAssessmentDesign_Append(id,process_id,lessonplan_activity_name);
                         resetActivityNameandTargetArray(lessonplan_activity_name,newtwowayData)
                         socket.emit('create activity',{community_id:community_id,selectData:selectNodeData})
-                        socket.emit('create tag',{community_id:community_id,community_tag:community_tag})
                         //window.location = "/lessonplan/edit/"+community_id;
                     }
                     else{
                         var selectData = activityResults.selectData;
-                        var edit_community_tag = activityResults.tagData[0].community_tag.split(',');
-                        socket.emit('create tag',{community_id:community_id,community_tag:edit_community_tag})
 
                         var parnetid = $("#"+editparentCardId).find(".card-body").attr("id");
-                        //card-header內標題文字顯示修改
-                        $("#header"+parnetid+" span.headeractivityname").text(lessonplan_activity_name)
-                        $("#header"+parnetid).attr("data-activityname",lessonplan_activity_name);
                         $("#"+parnetid+"Table Tbody").empty();
 
                         var newAssessmentArray = [];

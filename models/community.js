@@ -17,14 +17,10 @@ module.exports = {
         var community_id,communityPath;
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
-                var community_tag =  ['教案基本資料', '課程學習目標', '學生先備概念','教學設計理念'];
-                community_tag = community_tag.toString();
-
                 var sql = {
                     community_name: community_name,
                     community_key: community_key,
                     community_intro:community_intro,
-                    community_tag:community_tag,
                     member_id_member: member_id,
                     member_name: member_name
                 }
@@ -217,35 +213,6 @@ module.exports = {
                     connection.release();
                 })
             })
-        })
-    },
-
-    selectCommunityTag: function(community_id){
-        return new Promise(function(resolve,reject){
-            pool.getConnection(function(err,connection){
-                if(err) return reject(err);
-                connection.query('SELECT `community_tag` FROM `community` WHERE `community_id`=?',[community_id],function(err,rows,fields){
-                    if(err) return reject(err);
-                    resolve(rows);
-                    connection.release();
-                })
-            })
-        })
-    },
-
-    updateCommunityTag: function(community_id,community_tag){
-        return new Promise(function(resolve,reject){
-            pool.getConnection(function(err,connection){
-                if(err) return reject(err);
-                connection.query('UPDATE `community` SET `community_tag`= ? WHERE `community_id`=?',[community_tag,community_id],function(err,rows,fields){
-                    if(err) return reject(err);
-                    resolve(rows);
-                    connection.release();
-                })
-            })
-        })
-        .then(function(data){
-            return module.exports.selectCommunityTag(community_id)
         })
     }
 }

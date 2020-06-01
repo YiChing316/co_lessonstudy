@@ -42,8 +42,7 @@ function activityandAssessmentDesign_Append(id,baseid,activity_name){
     var divId = "'activity_"+id+"'";
     var activityDiv = '<div class="row accordion activityRow">'+
                             '<div class="card col-9 nopadding" id="cardidactivity_'+id+'">'+
-                                '<h5 class="card-header bg-white font-weight-bolder shadow-sm" id="headeractivity_'+id+'" data-toggle="collapse" data-target=".activity_'+id+'" data-activityname="'+activity_name+'">'+
-                                    '活動'+id+"-<span class='headeractivityname'>"+activity_name+'</span>'+
+                                '<h5 class="card-header bg-white font-weight-bolder shadow-sm" id="headeractivity_'+id+'" data-toggle="collapse" data-target=".activity_'+id+'" data-activityname="'+activity_name+'">活動'+id+"-"+activity_name+''+
                                     '<a href="javascript:void(0)" class="editActivity ml-2" style="color: #ED557E"><i class="far fa-edit"></i></a>'+
                                     '<span class="float-right"><i class="fa fa-angle-up collapseicon" id="activity_'+id+'icon"></i></span>'+
                                 '</h5>'+
@@ -72,7 +71,7 @@ function activityandAssessmentDesign_Append(id,baseid,activity_name){
                                 '</div>'+
                             '</div>'+
                             '<div class="card col nopadding">'+
-                                '<h5 class="card-header bg-selfgreen font-weight-bolder">想法收斂結果</h5>'+
+                                '<h5 class="card-header bg-selfgreen font-weight-bolder">團隊想法</h5>'+
                                 '<div class="card-body collapse"></div>'+
                             '</div>'+
                         '</div>';
@@ -308,8 +307,6 @@ function deleteActivityData(){
                 var newProcessData = data.processData;
                 var newNameData = data.nameData;
                 var nodeData = data.nodeData;
-                var community_tag = data.tagData[0].community_tag.split(',');
-                socket.emit('create tag',{community_id:community_id,community_tag:community_tag})
                 $("#lessonplanActivityProcessData").text(newProcessData);
                 $("#lessonplanActivityName").text(newNameData);
                 activityName = JSON.parse($("#lessonplanActivityName").text());
