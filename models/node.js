@@ -259,6 +259,60 @@ module.exports = {
         })
     },
 
+    editNodeTag: function(community_id,oldname,newname){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT `node_id`, `node_tag` FROM `node` WHERE `community_id_community`=?',community_id,function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
+        })
+        .then(function(selectdata){
+            return module.exports.changeNodeTag(selectdata,oldname,newname)
+        })
+        .then(function(data){
+            return module.exports.selectAllNodeData(community_id)
+        })
+    },
+
+    changeNodeTag: function(nodedata,oldname,newname){
+        return Promise.all(
+            nodedata.map(function(data){
+                var node_id = data.node_id;
+                var node_tag = data.node_tag;
+                if(node_tag !== ""){
+                    if(node_tag == oldname){
+                        node_tag = newname
+                        return module.exports.updateNodeTag(node_id,node_tag)
+                    }
+                    else{
+                        return node_tag
+                    }
+                }
+                else{
+                    return nodedata
+                }
+            })
+        )
+    },
+
+    updateNodeTag: function(node_id,node_tag){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                connection.query('UPDATE `node` SET `node_tag`=? WHERE `node_id`=?',[node_tag,node_id],function(err,updateResults,fields){
+                    if(err) return reject(err);
+                    resolve(updateResults);
+                    connection.release();
+                })
+            })
+        })
+    },
+
     updateNodePosition: function(community_id,updateData){
         var updatearray = JSON.parse(updateData);
 

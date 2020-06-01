@@ -252,7 +252,7 @@ function editActivityCard(){
     $(".editActivity").click(function(e){
         e.stopPropagation(); 
         var parnetid = $(this).parents(".card").attr("id");
-        var activity_name = $("#"+parnetid).find(".card-header").data("activityname");
+        var activity_name = $("#"+parnetid).find(".card-header span.headeractivityname").text();
         var lessonplan_activity_process_id = $("#"+parnetid).find(".lessonplan_activity_process_id").text();
         $("#editActivityModal").modal("show");
         $("#parentCardId").text(parnetid);

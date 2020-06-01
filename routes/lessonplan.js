@@ -229,7 +229,7 @@ router.post('/edit/:community_id/save',function(req,res,next){
                     })
                 }
                 else{
-                    var oldname,tagData;
+                    var oldname,tagData,nodeData;
                     lessonplan.selecThisActivity(baseid)
                     .then(function(activitydata){
                         oldname = activitydata[0].lessonplan_activity_name;
@@ -252,14 +252,18 @@ router.post('/edit/:community_id/save',function(req,res,next){
                     })
                     .then(function(tagdata){
                         tagData = tagdata;
+                        return node.editNodeTag(community_id,oldname,lessonplan_activity_name)
+                    })
+                    .then(function(nodedata){
+                        nodeData = nodedata;
                         return lessonplan.updateActivity(community_id,lessonplanData,member_id,member_name)
                     })
-                   .then(function(data){
+                    .then(function(data){
                         return lessonplan.selectLessonplanActivityProcess(community_id)
                     })
                     .then(function(processdata){
                         if(processdata){
-                            return res.json({msg:'ok',selectData:processdata,tagData:tagData})
+                            return res.json({msg:'ok',selectData:processdata,tagData:tagData,nodeData:nodeData})
                         }
                     })
                 }

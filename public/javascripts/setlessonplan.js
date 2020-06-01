@@ -677,7 +677,9 @@ function saveLessonplanData(divId){
                     }
                     else{
                         var selectData = activityResults.selectData;
+                        var nodeData = activityResults.nodeData;
                         var edit_community_tag = activityResults.tagData[0].community_tag.split(',');
+                        socket.emit('add node',{community_id:community_id,nodeData:nodeData})
                         socket.emit('create tag',{community_id:community_id,community_tag:edit_community_tag})
 
                         var parnetid = $("#"+editparentCardId).find(".card-body").attr("id");
