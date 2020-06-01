@@ -62,6 +62,11 @@ io.on('connection', function(socket){
     socket.nsp.to(roomName).emit('update node data',data.nodeData);
   })
 
+  socket.on('create tag',function(data){
+    var roomName = "community_"+data.community_id;
+    socket.nsp.to(roomName).emit('update tag',data.community_tag);
+  })
+
 });
 
 // view engine setup

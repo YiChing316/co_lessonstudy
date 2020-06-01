@@ -223,8 +223,9 @@ function clickevent(){
         }
     });
 }
-var socket = io();
 
+var community_tag;
+var socket = io();
 $(function(){
     //發送訊息，經過 事件 傳送 object
     socket.emit('join community',$("#community_id").text());
@@ -245,8 +246,13 @@ $(function(){
         drawNodeNetwork(data);
     })
 
+    socket.on('update tag',function(data){
+        community_tag = data;
+    })
+
     node = JSON.parse($("#nodeData").text());
     edge = JSON.parse($("#edgeData").text());
+    community_tag = $("#community_tag").text().split(',');
 
     drawNodeNetwork(node);
     drawEdgeNetwork(edge);
@@ -481,7 +487,7 @@ function openIdeaModal(){
     $('#createIdeaModel').on('show.bs.modal', function () {
         $("#createIdeaModel").find(".ideatag").append('<input type="text" class="form-control" name="tagInputText" id="createIdeaTag">');
         ideasummernoteClass();
-        ideatagClass();
+        ideatagClass(community_tag);
     })
 
     $("#creatVoteBtn").click(function(){
@@ -545,7 +551,7 @@ function showReadIdeaContent(ideaData){
     //修改頁籤
     $("#readIdeaModal").find(".ideatag").append('<input type="text" class="form-control" name="tagInputText" id="reviseIdeaTag">');
     ideasummernoteClass();
-    ideatagClass(node_tag);
+    ideatagClass(community_tag,node_tag);
 
     $("#reviseCountDiv").text(revise_count);
     $("#reviseIdeaTitle").val(node_title);
@@ -609,23 +615,6 @@ function replyIdea(){
         // console.log($("#"+modalid).find(".readNodeid").text())
     })
 }
-
-
-/**實作節點modal **************************************************/
-// function showLessonplanContent(selectData){
-//     console.log(selectData);
-    
-//     var node_title = selectData.node_title;
-//     var node_tag = selectData.node_tag.split(',');
-    
-//     $("#lessonplanNodeModalLabel").html(node_title);
-//     $("#lessonplanNodeTag").html('<h4 id="lessonplanNodeTagContent"></h4>')
-
-//     node_tag.map(function(data){
-//         $("#lessonplanNodeTagContent").append('<span class="badge badge-info mr-2">'+data+'</span>');
-//     })
-    
-// }
 
 
 
@@ -735,11 +724,11 @@ function ideasummernoteClass(){
 }
 
 //想法tag api設定
-function ideatagClass(tag){
+function ideatagClass(community_tag,tag){
     
     $('input[name="tagInputText"]').inputTags({
         autocomplete: {
-            values: ['教案基本資料', '課程學習目標', '學生先備概念','教學設計理念','活動與評量設計'],
+            values: community_tag,
             only: true
         },
         tags:tag,

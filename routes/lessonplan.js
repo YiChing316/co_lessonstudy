@@ -195,7 +195,7 @@ router.post('/edit/:community_id/save',function(req,res,next){
                 break;
             case 'creatActivityModal':
             case 'editActivityModal':
-                var node_id,process_id,selectnodedata;
+                var node_id,process_id,selectnodedata,activityNameData;
                 var baseid = lessonplanData.baseid;
                 var lessonplan_activity_name = lessonplanData.lessonplan_activity_name;
                 if(baseid == ""){
@@ -213,19 +213,53 @@ router.post('/edit/:community_id/save',function(req,res,next){
                         return lessonplan.selectLessonplanActivityName(community_id)
                     })
                     .then(function(namedata){
-                        if(namedata){
-                            return res.json({msg:'ok',process_id:process_id,selectnodeData:selectnodedata,activityNameData:namedata})
+                        activityNameData = namedata;
+                        return community.selectCommunityTag(community_id)
+                    })
+                    .then(function(selectdata){
+                        var community_tag = selectdata[0].community_tag.split(',');
+                        community_tag.push(lessonplan_activity_name);
+                        community_tag = community_tag.toString();
+                        return community.updateCommunityTag(community_id,community_tag)
+                    })
+                    .then(function(tagdata){
+                        if(tagdata){
+                            return res.json({msg:'ok',process_id:process_id,selectnodeData:selectnodedata,activityNameData:activityNameData,tagData:tagdata})
                         }
                     })
                 }
                 else{
-                    lessonplan.updateActivity(community_id,lessonplanData,member_id,member_name)
+                    var oldname,tagData;
+                    lessonplan.selecThisActivity(baseid)
+                    .then(function(activitydata){
+                        oldname = activitydata[0].lessonplan_activity_name;
+                        return community.selectCommunityTag(community_id)
+                    })
+                    .then(function(selectdata){
+                        var community_tag = selectdata[0].community_tag.split(',');
+                        var newTagArray = [];
+                        community_tag.forEach(function(data){
+                            if(data !== oldname){
+                                newTagArray.push(data)
+                            }
+                            else{
+                                data = lessonplan_activity_name;
+                                newTagArray.push(data)
+                            }
+                        });
+                        community_tag = newTagArray.toString();
+                        return community.updateCommunityTag(community_id,community_tag)
+                    })
+                    .then(function(tagdata){
+                        tagData = tagdata;
+                        return lessonplan.updateActivity(community_id,lessonplanData,member_id,member_name)
+                    })
                    .then(function(data){
                         return lessonplan.selectLessonplanActivityProcess(community_id)
                     })
                     .then(function(processdata){
                         if(processdata){
-                            return res.json({msg:'ok',selectData:processdata})
+                            return res.json({msg:'ok',selectData:processdata,tagData:tagData})
                         }
                     })
                 }
@@ -304,10 +338,27 @@ router.post('/edit/:community_id/deleteActivity',function(req,res,next){
     else{
         var lessonplanData= req.body;
         var lessonplan_activity_process_id = lessonplanData.lessonplan_activity_process_id;
-        var nodeData,processData,nameData;
+        var oldname,node_id;
+        var nodeData,processData,nameData,tagData;
         lessonplan.selecThisActivity(lessonplan_activity_process_id)
         .then(function(seletedata){
-            var node_id = seletedata[0].node_id_node;
+            oldname = seletedata[0].lessonplan_activity_name;
+            node_id = seletedata[0].node_id_node;
+            return community.selectCommunityTag(community_id)
+        })
+        .then(function(selectdata){
+            var community_tag = selectdata[0].community_tag.split(',');
+            var newTagArray = [];
+            community_tag.forEach(function(data){
+                if(data !== oldname){
+                    newTagArray.push(data)
+                }
+            });
+            community_tag = newTagArray.toString();
+            return community.updateCommunityTag(community_id,community_tag)
+        })
+        .then(function(tagdata){
+            tagData = tagdata;
             return node.updateDeleteActivityNodeType(community_id,node_id)
         })
         .then(function(nodedata){
@@ -320,7 +371,7 @@ router.post('/edit/:community_id/deleteActivity',function(req,res,next){
         })
         .then(function(namedata){
             nameData = JSON.stringify(namedata)
-            res.json({msg:"ok",processData:processData,nameData:nameData,nodeData:nodeData});
+            res.json({msg:"ok",processData:processData,nameData:nameData,nodeData:nodeData,tagData:tagData});
         })
     }
     
@@ -464,7 +515,7 @@ router.get('/idea/:community_id/divergence', function(req, res, next) {
 
     var community_id = req.params.community_id;
 
-    var community_name;
+    var community_name,community_tag;
     var nodeData,edgeData;
 
     if(!member_id){
@@ -474,6 +525,10 @@ router.get('/idea/:community_id/divergence', function(req, res, next) {
         community.selectCommunityName(community_id)//get communityname end
         .then(function(communitydata){
             community_name = communitydata[0].community_name;
+            return community.selectCommunityTag(community_id)
+        })
+        .then(function(tagdata){
+            community_tag = tagdata[0].community_tag;
             return node.selectAllNodeData(community_id)
         })
         .then(function(nodedata){
@@ -486,6 +541,7 @@ router.get('/idea/:community_id/divergence', function(req, res, next) {
                                             mode: 'ideaContent',
                                             community_id:community_id,
                                             community_name:community_name,
+                                            community_tag:community_tag,
                                             member_id:member_id,
                                             member_name:member_name,
                                             nodeData:nodeData,
