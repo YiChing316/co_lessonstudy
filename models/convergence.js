@@ -148,5 +148,50 @@ module.exports = {
                 })
             })
         })
+    },
+
+    updateConvergenceTag: function(community_id,oldname,newname){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                connection.query('UPDATE `convergence` SET `convergence_tag`=? WHERE `community_id_community` =? AND `convergence_tag` =?',[newname,community_id,oldname],function(err,updateResults,fields){
+                    if(err) return reject(err);
+                    resolve(updateResults);
+                    connection.release();
+                })
+            })
+        })
+    },
+
+    updateConvergenceNodeId: function(convergence_id,node_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                connection.query('UPDATE `convergence` SET `node_id_node`=? WHERE `convergence_id` =?',[node_id,convergence_id],function(err,updateResults,fields){
+                    if(err) return reject(err);
+                    resolve(updateResults);
+                    connection.release();
+                })
+            })
+        })
+        .then(function(data){
+            return module.exports.updateMessageState(convergence_id)
+        })
+    },
+
+    updateMessageState: function(convergence_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                connection.query('UPDATE `message_board` SET `message_state`= "end" WHERE `convergence_id_convergence` =?',convergence_id,function(err,updateResults,fields){
+                    if(err) return reject(err);
+                    resolve(updateResults);
+                    connection.release();
+                })
+            })
+        })
     }
 }

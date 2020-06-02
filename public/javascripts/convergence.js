@@ -29,6 +29,9 @@ $(function(){
     socket.on('update message',function(data){
         $convergenceMessageTable.bootstrapTable('append',data);
     })
+    socket.on('update tag',function(data){
+        community_tag = data;
+    })
 
     setConvergenceSelect(community_tag);
     convergencesummernoteClass();
@@ -89,7 +92,6 @@ function setConvergenceSpace(convergenceData){
         })
         console.log(convergence_ref_node)
     }
-
     $("#convergenceTextarea").summernote('code',convergence_content);
     $("#convergenceTextarea").removeClass("editing");
 }
@@ -114,47 +116,54 @@ function setcommunicateTable(){
 }
 
 function clickEvent(){
+    //送出選擇標籤
     $(".selectNodeTag").click(function(){
-        $("#ideaListCardBody").empty();
-        $("#convergenceTextarea").summernote('reset');
-        $convergenceMessageTable.bootstrapTable('removeAll');
-        $("#convergenceSpace *").prop("disabled",false);
-        $("#convergenceTextarea").summernote("enable");
-        $(this).attr("disabled",true);
-        convergence_ref_node = [];
-
-        convergence_tag = $("#convergenceTag option:selected").val();
-        $(".convergenceCard").find("span.cardheaderTagName").text("【"+convergence_tag+"】");
-        var data = {
-            node_tag:convergence_tag
+        var editing = $("#convergenceTextarea").hasClass("editing");
+        //有資料變動
+        if(editing == true){
+            alert("收斂空間有內容尚未儲存");
         }
-        $.ajax({
-            url: '/lessonplan/idea/'+community_id+'/convergence/selectThisTagNode',
-            type: "GET",
-            async:false,
-            data:data,
-            success: function(data){
-                if(data.msg == "no"){
-                    window.location = "/member/login";
-                }
-                else{
-                    var nodeData = data.nodeData;
-                    var convergenceData = data.convergenceData;
-                    var messageData = data.messageData;
-                    console.log()
-                    setIdeaList(nodeData);
-                    setConvergenceSpace(convergenceData);
-                    $convergenceMessageTable.bootstrapTable('load',messageData);
-                }
-            },
-            error: function(){
-                alert('失敗');
+        else{
+            $("#ideaListCardBody").empty();
+            $("#convergenceTextarea").summernote('reset');
+            $convergenceMessageTable.bootstrapTable('removeAll');
+            $("#convergenceSpace *").prop("disabled",false);
+            $("#convergenceTextarea").summernote("enable");
+            $(this).attr("disabled",true);
+            convergence_ref_node = [];
+            convergence_tag = $("#convergenceTag option:selected").val();
+            $(".convergenceCard").find("span.cardheaderTagName").text("【"+convergence_tag+"】");
+            var data = {
+                node_tag:convergence_tag
             }
-        })
+            $.ajax({
+                url: '/lessonplan/idea/'+community_id+'/convergence/selectThisTagNode',
+                type: "GET",
+                async:false,
+                data:data,
+                success: function(data){
+                    if(data.msg == "no"){
+                        window.location = "/member/login";
+                    }
+                    else{
+                        var nodeData = data.nodeData;
+                        var convergenceData = data.convergenceData;
+                        var messageData = data.messageData;
+                        console.log()
+                        setIdeaList(nodeData);
+                        setConvergenceSpace(convergenceData);
+                        $convergenceMessageTable.bootstrapTable('load',messageData);
+                    }
+                },
+                error: function(){
+                    alert('失敗');
+                }
+            })
+        }
     })
 
+    //儲存按鈕
     $(".saveResults").click(function(){
-        var action = $(this).data("action");
         convergence_content = $("#convergenceTextarea").summernote('code');
         var refString = convergence_ref_node.toString();
 
@@ -163,6 +172,7 @@ function clickEvent(){
             alert("沒有資料變動")
         }
         else{
+            alert("儲存")
             $("#convergenceTextarea").removeClass("editing")
             var data = {
                 convergence_id:convergence_id,
@@ -170,21 +180,45 @@ function clickEvent(){
                 convergence_ref_node:refString
             }
 
-            if(action == "save"){
-                var saveResults = ajaxPostData('/lessonplan/idea/'+community_id+'/convergence/saveConvergence',data);
-                if(saveResults.msg == "no"){
-                    window.location = "/member/login";
-                }
-                else{
-                    var updateData = saveResults.updateData;
-                    socket.emit('save convergenceTextarea',{community_id:community_id,updateData:updateData})
-                    alert('儲存成功');
-                }
+            var saveResults = ajaxPostData('/lessonplan/idea/'+community_id+'/convergence/saveConvergence',data);
+            if(saveResults.msg == "no"){
+                window.location = "/member/login";
+            }
+            else{
+                var updateData = saveResults.updateData;
+                socket.emit('save convergenceTextarea',{community_id:community_id,updateData:updateData})
+                alert('儲存成功');
             }
         }
 
     })
 
+    //產生收斂結果
+    $(".createNodeResults").click(function(){
+        var data = {
+            convergence_id:convergence_id,
+            convergence_tag:convergence_tag,
+            convergence_content:convergence_content,
+            convergence_ref_node:refString
+        }
+
+        var createNodeResults = ajaxPostData('/lessonplan/idea/'+community_id+'/convergence/creatConvergenceNode',data);
+        if(createNodeResults.msg == "no"){
+            window.location = "/member/login";
+        }
+        else{
+            var nodeData = createNodeResults.nodeData;
+            var edgeData = createNodeResults.edgeData;
+            socket.emit('add node',{community_id:community_id,nodeData:nodeData})
+            if(edgeData.length > 0){
+                socket.emit('add edge',{community_id:community_id,edgeData:edgeData})
+            }
+            alert("結果產生完成");
+            window.location.reload();
+        }
+    })
+
+    //送出討論留言
     $(".sendMessage").click(function(){
         var send_content = $("#messageContentInput").val();
         var data = {
@@ -202,6 +236,10 @@ function clickEvent(){
             var insertData = messageResults.insertData[0];
             socket.emit('send message',{community_id:community_id,insertData:insertData})
         }
+    })
+
+    $(".showalert").click(function(){
+        $("#alertConvergenceModal").modal("show");
     })
 }
 

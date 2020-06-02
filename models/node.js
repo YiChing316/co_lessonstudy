@@ -339,6 +339,20 @@ module.exports = {
             return module.exports.selectThisNode(community_id,node_id)
         })
     },
+
+    updateNodeName: function(node_id,newname){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                connection.query('UPDATE `node` SET `node_title`=? WHERE `node_id`=?',[newname,node_id],function(err,updateResults,fields){
+                    if(err) return reject(err);
+                    resolve(updateResults);
+                    connection.release();
+                })
+            })
+        })
+    },
     
     updateDeleteActivityNodeType: function(community_id,node_id){
         return new Promise(function(resolve,reject){

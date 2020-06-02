@@ -230,10 +230,11 @@ router.post('/edit/:community_id/save',function(req,res,next){
                     })
                 }
                 else{
-                    var oldname,tagData,nodeData;
+                    var oldname,node_id,tagData,nodeData;
                     lessonplan.selecThisActivity(baseid)
                     .then(function(activitydata){
                         oldname = activitydata[0].lessonplan_activity_name;
+                        node_id = activitydata[0].node_id_node;
                         return community.selectCommunityTag(community_id)
                     })
                     .then(function(selectdata){
@@ -253,6 +254,12 @@ router.post('/edit/:community_id/save',function(req,res,next){
                     })
                     .then(function(tagdata){
                         tagData = tagdata;
+                        return node.updateNodeName(node_id,lessonplan_activity_name)
+                    })
+                    .then(function(data){
+                        return convergence.updateConvergenceTag(community_id,oldname,lessonplan_activity_name)
+                    })
+                    .then(function(data){
                         return node.editNodeTag(community_id,oldname,lessonplan_activity_name)
                     })
                     .then(function(nodedata){
@@ -723,6 +730,7 @@ router.get('/idea/:community_id/divergence/openLessonplanNode',function(req,res,
     }
 })
 
+//打開想法節點
 router.get('/idea/:community_id/divergence/openActivityNode',function(req,res,next){
     var member_id = req.session.member_id;
     var member_name = req.session.member_name;
@@ -876,6 +884,47 @@ router.post('/idea/:community_id/convergence/saveConvergence', function(req, res
         convergence.saveConvergenceContent(convergence_id,convergence_content,convergence_ref_node,member_id,member_name)
         .then(function(data){
             return res.json({msg:'ok',updateData:data});
+        })
+    }
+})
+
+router.post('/idea/:community_id/convergence/creatConvergenceNode', function(req, res, next){
+    var member_id = req.session.member_id;
+    var member_name = req.session.member_name;
+
+    var community_id = req.params.community_id;
+
+    if(!member_id){
+        res.json({msg:'no'});
+        res.redirect('/member/login');
+    }
+    else{
+        var node_id,nodeData,edgeData;
+        var convergence_id = req.body.convergence_id;
+        var convergence_tag = req.body.convergence_tag;
+        var convergence_content = req.body.convergence_content;
+        var convergence_ref_node = req.body.convergence_ref_node;
+        convergence.saveConvergenceContent(convergence_id,convergence_content,convergence_ref_node,member_id,member_name)
+        .then(function(savedata){
+            return node.createNewNode(community_id,'收斂結果',convergence_tag,'convergence',0,member_id,member_name)
+        })
+        .then(function(createdata){
+            node_id = createdata.insertId;
+            return node.saveEdge(community_id,convergence_ref_node,node_id)
+        })
+        .then(function(data){
+            return node.selectThisNode(community_id,node_id)
+        })
+        .then(function(nodedata){
+            nodeData = nodedata;
+            return node.selectThisEdge(community_id,node_id)
+        })
+        .then(function(edgedata){
+            edgeData = edgedata;
+            return convergence.updateConvergenceNodeId(convergence_id,node_id)
+        })
+        .then(function(data){
+            return res.json({msg:'ok',nodeData:nodeData,edgeData:edgeData});
         })
     }
 })

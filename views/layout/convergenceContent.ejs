@@ -27,8 +27,8 @@
                         <textarea class="convergencesummernote" id="convergenceTextarea"></textarea>
                         <div class="btn-bg">
                             <div class="float-right">
-                                <input type="button" class="btn btn-primary btn-sm my-1 saveResults" data-action="save" value="儲存">
-                                <input type="button" class="btn btn-primary btn-sm my-1 saveResults" data-action="createNode" value="產生收斂結果">
+                                <input type="button" class="btn btn-primary btn-sm my-1 saveResults" value="儲存">
+                                <input type="button" class="btn btn-primary btn-sm my-1 showalert" value="產生收斂結果">
                             </div>
                         </div>
                     </div>
@@ -53,6 +53,27 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<!--提醒收斂完成-->
+<div class="modal fade" id="alertConvergenceModal" tabindex="-1" role="dialog" aria-labelledby="alertConvergenceModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="alertConvergenceModalLabel"><i class="fas fa-exclamation-triangle"></i> 提醒</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          確定此標籤收斂已完成？
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary createNodeResults" data-dismiss="modal">確定</button>
+        </div>
+      </div>
     </div>
 </div>
 
