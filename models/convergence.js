@@ -150,6 +150,19 @@ module.exports = {
         })
     },
 
+    selectAllConvergence: function(community_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT * FROM `convergence` WHERE `community_id_community` = ? AND `node_id_node` != -1',community_id,function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
+        })
+    },
+
     updateConvergenceTag: function(community_id,oldname,newname){
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){

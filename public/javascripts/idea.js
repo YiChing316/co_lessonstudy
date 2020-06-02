@@ -37,6 +37,10 @@ var nodeOptions = {
         activity:{
             shape: 'image',
             image: '/images/activitynode.svg'
+        },
+        convergence:{
+            shape: 'image',
+            image: '/images/convergenceIdea.svg'
         }
     },
     edges:{
@@ -86,18 +90,8 @@ function drawNodeNetwork(node) {
                 case "twowaytable":
                     newgroup = "lessonplan";
                     break;
-                case "activity":
-                    newgroup = "activity";
-                    break;
-                case "deleteactivity":
-                    newgroup = "deleteactivity";
-                    break;
-                case "idea":
-                    newgroup = "idea";
-                    break;
-                case "rise_above":
-                    newgroup = "rise_above";
-                    break;
+                default:
+                    newgroup = oldgroup;
             }
             newNodeArray.push({
                 id:val.id,
@@ -163,6 +157,9 @@ function clickevent(){
                     break;
                 case "deleteactivity":
                     alert("此活動已刪除");
+                    break;
+                case "convergence":
+                    openConvergenceNode(community_id,data)
                     break;
             }
         }
@@ -454,7 +451,7 @@ function openActivityNode(community_id,data){
     var results = ajaxGetData("/lessonplan/idea/"+community_id+"/divergence/openActivityNode",data);
 
     if(results.msg == "no"){
-
+        window.location = "/member/login";
     }
     else{
         var nodeData = results.nodeData[0];
@@ -473,6 +470,25 @@ function openActivityNode(community_id,data){
             $("#lessonplanNodeModal .activityTargetDiv").append('<p><i class="fas fa-dot-circle mr-1 text-danger"></i>'+target+'</p>');
         })
         
+    }
+}
+
+function openConvergenceNode(community_id,data){
+    var results = ajaxGetData("/lessonplan/idea/"+community_id+"/divergence/openConvergenceNode",data);
+
+    if(results.msg == "no"){
+        window.location = "/member/login";
+    }
+    else{
+        var nodeData = results.nodeData[0];
+        var node_title = nodeData.node_title;
+        var node_tag = nodeData.node_tag;
+        var convergence_content = nodeData.convergence_content;
+        var title = '【'+node_tag+'】'+node_title;
+        $("#lessonplanNodeModal").modal("show");
+        $("#lessonplanNodeModalLabel").html(title);
+        $("#lessonplanNodeModal").find(".readNodeid").text(nodeData.node_id);
+        $("#nodeTip").html(convergence_content);
     }
 }
 

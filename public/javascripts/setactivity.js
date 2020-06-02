@@ -43,7 +43,7 @@ function activityandAssessmentDesign_Append(id,baseid,activity_name){
     var activityDiv = '<div class="row accordion activityRow">'+
                             '<div class="card col-9 nopadding" id="cardidactivity_'+id+'">'+
                                 '<h5 class="card-header bg-white font-weight-bolder shadow-sm" id="headeractivity_'+id+'" data-toggle="collapse" data-target=".activity_'+id+'" data-activityname="'+activity_name+'">'+
-                                    '活動'+id+"-<span class='headeractivityname'>"+activity_name+'</span>'+
+                                    '活動'+id+'-<span class="headeractivityname">'+activity_name+'</span>'+
                                     '<a href="javascript:void(0)" class="editActivity ml-2" style="color: #ED557E"><i class="far fa-edit"></i></a>'+
                                     '<span class="float-right"><i class="fa fa-angle-up collapseicon" id="activity_'+id+'icon"></i></span>'+
                                 '</h5>'+
@@ -73,7 +73,7 @@ function activityandAssessmentDesign_Append(id,baseid,activity_name){
                             '</div>'+
                             '<div class="card col nopadding">'+
                                 '<h5 class="card-header bg-selfgreen font-weight-bolder">想法收斂結果</h5>'+
-                                '<div class="card-body collapse"></div>'+
+                                '<div class="card-body collapse show padding-sm-all ideaConvergenceResult" data-tagtitle="'+activity_name+'" id="ideaConvergenceResultactivity_'+id+'"></div>'+
                             '</div>'+
                         '</div>';
     $("#setactivity").append(activityDiv);
@@ -246,6 +246,7 @@ $(function(){
     addCustomProcessTag();
     collapseControl();
     
+    setConvergenceResults(convergenceData);
 })
 
 function editActivityCard(){
@@ -1339,12 +1340,16 @@ function collapseControl(){
     //class摺疊執行完後更改圖形
     $(".card-body .collapse").on('show.bs.collapse', function(){
         var id = $(this).closest('.card').find(".collapseicon").attr('id')
+        var cardBodyId = $(this).closest('.card').find(".card-body").attr('id')
+        $("#ideaConvergenceResult"+cardBodyId).collapse('show');
         $('#'+id).removeClass('fa fa-angle-down');
         $('#'+id).addClass("fa fa-angle-up");
     });
     $(".card-body .collapse").on('hide.bs.collapse', function(){
         //$(this)為card-body，需更改同父內三層的i的class
         var id = $(this).closest('.card').find(".collapseicon").attr('id')
+        var cardBodyId = $(this).closest('.card').find(".card-body").attr('id')
+        $("#ideaConvergenceResult"+cardBodyId).collapse('hide');
         $('#'+id).removeClass('fa fa-angle-up');
         $('#'+id).addClass("fa fa-angle-down");
     });

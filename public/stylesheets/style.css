@@ -80,6 +80,10 @@ body{font-family: '微軟正黑體';}
     padding-right: 0.2em;
 }
 
+.padding-sm-all{
+    padding:0.2em;
+}
+
 .card-body-padding{
     padding: 0.5em;
 }

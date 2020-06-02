@@ -19,13 +19,14 @@ function pagecontent_Map(){
                         "</div>"+
                         "<div class='card col-3 nopadding'>"+
                             "<h5 class='card-header bg-selfgreen font-weight-bolder'>想法收斂結果</h5>"+
-                            "<div class='card-body collapse'></div>"+
+                            "<div class='card-body collapse padding-sm-all ideaConvergenceResult' data-tagtitle='"+data.title+"' id='ideaConvergenceResult"+data.id+"'></div>"+
                         "</div>"+
                     "</div>";
         if(data.collapse == "show"){
             $("#setlesson").append(root);
             $("#"+data.id+"icon").addClass("fa fa-angle-up");
             $("#"+data.id).addClass("show");
+            $("#ideaConvergenceResult"+data.id).collapse('show');
         }
         else{
             $("#setlesson").append(root);

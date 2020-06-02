@@ -92,6 +92,14 @@ function threeselecDiv(labelname,firstselid,secondselid,threeselid,bodyname,pare
                             '</div>');
 }
 
+function ideaListCard(divId,ideaId,ideaTitle,ideaContent){
+    $("#"+divId).append('<div class="card idealist">'+
+                            '<p class="card-header collapsed bg-white" data-toggle="collapse" data-target="#ideaNode'+ideaId+'">'+ideaTitle+'<i class="fas fa-chevron-down float-right"></i></p>'+
+                            '<div id="ideaNode'+ideaId+'" class="collapse">'+
+                                '<div class="card-body">'+ideaContent+'</div>'+
+                            '</div>'+
+                        '</div>');
+}
 
 /*****************append元件 *****************************************************************************/
 var basicData;
@@ -100,8 +108,9 @@ var lessonplanActivityProcessData;
 //放置在教案基本資料內的div
 function setLessonplanBasicData(){
     $("#lessonplan_basicdata").append("<div id='lessonplan'></div>");
-    $("#lessonplan_basicdata").append('<span>此教案是否需要進行議題融入？</span>'+
-                                        '<input type="checkbox" data-toggle="toggle" id="toggle-demo" data-size="sm">');
+    //議題融入內容暫時不放
+    // $("#lessonplan_basicdata").append('<span>此教案是否需要進行議題融入？</span>'+
+    //                                     '<input type="checkbox" data-toggle="toggle" id="toggle-demo" data-size="sm">');
     lessonplanbasic_Component.map(function(data){
         $("#lessonplan_basicdata").append("<div class='basic_body'>"+
                                             "<hr><h5 data-toggle='collapse' data-target='#"+data.id+"'><i class='far fa-plus-square mr-1' id='"+data.id+"icon'></i><b>"+data.name+"</b></h5>"+
@@ -335,14 +344,39 @@ function stageControl(){
     }
 }
 
+var convergenceData;
+function setConvergenceResults(convergenceData){
+    var div_length = $(".ideaConvergenceResult").length;
+    if(convergenceData.length !== 0){
+        convergenceData.forEach(function(data){
+            var convergence_id = data.convergence_id;
+            var convergence_tag = data.convergence_tag;
+            var convergence_content = data.convergence_content;
+            for(var i=0;i<div_length;i++){
+                var tagtitle = $($(".ideaConvergenceResult")[i]).data("tagtitle");
+                var divId = $($(".ideaConvergenceResult")[i]).attr("id");
+                if(convergence_tag == tagtitle){
+                    var num = $("#"+divId).find(".idealist").length +1;
+                    ideaListCard(divId,convergence_id,"收斂結果"+num,convergence_content)
+                }
+            }
+        })
+    }
+}
+
 var socket = io();
 
 var isChange = false;
 $(function(){
     basicData = JSON.parse($("#basicData").text());
+    convergenceData = JSON.parse($("#convergenceData").text())
 
     //發送訊息，經過 事件 傳送 object
     socket.emit('join community',$("#community_id").text());
+    socket.on('show result',function(data){
+        console.log(data);
+        setConvergenceResults(data)
+    })
 
     setLessonplanBasicData();
     lessonplan_Map();
@@ -390,19 +424,20 @@ $(function(){
         $('#'+id).addClass("far fa-plus-square");
     });
 
-    $("#toggle-demo").bootstrapToggle({
-        on:"是",
-        off:"否"
-    });
-    $('#toggle-demo').change(function() {
-        var state = $(this).prop('checked');
-        if(state == false){
-            $("#lessonplan_issue").parent().hide();
-        }
-        else{
-            $("#lessonplan_issue").parent().show();
-        }
-    })
+    //議題融入內容暫時不放:此為設定boostrapToggle
+    // $("#toggle-demo").bootstrapToggle({
+    //     on:"是",
+    //     off:"否"
+    // });
+    // $('#toggle-demo').change(function() {
+    //     var state = $(this).prop('checked');
+    //     if(state == false){
+    //         $("#lessonplan_issue").parent().hide();
+    //     }
+    //     else{
+    //         $("#lessonplan_issue").parent().show();
+    //     }
+    // })
 
     summernoteClass();
 })
@@ -686,6 +721,7 @@ function saveLessonplanData(divId){
                         //card-header內標題文字顯示修改
                         $("#header"+parnetid+" span.headeractivityname").text(lessonplan_activity_name)
                         $("#header"+parnetid).attr("data-activityname",lessonplan_activity_name);
+                        $("#ideaConvergenceResult"+parnetid).attr("data-tagtitle",lessonplan_activity_name);
                         $("#"+parnetid+"Table Tbody").empty();
 
                         var newAssessmentArray = [];

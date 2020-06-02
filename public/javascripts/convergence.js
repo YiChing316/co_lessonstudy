@@ -162,11 +162,10 @@ function clickEvent(){
         }
     })
 
+    var refString = convergence_ref_node.toString();
     //儲存按鈕
     $(".saveResults").click(function(){
         convergence_content = $("#convergenceTextarea").summernote('code');
-        var refString = convergence_ref_node.toString();
-
         var editing = $("#convergenceTextarea").hasClass("editing")
         if(editing == false){
             alert("沒有資料變動")
@@ -195,6 +194,7 @@ function clickEvent(){
 
     //產生收斂結果
     $(".createNodeResults").click(function(){
+        convergence_content = $("#convergenceTextarea").summernote('code');
         var data = {
             convergence_id:convergence_id,
             convergence_tag:convergence_tag,
@@ -209,10 +209,12 @@ function clickEvent(){
         else{
             var nodeData = createNodeResults.nodeData;
             var edgeData = createNodeResults.edgeData;
+            var saveData = createNodeResults.saveData;
             socket.emit('add node',{community_id:community_id,nodeData:nodeData})
             if(edgeData.length > 0){
                 socket.emit('add edge',{community_id:community_id,edgeData:edgeData})
             }
+            socket.emit('produce result',{community_id:community_id,saveData:saveData})
             alert("結果產生完成");
             window.location.reload();
         }

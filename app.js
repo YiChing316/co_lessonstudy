@@ -72,6 +72,11 @@ io.on('connection', function(socket){
     socket.nsp.to(roomName).emit('update convergenceData',data.updateData);
   })
 
+  socket.on('produce result',function(data){
+    var roomName = "community_"+data.community_id;
+    socket.nsp.to(roomName).emit('show result',data.saveData);
+  })
+
   socket.on('send message',function(data){
     var roomName = "community_"+data.community_id;
     socket.nsp.to(roomName).emit('update message',data.insertData);

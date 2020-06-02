@@ -259,6 +259,19 @@ module.exports = {
         })
     },
 
+    selectConvergenceNode: function(node_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT `node`.*,`convergence`.`convergence_content` FROM `node` LEFT JOIN `convergence` ON `node`.`node_id` = `convergence`.`node_id_node` WHERE`convergence`.`node_id_node` = ?',node_id,function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
+        })
+    },
+
     editNodeTag: function(community_id,oldname,newname){
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){

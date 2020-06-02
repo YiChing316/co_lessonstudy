@@ -21,8 +21,7 @@ router.get('/edit/:community_id', function(req, res, next) {
     var lfitemData,lfchilditemData,lfcontentData;
     var issuenameData,issuethemeData,issuecontentData;
     var lessonplanActivityProcessData,lessonplanStageData;
-    var lessonplanActivityName;
-    var twowayTableData;
+    var lessonplanActivityName,convergenceData;
 
     if(!member_id){
         res.redirect('/member/login');
@@ -57,7 +56,10 @@ router.get('/edit/:community_id', function(req, res, next) {
         })
         .then(function(activiynamedata){
             lessonplanActivityName = JSON.stringify(activiynamedata)
-
+            return convergence.selectAllConvergence(community_id)
+        })
+        .then(function(convergencedata){
+            convergenceData = JSON.stringify(convergencedata);
             //檢查是否已有儲存過年級版本
             return lessonplan.checklessonplandata(community_id)
         })
@@ -85,7 +87,8 @@ router.get('/edit/:community_id', function(req, res, next) {
                                                 basicData:'""',
                                                 lessonplanActivityProcessData:lessonplanActivityProcessData,
                                                 lessonplanActivityName:lessonplanActivityName,
-                                                lessonplanStageData:lessonplanStageData
+                                                lessonplanStageData:lessonplanStageData,
+                                                convergenceData:convergenceData
                                             });
             }
             else{
@@ -163,7 +166,8 @@ router.get('/edit/:community_id', function(req, res, next) {
                                             basicData:basicData,//教案基本資料
                                             lessonplanActivityProcessData:lessonplanActivityProcessData,
                                             lessonplanActivityName:lessonplanActivityName,
-                                            lessonplanStageData:lessonplanStageData
+                                            lessonplanStageData:lessonplanStageData,
+                                            convergenceData:convergenceData
                                         });
         })
         .catch(function (err) {console.log(err);});
@@ -750,6 +754,26 @@ router.get('/idea/:community_id/divergence/openActivityNode',function(req,res,ne
     }
 })
 
+//打開收斂節點
+router.get('/idea/:community_id/divergence/openConvergenceNode',function(req,res,next){
+    var member_id = req.session.member_id;
+    var member_name = req.session.member_name;
+
+    var community_id = req.params.community_id;
+    var node_id = req.query.node_id;
+
+    if(!member_id){
+        res.json({msg:"no"});
+        res.redirect('/member/login');
+    }
+    else{
+        node.selectConvergenceNode(node_id)
+        .then(function(data){
+            res.json({msg:'ok',nodeData:data})
+        })
+    }
+})
+
 //刪除想法節點內檔案
 router.post('/idea/:community_id/divergence/deletefile',function(req,res){
     var member_id = req.session.member_id;
@@ -899,15 +923,13 @@ router.post('/idea/:community_id/convergence/creatConvergenceNode', function(req
         res.redirect('/member/login');
     }
     else{
-        var node_id,nodeData,edgeData;
+        var node_id,saveData,nodeData,edgeData;
         var convergence_id = req.body.convergence_id;
         var convergence_tag = req.body.convergence_tag;
         var convergence_content = req.body.convergence_content;
         var convergence_ref_node = req.body.convergence_ref_node;
-        convergence.saveConvergenceContent(convergence_id,convergence_content,convergence_ref_node,member_id,member_name)
-        .then(function(savedata){
-            return node.createNewNode(community_id,'收斂結果',convergence_tag,'convergence',0,member_id,member_name)
-        })
+        
+        node.createNewNode(community_id,'收斂結果',convergence_tag,'convergence',0,member_id,member_name)
         .then(function(createdata){
             node_id = createdata.insertId;
             return node.saveEdge(community_id,convergence_ref_node,node_id)
@@ -924,7 +946,11 @@ router.post('/idea/:community_id/convergence/creatConvergenceNode', function(req
             return convergence.updateConvergenceNodeId(convergence_id,node_id)
         })
         .then(function(data){
-            return res.json({msg:'ok',nodeData:nodeData,edgeData:edgeData});
+            return convergence.saveConvergenceContent(convergence_id,convergence_content,convergence_ref_node,member_id,member_name)
+        })
+        .then(function(savedata){
+            saveData = savedata;
+            return res.json({msg:'ok',saveData:saveData,nodeData:nodeData,edgeData:edgeData});
         })
     }
 })
