@@ -705,7 +705,7 @@ function saveLessonplanData(divId){
                         var selectNodeData = activityResults.selectnodeData;
                         var community_tag = activityResults.tagData[0].community_tag.split(',');
                         activityandAssessmentDesign_Append(id,process_id,lessonplan_activity_name);
-                        resetActivityNameandTargetArray(lessonplan_activity_name,newtwowayData)
+                        resetActivityNameandTargetArray(process_id,lessonplan_activity_name,newtwowayData)
                         socket.emit('create activity',{community_id:community_id,selectData:selectNodeData})
                         socket.emit('create tag',{community_id:community_id,community_tag:community_tag})
                         //window.location = "/lessonplan/edit/"+community_id;
@@ -750,7 +750,6 @@ function saveLessonplanData(divId){
         case 'lessonplan_target':
 
             var processChange = localStorage.length;
-            var twowayTableChange = $("#lessonplan_targetandActivity").find(".editing").get();
 
             var array =[];
             for ( var i = 0; i < processChange; ++i ) {
@@ -760,15 +759,7 @@ function saveLessonplanData(divId){
             }
             var nameString = array.toString();
 
-            if(processChange > 0 && twowayTableChange.length > 0){
-                $("#targetalertModal").modal("show");
-                $(".targetAlertLabel").text("學習目標與活動對應表以及"+nameString+"的活動流程")
-            }
-            else if(twowayTableChange.length > 0){
-                $("#targetalertModal").modal("show");
-                $(".targetAlertLabel").text("學習目標與活動對應表")
-            }
-            else if(processChange > 0){
+            if(processChange > 0){
                 $("#targetalertModal").modal("show");
                 $(".targetAlertLabel").text(nameString+"的活動流程")
             }
@@ -1015,12 +1006,13 @@ function saveActivityProcessData(divId){
     
 }
 
-function resetActivityNameandTargetArray(lessonplan_activity_name,newtwowayData){
-    activityName.push({lessonplan_activity_name:lessonplan_activity_name})
+function resetActivityNameandTargetArray(process_id,lessonplan_activity_name,newtwowayData){
+    activityName.push({lessonplan_activity_process_id:process_id,lessonplan_activity_name:lessonplan_activity_name})
     $("#sidebarul").empty();
     $("#activityDesignUl").empty();
     sidebar_Map();
     newtwowayData.forEach(function(data){
         twowayTableData.push(data)
     });
+    console.log(activityName)
 }

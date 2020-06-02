@@ -393,6 +393,29 @@ router.post('/edit/:community_id/deleteActivity',function(req,res,next){
     
 })
 
+router.post('/edit/:community_id/orderActivity',function(req,res,next){
+    var member_id = req.session.member_id;
+
+    var community_id = req.params.community_id;
+    
+    if(!member_id){
+        res.redirect('/member/login');
+        res.json({msg:"no"});
+    }
+    else{
+        var result = req.body.result;
+        lessonplan.selectActivityAllData(result)
+        .then(function(dataarray){
+            console.log(dataarray)
+            return lessonplan.updateNewOrderActivity(dataarray,community_id)
+        })
+        .then(function(data){
+            res.json({msg:'ok'})
+        })
+    }
+    
+})
+
 var upload = multer({
     storage: multer.diskStorage({
       destination: function(req, file, callback){

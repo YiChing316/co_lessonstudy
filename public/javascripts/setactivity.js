@@ -242,11 +242,14 @@ $(function(){
     editActivityTr();
     deleteeditfile();
 
+    setOrderActivityModal();
+
     moveTrPosition();
     addCustomProcessTag();
     collapseControl();
     
     setConvergenceResults(convergenceData);
+
 })
 
 function editActivityCard(){
@@ -318,6 +321,7 @@ function deleteActivityData(){
                 $("#sidebarul").empty();
                 sidebar_Map();
                 $("#"+deletecardid).parent().remove();
+                $(".activityTbody").empty();
                 $("#editActivityModal").modal("hide");
                 setActivityProcess();
                 socket.emit('delete activity',{community_id:community_id,nodeData:nodeData})
@@ -1203,6 +1207,92 @@ function selectCustomProcessTag(){
     })
 }
 
+//設定調整活動順序modal內table
+function setOrderActivityModal(){
+    $("#orderActvityModal").on('show.bs.modal', function (event) {
+        var originalIdArray = [];
+        if(activityName.length !== 0){
+            for (var i=0;i<activityName.length;i++){
+                var data = activityName[i];
+                var number = i+1;
+                var id = data.lessonplan_activity_process_id;
+                var name = data.lessonplan_activity_name;
+                originalIdArray.push(id)
+                $("#orderActivityTbody").append('<tr>'+
+                                                    '<td>'+
+                                                        '<a href="javascript:void(0)" class="upactivity"><i class="far fa-arrow-alt-circle-up fa-lg my-2"></i></a>'+
+                                                        '<a href="javascript:void(0)" class="downactivity"><i class="far fa-arrow-alt-circle-down fa-lg my-2"></i></a>'+
+                                                    '</td>'+
+                                                    '<th scope="row">活動'+number+'</th>'+
+                                                    '<td data-activityid="'+id+'">'+name+'</td>'+
+                                                '</tr>')
+            }
+            $("#originalIdArray").text(originalIdArray.toString())
+            orderActivity();
+        }
+    })
+}
+
+//判斷是否有活動流程未儲存
+function checkActivityProcess(){
+    var processChange = localStorage.length;
+
+    var array =[];
+    for ( var i = 0; i < processChange; ++i ) {
+        var activityDivId = localStorage.key( i );
+        var activityName = $("#header"+activityDivId).text();
+        array.push(activityName)
+    }
+    var nameString = array.toString();
+
+    if(processChange > 0){
+        $("#orderalertModal").modal("show");
+        $("#orderalertModal").find(".orderAlertLabel").text(nameString+"的活動流程")
+    }
+    else{
+        sendNewActivityOrder()
+    }
+}
+
+//送出新的活動排序
+function sendNewActivityOrder(){
+    isChange = false;
+    localStorage.clear();
+    var community_id = $("#community_id").text();
+    var originalIdArray = $("#originalIdArray").text().split(',');
+    var tr_length = $("#orderActivityTbody tr").length;
+    var activityIdArray = [];
+    for(var i=0;i<tr_length;i++){
+        var id = $($("#orderActivityTbody tr")[i]).find("td:eq(1)").data("activityid");
+        activityIdArray.push(id);
+    }
+    var resultArray = []
+    originalIdArray.forEach(function(key, i){
+        resultArray.push({originalId:key,newId:activityIdArray[i]})
+    });
+    var data = {
+        result:JSON.stringify(resultArray)
+    }
+    $.ajax({
+        url: "/lessonplan/edit/"+community_id+"/orderActivity",
+        type: "POST",
+        async:false,
+        data:data,
+        success: function(data){
+            if(data.msg == "ok"){
+                window.location.reload();
+            }
+            else{
+                window.location = "/member/login";
+            }
+        },
+        error: function(){
+            alert('失敗');
+        }
+    })
+    modalclosebtn('orderActvityModal');
+}
+
 //彈出視窗closebtn的function，清空所有填寫框
 function modalclosebtn(modalid){
     switch (modalid){
@@ -1267,6 +1357,9 @@ function modalclosebtn(modalid){
             $("#editassessmentalert").hide();
             isChange = false;
             break;
+        case 'orderActvityModal':
+            $("#orderActivityTbody").empty();
+            break;
     }
 }
 
@@ -1313,6 +1406,7 @@ function processTagClass(tag){
     });
 }
 
+//移動活動流程順序
 function moveTrPosition(){
     $(".up,.down").click(function(){
         var row = $(this).parents("tr:first");
@@ -1333,6 +1427,24 @@ function moveTrPosition(){
         var parentid = $(this).closest('.card-body').attr('id');
         saveLocalStorage(parentid);
     });
+}
+
+//移動活動順序
+function orderActivity(){
+    $(".upactivity,.downactivity").click(function(){
+        var row = $(this).parents("tr:first");
+        if ($(this).is(".upactivity")) {
+            row.insertBefore(row.prev());
+        } else {
+            row.insertAfter(row.next());
+        }
+        //移動流程順序時，編號也進行更新
+        $("#orderActivityTbody tr").each(function(index) {
+            index = index + 1;
+            var num = index.toString()
+            $(this).find('th:eq(0)').first().html("活動"+num);
+        });
+    })
 }
 
 //摺疊icon變化

@@ -69,7 +69,7 @@
   </div>
 </div>
 
-<!-- 編輯單元/活動 -->
+<!-- 編輯活動 -->
 <div class="modal fade" id="editActivityModal" tabindex="-1" role="dialog" aria-labelledby="editActivityModalLabel" aria-hidden="true" data-backdrop="static">
   <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -97,6 +97,37 @@
       <div class="modal-footer">
         <input type="button" value="刪除" class="btn btn-danger" onclick="deleteActivityCard()">
         <input type="button" value="儲存" class="btn btn-primary" onclick="saveLessonplanData('editActivityModal')">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 調整活動順序 -->
+<div class="modal fade" id="orderActvityModal" tabindex="-1" role="dialog" aria-labelledby="orderActvityModalLabel" aria-hidden="true" data-backdrop="static">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-selfblue text-white">
+        <h5 class="modal-title" data-saveaction="new" data-baseid="" id="orderActvityModalLabel">調整活動順序</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span class="text-white" aria-hidden="true" onclick="modalclosebtn('orderActvityModal')">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="originalIdArray" style="display: none;"></p>
+        <table class="table table-bordered" id="orderActivityTable">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col" width="40"></th>
+              <th scope="col" width="80">順序</th>
+              <th scope="col">活動名稱</th>
+            </tr>
+          </thead>
+          <tbody id="orderActivityTbody"></tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <input type="button" data-dismiss="modal" value="取消" class="btn btn-secondary" onclick="modalclosebtn('orderActvityModal')">
+        <input type="button" data-dismiss="modal" value="確定" class="btn btn-primary" onclick="checkActivityProcess()">
       </div>
     </div>
   </div>
@@ -372,6 +403,28 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
         <button type="button" class="btn btn-primary" onclick="saveLearningTarget()">確定儲存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 儲存移動順序警告Modal -->
+<div class="modal fade" id="orderalertModal" tabindex="-1" role="dialog" aria-labelledby="orderalertModalalertModalLabel" aria-hidden="true" data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-warning">
+        <h5 class="modal-title" id="orderalertModalalertModalLabel"><i class="fas fa-exclamation-triangle"></i> 警告</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <b class="orderAlertLabel text-danger"></b>尚未儲存<br>
+        若繼續可能會造成<b class="orderAlertLabel text-danger"></b>資料遺失請問確定要儲存嗎？
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" onclick="sendNewActivityOrder()">確定儲存</button>
       </div>
     </div>
   </div>

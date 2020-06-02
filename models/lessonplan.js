@@ -590,7 +590,7 @@ module.exports = {
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
-                connection.query('SELECT `lessonplan_activity_name` FROM `lessonplan_activity_process` WHERE `community_id_community`=?',community_id,function(err,rows,fields){
+                connection.query('SELECT `lessonplan_activity_process_id`,`lessonplan_activity_name` FROM `lessonplan_activity_process` WHERE `community_id_community`=?',community_id,function(err,rows,fields){
                     if(err) return reject(err);
                     resolve(rows);
                     connection.release();
@@ -636,6 +636,54 @@ module.exports = {
                 })
             })
         })
+    },
+
+    selectActivityAllData: function(result){
+        result = JSON.parse(result)
+        var resultArray = [];
+        return Promise.all(
+            result.map(function(data){
+                var originalId = data.originalId;
+                var newId = data.newId;
+                return new Promise(function(resolve,reject){
+                    pool.getConnection(function(err,connection){
+                        if(err) return reject(err);
+                        connection.query('SELECT `lessonplan_activity_name`,`lessonplan_activity_content`,`lessonplan_activity_target`,`node_id_node`,`member_id_member`,`member_name` FROM `lessonplan_activity_process` WHERE `lessonplan_activity_process_id` = ?',newId,function(err,rows,fields){
+                            if(err) return reject(err);
+                            resolve(rows);
+                            connection.release();
+                        })
+                    })
+                })
+                .then(function(selectdata){
+                    resultArray.push({id:originalId,data:selectdata[0]})
+                    return selectdata
+                })
+            })
+        )
+        .then(function(data){
+            return resultArray
+        })
+    },
+
+    updateNewOrderActivity: function(newArray,community_id){
+        return Promise.all(
+            newArray.map(function(val){
+                var id = val.id;
+                var data = val.data;
+                return new Promise(function(resolve,reject){
+                    pool.getConnection(function(err,connection){
+                        if(err) return reject(err);
+                        console.log(data)
+                        connection.query('UPDATE `lessonplan_activity_process` SET ? WHERE `community_id_community` =? AND `lessonplan_activity_process_id` = ?',[data,community_id,id],function(err,rows,fields){
+                            if(err) return reject(err);
+                            resolve(rows);
+                            connection.release();
+                        })
+                    })
+                })
+            })
+        )
     },
 
     deleteLessonplanActivityProcess: function(lessonplanData){
