@@ -25,15 +25,29 @@ body{font-family: '微軟正黑體';}
 .bg-4{
     background-color: #0E6973;
 }
-.bg-5{
-    background-color: #F29F05;
-}
-.bg-6{
-    background-color: #F2B705;
-}
 
 .bg-7{
     background-color: #B5DDC2;
+}
+
+.bg-8{
+    background-color: #347e9e;
+}
+
+.bg-backlog{
+    background-color: #47A4CC;
+}
+
+.bg-todo{
+    background-color: #347895;
+}
+
+.bg-doing{
+    background-color: #065B80;
+}
+
+.bg-done{
+    background-color: #04374D;
 }
 
 .btn-add-activity{
@@ -457,8 +471,8 @@ MEDIAQUERIES
 }
 
 .convergenceCard{
-    min-height: 80vh;
-    max-height: 80vh;
+    min-height: 83vh;
+    max-height: 83vh;
 }
 
 .btn-reject{
@@ -469,4 +483,32 @@ MEDIAQUERIES
 .btn-reject:hover{
     background-color: crimson;
     color: white;
+}
+
+.addtaskBtn{
+    color: #3f8b7f;
+    background-color: white;
+    border-color: #B5DDC2;
+}
+
+.addtaskBtn:hover{
+    background-color: #B5DDC2;
+    color: #254e47;
+}
+
+.taskcolumn{
+    min-height: 70vh;
+}
+
+.taskcolumn .taskbody{
+    min-height: 70vh;
+    border-radius: 0 0 calc(0.25rem - 1px) calc(0.25rem - 1px);
+}
+
+.task.selected{
+    z-index: 1;
+}
+
+.task .card-footer{
+    padding: 0.3rem 1rem;
 }
