@@ -234,6 +234,9 @@ function applicationCommunity(id){
             if(data.msg == 'no'){
                 window.location = "/member/login";
             }
+            else if(data.msg == 'existed'){
+                alert('您已是此社群成員');
+            }
             else{
                 alert("已提出申請");
                 window.location.reload();

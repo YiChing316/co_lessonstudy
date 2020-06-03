@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <%- include('layout/bootstrap.ejs'); -%>
+        <script src="/javascripts/memberManger.js"></script>
+        <link href="/stylesheets/style.css" rel="stylesheet">
+        <title><%= title %></title>
+    </head>
+    <body>
+        <%- include('layout/navbar2.ejs'); -%>
+        <p id="community_id" style="display: none;"><%= community_id %></p>
+        <p id="communityData" style="display: none;"><%= communityData %></p>
+        <p id="communityMemberData" style="display: none;"><%= communityMemberData %></p>
+        <p id="applicationData" style="display: none;"><%= applicationData %></p>
+        <div class="pagecontent">
+            <!--顯示社群名稱以及簡介-->
+            <div class="jumbotron">
+                <div class="form-inline">
+                    <h3 id="community_nameDiv"></h3>
+                    <a class="ml-2 text-primary" data-toggle="modal" data-target="#editCommunityModal"><i class="fas fa-pen"></i></a>
+                </div>
+                <p class="lead" id="community_introDiv"></p>
+            </div>
+            <div class="row">
+                <!--已加入社群成員名單-->
+                <div class="col">
+                    <div class="card shadow-sm" style="max-height: 55vh; min-height: 55vh;">
+                        <div class="card-header bg-selfgreen"><i class="far fa-id-card mr-1"></i>已加入社群成員</div>
+                        <div class="card-body padding-sm-all" style="overflow-y: auto;" id="communityMemberBody"></div>
+                    </div>
+                </div>
+                <!--申請加入成員名單-->
+                <div class="col">
+                    <div class="card shadow-sm" style="max-height: 55vh; min-height: 55vh;">
+                        <div class="card-header bg-7"><i class="fas fa-user-check mr-1"></i>待審核名單</div>
+                        <div class="card-body padding-sm-all" style="overflow-y: auto;" id="applicationMemberBody"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--修改社群資料-->
+        <div class="modal" id="editCommunityModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">修改社群資料</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="control-label">社群名稱</label>
+                            <div class="input-group">
+                              <input type="text" id="editcommunity_name" class='form-control' placeholder="請輸入社群名稱" maxlength="20">
+                            </div>
+                            <p class="text-secondary"><small>最多可輸入20個字</small></p>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">社群密碼</label>
+                            <div class="input-group">
+                              <input type="text" id="editcommunity_key" class='form-control' placeholder="請輸入社群密碼">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">社群簡介</label>
+                            <div class="input-group">
+                              <textarea id="editcommunity_intro" class="form-control" rows="5" placeholder="請輸入社群簡介" maxlength="50"></textarea>
+                            </div>
+                            <p class="text-secondary"><small>最多可輸入50個字</small></p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-secondary" data-dismiss="modal" value="取消">
+                        <input type="button" class="btn btn-primary" data-dismiss="modal" value="儲存" onclick="editCommunityData()">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        $(".navbar").find("li .memberManager").toggleClass("active");
+        $(".navbar").find("li .memberManager").toggleClass("disabledNav");
+    </script>
+</html>

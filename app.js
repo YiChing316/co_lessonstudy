@@ -9,6 +9,7 @@ var memberRouter = require('./routes/member');
 var communityRouter = require('./routes/community');
 var lessonplanRouter = require('./routes/lessonplan');
 var resourceRouter = require('./routes/resourceManager');
+var memberManagerRouter = require('./routes/memberManager');
 
 var app = express();
 var server = require('http').Server(app);
@@ -109,6 +110,7 @@ app.use('/member', memberRouter);
 app.use('/community', communityRouter);
 app.use('/lessonplan', lessonplanRouter);
 app.use('/resourceManager', resourceRouter);
+app.use('/memberManager',memberManagerRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

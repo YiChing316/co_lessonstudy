@@ -101,6 +101,11 @@ textarea{
     margin-bottom: 0.5em;
 }
 
+.pagecontent{
+    margin-top: 56px;
+    padding: 1%;
+}
+
 /*******社群入口*******/
 /*community 頁面的table上標題*/
 .title-bar{
@@ -454,4 +459,14 @@ MEDIAQUERIES
 .convergenceCard{
     min-height: 80vh;
     max-height: 80vh;
+}
+
+.btn-reject{
+    background-color: #ED557E;
+    color: white;
+}
+
+.btn-reject:hover{
+    background-color: crimson;
+    color: white;
 }

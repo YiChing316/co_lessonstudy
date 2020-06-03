@@ -116,7 +116,17 @@ router.post('/application',function(req,res,next){
   }
   else{
     var community_id = req.body.community_id;
-    community.sendCommunityApplication(community_id,member_id,member_name)
+    community.checkCommunityMember(community_id,member_id)
+    .then(function(checkResults){
+      //此人已加入該社群
+      if(checkResults.isExisted){
+        res.json({msg:'existed'});
+      }
+      //此人尚未加入該社群，判斷密碼是否正確
+      else{
+        return community.sendCommunityApplication(community_id,member_id,member_name)
+      }
+    })
     .then(function(results){
       res.json({msg:'yes'})
     })
