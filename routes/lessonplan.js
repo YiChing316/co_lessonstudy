@@ -406,11 +406,10 @@ router.post('/edit/:community_id/orderActivity',function(req,res,next){
         var result = req.body.result;
         lessonplan.selectActivityAllData(result)
         .then(function(dataarray){
-            console.log(dataarray)
             return lessonplan.updateNewOrderActivity(dataarray,community_id)
         })
-        .then(function(data){
-            res.json({msg:'ok'})
+        .then(function(selectdata){
+            res.json({msg:'ok',selectData:selectdata})
         })
     }
     

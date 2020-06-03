@@ -674,7 +674,6 @@ module.exports = {
                 return new Promise(function(resolve,reject){
                     pool.getConnection(function(err,connection){
                         if(err) return reject(err);
-                        console.log(data)
                         connection.query('UPDATE `lessonplan_activity_process` SET ? WHERE `community_id_community` =? AND `lessonplan_activity_process_id` = ?',[data,community_id,id],function(err,rows,fields){
                             if(err) return reject(err);
                             resolve(rows);
@@ -684,6 +683,9 @@ module.exports = {
                 })
             })
         )
+        .then(function(data){
+            return module.exports.selectLessonplanActivityProcess(community_id)
+        })
     },
 
     deleteLessonplanActivityProcess: function(lessonplanData){

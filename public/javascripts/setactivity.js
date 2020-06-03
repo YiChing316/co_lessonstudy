@@ -1280,7 +1280,11 @@ function sendNewActivityOrder(){
         data:data,
         success: function(data){
             if(data.msg == "ok"){
-                window.location.reload();
+                $("#setactivity .activityRow").remove();
+                var newProcessData = JSON.stringify(data.selectData);
+                $("#lessonplanActivityProcessData").text(newProcessData);
+                setActivityCard();
+                setActivityProcess();
             }
             else{
                 window.location = "/member/login";
