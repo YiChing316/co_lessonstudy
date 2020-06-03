@@ -24,10 +24,18 @@ $(function(){
     //發送訊息，經過 事件 傳送 object
     socket.emit('join community',community_id);
     socket.on('update convergenceData',function(data){
-        setConvergenceSpace(data)
+        var tag = data.tag;
+        var updateData = data.updateData;
+        if(tag == convergence_tag){
+            setConvergenceSpace(updateData)
+        }
     })
     socket.on('update message',function(data){
-        $convergenceMessageTable.bootstrapTable('append',data);
+        var tag = data.tag;
+        var insertData = data.insertData;
+        if(tag == convergence_tag){
+            $convergenceMessageTable.bootstrapTable('append',insertData);
+        }
     })
     socket.on('update tag',function(data){
         community_tag = data;
@@ -171,7 +179,6 @@ function clickEvent(){
             alert("沒有資料變動")
         }
         else{
-            alert("儲存")
             $("#convergenceTextarea").removeClass("editing")
             var data = {
                 convergence_id:convergence_id,
@@ -185,7 +192,7 @@ function clickEvent(){
             }
             else{
                 var updateData = saveResults.updateData;
-                socket.emit('save convergenceTextarea',{community_id:community_id,updateData:updateData})
+                socket.emit('save convergenceTextarea',{community_id:community_id,updateData:updateData,tag:convergence_tag})
                 alert('儲存成功');
             }
         }
@@ -236,7 +243,7 @@ function clickEvent(){
         else{
             $("#messageContentInput").val("");
             var insertData = messageResults.insertData[0];
-            socket.emit('send message',{community_id:community_id,insertData:insertData})
+            socket.emit('send message',{community_id:community_id,insertData:insertData,tag:convergence_tag})
         }
     })
 

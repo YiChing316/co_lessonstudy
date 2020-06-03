@@ -70,7 +70,7 @@ io.on('connection', function(socket){
 
   socket.on('save convergenceTextarea',function(data){
     var roomName = "community_"+data.community_id;
-    socket.nsp.to(roomName).emit('update convergenceData',data.updateData);
+    socket.nsp.to(roomName).emit('update convergenceData',data);
   })
 
   socket.on('produce result',function(data){
@@ -80,7 +80,7 @@ io.on('connection', function(socket){
 
   socket.on('send message',function(data){
     var roomName = "community_"+data.community_id;
-    socket.nsp.to(roomName).emit('update message',data.insertData);
+    socket.nsp.to(roomName).emit('update message',data);
   })
 
 });
