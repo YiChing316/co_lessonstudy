@@ -367,9 +367,6 @@ module.exports = {
                 })
             })
         })
-        .then(function(results){
-            return saveResults;
-        })
     },
 
     insertLessonplanTarget: function(community_id,lessonplanData,member_id,member_name){
@@ -557,6 +554,19 @@ module.exports = {
             var activityString = JSON.stringify(activityArray);
 
             return activityString
+        })
+    },
+
+    selectLessonplanBaicData: function(community_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT * FROM `lessonplan` WHERE `community_id_community`=?',community_id,function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
         })
     },
 

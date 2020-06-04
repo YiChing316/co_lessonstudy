@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <%- include('layout/bootstrap.ejs'); -%>
+        <script src="/javascripts/overviewLessonplan.js"></script>
+        <title><%= title %></title>
+        <style>
+            body{
+                font-family: '微軟正黑體';
+            }
+            @media print {
+                * {
+                    -webkit-print-color-adjust: exact !important;
+                }
+                /*給不想換頁的element*/
+                .noBreak {
+                    break-inside: avoid;
+                }
+                /*不想印出來的element*/
+                .noPrint {
+                    display: none;
+                }
+                table {
+                    border: solid #000 !important;
+                    border-width: 1px 0 0 1px !important;
+                }
+                th, td {
+                    border: solid #000 !important;
+                    border-width: 0 1px 1px 0 !important;
+                }
+
+                .table-bordered th,
+                .table-bordered td {
+                border: 1px solid #000 !important;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <p id="community_id" style="display: none;"><%= community_id %></p>
+        <p id="basicData" style="display: none;"><%= basicData %></p>
+        <p id="stageData" style="display: none;"><%= stageData %></p>
+        <p id="processData" style="display: none;"><%= processData %></p>
+        <p id="communityData" style="display: none;"><%= communityData %></p>
+        <div style="padding: 5%;">
+            <div class="noPrint mb-2">
+                <button type="button" class="btn btn-primary" onclick="window.print()"><i class="fas fa-print mr-1"></i>列印此頁</button>
+            </div>
+            <div class="mb-3">
+                <h3 id="community_name" class="font-weight-bolder"></h3>
+                <span id="community_intro"></span>
+            </div>
+            <table class="table table-bordered noBreak" id="tableOne">
+                <tbody id="tableOneTbody"></tbody>
+            </table>
+            <div class="mt-5" id="activityContent"></div>
+        </div>
+        
+    </body>
+</html>

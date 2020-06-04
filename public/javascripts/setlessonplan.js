@@ -93,7 +93,7 @@ function threeselecDiv(labelname,firstselid,secondselid,threeselid,bodyname,pare
 }
 
 function ideaListCard(divId,ideaId,ideaTitle,ideaContent){
-    $("#"+divId).append('<div class="card idealist">'+
+    $("#"+divId).append('<div class="card idealist mb-1">'+
                             '<p class="card-header collapsed bg-white" data-toggle="collapse" data-target="#ideaNode'+ideaId+'">'+ideaTitle+'<i class="fas fa-chevron-down float-right"></i></p>'+
                             '<div id="ideaNode'+ideaId+'" class="collapse">'+
                                 '<div class="card-body">'+ideaContent+'</div>'+
@@ -772,11 +772,6 @@ function saveLessonplanData(divId){
             var coreArray = [];
             var $card = $("#core_competency_body").find('.card');
             var card_length = $card.length;
-            var editing = $("#cirn_form1").find(".editing").get().length;
-            for(var i=0;i<editing;i++){
-                $($("#cirn_form1").find(".editing")[i]).removeClass("editing");
-            }
-            isChange = false;
             
             for(var i=0;i<card_length;i++){
                 var item_text = $($card[i]).find(".itemtext").text();
@@ -786,7 +781,10 @@ function saveLessonplanData(divId){
                 coreArray.push({item_text:item_text,dimesion_description:dimesion_description,field_title:field_title,field_content:field_content})
             }
 
-            var coreString = JSON.stringify(coreArray)
+            var coreString = JSON.stringify(coreArray);
+
+            $("#cirn_form1").find("select").removeClass("editing")
+            isChange = false;
 
             var data = {
                 stage:'lessonplan_stage',
@@ -819,10 +817,7 @@ function saveLessonplanData(divId){
                 form2Array.push({stage:data,content:learnignFocusArray})
             })
 
-            var editing = $("#learning_focus").find(".editing").get().length;
-            for(var i=0;i<editing;i++){
-                $($("#learning_focus").find(".editing")[i]).removeClass("editing");
-            }
+            $("#learning_focus").find("select").removeClass("editing")
             isChange = false;
 
             var form2String = JSON.stringify(form2Array);

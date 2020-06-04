@@ -5,6 +5,7 @@ var clsresource = require('../models/clsresource');
 var lessonplan = require('../models/lessonplan');
 var node = require('../models/node');
 var convergence = require('../models/convergence');
+var memberManager = require('../models/memberManager');
 var multer = require('multer');
 var fs = require('fs');
 
@@ -41,7 +42,7 @@ router.get('/edit/:community_id', function(req, res, next) {
             }
             else{
                 //如果community_id為使用者無加入的社群則會被退回dashboard頁面
-                res.redirect('/dashboard');
+                res.redirect('/community');
             }
         })
         .then(function(processdata){
@@ -174,6 +175,7 @@ router.get('/edit/:community_id', function(req, res, next) {
     }
 });
 
+//儲存實作內容
 router.post('/edit/:community_id/save',function(req,res,next){
     var member_id = req.session.member_id;
     var member_name = req.session.member_name;
@@ -325,7 +327,7 @@ router.post('/edit/:community_id/save',function(req,res,next){
                 lessonplan.saveLessonplanStage(community_id,lessonplanData,member_id,member_name)
                 .then(function(data){
                     if(data){
-                        return res.json({msg:'ok'})
+                        res.json({msg:'ok'})
                     }
                 })
                 break;
@@ -342,6 +344,7 @@ router.post('/edit/:community_id/save',function(req,res,next){
     }
 })
 
+//刪除活動
 router.post('/edit/:community_id/deleteActivity',function(req,res,next){
     var member_id = req.session.member_id;
 
@@ -393,6 +396,7 @@ router.post('/edit/:community_id/deleteActivity',function(req,res,next){
     
 })
 
+//Update重新排序活動
 router.post('/edit/:community_id/orderActivity',function(req,res,next){
     var member_id = req.session.member_id;
 
@@ -521,6 +525,7 @@ router.post('/edit/:community_id/checkfile',function(req,res){
     });
 })
 
+//抓取自定義流程tag
 router.get('/edit/:community_id/getCustomProcessTag',function(req,res){
     var member_id = req.session.member_id;
     var member_name = req.session.member_name;
@@ -545,6 +550,44 @@ router.get('/edit/:community_id/getCustomProcessTag',function(req,res){
 })
 
 
+/**教案總覽 */
+router.get('/edit/:community_id/overviewLessonplan',function(req,res){
+    var member_id = req.session.member_id;
+    var member_name = req.session.member_name;
+
+    var community_id = req.params.community_id;
+
+    var basicData,stageData,processData;
+
+    if(!member_id){
+        res.redirect('/member/login');
+    }
+    else{
+        lessonplan.selectLessonplanBaicData(community_id)
+        .then(function(basicdata){
+            basicData = JSON.stringify(basicdata)
+            return lessonplan.selectLessonplanStageData(community_id)
+        })
+        .then(function(stagedata){
+            stageData = JSON.stringify(stagedata)
+            return lessonplan.selectLessonplanActivityProcess(community_id)
+        })
+        .then(function(processdata){
+            processData = JSON.stringify(processdata)
+            return memberManager.selectThisCommunity(community_id)
+        })
+        .then(function(data){
+            var communityData = JSON.stringify(data)
+            res.render('overviewLessonplan', { title: '教案總覽',
+                                                community_id:community_id,
+                                                basicData:basicData,
+                                                stageData:stageData,
+                                                processData:processData,
+                                                communityData:communityData
+                                            });
+        })
+    }
+})
 
 /*****想法頁面************************************************************************************ */
 router.get('/idea/:community_id/divergence', function(req, res, next) {

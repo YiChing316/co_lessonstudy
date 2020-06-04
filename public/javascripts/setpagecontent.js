@@ -51,7 +51,7 @@ function setSideBar(){
                                             '<ul class="siderul collapse show list-unstyled" id="activityDesignUl"></ul>'+
                                         '</li>'+
                                         '<li class="sidebar-menu">'+
-                                            '<a href="javascript:void(0)" aria-expanded="false">'+
+                                            '<a href="/lessonplan/edit/'+$("#community_id").text()+'/overviewLessonplan" target="_blank" aria-expanded="false">'+
                                                 '<img src="/images/three.svg" width="25" height="25" class="d-inline-block mr-1">教案總覽'+
                                             '</a>'+
                                         '</li>');
