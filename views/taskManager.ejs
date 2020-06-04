@@ -2,6 +2,7 @@
 <html>
     <head>
         <%- include('layout/bootstrap.ejs'); -%>
+        <script src="/socket.io/socket.io.js"></script>
         <script src="/javascripts/taskManager.js"></script>
         <link href="/stylesheets/style.css" rel="stylesheet">
         <title><%= title %></title>
@@ -9,82 +10,72 @@
     <body>
         <%- include('layout/navbar2.ejs'); -%>
         <p id="community_id" style="display: none;"><%= community_id %></p>
+        <p id="communityMemberData" style="display: none;"><%= communityMemberData %></p>
+        <p id="taskData" style="display: none;"><%= taskData %></p>
         <div class="pagecontent">
-            <button class="btn addtaskBtn btn-block mb-3 p-2" data-toggle="modal" data-target="#addTaskModal"><i class="fas fa-plus mr-2"></i>新增任務</button>
+            <button class="btn addtaskBtn btn-block mb-3 p-2" data-toggle="modal" data-target="#taskModal"><i class="fas fa-plus mr-2"></i>新增任務</button>
             <div class="row">
-                <div class="col taskcolumn">
+                <div class="col taskcolumn" id="backlog_column">
                     <h4 class="card-header bg-backlog text-white border-0">暫存區</h4>
-                    <div class="card-body bg-backlog taskbody">
-                        <div class="card mb-3 task">
-                            <div class="card-body">
-                                要做什麼甚麼什麼
-                            </div>
-                            <div class="card-footer">
-                                <div class="float-right">
-                                    <span class="mr-2">王小名</span>
-                                    <span>2020/3/3 19:20</span>
-                                    <a class="text-danger"><i class="far fa-trash-alt ml-2"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="card-body bg-backlog taskbody" id="backlog"></div>
                 </div>
-                <div class="col taskcolumn">
+                <div class="col taskcolumn" id="todo_column">
                     <h4 class="card-header bg-todo text-white border-0">待辦</h4>
-                    <div class="card-body bg-todo taskbody">
-                        <div class="card mb-3 task">
-                            <div class="card-body">
-                                要做什麼甚麼什麼
-                            </div>
-                            <div class="card-footer">
-                                <div class="float-right">
-                                    <span class="mr-2">王小名</span>
-                                    <span>2020/3/3 19:20</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="card-body bg-todo taskbody" id="todo"></div>
                 </div>
-                <div class="col taskcolumn">
+                <div class="col taskcolumn" id="doing_column">
                     <h4 class="card-header bg-doing text-white border-0">進行中</h4>
-                    <div class="card-body bg-doing taskbody"></div>
+                    <div class="card-body bg-doing taskbody" id="doing"></div>
                 </div>
-                <div class="col taskcolumn">
+                <div class="col taskcolumn" id="done_column">
                     <h4 class="card-header bg-done text-white border-0">完成</h4>
-                    <div class="card-body bg-done taskbody">
-                        <div class="card mb-3 task">
-                            <div class="card-body">
-                                要做什麼甚麼什麼
-                            </div>
-                            <div class="card-footer">
-                                <div class="float-right">
-                                    <span class="mr-2">王小名</span>
-                                    <span>2020/3/3 19:20</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="card-body bg-done taskbody" id="done"></div>
                 </div>
             </div>
         </div>
 
-        <!-- 新增任務 -->
-        <div class="modal" id="addTaskModal" tabindex="-1" role="dialog" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+        <!-- 新增/修改任務 -->
+        <div class="modal" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="taskModalLabel" aria-hidden="true" data-backdrop="static">
             <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addTaskModalLabel">新增任務</h5>
+                    <h5 class="modal-title" id="taskModalLabel"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    ...
+                    <p id="editTaskId" style="display: none;"></p>
+                    <div class="form-group">
+                        <label><b>任務內容</b></label>
+                        <textarea class="form-control" id="taskContentTextarea" rows="2" maxlength="30"></textarea>
+                        <small class="text-muted">最多輸入30字</small>
+                    </div>
+                    <div class="form-group">
+                        <label><b>任務負責人</b></label>
+                        <select class="form-control" id="taskMemberSelect"></select>
+                      </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">儲存</button>
+                    <button type="button" class="btn btn-primary saveTaskBtn" data-dismiss="modal" onclick="saveTask()">儲存</button>
                 </div>
             </div>
+            </div>
+        </div>
+
+        <!--刪除任務提醒-->
+        <div class="modal" id="deletetaskModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                    <p id="deleteTaskId" style="display: none;"></p>
+                    <h5>確定刪除此任務？</h5>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-secondary" data-dismiss="modal" value="取消">
+                    <input type="button" class="btn btn-danger" data-dismiss="modal" value="確定刪除" onclick="deleteTask()">
+                </div>
+              </div>
             </div>
         </div>
     </body>

@@ -1,5 +1,4 @@
-var pool = require('./connectMysql'),
-    crypto = require('crypto');//加密
+var pool = require('./connectMysql');
 
 module.exports = {
     selectThisCommunity: function(community_id){

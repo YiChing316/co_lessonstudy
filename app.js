@@ -84,6 +84,26 @@ io.on('connection', function(socket){
     socket.nsp.to(roomName).emit('update message',data);
   })
 
+  socket.on('create task',function(data){
+    var roomName = "community_"+data.community_id;
+    socket.nsp.to(roomName).emit('create new task',data.selectData);
+  })
+
+  socket.on('edit task',function(data){
+    var roomName = "community_"+data.community_id;
+    socket.nsp.to(roomName).emit('edit the task',data.selectData);
+  })
+
+  socket.on('delete task',function(data){
+    var roomName = "community_"+data.community_id;
+    socket.nsp.to(roomName).emit('delete the task',data.task_id);
+  })
+
+  socket.on('move task',function(data){
+    var roomName = "community_"+data.community_id;
+    socket.nsp.to(roomName).emit('move the task',data);
+  })
+
 });
 
 // view engine setup
