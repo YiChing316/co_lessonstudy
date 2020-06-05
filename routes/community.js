@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var community = require('../models/community');
 var node = require('../models/node');
+var memberManager = require('../models/memberManager')
 
 router.get('/', function(req, res, next) {
   var member_id = req.session.member_id;
@@ -133,5 +134,27 @@ router.post('/application',function(req,res,next){
   }
 
 });
+
+router.post('/enterCommunity',function(req,res,next){
+  var member_id = req.session.member_id;
+  var member_name = req.session.member_name;
+
+  if(!member_id){
+    res.redirect('/member/login');
+    res.json({msg:'no'});
+  }
+  else{
+    var community_id = req.body.community_id;
+    memberManager.selectMemberloginCount(community_id,member_id)
+    .then(function(data){
+      var originalcount = data[0].community_member_logincount;
+      var member_login_count = originalcount +1;
+      return memberManager.updateMemberloginCount(member_login_count,community_id,member_id)
+    })
+    .then(function(data){
+      res.json({msg:'ok'})
+    })
+  }
+})
 
 module.exports = router;

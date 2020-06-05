@@ -645,13 +645,21 @@ router.get('/idea/:community_id/divergence/openIdea',function(req,res,next){
         res.redirect('/member/login');
     }
     else{
-        var author,ideaData;
+        var author,ideaData,node_read_count;
         node.selectIdeaData(node_id,community_id)
         .then(function(results){
             author = results[0].member_id_member;
             var read_count = results[0].node_read_count;
-            var node_read_count = read_count+1;
+            node_read_count = read_count+1;
             ideaData = results;
+            return memberManager.selectMemberReadCount(community_id,member_id)
+        })
+        .then(function(data){
+            var originalcount = data[0].community_member_readcount;
+            var member_read_count = originalcount +1;
+            return memberManager.updateMemberReadCount(member_read_count,community_id,member_id)
+        })
+        .then(function(data){
             return node.updateReadCount(node_id,node_read_count);
         })
         .then(function(updateResults){
@@ -751,7 +759,7 @@ router.post('/idea/:community_id/divergence/updateIdea',upload.array('ideafile',
         var node_file_count = nodeData.node_file_count;
         var revise_count = nodeData.revise_count + 1;
         var nodeResults;
-
+        
         //檢查是否已有同檔名檔案存在
         node.checkFileExists(community_id,fileData)
         .then(function(checkResults){
@@ -786,27 +794,36 @@ router.get('/idea/:community_id/divergence/openLessonplanNode',function(req,res,
 
     var community_id = req.params.community_id;
     var node_id = req.query.node_id
-
+    var selectResults;
     if(!member_id){
         res.json({msg:"no"});
         res.redirect('/member/login');
     }
     else{
         node.selectThisNode(community_id,node_id)
-        .then(function(selectResults){
+        .then(function(selectdata){
+            selectResults = selectdata;
+            return memberManager.selectMemberReadCount(community_id,member_id)
+        })
+        .then(function(data){
+            var originalcount = data[0].community_member_readcount;
+            var member_read_count = originalcount +1;
+            return memberManager.updateMemberReadCount(member_read_count,community_id,member_id)
+        })
+        .then(function(data){
             return res.json({msg:'ok',selectResults:selectResults})
         })
     }
 })
 
-//打開想法節點
+//打開活動節點
 router.get('/idea/:community_id/divergence/openActivityNode',function(req,res,next){
     var member_id = req.session.member_id;
     var member_name = req.session.member_name;
 
     var community_id = req.params.community_id;
     var node_id = req.query.node_id;
-
+    var nodeData;
     if(!member_id){
         res.json({msg:"no"});
         res.redirect('/member/login');
@@ -814,7 +831,16 @@ router.get('/idea/:community_id/divergence/openActivityNode',function(req,res,ne
     else{
         node.selectActivityNode(node_id)
         .then(function(data){
-            res.json({msg:'ok',nodeData:data})
+            nodeData = data;
+            return memberManager.selectMemberReadCount(community_id,member_id)
+        })
+        .then(function(data){
+            var originalcount = data[0].community_member_readcount;
+            var member_read_count = originalcount +1;
+            return memberManager.updateMemberReadCount(member_read_count,community_id,member_id)
+        })
+        .then(function(data){
+            res.json({msg:'ok',nodeData:nodeData})
         })
     }
 })
@@ -826,7 +852,7 @@ router.get('/idea/:community_id/divergence/openConvergenceNode',function(req,res
 
     var community_id = req.params.community_id;
     var node_id = req.query.node_id;
-
+    var nodeData;
     if(!member_id){
         res.json({msg:"no"});
         res.redirect('/member/login');
@@ -834,7 +860,16 @@ router.get('/idea/:community_id/divergence/openConvergenceNode',function(req,res
     else{
         node.selectConvergenceNode(node_id)
         .then(function(data){
-            res.json({msg:'ok',nodeData:data})
+            nodeData = data;
+            return memberManager.selectMemberReadCount(community_id,member_id)
+        })
+        .then(function(data){
+            var originalcount = data[0].community_member_readcount;
+            var member_read_count = originalcount +1;
+            return memberManager.updateMemberReadCount(member_read_count,community_id,member_id)
+        })
+        .then(function(data){
+            res.json({msg:'ok',nodeData:nodeData})
         })
     }
 })

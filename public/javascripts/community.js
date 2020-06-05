@@ -160,7 +160,24 @@ function enterCommunityFormatter(value, row, index) {
 window.operateEvents = {
     //進入已加入的社群function
     'click .enterCommunity': function (e, value, row, index) {
-        window.location.href = '/lessonplan/edit/'+row.community_id;
+        var community_id = row.community_id
+        $.ajax({
+            url: "/community/enterCommunity",
+            type: "POST",
+            async:false,
+            data:{community_id:community_id},
+            success: function(data){
+                if(data.msg == "ok"){
+                    window.location.href = '/lessonplan/edit/'+community_id;
+                }
+                else{
+                    window.location = "/member/login";
+                }
+            },
+            error: function(){
+                alert('失敗');
+            }
+        })
     }  
 }
 

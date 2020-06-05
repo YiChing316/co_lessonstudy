@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <%- include('layout/bootstrap.ejs'); -%>
+        <script src="/javascripts/activityProcess.js"></script>
+        <script src="https://unpkg.com/vis-network@latest/dist/vis-network.min.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
+        <link href="/stylesheets/style.css" rel="stylesheet">
+        <title><%= title %></title>
+    </head>
+    <body>
+        <%- include('layout/navbar2.ejs'); -%>
+        <p id="community_id" style="display: none;"><%= community_id %></p>
+        <p id="member_id" style="display: none;"><%= member_id %></p>
+        <p id="nodeActionData" style="display: none;"><%= nodeActionData %></p>
+        <p id="ideaScaffoldData" style="display: none;"><%= ideaScaffoldData %></p>
+        <p id="ideaIncreaseData" style="display: none;"><%= ideaIncreaseData %></p>
+        <div class="pagecontent" style="padding: 1% 10% 0 10%">
+            <div class="row">
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-header bg-8 text-white">個人想法貢獻數量</div>
+                        <div class="card-body">
+                            <canvas id="nodeActionCanvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-header bg-todo text-white">想法鷹架使用</div>
+                        <div class="card-body">
+                            <canvas id="ideaScaffoldCanvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-top: 1%;">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header bg-selfgreen text-white">個人想法貢獻數量變化</div>
+                        <div class="card-body">
+                            <div id="ideaIncreaseGraph"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        $(".navbar").find("li .activityProcess").toggleClass("active");
+        $(".navbar").find("li .activityProcess").toggleClass("disabledNav");
+    </script>
+</html>

@@ -88,5 +88,62 @@ module.exports = {
         .then(function(data){
             return module.exports.selectThisCommunity(community_id)
         })
-    }
+    },
+
+    selectMemberReadCount: function(community_id,member_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                connection.query('SELECT `community_member_readcount` FROM `community_member` WHERE `community_id_community`=? AND `member_id_member` = ?',[community_id,member_id],function(err,selectResults,fields){
+                    if(err) return reject(err);
+                    resolve(selectResults);
+                    connection.release();
+                })
+            })
+        })
+    },
+
+    updateMemberReadCount: function(readcount,community_id,member_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                connection.query('UPDATE `community_member` SET `community_member_readcount`= ? WHERE `community_id_community`=? AND `member_id_member` = ?',[readcount,community_id,member_id],function(err,updateResults,fields){
+                    if(err) return reject(err);
+                    resolve(updateResults);
+                    connection.release();
+                })
+            })
+        })
+    },
+
+    selectMemberloginCount: function(community_id,member_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                connection.query('SELECT `community_member_logincount` FROM `community_member` WHERE `community_id_community`=? AND `member_id_member` = ?',[community_id,member_id],function(err,selectResults,fields){
+                    if(err) return reject(err);
+                    resolve(selectResults);
+                    connection.release();
+                })
+            })
+        })
+    },
+
+    updateMemberloginCount: function(logincount,community_id,member_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                connection.query('UPDATE `community_member` SET `community_member_logincount`= ? WHERE `community_id_community`=? AND `member_id_member` = ?',[logincount,community_id,member_id],function(err,updateResults,fields){
+                    if(err) return reject(err);
+                    resolve(updateResults);
+                    connection.release();
+                })
+            })
+        })
+    },
+
 }
