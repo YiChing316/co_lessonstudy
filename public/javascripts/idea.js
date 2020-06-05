@@ -544,10 +544,17 @@ function showReadIdeaContent(ideaData){
 
     var node_id = ideaData.node_id;
     var node_title = ideaData.node_title;
-    var node_tag = ideaData.node_tag.split(',');
+    var node_tag;
     var idea_content = ideaData.idea_content;
     var read_count = ideaData.node_read_count;
     var revise_count = ideaData.node_revised_count;
+
+    if(ideaData.node_tag !== ""){
+        node_tag = ideaData.node_tag.split(',');
+    }
+    else{
+        node_tag = "";
+    }
 
     changeIdeaTab(node_title);
 
@@ -567,8 +574,12 @@ function showReadIdeaContent(ideaData){
     //修改頁籤
     $("#readIdeaModal").find(".ideatag").append('<input type="text" class="form-control" name="tagInputText" id="reviseIdeaTag">');
     ideasummernoteClass();
-    ideatagClass(community_tag,node_tag);
-
+    if(node_tag == ""){
+        ideatagClass(community_tag);
+    }else{
+        ideatagClass(community_tag,node_tag);
+    }
+    
     $("#reviseCountDiv").text(revise_count);
     $("#reviseIdeaTitle").val(node_title);
     $("#reviseIdeaContent").summernote('code',idea_content);
@@ -851,7 +862,7 @@ function saveNode(modalId){
             var revise_tagcontent = $("#reviseIdeaTag").val();
             var revise_fileData = $("#reviseIdeaFile").prop("files");
             var fileDiv_length = $(".reviseIdeaFileDiv").length;
-
+            
             var revise_file_length = revise_fileData.length;
             var node_file_count = fileDiv_length+revise_file_length;
 

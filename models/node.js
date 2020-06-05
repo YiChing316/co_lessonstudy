@@ -54,11 +54,10 @@ module.exports = {
 
                 connection.query('SELECT `idea_id` FROM `idea` WHERE `node_id_node` =?',node_id,function(err,countResults,fields){
                     if(err) return reject(err);
-
                     //已存在idea內容
                     if(countResults.length == 1){
-                        var idea_id = countResults[0].idea_id;
-                        connection.query('UPDATE `idea` SET `idea_content`=? WHERE `idea_id`=?',[idea_content,idea_id],function(err,insertResults,fields){
+
+                        connection.query('UPDATE `idea` SET `idea_content`=? WHERE `node_id_node` =?',[idea_content,node_id],function(err,insertResults,fields){
                             if(err) return reject(err);
                             resolve(insertResults);
                             connection.release();
