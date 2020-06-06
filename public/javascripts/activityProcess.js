@@ -24,6 +24,7 @@ $(function(){
     setideaActionCountList(viewNodeData,viewCountList)
     showIdeaAction();
     showScanffold();
+    showideaScaffoldTable();
     showIncreaseGraph();
     
 })
@@ -146,6 +147,61 @@ function showScanffold(){
         })
         ideaScaffoldChart.update();
     })
+}
+
+//呈現想法鷹架table
+var $ideaScaffoldTable;
+function showideaScaffoldTable(){
+    $ideaScaffoldTable = $("#ideaScaffoldTable");
+    $ideaScaffoldTable.bootstrapTable({
+        columns:[
+            {title:"id",field:"member_id",visible:false},
+            {title:"名字",field:"member_name",align:"center"},
+            {title:"我想知道",field:"我想知道",align:"center"},
+            {title:"我的想法",field:"我的想法",align:"center"},
+            {title:"我的理論",field:"我的理論",align:"center"},
+            {title:"新資訊或參考來源",field:"新資訊或參考來源",align:"center"},
+            {title:"另一個觀點是",field:"另一個觀點是",align:"center"},
+            {title:"我覺得更好的想法",field:"我覺得更好的想法",align:"center"},
+            {title:"有發展性的想法",field:"有發展性的想法",align:"center"},
+        ],
+        theadClasses:'thead-light',
+        classes:'table table-bordered',
+        fixedColumns: true,
+        fixedNumber: 1,
+        height: 400
+    })
+
+    var tableArray = [];
+    ideaScaffoldData.forEach(function(value,index){
+        var member_name;
+        if(value.member_id == member_id){
+            member_name = value.member_name
+        }
+        else{
+            member_name = String.fromCharCode(65+index)
+        }
+        var scaffoldCountList = {
+            member_id:value.member_id,
+            member_name:member_name,
+            "我想知道":0,
+            "我的想法":0,
+            "我的理論":0,
+            "新資訊或參考來源":0,
+            "另一個觀點是":0,
+            "我覺得更好的想法":0,
+            "有發展性的想法":0
+        };
+        ideaScaffoldMemberList.push(value.member_name);
+        var ideaScaffold = JSON.parse(value.count);
+        kbScanffold.forEach(function(value, index){
+            if(ideaScaffold[value]){
+                scaffoldCountList[value] = ideaScaffold[value];
+            }
+        });
+        tableArray.push(scaffoldCountList)
+    })
+    $ideaScaffoldTable.bootstrapTable('load',tableArray)
 }
 
 //呈現節點數量變化
