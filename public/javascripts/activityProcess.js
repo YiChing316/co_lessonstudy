@@ -2,6 +2,9 @@ var community_id,member_id,nodeActionData,ideaScaffoldData,ideaIncreaseData;
 var ideaActionMemberList = [];
 var ideaScaffoldMemberList = [];
 var viewCountList=[], addCountList=[], reviseCountList=[], buildOnCountList=[];
+var viewSum = 0, addSum = 0, reviseSum = 0, buildOnSum = 0;
+var pieArray = [];
+
 var kbScanffold = ["我想知道","我的想法","我的理論","新資訊或參考來源","另一個觀點是","我覺得更好的想法","有發展性的想法"];
 $(function(){
     community_id = $("#community_id").text();
@@ -18,11 +21,13 @@ $(function(){
     var reviseNodeData = nodeActionData.reviseNodeData;
     var viewNodeData = nodeActionData.viewNodeData;
     setideaActionMemberList(addNodeData)
-    setideaActionCountList(addNodeData,addCountList)
-    setideaActionCountList(buildonNodeData,buildOnCountList)
-    setideaActionCountList(reviseNodeData,reviseCountList)
-    setideaActionCountList(viewNodeData,viewCountList)
+    setideaActionCountList(viewNodeData,viewCountList,viewSum)
+    setideaActionCountList(addNodeData,addCountList,addSum)
+    setideaActionCountList(reviseNodeData,reviseCountList,reviseSum)
+    setideaActionCountList(buildonNodeData,buildOnCountList,buildOnSum)
+    
     showIdeaAction();
+    showIdeaPie();
     showScanffold();
     showideaScaffoldTable();
     showIncreaseGraph();
@@ -43,7 +48,7 @@ function setideaActionMemberList(addNodeData){
 }
 
 //處理每個node動作的list
-function setideaActionCountList(actionData,actionCountList){
+function setideaActionCountList(actionData,actionCountList,actionSum){
     actionData.forEach(function(val){
         var count = val.count;
         if(count.length == 0){
@@ -53,10 +58,13 @@ function setideaActionCountList(actionData,actionCountList){
             count.filter(function(item){
                 return item.node_type == 'idea' || item.node_type == 'rise_above' || item.node_type == undefined;
             }).map(function(item){
+                actionSum += item.number;
                 actionCountList.push(item.number)
             })
         }
     })
+    //節點所占比例使用資料
+    pieArray.push(actionSum)
 }
 
 //呈現個人想法貢獻圖表
@@ -107,6 +115,26 @@ function showIdeaAction(){
             }
         }
     });
+}
+
+//呈現社群內節點所占比例
+function showIdeaPie(){
+    var nodePieCtx = document.getElementById('nodePieCanvas').getContext('2d');
+    var pie = new Chart(nodePieCtx, {
+        type: 'pie',
+        data: {
+            labels: ['檢視', '新增', '修改', '回覆'],
+            datasets: [{
+                data: pieArray,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.6)',
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(75, 192, 192, 0.6)'
+                ]
+            }]
+        }
+    })
 }
 
 //呈現想法鷹架使用
