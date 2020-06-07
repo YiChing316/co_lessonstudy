@@ -4,7 +4,8 @@ var ideaScaffoldMemberList = [];
 var viewCountList=[], addCountList=[], reviseCountList=[], buildOnCountList=[];
 var viewSum = 0, addSum = 0, reviseSum = 0, buildOnSum = 0;
 var pieArray = [];
-
+var nodes = [],edges = [];
+var $buildonTable,$revisedTable;
 var kbScanffold = ["我想知道","我的想法","我的理論","新資訊或參考來源","另一個觀點是","我覺得更好的想法","有發展性的想法"];
 $(function(){
     community_id = $("#community_id").text();
@@ -12,9 +13,10 @@ $(function(){
     nodeActionData = JSON.parse($("#nodeActionData").text())
     ideaScaffoldData = JSON.parse($("#ideaScaffoldData").text())
     ideaIncreaseData = JSON.parse($("#ideaIncreaseData").text())
-    console.log(nodeActionData)
-    console.log(ideaScaffoldData)
-    console.log(ideaIncreaseData)
+    socialmemberData = JSON.parse($("#socialmemberData").text())
+    socialEdgeData = JSON.parse($("#socialEdgeData").text())
+
+    $(".showSocialData").hide();
 
     var addNodeData = nodeActionData.addNodeData;
     var buildonNodeData = nodeActionData.buildonNodeData;
@@ -31,7 +33,9 @@ $(function(){
     showScanffold();
     showideaScaffoldTable();
     showIncreaseGraph();
-    
+    setNodeandEgdeData();
+    showSocialTable();
+    showSocialNetwork();    
 })
 
 //整理組內成員名單
@@ -292,6 +296,146 @@ function showIncreaseGraph(){
         }
     };
     var graph2d = new vis.Graph2d(container, dataset, groups, options);
+}
+
+//處理社群網路node以及egde資料
+function setNodeandEgdeData(){
+    if(socialmemberData.length !== 0){
+        socialmemberData.forEach(function(value,index){
+            var member_name;
+            if(value.member_id_member == member_id){
+                member_name =value.member_name
+            }
+            //非此人的名字以字母顯示
+            else{
+                member_name = String.fromCharCode(65+index);
+            }
+            nodes.push({id:value.member_id_member,label:member_name,group:index,value:value.nodecount})
+        })
+    }
+    
+    if(socialEdgeData.length !== 0){
+        socialEdgeData.forEach(function(value){
+            edges.push({from:value.from_member_id,to:value.to_member_id,value:value.nodecount})
+        })
+    }
+}
+
+//呈現設群網路圖表格
+function showSocialTable(){
+    //回覆別人，自己為to,顯示from
+    $buildonTable = $("#buildonTable");
+    $buildonTable.bootstrapTable({
+        columns:[
+            {title:"來源",field:"from",align:"center"},
+            {title:"數量",field:"num",align:"center"},
+        ],
+        theadClasses:'thead-light',
+        classes:'table table-bordered table-sm'
+    })
+
+    //別人回覆自己，自己為from，顯示to
+    $revisedTable = $("#revisedTable");
+    $revisedTable.bootstrapTable({
+        columns:[
+            {title:"來源",field:"to",align:"center"},
+            {title:"數量",field:"num",align:"center"},
+        ],
+        theadClasses:'thead-light',
+        classes:'table table-bordered table-sm'
+    })
+}
+
+//呈現設群網路圖
+function showSocialNetwork(){
+    var container = document.getElementById("socialnetwork");
+    var data = {
+        nodes: nodes,
+        edges: edges
+    };
+    var options = {
+        nodes: {
+          shape: "dot",
+          font: {
+            size: 32,
+            color: "#555"
+          },
+          borderWidth: 2
+        },
+        edges: {
+          width: 2,
+          arrows: "to",
+          color: {
+            color: "#aaa",
+            highlight: "#888"
+          }
+        },
+        physics:{
+          enabled: true,
+          barnesHut: {
+            theta: 0.5,
+            gravitationalConstant: -10000,
+            centralGravity: 0.3,
+            springLength: 95,
+            springConstant: 0.04,
+            damping: 0.09,
+            avoidOverlap: 0
+          }    
+        }
+      };
+    network = new vis.Network(container, data, options);
+
+    network.on("click", function(params) {
+        params.event = "[click]";
+        var clickid = params.nodes[0];
+        var fromArray = [],toArray = [];
+        var fromSum = 0,toSum = 0;
+
+        if(clickid !== undefined){
+            nodes.forEach(function(val,index){
+                if(clickid == val.id){
+                    $(".showSocialData").show();
+                    $("#social_name").text(val.label)
+                    $("#social_sum").text(val.value)
+                }
+            })
+    
+            edges.forEach(function(val){
+                //自己為to，算from
+                if(clickid == val.to){
+                    fromSum += val.value;
+                    nodes.forEach(function(value){
+                        var id = value.id;
+                        var label = value.label;
+                        if(val.from == id){
+                            fromArray.push({from:label,num:val.value})
+                        }
+                    })
+                }
+    
+                //自己為from，算to
+                if(clickid == val.from){
+                    toSum += val.value;
+                    nodes.forEach(function(value){
+                        var id = value.id;
+                        var label = value.label;
+                        if(val.to == id){
+                            toArray.push({to:label,num:val.value})
+                        }
+                    })
+                }
+            })
+            
+            $("#social_buildonsum").text(fromSum)
+            $("#social_revisedsum").text(toSum)
+            $buildonTable.bootstrapTable('load',fromArray)
+            $revisedTable.bootstrapTable('load',toArray)
+        }
+        else{
+            $(".showSocialData").hide();
+        }
+        
+    })
 }
 
 //隨機顏色

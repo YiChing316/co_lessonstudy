@@ -193,5 +193,31 @@ module.exports = {
                 })
             })
         })
+    },
+
+    selectSocialMember: function(community_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT `member_id_member`,`member_name`,count(`node_id`)AS nodecount FROM `node` WHERE `community_id_community` = ? GROUP BY `member_id_member`',community_id,function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
+        })
+    },
+
+    selectSocialEdge: function(community_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+                connection.query('SELECT n.`member_id_member` as from_member_id ,n2.`member_id_member` AS to_member_id, COUNT(`edge_id`) as nodecount FROM `edge` e INNER JOIN `node` n on e.`edge_from` = n.`node_id` INNER JOIN `node` n2 on e.`edge_to` = n2.`node_id` WHERE e.`community_id_community` = ? GROUP BY from_member_id,to_member_id',community_id,function(err,rows,fields){
+                    if(err) return reject(err);
+                    resolve(rows);
+                    connection.release();
+                })
+            })
+        })
     }
 }

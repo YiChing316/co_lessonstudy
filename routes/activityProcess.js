@@ -9,7 +9,7 @@ router.get('/:community_id', function(req, res, next) {
     var member_id = req.session.member_id;
     var member_name = req.session.member_name;
     
-    var nodeActionData,ideaScaffoldData,ideaIncreaseData;
+    var nodeActionData,ideaScaffoldData,ideaIncreaseData,socialmemberData,socialEdgeData;
     if(!member_id){
         res.redirect('/member/login');
     }
@@ -33,6 +33,14 @@ router.get('/:community_id', function(req, res, next) {
         })
         .then(function(increasedata){
             ideaIncreaseData = JSON.stringify(increasedata)
+            return activityProcess.selectSocialMember(community_id)
+        })
+        .then(function(socialmemberdata){
+            socialmemberData = JSON.stringify(socialmemberdata)
+            return activityProcess.selectSocialEdge(community_id)
+        })
+        .then(function(socialEdgedata){
+            socialEdgeData = JSON.stringify(socialEdgedata)
             res.render('activityProcess', { title: '活動歷程',
                                             community_id:community_id,
                                             community_name:community_name,
@@ -40,7 +48,9 @@ router.get('/:community_id', function(req, res, next) {
                                             member_name:member_name,
                                             nodeActionData:nodeActionData,
                                             ideaScaffoldData:ideaScaffoldData,
-                                            ideaIncreaseData:ideaIncreaseData
+                                            ideaIncreaseData:ideaIncreaseData,
+                                            socialmemberData:socialmemberData,
+                                            socialEdgeData:socialEdgeData
                                         });
         })
     }

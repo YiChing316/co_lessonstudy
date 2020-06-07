@@ -2,7 +2,6 @@
 <html>
     <head>
         <%- include('layout/bootstrap.ejs'); -%>
-        <script src="/javascripts/activityProcess.js"></script>
         <script src="https://unpkg.com/vis-network@latest/dist/vis-network.min.js"></script>
         <script type="text/javascript" src="https://unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
         <link href="/stylesheets/style.css" rel="stylesheet">
@@ -15,6 +14,8 @@
         <p id="nodeActionData" style="display: none;"><%= nodeActionData %></p>
         <p id="ideaScaffoldData" style="display: none;"><%= ideaScaffoldData %></p>
         <p id="ideaIncreaseData" style="display: none;"><%= ideaIncreaseData %></p>
+        <p id="socialmemberData" style="display: none;"><%= socialmemberData %></p>
+        <p id="socialEdgeData" style="display: none;"><%= socialEdgeData %></p>
         <div class="pagecontent" style="padding: 1% 10% 1% 10%">
             <div class="row">
                 <div class="col-6">
@@ -54,6 +55,30 @@
             <div class="row" style="padding-top: 1%;">
                 <div class="col">
                     <div class="card">
+                        <div class="card-header bg-6 text-white">社群網路圖</div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div id="socialnetwork"></div>
+                                </div>
+                                <div class="col-6">
+                                    <div style="padding: 15px;">
+                                        <h4 class="showSocialData" id="social_name"></h4>
+                                        <p class="showSocialData mt-3">總共建立<span class="mx-1" id="social_sum"><b></b></span>個節點</p>
+                                        <p class="showSocialData">回覆過<span class="mx-1" id="social_buildonsum"><b></b></span>個節點</p>
+                                        <table class="showSocialData" id="buildonTable"></table>
+                                        <p class="showSocialData mt-3">且建立的節點被<span class="mx-1" id="social_revisedsum"><b></b></span>則節點回覆</p>
+                                        <table class="showSocialData" id="revisedTable"></table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="padding-top: 1%;">
+                <div class="col">
+                    <div class="card">
                         <div class="card-header bg-7 text-white">個人想法貢獻數量變化</div>
                         <div class="card-body">
                             <div id="ideaIncreaseGraph"></div>
@@ -63,6 +88,7 @@
             </div>
         </div>
     </body>
+    <script src="/javascripts/activityProcess.js"></script>
     <script>
         $(".navbar").find("li .activityProcess").toggleClass("active");
         $(".navbar").find("li .activityProcess").toggleClass("disabledNav");
