@@ -95,6 +95,9 @@ $(function(){
 
     $(".addtaskBtn").click(function(){
       $("#taskModalLabel").text("新增任務");
+      var addStatus = $(this).data("taskstatus");
+      $("#editTaskStatus").text(addStatus)
+      $("#taskModal").modal("show")
     })
 })
 
@@ -125,43 +128,48 @@ function deleteTask(){
 //新增、修改卡片
 function saveTask(){
   var task_id = $("#editTaskId").text();
+  var task_status = $("#editTaskStatus").text();
   var task_content = $("#taskContentTextarea").val();
   var task_member_name = $("#taskMemberSelect option:selected").val();
   var task_member_id = $("#taskMemberSelect option:selected").data("memberid");
 
-  var data = {
-    task_id:task_id,
-    task_content:task_content,
-    task_member_id:task_member_id,
-    task_member_name:task_member_name
-  }
-
-  console.log(data)
-
-  $.ajax({
-    url: '/taskManager/'+community_id+'/saveTask',
-    type: "POST",
-    async:false,
-    data:data,
-    success: function(data){
-        if(data.msg == "no"){
-          window.location = "/member/login";
-        }
-        else{
-          var selectData = data.selectData;
-
-          if(task_id == ""){
-            socket.emit('create task',{community_id:community_id,selectData:selectData});
+  if(task_content !== ""){
+    var data = {
+      task_id:task_id,
+      task_status:task_status,
+      task_content:task_content,
+      task_member_id:task_member_id,
+      task_member_name:task_member_name
+    }
+  
+    $.ajax({
+      url: '/taskManager/'+community_id+'/saveTask',
+      type: "POST",
+      async:false,
+      data:data,
+      success: function(data){
+          if(data.msg == "no"){
+            window.location = "/member/login";
           }
           else{
-            socket.emit('edit task',{community_id:community_id,selectData:selectData});
+            var selectData = data.selectData;
+  
+            if(task_id == ""){
+              socket.emit('create task',{community_id:community_id,selectData:selectData});
+            }
+            else{
+              socket.emit('edit task',{community_id:community_id,selectData:selectData});
+            }
           }
-        }
-    },
-    error: function(){
-        alert('失敗');
-    }
-  })
+      },
+      error: function(){
+          alert('失敗');
+      }
+    })
+  }
+  else{
+    alert("您尚未填入任務內容")
+  }
 }
 
 //拖拉功能
@@ -218,6 +226,8 @@ function dragandDrop(){
 function clickEvent(){
   $(".edittask").click(function(){
     var $task = $(this).parents(".task");
+    var status = $task.parent().attr("id");
+    $("#editTaskStatus").text(status)
     var taskContent = $task.find(".taskContent").text();
     var taskMemberName = $task.find(".taskMemberName").text();
     var task_id = $(this).parent().data("taskid");
