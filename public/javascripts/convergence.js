@@ -5,7 +5,15 @@ var $convergenceMessageTable;
 
 function ideaListCard(ideaId,ideaTitle,ideaContent,author){
     $("#ideaListCardBody").append('<div class="card idealist">'+
-                                        '<p class="card-header collapsed" data-toggle="collapse" data-target="#ideaNode'+ideaId+'">'+ideaTitle+'<i class="fas fa-chevron-down float-right"></i></p>'+
+                                        '<div class="card-header form-inline">'+
+                                            '<div class="custom-control custom-checkbox">'+
+                                                '<input type="checkbox" class="custom-control-input refNodeCheckbox" id="checkRef'+ideaId+'" name="refNodeCheckbox" value="'+ideaId+'" onclick="checkRefNode('+ideaId+')">'+
+                                                '<label class="custom-control-label" for="checkRef'+ideaId+'"></label>'+
+                                            '</div>'+
+                                            '<div class="collapsed" data-toggle="collapse" data-target="#ideaNode'+ideaId+'" style="width:92%">'+ideaTitle+
+                                                '<i class="fas fa-chevron-down float-right"></i>'+
+                                            '</div>'+
+                                        '</div>'+
                                         '<div id="ideaNode'+ideaId+'" class="collapse">'+
                                             '<div class="card-body">'+ideaContent+'</div>'+
                                             '<div class="card-footer text-right">'+
@@ -62,7 +70,7 @@ $(function(){
         $(".selectNodeTag").attr("disabled",false);
     })
 
-    $('html, body').css('overflowY', 'hidden'); 
+    $('html, body').css('overflowY', 'hidden');
 })
 
 //設定選擇收斂想法標籤的select option
@@ -92,13 +100,17 @@ function setConvergenceSpace(convergenceData){
     if(refString !== ""){
         var ref_node_array = refString.split(',');
         ref_node_array.forEach(function(node_id){
-            var $btn = $("#refBtn"+node_id)
-            $btn.val("取消引用")
-            $btn.removeClass("btn-info").addClass("btn-secondary");
-            $btn.attr("onclick","cancelRefNode("+node_id+")");
-            convergence_ref_node.push(parseInt(node_id));
+            var $checkbox = $("#checkRef"+node_id)
+            $checkbox.prop('checked', true);
+            if(!convergence_ref_node.includes(parseInt(node_id))){
+                convergence_ref_node.push(parseInt(node_id));
+            }
         })
         console.log(convergence_ref_node)
+    }
+    else{
+        $("#convergenceSpace *").prop("disabled",true);
+        $("#convergenceTextarea").summernote("disable");
     }
     $("#convergenceTextarea").summernote('code',convergence_content);
     $("#convergenceTextarea").removeClass("editing");
@@ -157,7 +169,6 @@ function clickEvent(){
                         var nodeData = data.nodeData;
                         var convergenceData = data.convergenceData;
                         var messageData = data.messageData;
-                        console.log()
                         setIdeaList(nodeData);
                         setConvergenceSpace(convergenceData);
                         $convergenceMessageTable.bootstrapTable('load',messageData);
@@ -170,31 +181,25 @@ function clickEvent(){
         }
     })
 
-    var refString = convergence_ref_node.toString();
     //儲存按鈕
     $(".saveResults").click(function(){
         convergence_content = $("#convergenceTextarea").summernote('code');
-        var editing = $("#convergenceTextarea").hasClass("editing")
-        if(editing == false){
-            alert("沒有資料變動")
+
+        $("#convergenceTextarea").removeClass("editing")
+        var data = {
+            convergence_id:convergence_id,
+            convergence_content:convergence_content,
+            convergence_ref_node:convergence_ref_node.toString()
+        }
+
+        var saveResults = ajaxPostData('/lessonplan/idea/'+community_id+'/convergence/saveConvergence',data);
+        if(saveResults.msg == "no"){
+            window.location = "/member/login";
         }
         else{
-            $("#convergenceTextarea").removeClass("editing")
-            var data = {
-                convergence_id:convergence_id,
-                convergence_content:convergence_content,
-                convergence_ref_node:refString
-            }
-
-            var saveResults = ajaxPostData('/lessonplan/idea/'+community_id+'/convergence/saveConvergence',data);
-            if(saveResults.msg == "no"){
-                window.location = "/member/login";
-            }
-            else{
-                var updateData = saveResults.updateData;
-                socket.emit('save convergenceTextarea',{community_id:community_id,updateData:updateData,tag:convergence_tag})
-                alert('儲存成功');
-            }
+            var updateData = saveResults.updateData;
+            socket.emit('save convergenceTextarea',{community_id:community_id,updateData:updateData,tag:convergence_tag})
+            alert('儲存成功');
         }
 
     })
@@ -206,7 +211,7 @@ function clickEvent(){
             convergence_id:convergence_id,
             convergence_tag:convergence_tag,
             convergence_content:convergence_content,
-            convergence_ref_node:refString
+            convergence_ref_node:convergence_ref_node.toString()
         }
 
         var createNodeResults = ajaxPostData('/lessonplan/idea/'+community_id+'/convergence/creatConvergenceNode',data);
@@ -255,33 +260,56 @@ function clickEvent(){
 //引用至收斂
 function addRefNode(node_id){
     var $btn = $("#refBtn"+node_id)
-    $btn.val("取消引用")
-    $btn.removeClass("btn-info").addClass("btn-secondary");
-    $btn.attr("onclick","cancelRefNode("+node_id+")");
     var idea_content = $("#ideaNode"+node_id).find(".card-body").html();
     $("#convergenceTextarea").summernote('pasteHTML',idea_content);
-    if(!convergence_ref_node.includes(node_id)){
-        convergence_ref_node.push(node_id);
+}
+
+//勾選要收斂的節點
+function checkRefNode(node_id){
+    var $checkbox = $("#checkRef"+node_id)
+    if($checkbox.is(":checked")){
+        if(!convergence_ref_node.includes(node_id)){
+            convergence_ref_node.push(node_id);
+        }
+    }
+    else{
+        var newArray = [];
+        for(i in convergence_ref_node){
+            var elem = convergence_ref_node[i]
+            if(elem !== node_id){
+                newArray.push(elem)
+            }
+        }
+        convergence_ref_node = newArray;
+    }
+    
+    if(convergence_ref_node.length !== 0){
+        $("#convergenceSpace *").prop("disabled",false);
+        $("#convergenceTextarea").summernote("enable");
+    }
+    else{
+        $("#convergenceSpace *").prop("disabled",true);
+        $("#convergenceTextarea").summernote("disable");
     }
     console.log(convergence_ref_node)
 }
 
 //取消收斂
-function cancelRefNode(node_id){
-    var $btn = $("#refBtn"+node_id)
-    $btn.val("引用至收斂空間")
-    $btn.removeClass("btn-secondary").addClass("btn-info");
-    $btn.attr("onclick","addRefNode("+node_id+")");
-    var newArray = [];
-    for(i in convergence_ref_node){
-        var elem = convergence_ref_node[i]
-        if(elem !== node_id){
-            newArray.push(elem)
-        }
-    }
-    convergence_ref_node = newArray;
-    console.log(convergence_ref_node)
-}
+// function cancelRefNode(node_id){
+//     var $btn = $("#refBtn"+node_id)
+//     $btn.val("引用至收斂空間")
+//     $btn.removeClass("btn-secondary").addClass("btn-info");
+//     $btn.attr("onclick","addRefNode("+node_id+")");
+//     var newArray = [];
+//     for(i in convergence_ref_node){
+//         var elem = convergence_ref_node[i]
+//         if(elem !== node_id){
+//             newArray.push(elem)
+//         }
+//     }
+//     convergence_ref_node = newArray;
+//     console.log(convergence_ref_node)
+// }
 
 //想法summernote設定
 function convergencesummernoteClass(){
@@ -299,6 +327,7 @@ function convergencesummernoteClass(){
         ],
         minHeight: 180,
         maxHeight: 180,
+        placeholder:'請先勾選要收斂的想法',
         disableDragAndDrop: true,
         dialogsInBody: true,
         callbacks:{
@@ -333,10 +362,6 @@ function convergencesummernoteClass(){
                         alert('失敗');
                     }
                 })
-            },
-            onChange: function(){
-                var id = $(this).attr("id");
-                $("#"+id).addClass("editing")
             }
         }
     });

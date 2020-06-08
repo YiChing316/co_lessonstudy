@@ -14,7 +14,7 @@
         <!--想法列表-->
         <div class="col-4 padding-sm">
             <div class="card convergenceCard" id="convergenceIdeaList">
-                <div class="card-header bg-selfgreen"><i class="far fa-lightbulb mr-1"></i><span class="cardheaderTagName"></span>想法列表</div>
+                <div class="card-header bg-selfgreen"><i class="far fa-lightbulb mr-1"></i><span class="cardheaderTagName"></span>想法列表<small class="ml-3">請先勾選要收斂的想法</small></div>
                 <div class="card-body nopadding-all" id="ideaListCardBody" style="overflow-y: auto;"></div>
             </div>
         </div>
@@ -39,8 +39,8 @@
                                 <div class="form-group row" style="margin-bottom: 0;">
                                     <label class="col-sm-2 col-form-label nopadding-right">討論留言</label>
                                     <div class="col-sm">
-                                      <input type="text" id="messageContentInput" class="form-control">
-                                      <small class="text-muted">最多可輸入200字</small>
+                                      <input type="text" id="messageContentInput" class="form-control" maxlength="100">
+                                      <small class="text-muted">最多可輸入100字</small>
                                     </div>
                                     <div class="col-sm-1 nopadding">
                                         <input type="button" class="btn btn-outline-info float-right sendMessage" value="送出">
