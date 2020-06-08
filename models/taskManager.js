@@ -28,13 +28,14 @@ module.exports = {
         })
     },
 
-    saveCommunityTask: function(task_id,task_content,task_member_id,task_member_name,community_id){
+    saveCommunityTask: function(task_id,task_status,task_content,task_member_id,task_member_name,community_id){
         return new Promise(function(resolve,reject){
             pool.getConnection(function(err,connection){
                 if(err) return reject(err);
 
                 var sql = {
                     task_content:task_content,
+                    task_status:task_status,
                     task_member_id:task_member_id,
                     task_member_name:task_member_name,
                     community_id_community:community_id

@@ -4,7 +4,7 @@ var community = require('../models/community');
 var memberManager = require('../models/memberManager');
 var task = require('../models/taskManager');
 
-/* GET 社群成員管理 page. */
+/* GET 團隊分工 page. */
 router.get('/:community_id', function(req, res, next) {
     var community_id = req.params.community_id;
     var member_id = req.session.member_id;
@@ -29,7 +29,7 @@ router.get('/:community_id', function(req, res, next) {
         })
         .then(function(taskdata){
             taskData = JSON.stringify(taskdata)
-            res.render('taskManager', { title: '社群成員',
+            res.render('taskManager', { title: '團隊分工',
                                             community_id:community_id,
                                             community_name:community_name,
                                             member_id:member_id,
@@ -52,11 +52,12 @@ router.post('/:community_id/saveTask',function(req,res,next){
     }
     else{
         var task_id = req.body.task_id;
+        var task_status = req.body.task_status;
         var task_content = req.body.task_content;
         var task_member_id = req.body.task_member_id;
         var task_member_name = req.body.task_member_name;
 
-        task.saveCommunityTask(task_id,task_content,task_member_id,task_member_name,community_id)
+        task.saveCommunityTask(task_id,task_status,task_content,task_member_id,task_member_name,community_id)
         .then(function(selectdata){
             res.json({msg:"ok",selectData:selectdata})
         })

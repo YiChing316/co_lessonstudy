@@ -13,14 +13,17 @@
         <p id="communityMemberData" style="display: none;"><%= communityMemberData %></p>
         <p id="taskData" style="display: none;"><%= taskData %></p>
         <div class="pagecontent">
-            <button class="btn addtaskBtn btn-block mb-3 p-2" data-toggle="modal" data-target="#taskModal"><i class="fas fa-plus mr-2"></i>新增任務</button>
             <div class="row">
                 <div class="col taskcolumn" id="backlog_column">
-                    <h4 class="card-header bg-backlog text-white border-0">暫存區</h4>
+                    <h4 class="card-header bg-backlog text-white border-0">暫存區
+                        <a class="float-right addtaskBtn" title="新增暫存區任務" data-taskstatus="backlog" href="javascript:void(0)"><i class="fas fa-plus mr-2"></i></a>
+                    </h4>
                     <div class="card-body bg-backlog taskbody" id="backlog"></div>
                 </div>
                 <div class="col taskcolumn" id="todo_column">
-                    <h4 class="card-header bg-todo text-white border-0">待辦</h4>
+                    <h4 class="card-header bg-todo text-white border-0">待辦
+                        <a class="float-right addtaskBtn" title="新增待辦任務" data-taskstatus="todo" href="javascript:void(0)"><i class="fas fa-plus mr-2"></i></a>
+                    </h4>
                     <div class="card-body bg-todo taskbody" id="todo"></div>
                 </div>
                 <div class="col taskcolumn" id="doing_column">
@@ -46,6 +49,7 @@
                 </div>
                 <div class="modal-body">
                     <p id="editTaskId" style="display: none;"></p>
+                    <p id="editTaskStatus" style="display: none;"></p>
                     <div class="form-group">
                         <label><b>任務內容</b></label>
                         <textarea class="form-control" id="taskContentTextarea" rows="2" maxlength="30"></textarea>
