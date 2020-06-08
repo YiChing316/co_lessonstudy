@@ -597,7 +597,7 @@ router.get('/idea/:community_id/divergence', function(req, res, next) {
     var community_id = req.params.community_id;
 
     var community_name,community_tag;
-    var nodeData,edgeData;
+    var nodeData,edgeData,lessonplanActivityName;
 
     if(!member_id){
         res.redirect('/member/login');
@@ -618,6 +618,10 @@ router.get('/idea/:community_id/divergence', function(req, res, next) {
         })
         .then(function(edgedata){
             edgeData = JSON.stringify(edgedata);
+            return lessonplan.selectLessonplanActivityName(community_id)
+        })
+        .then(function(activitydata){
+            lessonplanActivityName = JSON.stringify(activitydata)
             res.render('lessonplanEdit', { title: '教案製作',
                                             mode: 'ideaContent',
                                             community_id:community_id,
@@ -626,7 +630,8 @@ router.get('/idea/:community_id/divergence', function(req, res, next) {
                                             member_id:member_id,
                                             member_name:member_name,
                                             nodeData:nodeData,
-                                            edgeData:edgeData
+                                            edgeData:edgeData,
+                                            lessonplanActivityName:lessonplanActivityName
                                         });
         })
     }
@@ -935,7 +940,7 @@ router.get('/idea/:community_id/convergence', function(req, res, next) {
     var community_id = req.params.community_id;
 
     var community_name;
-    var tagData;
+    var tagData,lessonplanActivityName;
 
     if(!member_id){
         res.redirect('/member/login');
@@ -948,13 +953,19 @@ router.get('/idea/:community_id/convergence', function(req, res, next) {
         })
         .then(function(tagdata){
             tagData = tagdata[0].community_tag;
+            return lessonplan.selectLessonplanActivityName(community_id)
+            
+        })
+        .then(function(activitydata){
+            lessonplanActivityName = JSON.stringify(activitydata)
             res.render('lessonplanEdit', { title: '想法收斂',
                                             mode: 'convergenceContent',
                                             community_id:community_id,
                                             community_name:community_name,
                                             member_id:member_id,
                                             member_name:member_name,
-                                            community_tag:tagData
+                                            community_tag:tagData,
+                                            lessonplanActivityName:lessonplanActivityName
                                         });
         })
 

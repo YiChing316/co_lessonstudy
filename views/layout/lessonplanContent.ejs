@@ -17,14 +17,13 @@
       <p id="issuethemeData" style="display: none;"><%= issuethemeData %></p>
       <p id="issuecontentData" style="display: none;"><%= issuecontentData %></p>
       <p id="basicData" style="display: none;"><%= basicData %></p>
-      <p id="lessonplanActivityName" style="display: none;"><%= lessonplanActivityName %></p>
       <p id="lessonplanActivityProcessData" style="display: none;"><%= lessonplanActivityProcessData %></p>
       <p id="lessonplanStageData" style="display: none;"><%= lessonplanStageData %></p>
       <p id="convergenceData" style="display: none;"><%= convergenceData %></p>
       <!------------------------------------------------------------------>
   </div><!--setlesson end-->
 </div><!--card 訂定課程目標 end-->
-<div class="card">
+<div class="card" style="margin-top: 12px;display: none;">
   <div class="h5 card-header text-white bg-selfblue">
     活動與評量設計
   </div>
@@ -35,11 +34,6 @@
     </div>
   </div><!--setactivity end-->
 </div><!--card 活動與評量設計 end-->
-
-<!--雙向細目表button-->
-<div>
-  <button type="button" class="btn btn-circle bg-selfblue" title="學習目標與活動、評量對應表" onclick="openTwoWayTableModal();"><i class="fas fa-tasks"></i></i></button>
-</div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/javascripts/setpagecontent.js"></script>

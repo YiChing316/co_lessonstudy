@@ -204,13 +204,15 @@ textarea{
 }
   
 #sidebar ul li a:hover,#sidebar .sidebar-menu a:focus{
-    background: #065071;
+    border-left: 3px solid #F5FFBE;
+    background: #074866;
     color: white;
     text-decoration: none;
 }
 
 #sidebar ul li .onpage{
-    background: #065071;
+    border-left: 3px solid #F5FFBE;
+    background: #074866;
     color: white;
     text-decoration: none;
 }

@@ -39,21 +39,25 @@ var activityName;
 
 function setSideBar(){
     $("#sidebar .list-unstyled").append('<li class="sidebar-menu">'+
-                                            '<a href="#sidebarul" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">'+
+                                            '<a href="javascript:void(0)" aria-expanded="false" class="onpage sidebarTitle" id="targetsidebar">'+
                                                 '<img src="/images/one.svg" width="25" height="25" class="d-inline-block mr-1">訂定課程目標'+
                                             '</a>'+
-                                            '<ul class="siderul collapse show list-unstyled" id="sidebarul"></ul>'+
+                                            '<ul class="siderul list-unstyled" id="sidebarul"></ul>'+
                                         '</li>'+
                                         '<li class="sidebar-menu">'+
-                                            '<a href="#activityDesignUl" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">'+
+                                            '<a href="javascript:void(0)" aria-expanded="false" class="sidebarTitle" id="activityDesign">'+
                                                 '<img src="/images/two.svg" width="25" height="25" class="d-inline-block mr-1">活動與評量設計'+
                                             '</a>'+
-                                            '<ul class="siderul collapse show list-unstyled" id="activityDesignUl"></ul>'+
+                                            '<ul class="siderul list-unstyled" id="activityDesignUl"></ul>'+
                                         '</li>'+
                                         '<li class="sidebar-menu">'+
-                                            '<a href="/lessonplan/edit/'+$("#community_id").text()+'/overviewLessonplan" target="_blank" aria-expanded="false">'+
-                                                '<img src="/images/three.svg" width="25" height="25" class="d-inline-block mr-1">教案總覽'+
+                                            '<a href="javascript:void(0)" aria-expanded="false" style="pointer-events: none;">'+
+                                                '<img src="/images/three.svg" width="25" height="25" class="d-inline-block mr-1">教案檢核與總覽'+
                                             '</a>'+
+                                            '<ul class="siderul list-unstyled" id="overviewUl">'+
+                                                '<li><a href="javascript:openTwoWayTableModal()" class="sidebarlink">雙向細目檢核</a></li>'+
+                                                '<li><a href="/lessonplan/edit/'+$("#community_id").text()+'/overviewLessonplan" target="_blank" class="sidebarlink">預覽教案</a></li>'+
+                                            '</ul>'+
                                         '</li>');
 }
 
@@ -65,7 +69,7 @@ function sidebar_Map(){
     if(activityName.length !== 0){
         $.each(activityName,function(i,val){
             var id = i+1;
-            $("#activityDesignUl").append('<li><a href="#cardidactivity_'+id+'" class="sidebarlink">'+activityName[i].lessonplan_activity_name+'</a></li>');
+            $("#activityDesignUl").append('<li><a href="#cardidactivity_'+id+'" class="sidebarlink disabledNav">'+activityName[i].lessonplan_activity_name+'</a></li>');
         })
     }
     
@@ -88,7 +92,7 @@ function sidebarClick(){
           var hash = this.hash;
           $('html, body').animate({
             scrollTop: $(hash).offset().top - cardheaderHeight
-          }, 1000);
+          }, 500);
         }
     });
 };
@@ -98,4 +102,25 @@ $(function(){
     pagecontent_Map();
     setSideBar();
     sidebar_Map();
+
+    $(".sidebarTitle").click(function(){
+        var id = $(this).attr("id");
+
+        if(id == "targetsidebar"){
+            $("#setlesson").parent().show();
+            $("#setactivity").parent().hide();
+            $("#activityDesign").removeClass("onpage");
+            $("#activityDesignUl li a").addClass("disabledNav");
+            $("#sidebarul li a").removeClass("disabledNav");
+            $(this).toggleClass("onpage")
+        }
+        else if( id == "activityDesign"){
+            $("#setlesson").parent().hide();
+            $("#setactivity").parent().show();
+            $("#targetsidebar").removeClass("onpage");
+            $("#sidebarul li a").addClass("disabledNav");
+            $("#activityDesignUl li a").removeClass("disabledNav");
+            $(this).toggleClass("onpage")
+        }
+    })
 });
