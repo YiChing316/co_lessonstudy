@@ -402,7 +402,11 @@ MEDIAQUERIES
     height: 100vh;
 }
 
-#ideanetwork,#socialnetwork .vis-network{
+#ideanetwork .vis-network{
+    outline: none;
+}
+
+#socialnetwork .vis-network{
     outline: none;
 }
 
@@ -495,22 +499,15 @@ MEDIAQUERIES
 }
 
 .addtaskBtn{
-    color: #3f8b7f;
-    background-color: white;
-    border-color: #B5DDC2;
-}
-
-.addtaskBtn:hover{
-    background-color: #B5DDC2;
-    color: #254e47;
+    color: white;
 }
 
 .taskcolumn{
-    min-height: 70vh;
+    min-height: 80vh;
 }
 
 .taskcolumn .taskbody{
-    min-height: 70vh;
+    min-height: 80vh;
     border-radius: 0 0 calc(0.25rem - 1px) calc(0.25rem - 1px);
 }
 

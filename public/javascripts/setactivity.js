@@ -1405,7 +1405,7 @@ function processTagClass(tag){
         max: 12,
         tags:tag,
         init: function($elem) {
-            console.log('Event called on plugin init', $elem);
+            //console.log('Event called on plugin init', $elem);
         }
     });
 }
