@@ -198,10 +198,7 @@ function showideaScaffoldTable(){
             {title:"有發展性的想法",field:"有發展性的想法",align:"center"},
         ],
         theadClasses:'thead-light',
-        classes:'table table-bordered',
-        fixedColumns: true,
-        fixedNumber: 1,
-        height: 400
+        classes:'table table-bordered'
     })
 
     var tableArray = [];
@@ -321,7 +318,7 @@ function setNodeandEgdeData(){
     }
 }
 
-//呈現設群網路圖表格
+//呈現社群網路圖表格
 function showSocialTable(){
     //回覆別人，自己為to,顯示from
     $buildonTable = $("#buildonTable");
@@ -346,7 +343,7 @@ function showSocialTable(){
     })
 }
 
-//呈現設群網路圖
+//呈現社群網路圖
 function showSocialNetwork(){
     var container = document.getElementById("socialnetwork");
     var data = {
@@ -375,7 +372,7 @@ function showSocialNetwork(){
           barnesHut: {
             theta: 0.5,
             gravitationalConstant: -10000,
-            centralGravity: 0.3,
+            centralGravity: 0.98,
             springLength: 95,
             springConstant: 0.04,
             damping: 0.09,

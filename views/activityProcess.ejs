@@ -17,73 +17,57 @@
         <p id="socialmemberData" style="display: none;"><%= socialmemberData %></p>
         <p id="socialEdgeData" style="display: none;"><%= socialEdgeData %></p>
         <div class="pagecontent" style="padding: 1% 10% 1% 10%">
-            <div class="row">
-                <div class="col-6">
-                    <div class="card">
-                        <div class="card-header bg-8 text-white">個人想法貢獻數量</div>
-                        <div class="card-body">
-                            <canvas id="nodeActionCanvas"></canvas>
-                        </div>
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active activityProcessTab" id="nodeActionDiv-tab" data-toggle="tab" href="#nodeActionDiv" role="tab" aria-controls="nodeActionDiv" aria-selected="true">個人想法貢獻數量</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link activityProcessTab" id="nodePieDiv-tab" data-toggle="tab" href="#nodePieDiv" role="tab" aria-controls="nodePieDiv" aria-selected="false">社群內節點所占比例</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link activityProcessTab" id="ideaScaffoldDiv-tab" data-toggle="tab" href="#ideaScaffoldDiv" role="tab" aria-controls="ideaScaffoldDiv" aria-selected="false">想法鷹架使用</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link activityProcessTab" id="socialNetworkDiv-tab" data-toggle="tab" href="#socialNetworkDiv" role="tab" aria-controls="socialNetworkDiv" aria-selected="false">社群網路圖</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link activityProcessTab" id="ideaIncreaseDiv-tab" data-toggle="tab" href="#ideaIncreaseDiv" role="tab" aria-controls="ideaIncreaseDiv" aria-selected="false">個人想法貢獻數量變化</a>
+                </li>
+            </ul>
+            <div class="tab-content mt-5" id="myTabContent">
+                <div class="tab-pane fade show active mb-3" id="nodeActionDiv" role="tabpanel" aria-labelledby="nodeActionDiv-tab">
+                    <canvas id="nodeActionCanvas"></canvas>
+                </div>
+                <div class="tab-pane fade mb-3" id="nodePieDiv" role="tabpanel" aria-labelledby="nodePieDiv-tab">
+                    <canvas id="nodePieCanvas"></canvas>
+                </div>
+                <div class="tab-pane fade mb-3" id="ideaScaffoldDiv" role="tabpanel" aria-labelledby="ideaScaffoldDiv-tab">
+                    <div class="row">
+                        <canvas id="ideaScaffoldCanvas"></canvas>
+                    </div>
+                    <div class="row mt-3" style="justify-content: center;">
+                        <table id="ideaScaffoldTable"></table>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="card">
-                        <div class="card-header bg-selfblue text-white">社群內節點所占比例</div>
-                        <div class="card-body">
-                            <canvas id="nodePieCanvas"></canvas>
+                <div class="tab-pane fade mb-3" id="socialNetworkDiv" role="tabpanel" aria-labelledby="socialNetworkDiv-tab">
+                    <div class="row">
+                        <div class="col-6 border rounded">
+                            <div id="socialnetwork"></div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row" style="padding-top: 1%;">
-                <div class="col">
-                    <div class="card">
-                        <div class="card-header bg-selfgreen text-white">想法鷹架使用</div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-6 nopadding">
-                                    <canvas id="ideaScaffoldCanvas"></canvas>
-                                </div>
-                                <div class="col-6">
-                                    <table id="ideaScaffoldTable"></table>
-                                </div>
+                        <div class="col-6">
+                            <div style="padding: 15px;">
+                                <h4 class="showSocialData" id="social_name"></h4>
+                                <p class="showSocialData mt-3">總共建立<span class="mx-1" id="social_sum"><b></b></span>個節點</p>
+                                <p class="showSocialData">回覆過<span class="mx-1" id="social_buildonsum"><b></b></span>個節點</p>
+                                <table class="showSocialData" id="buildonTable"></table>
+                                <p class="showSocialData mt-3">且建立的節點被<span class="mx-1" id="social_revisedsum"><b></b></span>則節點回覆</p>
+                                <table class="showSocialData" id="revisedTable"></table>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row" style="padding-top: 1%;">
-                <div class="col">
-                    <div class="card">
-                        <div class="card-header bg-6 text-white">社群網路圖</div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-6">
-                                    <div id="socialnetwork"></div>
-                                </div>
-                                <div class="col-6">
-                                    <div style="padding: 15px;">
-                                        <h4 class="showSocialData" id="social_name"></h4>
-                                        <p class="showSocialData mt-3">總共建立<span class="mx-1" id="social_sum"><b></b></span>個節點</p>
-                                        <p class="showSocialData">回覆過<span class="mx-1" id="social_buildonsum"><b></b></span>個節點</p>
-                                        <table class="showSocialData" id="buildonTable"></table>
-                                        <p class="showSocialData mt-3">且建立的節點被<span class="mx-1" id="social_revisedsum"><b></b></span>則節點回覆</p>
-                                        <table class="showSocialData" id="revisedTable"></table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row" style="padding-top: 1%;">
-                <div class="col">
-                    <div class="card">
-                        <div class="card-header bg-7 text-white">個人想法貢獻數量變化</div>
-                        <div class="card-body">
-                            <div id="ideaIncreaseGraph"></div>
-                        </div>
-                    </div>
+                <div class="tab-pane fade mb-3" id="ideaIncreaseDiv" role="tabpanel" aria-labelledby="ideaIncreaseDiv-tab">
+                    <div id="ideaIncreaseGraph"></div>
                 </div>
             </div>
         </div>
