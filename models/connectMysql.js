@@ -4,7 +4,7 @@ var mysql = require("mysql");
 var pool = mysql.createPool({
     host: "localhost",//連線主機
     user: "root",//帳號
-    password: "s10355041",//密碼
+    password: "",//密碼
     database: "collaborative_lesson_study"//教案資料庫
 });
 
