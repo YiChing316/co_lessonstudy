@@ -82,13 +82,18 @@ function setConvergenceSelect(tagArray){
 
 //設定想法列表
 function setIdeaList(nodeData){
-    nodeData.forEach(function(data){
-        var node_id = data.node_id;
-        var node_title = data.node_title;
-        var idea_content =data.idea_content;
-        var member_name = data.member_name;
-        ideaListCard(node_id,node_title,idea_content,member_name)
-    })
+    if(nodeData.length == 0){
+        alert("請先到想法發散區提出想法")
+    }
+    else{
+        nodeData.forEach(function(data){
+            var node_id = data.node_id;
+            var node_title = data.node_title;
+            var idea_content =data.idea_content;
+            var member_name = data.member_name;
+            ideaListCard(node_id,node_title,idea_content,member_name)
+        })
+    }
 }
 
 //設定收斂空間
@@ -199,7 +204,7 @@ function clickEvent(){
         else{
             var updateData = saveResults.updateData;
             socket.emit('save convergenceTextarea',{community_id:community_id,updateData:updateData,tag:convergence_tag})
-            alert('儲存成功');
+            //alert('儲存成功');
         }
 
     })
@@ -294,23 +299,6 @@ function checkRefNode(node_id){
     console.log(convergence_ref_node)
 }
 
-//取消收斂
-// function cancelRefNode(node_id){
-//     var $btn = $("#refBtn"+node_id)
-//     $btn.val("引用至收斂空間")
-//     $btn.removeClass("btn-secondary").addClass("btn-info");
-//     $btn.attr("onclick","addRefNode("+node_id+")");
-//     var newArray = [];
-//     for(i in convergence_ref_node){
-//         var elem = convergence_ref_node[i]
-//         if(elem !== node_id){
-//             newArray.push(elem)
-//         }
-//     }
-//     convergence_ref_node = newArray;
-//     console.log(convergence_ref_node)
-// }
-
 //想法summernote設定
 function convergencesummernoteClass(){
     $('.convergencesummernote').summernote({
@@ -322,8 +310,8 @@ function convergencesummernoteClass(){
                   ['color', ['color']],
                   ['para', ['ul', 'ol', 'paragraph']],
                   ['table', ['table']],
-                  ['insert', ['link', 'picture', 'video']],
-                  ['view', ['codeview']]
+                  ['insert', ['link', 'picture', 'video']]
+                //   ['view', ['codeview']]
         ],
         minHeight: 180,
         maxHeight: 180,
@@ -362,6 +350,10 @@ function convergencesummernoteClass(){
                         alert('失敗');
                     }
                 })
+            },
+            onChange: function(){
+                var id = $(this).attr("id");
+                $("#"+id).addClass("editing")
             }
         }
     });
