@@ -219,7 +219,6 @@ function threeselect_Map(){
 function lessonplanstage_Map(){
     lessonplanstage_Component.map(function(data){
         $('#'+data.id).append('<div id="'+data.createDiv+'" class="summernote"></div>');
-        // ckeditorDiv(data.createDiv);
         buttonDiv(data.id);
         summernoteClass();
     })
@@ -252,7 +251,6 @@ function addlessonplantargetlist(){
                                             '<td class="lasttd"><button class="btn btn-danger btnDelete"><i class="far fa-trash-alt"></i></button></td>'+
                                         '</tr>');
     deletetableTr('#lessonplantargetTbody');
-    // sorttableTbody('#lessonplantargetTbody');
 }
 
 var targetContent = [];
@@ -283,7 +281,6 @@ function showLessonplanStageSaveData(){
                                                             '</tr>');
                     }
                     deletetableTr('#lessonplantargetTbody');
-                    // sorttableTbody('#lessonplantargetTbody');
 
                     break;
                 case 'core_competency':
@@ -336,7 +333,6 @@ function stageControl(){
     course_grade_info = $("#course_grade_info").text();
     if(course_field_info == "" || course_grade_info == ""){
         $(".basic_body *").prop("disabled",true);
-        // console.log($(".basic_body ").find(".card-subtitle"))
     }
     else{
         $(".basic_body *").prop("disabled",false);
@@ -527,8 +523,8 @@ function summernoteClass(){
                   ['color', ['color']],
                   ['para', ['ul', 'ol', 'paragraph']],
                   ['table', ['table']],
-                  ['insert', ['link', 'picture', 'video']],
-                  ['view', ['codeview']]
+                  ['insert', ['link', 'picture', 'video']]
+                //   ['view', ['codeview']]
         ],
         width:560,
         minHeight: 180,
@@ -581,7 +577,6 @@ function summernoteClass(){
         maxHeight: 180
     });
 
-    // $('.note-statusbar').hide();
 }
 
 
@@ -691,15 +686,13 @@ function saveLessonplanData(divId){
                 $("#"+divId).find(".activityName").removeClass("editing");
                 $("#"+divId).find("input[name='targetandactivity']").removeClass("editing");
 
-                // console.log($("#creatActivityModal").find(".editing").get())
-
                 var activityResults = saveAjax(data);
                 if(activityResults.msg == "ok"){
-                    alert("儲存成功");
 
                     $("#"+divId).modal('hide');
                     modalclosebtn(divId);
                     if( divId == 'creatActivityModal'){
+                        console.log("新增成功");
                         var id = $(".activityRow").length + 1;
                         var process_id = activityResults.process_id;
                         var selectNodeData = activityResults.selectnodeData;
@@ -708,9 +701,10 @@ function saveLessonplanData(divId){
                         resetActivityNameandTargetArray(process_id,lessonplan_activity_name,newtwowayData)
                         socket.emit('create activity',{community_id:community_id,selectData:selectNodeData})
                         socket.emit('create tag',{community_id:community_id,community_tag:community_tag})
-                        //window.location = "/lessonplan/edit/"+community_id;
+
                     }
                     else{
+                        console.log("修改成功");
                         var selectData = activityResults.selectData;
                         var nodeData = activityResults.nodeData;
                         var edit_community_tag = activityResults.tagData[0].community_tag.split(',');

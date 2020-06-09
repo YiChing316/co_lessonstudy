@@ -25,7 +25,6 @@ function trElement(parentid,activitynumber,num,processtarget,processcontent,proc
 }
 
 function assessmentDiv(td_id,assessmentcontent,tmpmimetype,tmppath,file){
-
     $("#"+td_id).append('<div class="assessmentDiv">'+
                             '<hr>'+
                             '<div class="assessment_content">'+assessmentcontent+'</div>'+
@@ -105,8 +104,6 @@ var targetandAssessmentArray = [];
 
 //放入已經儲存活動流程資料
 function setActivityProcess(){
-    var community_id = $("#community_id").text();
-
     if( lessonplanActivityProcessData.length !== 0){
 
         setActivityandTargetData(lessonplanActivityProcessData)
@@ -229,7 +226,6 @@ $(function(){
     
     setActivityCard();
     setActivityProcess();
-    //editActivityCard();
 
     openActivityandAssessmentBtn();
 
@@ -265,7 +261,6 @@ function editActivityCard(){
         console.log(twowayTableData)
         //顯示該活動所選取的學習目標
         if(twowayTableData.length !== 0){
-            // var results = JSON.parse(twowayTableData[0].lessonplan_twowaytable_content);
             $.each(twowayTableData,function(i,val){
                 var target = twowayTableData[i].targetName;
                 var activity = twowayTableData[i].activityName;
@@ -281,7 +276,6 @@ function editActivityCard(){
 function deleteActivityCard(){
     var baseid = $("#editactivityid").text();
     var activitycardid = $("#parentCardId").text();
-    // $("#editActivityModal").modal("hide");
     $("#alertModal").modal("show");
     $("#alertModal").find("#deleteid").text(baseid);
     $("#alertModal").find("#deletecardid").text(activitycardid);
@@ -343,7 +337,6 @@ function addactivityTr(){
     var parentid = $("#parentid").text();
 
     var processtarget = [];
-    // var processtarget = $("#processtarget").val();
     $("#addprocessModal").find("input[name='processTarget']:checked").each(function(){
         processtarget.push($(this).val());
     })
@@ -408,7 +401,6 @@ function editActivityTr(){
         targetarray.map(function(data){
              $editmodal.find("input[value='"+data+"']").prop('checked', true);
         })
-        // $editmodal.find("#editprocesstarget").val(lessonplan_activity_learningtarget);
         $editmodal.find("#editprocesscontent").summernote('code', lessonplan_activity_content);
         $editmodal.find("#editprocesstime").val(lessonplan_activity_time);
         $editmodal.find("#editprocessremark").val(lessonplan_activity_remark);
@@ -546,8 +538,6 @@ function editAssessmentDiv(){
         var divindex = $div.index();
 
         var targetid = $div.parent('td').attr('id');
-        
-        // console.log(filename)
 
         if(filename == ""){
             $("#showfilename").hide();
@@ -789,11 +779,7 @@ function setLessonplanTargetandAssessmentTable(){
 
 // 呈現學習目標與活動對應表內容
 function showtwowayTableData(){
-    // twowayTableData = JSON.parse($("#twowayTableData").text());
-
     if(twowayTableData.length !== 0){
-        // var results = JSON.parse(twowayTableData[0].lessonplan_twowaytable_content);
-        // console.log(twowayTableData)
         var tr_length = $("#lessonplanTargetandActivityTable").find("tbody tr").length;
 
         for(var x=0;x<tr_length;x++){
@@ -1119,7 +1105,6 @@ function assessmentscaffold_Add(){
 
 //在活動流程modal放入對應的學習目標
 function activityLearningTarget(modalid,title){
-    // console.log(title)
     if(twowayTableData.length !== 0){
         console.log(twowayTableData)
         $("#"+modalid).find(".targetCheckbox").empty();
@@ -1132,9 +1117,6 @@ function activityLearningTarget(modalid,title){
                                                                         '<label class="custom-control-label" for="'+targetname+'">'+targetname+'</label>'+
                                                                     '</div>')
             }
-            // else{
-            //     $("#"+modalid).find(".targetCheckbox").html('<p class="alertP text-danger">尚未設定此活動所需的學習目標</p>');
-            // }
         })
     }
     else{
@@ -1280,6 +1262,7 @@ function sendNewActivityOrder(){
         data:data,
         success: function(data){
             if(data.msg == "ok"){
+                alert("調整完成")
                 $("#setactivity .activityRow").remove();
                 var newProcessData = JSON.stringify(data.selectData);
                 $("#lessonplanActivityProcessData").text(newProcessData);
@@ -1388,7 +1371,6 @@ function closeassessmentModal(td_id){
 }
 
 function setCustomFileInput(){
-    // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function() {
         var fileName = $(this).val().split("\\").pop();
         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);

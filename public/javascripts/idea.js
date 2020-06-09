@@ -440,7 +440,6 @@ function openLessonplanNode(community_id,data){
                 break;
         }
         $("#nodeTip").html(bodyContent);
-        // showLessonplanContent(selectData);
     }
     else{
         window.location = "/member/login";
@@ -637,9 +636,6 @@ function replyIdea(){
             $("#createIdeaModelTitle").attr("data-nodetype",'idea');
             $("#createIdeaModelTitle").html('新增想法');
         }
-        // console.log(modalid)
-        // console.log($(this).data("type"))
-        // console.log($("#"+modalid).find(".readNodeid").text())
     })
 }
 
@@ -704,8 +700,8 @@ function ideasummernoteClass(){
                   ['color', ['color']],
                   ['para', ['ul', 'ol', 'paragraph']],
                   ['table', ['table']],
-                  ['insert', ['link', 'picture', 'video']],
-                  ['view', ['codeview']]
+                  ['insert', ['link', 'picture', 'video']]
+                //   ['view', ['codeview']]
         ],
         width:560,
         minHeight: 250,
