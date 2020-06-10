@@ -731,6 +731,7 @@ function saveLessonplanData(divId){
                         //在此function處理table呈現，以及該活動評量與學習目標對應資料
                         setOneCardActivityProcess(selectData,baseid,parnetid)
                         setActivityandTargetData(selectData)
+                        editActivityName(baseid,lessonplan_activity_name)
                         console.log(twowayTableData)
                         console.log(targetandAssessmentArray)
                     }
@@ -1004,4 +1005,24 @@ function resetActivityNameandTargetArray(process_id,lessonplan_activity_name,new
         twowayTableData.push(data)
     });
     console.log(activityName)
+}
+
+
+function editActivityName(process_id,lessonplan_activity_name){
+    var newNameArray = [];
+    activityName.forEach(function(val){
+        var id= val.lessonplan_activity_process_id;
+        var name = val.lessonplan_activity_name;
+        if(id == process_id){
+            newNameArray.push({lessonplan_activity_process_id:id,lessonplan_activity_name:lessonplan_activity_name})
+        }
+        else{
+            newNameArray.push({lessonplan_activity_process_id:id,lessonplan_activity_name:name})
+        }
+    })
+    activityName = newNameArray;
+    $("#sidebarul").empty();
+    $("#activityDesignUl").empty();
+    sidebar_Map();
+    console.log(activityName);
 }
