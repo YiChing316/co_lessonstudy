@@ -39,19 +39,19 @@ var activityName;
 
 function setSideBar(){
     $("#sidebar .list-unstyled").append('<li class="sidebar-menu">'+
-                                            '<a href="javascript:void(0)" aria-expanded="false" class="onpage sidebarTitle" id="targetsidebar">'+
+                                            '<a href="#sidebarul" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle onpage sidebarTitle" id="targetsidebar">'+
                                                 '<img src="/images/one.svg" width="25" height="25" class="d-inline-block mr-1">訂定課程目標'+
                                             '</a>'+
-                                            '<ul class="siderul list-unstyled" id="sidebarul"></ul>'+
+                                            '<ul class="siderul collapse show list-unstyled" id="sidebarul"></ul>'+
                                         '</li>'+
                                         '<li class="sidebar-menu">'+
-                                            '<a href="javascript:void(0)" aria-expanded="false" class="sidebarTitle" id="activityDesign">'+
+                                            '<a href="#activityDesignUl"  data-toggle="collapse" aria-expanded="false" class="dropdown-toggle sidebarTitle" id="activityDesign">'+
                                                 '<img src="/images/two.svg" width="25" height="25" class="d-inline-block mr-1">活動與評量設計'+
                                             '</a>'+
-                                            '<ul class="siderul list-unstyled" id="activityDesignUl"></ul>'+
+                                            '<ul class="siderul collapse list-unstyled" id="activityDesignUl"></ul>'+
                                         '</li>'+
                                         '<li class="sidebar-menu">'+
-                                            '<a href="javascript:void(0)" aria-expanded="false" style="pointer-events: none;">'+
+                                            '<a href="#overviewUl"  data-toggle="collapse" aria-expanded="false" style="pointer-events: none;">'+
                                                 '<img src="/images/three.svg" width="25" height="25" class="d-inline-block mr-1">教案檢核與總覽'+
                                             '</a>'+
                                             '<ul class="siderul list-unstyled" id="overviewUl">'+
@@ -107,12 +107,27 @@ $(function(){
         var id = $(this).attr("id");
 
         if(id == "targetsidebar"){
-            $("#setlesson").parent().show();
-            $("#setactivity").parent().hide();
-            $("#activityDesign").removeClass("onpage");
-            $("#activityDesignUl li a").addClass("disabledNav");
-            $("#sidebarul li a").removeClass("disabledNav");
-            $(this).toggleClass("onpage")
+            var processChange = localStorage.length;
+            var array =[];
+            for ( var i = 0; i < processChange; ++i ) {
+                var activityDivId = localStorage.key( i );
+                var activityName = $("#header"+activityDivId).text();
+                array.push(activityName)
+            }
+            var nameString = array.toString();
+
+            if(processChange > 0){
+                alert(nameString+"的活動流程 尚未儲存")
+            }
+            else{
+                $("#setlesson").parent().show();
+                $("#setactivity").parent().hide();
+                $("#activityDesign").removeClass("onpage");
+                $("#activityDesignUl li a").addClass("disabledNav");
+                $("#sidebarul li a").removeClass("disabledNav");
+                $(this).toggleClass("onpage")
+                $("#activityDesignUl").collapse('hide')
+            }
         }
         else if( id == "activityDesign"){
             $("#setlesson").parent().hide();
@@ -121,6 +136,7 @@ $(function(){
             $("#sidebarul li a").addClass("disabledNav");
             $("#activityDesignUl li a").removeClass("disabledNav");
             $(this).toggleClass("onpage")
+            $("#sidebarul").collapse('hide')
         }
     })
 });

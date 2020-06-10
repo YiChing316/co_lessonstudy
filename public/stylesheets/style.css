@@ -148,6 +148,7 @@ textarea{
     background: #065B80;
     color: white;
     transition: all 0.3s;
+    overflow-y: auto;
 }
   
 #sidebar.active {
