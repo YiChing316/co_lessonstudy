@@ -61,6 +61,7 @@ function showAllCommunity(){
         ],
         theadClasses:'thead-light',
         pageSize: 10,
+        pageList:[],
         pagination:true,
         detailView:true,
         detailFormatter:"detailFormatter",
@@ -144,6 +145,7 @@ function showMemberCommunity(){
             ],
             theadClasses:'thead-light',
             pageSize: 10,
+            pageList:[],
             pagination:true,
             classes:'table table-bordered'
         });
@@ -255,6 +257,7 @@ function showApplication(){
             ],
             theadClasses:'thead-light',
             pageSize: 10,
+            pageList:[],
             pagination:true,
             classes:'table table-bordered'
         })

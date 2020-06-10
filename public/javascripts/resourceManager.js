@@ -41,6 +41,7 @@ function showPersonalResource(){
         ],
         theadClasses:'thead-light',
         pageSize: 5,
+        pageList:[],
         pagination:true,
         search:true,
         classes:'table table-bordered'
@@ -63,6 +64,7 @@ function showCommunityResource(){
         ],
         theadClasses:'thead-light',
         pageSize: 5,
+        pageList:[],
         pagination:true,
         search:true,
         classes:'table table-bordered'

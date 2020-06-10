@@ -70,7 +70,7 @@ $(function(){
         $(".selectNodeTag").attr("disabled",false);
     })
 
-    $('html, body').css('overflowY', 'hidden');
+    //$('html, body').css('overflowY', 'hidden');
 })
 
 //設定選擇收斂想法標籤的select option
@@ -133,6 +133,7 @@ function setcommunicateTable(){
         ],
         theadClasses:'thead-light',
         pageSize: 5,
+        pageList:[],
         pagination:true,
         sortName:"message_id",
         sortOrder:"desc",

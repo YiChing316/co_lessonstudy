@@ -256,9 +256,9 @@ CONTENT STYLE
     padding-left: 15px;
     padding-right: 15px;
     /* padding: 20px; */
-    min-height: 100vh;
+    /* min-height: 100vh; */
     transition: all 0.3s;
-    margin-bottom: 50px;
+    margin-bottom: 2%;
 }
   
 #content.active{
@@ -475,6 +475,7 @@ MEDIAQUERIES
     color: white;
 }
 
+/*******收斂空間*******/
 .idealist .card-header{
     padding:.50rem 1.25rem;
 }
@@ -488,9 +489,10 @@ MEDIAQUERIES
 
 .convergenceCard{
     min-height: 83vh;
-    max-height: 83vh;
+    /* max-height: 83vh; */
 }
 
+/*******成員管理*******/
 .btn-reject{
     background-color: #ED557E;
     color: white;
@@ -501,6 +503,7 @@ MEDIAQUERIES
     color: white;
 }
 
+/*******團隊分工*******/
 .addtaskBtn{
     color: white;
 }
