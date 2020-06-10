@@ -135,6 +135,24 @@ router.post('/application',function(req,res,next){
 
 });
 
+router.post('/cancelApplication',function(req,res,next){
+  var member_id = req.session.member_id;
+  var member_name = req.session.member_name;
+
+  if(!member_id){
+    res.redirect('/member/login');
+    res.json({msg:'no'});
+  }
+  else{
+    var community_id = req.body.community_id;
+    community.cancelApplication(community_id,member_id)
+    .then(function(data){
+      res.json({msg:'yes'})
+    })
+  }
+
+});
+
 router.post('/enterCommunity',function(req,res,next){
   var member_id = req.session.member_id;
   var member_name = req.session.member_name;

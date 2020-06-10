@@ -1,6 +1,7 @@
 var allCommunityData;
 var memberCommunityData;
 var applicationCommunityData;
+var $applicationTable;
 
 //創建社群
 function createCommunity(){
@@ -178,7 +179,28 @@ window.operateEvents = {
                 alert('失敗');
             }
         })
-    }  
+    },
+    'click .cancelApplication': function (e, value, row, index) {
+        var community_id = row.community_id
+        $.ajax({
+            url: "/community/cancelApplication",
+            type: "POST",
+            async:false,
+            data:{community_id:community_id},
+            success: function(data){
+                if(data.msg == "yes"){
+                    alert("已取消申請");
+                    window.location.reload();
+                }
+                else{
+                    window.location = "/member/login";
+                }
+            },
+            error: function(){
+                alert('失敗');
+            }
+        })
+    },
 }
 
 /****加入社群ajax************* */
@@ -218,7 +240,7 @@ function joinCommunity(id){
 
 /*****處理申請社群******************************* */
 function showApplication(){
-    var $applicationTable = $("#applicationCommunityTable");
+    $applicationTable = $("#applicationCommunityTable");
     if(applicationCommunityData == 0){
         $applicationTable.hide();
         $("#applicationCommunityEmptyMsg").html("您目前尚未申請任何社群");
@@ -228,7 +250,8 @@ function showApplication(){
             columns:[
                 {title:"社群ID",field:"community_id",visible:false},
                 {title:"社群名稱",field:"community_name"},
-                {title:"申請狀況",field:"community_application_status"}
+                {title:"申請狀況",field:"community_application_status"},
+                {formatter:"cancelApplicationFormatter",events:"operateEvents",width:150}
             ],
             theadClasses:'thead-light',
             pageSize: 10,
@@ -236,6 +259,14 @@ function showApplication(){
             classes:'table table-bordered'
         })
         $applicationTable.bootstrapTable("load",applicationCommunityData);
+    }
+}
+
+function cancelApplicationFormatter(value, row, index) {
+    if(row.community_application_status == "處理中"){
+        return [
+            '<a class="btn btn-danger cancelApplication" href="javascript:void(0)" title="enter">取消申請</a>'
+          ].join('')
     }
 }
 

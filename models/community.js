@@ -132,12 +132,11 @@ module.exports = {
                     community_application_status:'處理中'
                 }
 
-                connection.query('SELECT COUNT(`member_id_member`) AS member_id FROM `community_application` WHERE `community_id_community` =? AND `member_id_member` =?',[community_id,member_id],function(err,countResults,fields){
+                connection.query('SELECT `member_id_member` FROM `community_application` WHERE `community_id_community`=? AND `member_id_member`=? AND `community_application_status`= "處理中"',[community_id,member_id],function(err,countResults,fields){
                     if(err) return reject(err);
     
-                    var countNum = countResults[0].COUNTNUM;
-                    if(countNum == 1){
-
+                    if(countResults.length){
+                        resolve({isExisted:true});
                     }
                     else{
                         connection.query('INSERT INTO `community_application` SET ?',sql,function(err,insertResults,fields){
@@ -146,6 +145,20 @@ module.exports = {
                             connection.release();
                         })
                     }
+                })
+            })
+        })
+    },
+
+    cancelApplication: function(community_id,member_id){
+        return new Promise(function(resolve,reject){
+            pool.getConnection(function(err,connection){
+                if(err) return reject(err);
+
+                connection.query('UPDATE `community_application` SET `community_application_status`= "取消申請" WHERE `community_id_community`=? AND `member_id_member`=?',[community_id,member_id],function(err,updateResults,fields){
+                    if(err) return reject(err);
+                    resolve(updateResults);
+                    connection.release();
                 })
             })
         })
