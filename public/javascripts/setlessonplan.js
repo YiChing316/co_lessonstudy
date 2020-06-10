@@ -113,7 +113,7 @@ function setLessonplanBasicData(){
     //                                     '<input type="checkbox" data-toggle="toggle" id="toggle-demo" data-size="sm">');
     lessonplanbasic_Component.map(function(data){
         $("#lessonplan_basicdata").append("<div class='basic_body'>"+
-                                            "<hr><h5 data-toggle='collapse' data-target='#"+data.id+"'><i class='far fa-plus-square mr-1' id='"+data.id+"icon'></i><b>"+data.name+"</b></h5>"+
+                                            "<hr><h5 data-toggle='collapse' data-target='#"+data.id+"'><i class='far fa-plus-square mr-1' id='"+data.id+"icon'></i><b>"+data.name+"</b><small class='text-muted'>目前只提供自然科資料</small></h5>"+
                                             "<h6 class='card-subtitle mb-2 text-danger'>(請先完成領域、版本以及學習階段的設定)</h6>"+
                                             "<div class='collapse' id='"+data.id+"'></div>"+
                                         "</div>");
