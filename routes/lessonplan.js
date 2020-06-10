@@ -97,79 +97,106 @@ router.get('/edit/:community_id', function(req, res, next) {
                 course_field = basicData.lessonplan_field;
                 course_version = basicData.lessonplan_version;
                 course_grade = basicData.lessonplan_grade;
-
                 basicData = JSON.stringify(basicData);
 
-                //根據已設定好的年級、領域抓取核心素養內容
-                return clsresource.getcore_competency_dimesion();
+                if(course_field !== "" && course_version !== "" && course_grade !== ""){
+                    //根據已設定好的年級、領域抓取核心素養內容
+                    return clsresource.getcore_competency_dimesion()
+                    .then(function(ccdimesiondata){
+                        ccdimesionData = JSON.stringify(ccdimesiondata);
+            
+                        return clsresource.getcore_competency_item()
+                    })
+                    .then(function(ccitemdata){
+                        ccitemData = JSON.stringify(ccitemdata);
+            
+                        return clsresource.getcore_competency_fieldcontent(course_field,course_grade)
+                    })
+                    .then(function(ccfielddata){
+                        ccfieldData = JSON.stringify(ccfielddata);
+            
+                        return clsresource.getlearning_focus_item(course_field,course_grade)
+                    })
+                    .then(function(lfitemdata){
+                        lfitemData = JSON.stringify(lfitemdata);
+            
+                        return clsresource.getlearning_focus_childitem(course_field,course_grade)
+                    })
+                    .then(function(lfchilddata){
+                        lfchilditemData = JSON.stringify(lfchilddata);
+            
+                        return clsresource.getlearning_focus_content(course_field,course_grade)
+                    })
+                    .then(function(lfcontentdata){
+                        lfcontentData = JSON.stringify(lfcontentdata);
+            
+                        return clsresource.getissue_name()
+                    })
+                    .then(function(issuenamedata){
+                        issuenameData = JSON.stringify(issuenamedata);
+            
+                        return clsresource.getissue_theme()
+                    })
+                    .then(function(issuethemedata){
+                        issuethemeData = JSON.stringify(issuethemedata);
+            
+                        return clsresource.getissue_content(course_grade)
+                    })
+                    .then(function(issuecontentdata){
+                        issuecontentData = JSON.stringify(issuecontentdata);
+                        res.render('lessonplanEdit', { title: '教案製作',
+                                                        mode: 'lessonplanContent',
+                                                        member_id:member_id,
+                                                        member_name:member_name,
+                                                        community_id:community_id,
+                                                        community_name:community_name,
+                                                        course_field:course_field,
+                                                        course_grade:course_grade,
+                                                        course_version:course_version,
+                                                        ccdimesionData:ccdimesionData,
+                                                        ccitemData:ccitemData,
+                                                        ccfieldData:ccfieldData,
+                                                        lfitemData:lfitemData,
+                                                        lfchilditemData:lfchilditemData,
+                                                        lfcontentData:lfcontentData,
+                                                        issuenameData:issuenameData,
+                                                        issuethemeData:issuethemeData,
+                                                        issuecontentData:issuecontentData,
+                                                        basicData:basicData,//教案基本資料
+                                                        lessonplanActivityProcessData:lessonplanActivityProcessData,
+                                                        lessonplanActivityName:lessonplanActivityName,
+                                                        lessonplanStageData:lessonplanStageData,
+                                                        convergenceData:convergenceData
+                                                    });
+                    })
+                }
+                else{
+                    res.render('lessonplanEdit', { title: '教案製作',
+                                                    mode: 'lessonplanContent',
+                                                    member_id:member_id,
+                                                    member_name:member_name,
+                                                    community_id:community_id,
+                                                    community_name:community_name,
+                                                    course_field:'',
+                                                    course_grade:'',
+                                                    course_version:'',
+                                                    ccdimesionData:'""',//JSON.parse error ''所以給予空{}
+                                                    ccitemData:'""',
+                                                    ccfieldData:'""',
+                                                    lfitemData:'""',
+                                                    lfchilditemData:'""',
+                                                    lfcontentData:'""',
+                                                    issuenameData:'""',
+                                                    issuethemeData:'""',
+                                                    issuecontentData:'""',
+                                                    basicData:basicData,
+                                                    lessonplanActivityProcessData:lessonplanActivityProcessData,
+                                                    lessonplanActivityName:lessonplanActivityName,
+                                                    lessonplanStageData:lessonplanStageData,
+                                                    convergenceData:convergenceData
+                                            });
+                }
             }
-        })
-        .then(function(ccdimesiondata){
-            ccdimesionData = JSON.stringify(ccdimesiondata);
-
-            return clsresource.getcore_competency_item()
-        })
-        .then(function(ccitemdata){
-            ccitemData = JSON.stringify(ccitemdata);
-
-            return clsresource.getcore_competency_fieldcontent(course_field,course_grade)
-        })
-        .then(function(ccfielddata){
-            ccfieldData = JSON.stringify(ccfielddata);
-
-            return clsresource.getlearning_focus_item(course_field,course_grade)
-        })
-        .then(function(lfitemdata){
-            lfitemData = JSON.stringify(lfitemdata);
-
-            return clsresource.getlearning_focus_childitem(course_field,course_grade)
-        })
-        .then(function(lfchilddata){
-            lfchilditemData = JSON.stringify(lfchilddata);
-
-            return clsresource.getlearning_focus_content(course_field,course_grade)
-        })
-        .then(function(lfcontentdata){
-            lfcontentData = JSON.stringify(lfcontentdata);
-
-            return clsresource.getissue_name()
-        })
-        .then(function(issuenamedata){
-            issuenameData = JSON.stringify(issuenamedata);
-
-            return clsresource.getissue_theme()
-        })
-        .then(function(issuethemedata){
-            issuethemeData = JSON.stringify(issuethemedata);
-
-            return clsresource.getissue_content(course_grade)
-        })
-        .then(function(issuecontentdata){
-            issuecontentData = JSON.stringify(issuecontentdata);
-            res.render('lessonplanEdit', { title: '教案製作',
-                                            mode: 'lessonplanContent',
-                                            member_id:member_id,
-                                            member_name:member_name,
-                                            community_id:community_id,
-                                            community_name:community_name,
-                                            course_field:course_field,
-                                            course_grade:course_grade,
-                                            course_version:course_version,
-                                            ccdimesionData:ccdimesionData,
-                                            ccitemData:ccitemData,
-                                            ccfieldData:ccfieldData,
-                                            lfitemData:lfitemData,
-                                            lfchilditemData:lfchilditemData,
-                                            lfcontentData:lfcontentData,
-                                            issuenameData:issuenameData,
-                                            issuethemeData:issuethemeData,
-                                            issuecontentData:issuecontentData,
-                                            basicData:basicData,//教案基本資料
-                                            lessonplanActivityProcessData:lessonplanActivityProcessData,
-                                            lessonplanActivityName:lessonplanActivityName,
-                                            lessonplanStageData:lessonplanStageData,
-                                            convergenceData:convergenceData
-                                        });
         })
         .catch(function (err) {console.log(err);});
     }
