@@ -14,23 +14,23 @@
         <p id="taskData" style="display: none;"><%= taskData %></p>
         <div class="pagecontent">
             <div class="row">
-                <div class="col taskcolumn" id="backlog_column">
+                <div class="col card taskcolumn nopadding mx-2" id="backlog_column">
                     <h4 class="card-header bg-backlog text-white border-0">暫存區
                         <a class="float-right addtaskBtn" title="新增暫存區任務" data-taskstatus="backlog" href="javascript:void(0)"><i class="fas fa-plus mr-2"></i></a>
                     </h4>
                     <div class="card-body bg-backlog taskbody" id="backlog"></div>
                 </div>
-                <div class="col taskcolumn" id="todo_column">
+                <div class="col card taskcolumn nopadding mx-2" id="todo_column">
                     <h4 class="card-header bg-todo text-white border-0">待辦
                         <a class="float-right addtaskBtn" title="新增待辦任務" data-taskstatus="todo" href="javascript:void(0)"><i class="fas fa-plus mr-2"></i></a>
                     </h4>
                     <div class="card-body bg-todo taskbody" id="todo"></div>
                 </div>
-                <div class="col taskcolumn" id="doing_column">
+                <div class="col card taskcolumn nopadding mx-2" id="doing_column">
                     <h4 class="card-header bg-doing text-white border-0">進行中</h4>
                     <div class="card-body bg-doing taskbody" id="doing"></div>
                 </div>
-                <div class="col taskcolumn" id="done_column">
+                <div class="col card taskcolumn nopadding mx-2" id="done_column">
                     <h4 class="card-header bg-done text-white border-0">完成</h4>
                     <div class="card-body bg-done taskbody" id="done"></div>
                 </div>
