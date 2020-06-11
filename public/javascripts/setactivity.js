@@ -55,10 +55,10 @@ function activityandAssessmentDesign_Append(id,baseid,activity_name){
                                                 '<th scope="col" width="40"></th>'+
                                                 '<th scope="col" width="60">#</th>'+
                                                 '<th scope="col" width="120">學習目標</th>'+
-                                                '<th scope="col" width="300">活動流程</th>'+
+                                                '<th scope="col">活動流程</th>'+
                                                 '<th scope="col" width="50">時間</th>'+
                                                 '<th scope="col" width="150">評量方式</th>'+
-                                                '<th scope="col">備註</th>'+
+                                                '<th scope="col" width="80">備註</th>'+
                                                 '<th scope="col" width="50"></th>'+
                                             '</tr>'+
                                         '</thead>'+
