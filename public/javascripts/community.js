@@ -268,7 +268,7 @@ function showApplication(){
 function cancelApplicationFormatter(value, row, index) {
     if(row.community_application_status == "處理中"){
         return [
-            '<a class="btn btn-danger cancelApplication" href="javascript:void(0)" title="enter">取消申請</a>'
+            '<a class="btn btn-danger cancelApplication" href="javascript:void(0)" title="cancel">取消申請</a>'
           ].join('')
     }
 }
