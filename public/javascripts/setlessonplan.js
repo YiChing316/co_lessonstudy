@@ -158,7 +158,7 @@ function lessonplan_Map(){
                                                 '</div>'
                                                 ));
                 });
-                if(lessonplan_field !== ""){
+                if( lessonplan_field !== undefined && lessonplan_field !== ""){
                     var fieldData = lessonplan_field.split(',');
                     for(var i=0;i<fieldData.length;i++){
                         $("#"+data.id+" input[value="+fieldData[i]+"]").prop('checked', true);
