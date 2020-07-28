@@ -63,6 +63,7 @@ router.post('/create', function(req, res,next) {
               return node.updateNodePosition(results,updateData)
             })
           })
+          console.log("已創立社群"+results);
           res.json({msg:'yes',community_id:results});
         }
       })
@@ -101,6 +102,7 @@ router.post('/join', function(req, res,next) {
       })
       .then(function(addResults){
         if(addResults){
+          console.log("已加入社群")
           res.json({msg:'yes',community_id:community_id});
         }
       })
@@ -129,6 +131,7 @@ router.post('/application',function(req,res,next){
       }
     })
     .then(function(results){
+      console.log("已申請社群")
       res.json({msg:'yes'})
     })
   }

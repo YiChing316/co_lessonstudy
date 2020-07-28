@@ -30,7 +30,7 @@ router.post('/login', function(req, res,next) {
                 req.session.member_id = results[0].member_id;
                 req.session.member_name = results[0].member_name;
                 req.session.member_account = member_account;
-
+                console.log( req.session.member_name+'已登入');
                 res.json({
                             msg:'yes',
                             member_id:req.session.member_id,
@@ -66,6 +66,7 @@ router.post('/register', function(req, res,next) {
             res.json({msg:'no'});
         }
         else{
+            console.log('已註冊');
             res.json({msg:'yes'});
         }
     })
